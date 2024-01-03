@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333931077372",
+    "project_id": "ba3-business-solutions",
+    "storage_bucket": "ba3-business-solutions.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333931077372:android:47ccc77a5acd4e84ee4179",
+        "android_client_info": {
+          "package_name": "com.ba3business.ba3_business_solutions"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH4wRGk2Huz4qfgkM4SBdsB7qh7Q4V1YQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
