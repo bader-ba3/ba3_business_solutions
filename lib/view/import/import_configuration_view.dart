@@ -1,18 +1,16 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ImportConfigurationView extends StatefulWidget {
   final List<List<String>> productList;
   final List<String> rows;
-  ImportConfigurationView({super.key, required this.productList, required this.rows});
+  const ImportConfigurationView({super.key, required this.productList, required this.rows});
 
   @override
   State<ImportConfigurationView> createState() => _ImportConfigurationViewState();
@@ -158,7 +156,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
         prodCode: element[setting["prodCode"]],
         prodBarcode: element[setting["prodBarcode"]],
         prodGroupCode: element[setting["prodGroupCode"]],
-        prodPrice: element[setting["prodPrice"]],
+        // prodPrice: element[setting["prodPrice"]],
         prodHasVat: true,
       ));
     }

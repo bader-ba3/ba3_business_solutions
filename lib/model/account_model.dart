@@ -2,6 +2,7 @@ class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat,accParentId;
   bool?accIsParent;
   List accChild=[];
+  List accAggregateList=[];
   AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode,this.accParentId,this.accIsParent});
 
   AccountModel.fromJson(Map<dynamic, dynamic> map, id) {
@@ -14,6 +15,7 @@ class AccountModel {
     accParentId = map['accParentId'];
     accIsParent = map['accIsParent'];
     accChild = map['accChild']??[];
+    accAggregateList = map['accAggregateList']??[];
   }
   Map difference(AccountModel oldData) {
     assert(oldData.accId == accId && oldData.accId != null && accId != null || oldData.accId == accId && oldData.accId != null && accId != null);
@@ -52,6 +54,10 @@ class AccountModel {
       newChanges['accChild'] = oldData.accChild;
       oldChanges['accChild'] = accChild;
     }
+    if (accAggregateList != oldData.accAggregateList) {
+      newChanges['accAggregateList'] = oldData.accAggregateList;
+      oldChanges['accAggregateList'] = accAggregateList;
+    }
 
     return {
       "newData": [newChanges],
@@ -74,6 +80,7 @@ class AccountModel {
       'accParentId': accParentId,
       'accIsParent': accIsParent,
       'accChild': accChild,
+      'accAggregateList': accAggregateList,
     };
   }
 
@@ -88,6 +95,7 @@ class AccountModel {
       'accParentId': accParentId,
       'accIsParent': accIsParent,
       'accChild': accChild,
+      'accAggregateList': accAggregateList,
     };
   }
 }

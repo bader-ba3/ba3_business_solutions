@@ -1,25 +1,45 @@
+import 'package:ba3_business_solutions/model/product_record_model.dart';
+
 class ProductModel {
-  String? prodId, prodName, prodCode, prodPrice, prodAllQuantity, prodBarcode, prodGroupCode;
-  bool? prodHasVat;
+  String? prodId, prodName, prodCode, prodCustomerPrice,prodWholePrice,prodRetailPrice,prodCostPrice,prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode,prodType,prodParentId;
+  bool? prodHasVat,prodIsParent;
+  List? prodChild=[];
+  List<ProductRecordModel>? prodRecord=[];
 
   ProductModel({
     this.prodId,
     this.prodName,
     this.prodCode,
-    this.prodPrice,
+    this.prodCustomerPrice,
+    this.prodWholePrice,
+    this.prodRetailPrice,
+    this.prodCostPrice,
+    this.prodMinPrice,
     this.prodHasVat,
     this.prodBarcode,
     this.prodGroupCode,
+    this.prodType,
+    this.prodParentId,
+    this.prodIsParent,
   });
 
   ProductModel.fromJson(Map<dynamic, dynamic> map) {
     prodId = map['prodId'];
     prodName = map['prodName'];
     prodCode = map['prodCode'];
-    prodPrice = map['prodPrice'];
+    prodCustomerPrice = map['prodCustomerPrice'];
+    prodWholePrice = map['prodWholePrice'];
+    prodRetailPrice = map['prodRetailPrice'];
+    prodCostPrice = map['prodCostPrice'];
+    prodMinPrice = map['prodMinPrice'];
     prodHasVat = map['prodHasVat'];
     prodBarcode = map['prodBarcode'];
     prodGroupCode = map['prodGroupCode'];
+    prodType = map['prodType'];
+    prodParentId = map['prodParentId'];
+    prodIsParent = map['prodIsParent'];
+    prodChild = map['prodChild'];
+    prodRecord = map['prodRecord'];
   }
 
   Map difference(ProductModel oldData) {
@@ -35,9 +55,25 @@ class ProductModel {
       newChanges['prodCode'] = oldData.prodCode;
       oldChanges['prodCode'] = prodCode;
     }
-    if (prodPrice != oldData.prodPrice) {
-      newChanges['prodPrice'] = oldData.prodPrice;
-      oldChanges['prodPrice'] = prodPrice;
+    if (prodCustomerPrice != oldData.prodCustomerPrice) {
+      newChanges['prodCustomerPrice'] = oldData.prodCustomerPrice;
+      oldChanges['prodCustomerPrice'] = prodCustomerPrice;
+    }
+    if (prodWholePrice != oldData.prodWholePrice) {
+      newChanges['prodWholePrice'] = oldData.prodWholePrice;
+      oldChanges['prodWholePrice'] = prodWholePrice;
+    }
+    if (prodRetailPrice != oldData.prodRetailPrice) {
+      newChanges['prodRetailPrice'] = oldData.prodRetailPrice;
+      oldChanges['prodRetailPrice'] = prodRetailPrice;
+    }
+    if (prodCostPrice != oldData.prodCostPrice) {
+      newChanges['prodCostPrice'] = oldData.prodCostPrice;
+      oldChanges['prodCostPrice'] = prodCostPrice;
+    }
+    if (prodMinPrice != oldData.prodMinPrice) {
+      newChanges['prodMinPrice'] = oldData.prodMinPrice;
+      oldChanges['prodMinPrice'] = prodMinPrice;
     }
     if (prodHasVat != oldData.prodHasVat) {
       newChanges['prodHasVat'] = oldData.prodHasVat;
@@ -50,6 +86,22 @@ class ProductModel {
     if (prodGroupCode != oldData.prodGroupCode) {
       newChanges['prodGroupCode'] = oldData.prodGroupCode;
       oldChanges['prodGroupCode'] = prodGroupCode;
+    }
+    if (prodType != oldData.prodType) {
+      newChanges['prodType'] = oldData.prodType;
+      oldChanges['prodType'] = prodType;
+    }
+    if (prodParentId != oldData.prodParentId) {
+      newChanges['prodParentId'] = oldData.prodParentId;
+      oldChanges['prodParentId'] = prodParentId;
+    }
+    if (prodIsParent != oldData.prodIsParent) {
+      newChanges['prodIsParent'] = oldData.prodIsParent;
+      oldChanges['prodIsParent'] = prodIsParent;
+    }
+    if (prodChild != oldData.prodChild) {
+    newChanges['prodChild'] = oldData.prodChild;
+    oldChanges['prodChild'] = prodChild;
     }
 
     return {
@@ -67,10 +119,18 @@ class ProductModel {
       'prodId': prodId,
       'prodName': prodName,
       'prodCode': prodCode,
-      'prodPrice': prodPrice,
+      'prodCustomerPrice': prodCustomerPrice,
+      'prodWholePrice': prodWholePrice,
+      'prodRetailPrice': prodRetailPrice,
+      'prodCostPrice': prodCostPrice,
+      'prodMinPrice': prodMinPrice,
       'prodHasVat': prodHasVat,
       'prodBarcode': prodBarcode,
       'prodGroupCode': prodGroupCode,
+      'prodType': prodType,
+      'prodParentId': prodParentId,
+      'prodIsParent': prodIsParent,
+      'prodChild': prodChild,
     };
   }
 
@@ -79,10 +139,19 @@ class ProductModel {
       'prodId': prodId,
       'prodName': prodName,
       'prodCode': prodCode,
-      'prodPrice': prodPrice,
+      'prodCustomerPrice': prodCustomerPrice,
+      'prodWholePrice': prodWholePrice,
+      'prodRetailPrice': prodRetailPrice,
+      'prodCostPrice': prodCostPrice,
+      'prodMinPrice': prodMinPrice,
       'prodHasVat': prodHasVat,
       'prodBarcode': prodBarcode,
       'prodGroupCode': prodGroupCode,
+      'prodType': prodType,
+      'prodParentId': prodParentId,
+      'prodIsParent': prodIsParent,
+      'prodChild': prodChild,
+      'prodRecord': prodRecord,
     };
   }
 }

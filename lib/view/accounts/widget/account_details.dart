@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/user_management.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';
@@ -33,76 +33,89 @@ class _AccountDetailsState extends State<AccountDetails> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(onPressed: (){
-          Get.to(AddAccount(modelKey:widget.modelKey));
-          }, child: Text("edit")),
-          if(controller.allAccounts[widget.modelKey]!.isEmpty)
-          ElevatedButton(onPressed: (){
-            checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
-              if(value) controller.deleteAccount(widget.modelKey,withLogger: true);
-            });
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            ElevatedButton(onPressed: (){
+            Get.to(AddAccount(modelKey:widget.modelKey));
+            }, child: Text("تعديل بطاقة الحساب")),
+            if(controller.allAccounts[widget.modelKey]!.isEmpty)
+            ElevatedButton(onPressed: (){
+              checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
+                if(value) controller.deleteAccount(widget.modelKey,withLogger: true);
+              });
 
-          }, child: Text("delete")),
-        ],
-        title: Text(widget.modelKey),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Directionality(
-              textDirection:TextDirection.rtl,
-              child: GetBuilder<AccountViewModel>(
-                builder: (controller) {
-                  return SfDataGrid(
-                    onCellTap: (DataGridCellTapDetails _ ){
-                      controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex-1].getCells().forEach((element) {
-                        if(element.columnName == Const.rowAccountId){
-                          var value = element.value;
-                          if(bondController.allBondsItem[value]?.bondType ==Const.bondTypeDaily){
-                            Get.to(()=>BondDetailsView(oldId: value,oldModelKey: widget.modelKey,));
-                          }
-                          else{
-                            Get.to(()=>CustomBondDetailsView(oldId: value,oldModelKey: widget.modelKey,isDebit: bondController.allBondsItem[value]?.bondType == Const.bondTypeDebit,));
-                          }
-                          }
-                      });
-                    },
-                    source: controller.recordDataSource,
-                    allowEditing: false,
-                    selectionMode: SelectionMode.none,
-                    editingGestureType: EditingGestureType.tap,
-                    navigationMode: GridNavigationMode.cell,
-                    columnWidthMode: ColumnWidthMode.fill,
-                    columns: <GridColumn>[
-                      GridColumnItem(label: "النوع",name: Const.rowAccountType),
-                      GridColumnItem(label: 'المجموع',name: Const.rowAccountTotal),
-                      GridColumnItem(label: ' الحساب بعد العملية',name: Const.rowAccountBalance),
-                      GridColumnItem(label: 'الرمز التسلسي للعملية',name: Const.rowAccountId),
-                    ],
-                  );
-                }
+            }, child: Text("حذف")),
+          ],
+          title: Text(controller.accountList[widget.modelKey]?.accName??"error"),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: Directionality(
+                textDirection:TextDirection.rtl,
+                child: GetBuilder<AccountViewModel>(
+                  builder: (controller) {
+                    return SfDataGrid(
+                      onCellTap: (DataGridCellTapDetails _ ){
+                        controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex-1].getCells().forEach((element) {
+                          if(element.columnName == Const.rowAccountId){
+                            var value = element.value;
+                            if(bondController.allBondsItem[value]?.bondType ==Const.bondTypeDaily){
+                              Get.to(()=>BondDetailsView(oldId: value,oldModelKey: widget.modelKey,));
+                            }
+                            else{
+                              Get.to(()=>CustomBondDetailsView(oldId: value,oldModelKey: widget.modelKey,isDebit: bondController.allBondsItem[value]?.bondType == Const.bondTypeDebit,));
+                            }
+                            }
+                        });
+                      },
+                      source: controller.recordDataSource,
+                      allowEditing: false,
+                      selectionMode: SelectionMode.none,
+                      editingGestureType: EditingGestureType.tap,
+                      navigationMode: GridNavigationMode.cell,
+                      columnWidthMode: ColumnWidthMode.fill,
+                      columns: <GridColumn>[
+                        GridColumnItem(label: "الحساب",name: Const.rowAccountName),
+                        GridColumnItem(label: "النوع",name: Const.rowAccountType),
+                        GridColumnItem(label: 'المجموع',name: Const.rowAccountTotal),
+                        GridColumnItem(label: ' الحساب بعد العملية',name: Const.rowAccountBalance),
+                        GridColumn(
+                            visible: false,
+                            allowEditing: false,
+                            columnName: Const.rowAccountId,
+                            label: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
+                                color: Colors.grey,
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'ID',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )),
+                        // GridColumnItem(label: 'الرمز التسلسي للعملية',name: Const.rowAccountId),
+                      ],
+                    );
+                  }
+                ),
               ),
             ),
-          ),
-          Center(child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if(controller.allAccounts[widget.modelKey]!.isNotEmpty)
-              GetBuilder<AccountViewModel>(
-                builder: (controller) {
-                  return controller.allAccounts[widget.modelKey]!.isNotEmpty ?Text(controller.allAccounts[widget.modelKey]?.last.balance.toString()??""):Text(" ");
-                }
-              )
-              else Text("0"),
-              SizedBox(width: 50,),
-              Text("الرصيد النهائي"),
-            ],
-          ),),
-          SizedBox(height: 50,),
-        ],
+            Center(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("الرصيد النهائي"),
+                SizedBox(width: 30,),
+                Text(controller.getBalance(widget.modelKey).toStringAsFixed(2))
+              ],
+            ),),
+            SizedBox(height: 50,),
+          ],
+        ),
       ),
     );
   }

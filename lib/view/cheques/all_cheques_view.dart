@@ -1,15 +1,8 @@
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
-
-import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/cheque_model.dart';
-
 import 'package:ba3_business_solutions/utils/logger.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -24,62 +17,62 @@ class AllCheques extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var controller = Get.find<ChequeViewModel>();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("الشيكات"),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                Get.to(() => AddCheque());
-              },
-              child: Text("Add New Cheque")),
-        ],
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("الشيكات")),
+        body: controller.allCheques.isEmpty
+            ? CircularProgressIndicator()
+            :
+            // String model = controller.allAccounts.keys.toList()[index];
+            // AccountModel accountModel=controller.accountListMyId[model]!;
+            StreamBuilder(
+                stream: FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return GetBuilder<ChequeViewModel>(builder: (controller) {
+                      controller.initChequeViewPage();
+                      return SfDataGrid(
+                        onCellTap: (DataGridCellTapDetails details) {
+                          if (details.rowColumnIndex.rowIndex != 0) {
+                            final rowIndex = details.rowColumnIndex.rowIndex - 1;
+                            var rowData = controller.recordViewDataSource[rowIndex];
+                            String model = rowData.getCells()[0].value;
+                            print('Tapped Row Data: $model');
+                            logger(
+                                newData: ChequeModel(
+                                  cheqId: model,
+                                ),
+                                transfersType: TransfersType.read);
+                            Get.to(() => AddCheque(modelKey: model));
+                          }
+                        },
+                        columns: <GridColumn>[
+                          GridColumn(
+                              visible: false,
+                              allowEditing: false,
+                              columnName:  Const.rowViewCheqId,
+                              label: const Text('ID'
+                              )),
+                          GridColumnItem(label: "حالة الشيك", name: Const.rowViewChequeStatus),
+                          GridColumnItem(label: 'دائن', name: Const.rowViewChequePrimeryAccount),
+                          GridColumnItem(label: 'مدين', name: Const.rowViewChequeSecoundryAccount),
+                          GridColumnItem(label: 'كامل المبلغ', name: Const.rowViewChequeAllAmount),
+                        ],
+                        source: controller.recordViewDataSource,
+                        allowEditing: false,
+                        selectionMode: SelectionMode.none,
+                        editingGestureType: EditingGestureType.tap,
+                        navigationMode: GridNavigationMode.cell,
+                        columnWidthMode: ColumnWidthMode.fill,
+                      );
+                    });
+                  }
+                }),
       ),
-      body: controller.allCheques.isEmpty
-          ? CircularProgressIndicator()
-          :
-          // String model = controller.allAccounts.keys.toList()[index];
-          // AccountModel accountModel=controller.accountListMyId[model]!;
-          StreamBuilder(
-              stream: FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else {
-                  return GetBuilder<ChequeViewModel>(builder: (controller) {
-                    controller.initChequeViewPage();
-                    return SfDataGrid(
-                      onCellTap: (DataGridCellTapDetails details) {
-                        if (details.rowColumnIndex.rowIndex != 0) {
-                          final rowIndex = details.rowColumnIndex.rowIndex - 1;
-                          var rowData = controller.recordViewDataSource[rowIndex];
-                          String model = rowData.getCells()[0].value;
-                          print('Tapped Row Data: $model');
-                          logger(
-                              newData: ChequeModel(
-                                cheqId: model,
-                              ),
-                              transfersType: TransfersType.read);
-                          Get.to(() => AddCheque(modelKey: model));
-                        }
-                      },
-                      columns: <GridColumn>[
-                        GridColumnItem(label: "الرمز التسلسلي", name: Const.rowViewCheqId),
-                        GridColumnItem(label: "حالة الشيك", name: Const.rowViewChequeStatus),
-                        GridColumnItem(label: 'دائن', name: Const.rowViewChequePrimeryAccount),
-                        GridColumnItem(label: 'مدين', name: Const.rowViewChequeSecoundryAccount),
-                        GridColumnItem(label: 'كامل المبلغ', name: Const.rowViewChequeAllAmount),
-                      ],
-                      source: controller.recordViewDataSource,
-                      allowEditing: false,
-                      selectionMode: SelectionMode.none,
-                      editingGestureType: EditingGestureType.tap,
-                      navigationMode: GridNavigationMode.cell,
-                      columnWidthMode: ColumnWidthMode.fill,
-                    );
-                  });
-                }
-              }),
     );
   }
 }

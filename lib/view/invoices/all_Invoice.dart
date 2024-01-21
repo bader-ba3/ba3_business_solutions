@@ -17,14 +17,18 @@ class AllInvoice extends StatelessWidget {
     return GetBuilder<InvoiceViewModel>(
         builder: (cont) => Scaffold(
               appBar: AppBar(
-                title: const Text("Invoices"),
+                title: const Text("جميع الفواتير"),
+                leading: SizedBox(),
                 actions: [
-                  ElevatedButton(
-                      onPressed: () {
-                        // Get.to(InvoiceView(billId: "1"));
-                        controller.viewPattern();
-                      },
-                      child: const Text("Create"))
+                  Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: BackButton()),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       // Get.to(InvoiceView(billId: "1"));
+                  //       // controller.viewPattern();
+                  //     },
+                  //     child: const Text("Create"))
                 ],
               ),
               body: controller.invoiceModel.isEmpty
@@ -52,14 +56,30 @@ class AllInvoice extends StatelessWidget {
                             ));
                       },
                       columns: <GridColumn>[
-                        GridColumnItem(
-                          label: "id",
-                          name: "Const.rowViewAccountId",
-                        ),
+                        GridColumn(
+                          visible: false,
+                            allowEditing: false,
+                            columnName: "Const.rowViewAccountId",
+                            label: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
+                                color: Colors.grey,
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'ID',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )),
+                        // GridColumnItem(
+                        //
+                        //   label: "id",
+                        //
+                        // ),
                         GridColumnItem(label: 'المدين', name: "Const.rowViewAccountId"),
                         GridColumnItem(label: 'الدائن', name: "Const.rowViewAccountName"),
                         GridColumnItem(label: 'قيمة الفاتورة', name: "Const.rowAccountBalance"),
-                        GridColumnItem(label: 'عدد المواد', name: "Const.rowViewAccountLength"),
+                      //  GridColumnItem(label: 'عدد المواد', name: "Const.rowViewAccountLength"),
                         GridColumnItem(label: 'نوع الفاتورة', name: "Const.rowViewAccountLength"),
                         GridColumnItem(label: 'رقم الفاتورة', name: "Const.rowViewAccountLength"),
                       ],

@@ -1,5 +1,3 @@
-import '../model/account_record_model.dart';
-
 enum RecordType { bond, invoice, product, account, pattern, undefined, store, cheque, costCenter, sellers, user,role }
 
 String generateId(RecordType type) {

@@ -1,14 +1,12 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
-import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/user_management/login_view.dart';
 import 'package:ba3_business_solutions/view/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -26,6 +24,7 @@ enum UserManagementStatus {
 class UserManagementViewModel extends GetxController {
   UserManagementViewModel() {
    getAllRole();
+   initAllUser();
   }
   Map<String,RoleModel>allRole={};
 
@@ -158,29 +157,28 @@ getMyUserRole() {
   return userManagementViewController.myUserModel?.userRole;
 }
 
-Future<bool> checkPermissionForOperation(role,page) async {
-  // role='roleUserRead';
+bool checkPermission(role,page){
   UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
   Map<String, List<String>>? userRole=userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
-  // print(userRole);
-  // print(userRole?[collection]);
-  // print(userRole?[collection]?.contains(role));
-  // print(userManagementViewController.myUserModel?.userRole);
-  // print(role);
-  // List order = [Const.roleUserRead, Const.roleUserWrite, Const.roleUserUpdate, Const.roleUserDelete, Const.roleUserAdmin];
+  if (userRole?[page]?.contains(role)??false) {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+Future<bool> checkPermissionForOperation(role,page) async {
+  UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
+  Map<String, List<String>>? userRole=userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[page]?.contains(role)??false) {
     print("same");
     return true;
   }
-  // else if (order.indexOf(userManagementViewController.myUserModel?.userRole) >= order.indexOf(role)) {
-  //   print("master");
-  //   return true;
-  // }
   else {
     print("you need to evelotion");
     var a = await Get.defaultDialog(
         barrierDismissible: false,
-        title: "Need permission",
+        title: "احتاج الاذن"+"\n"+"ل "+getRoleNameFromEnum(role.toString())+"\n"+"في "+getPageNameFromEnum(page.toString()),
         content: Pinput(
             keyboardType : TextInputType.number,
           defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
@@ -188,7 +186,7 @@ Future<bool> checkPermissionForOperation(role,page) async {
           onCompleted: (_) {
             FirebaseFirestore.instance.collection("users").where('userPin', isEqualTo: _).get().then((value) {
               if (value.docs.isEmpty) {
-                Get.snackbar("error", "notfound");
+                Get.snackbar("خطأ", "الحساب غير موجود");
               } else {
                 Map<String, List<String>>? newUserRole=userManagementViewController.allRole[value.docs.first.data()['userRole']]?.roles;
                 print(page);
@@ -196,11 +194,11 @@ Future<bool> checkPermissionForOperation(role,page) async {
                 print(role);
                 if (newUserRole?[page]?.contains(role)??false) {
                   Get.back(result: "ok");
-                  Get.snackbar("scss", "thanks");
+                  Get.snackbar("", "تمت المصادقة");
                   print("scss");
                 }
                 else {
-                  Get.snackbar("error", "This User not premtion to do this process");
+                  Get.snackbar("خطأ", "هذا الحساب غير مصرح له بالقيام بهذه العملية");
                   print("not permission to do this process");
                 }
               }

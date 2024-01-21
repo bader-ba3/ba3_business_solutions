@@ -11,34 +11,46 @@ class AllSellers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                Get.to(() => AddSeller());
-              },
-              child: Text("add New"))
-        ],
-      ),
-      body: GetBuilder<SellersViewModel>(builder: (controller) {
-        return controller.allSellers.isEmpty
-            ? CircularProgressIndicator()
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                    itemCount: controller.allSellers.values.length,
-                    itemBuilder: (context, index) {
-                      SellerModel model = controller.allSellers.values.toList()[index];
-                      return InkWell(
-                          onTap: () {
-                            Get.to(() => AllSellerInvoice(oldKey: model.sellerId));
-                            // Get.to(() => AddSeller(oldKey: model.sellerId));
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("جميع البائعون"),
+        ),
+        body: GetBuilder<SellersViewModel>(builder: (controller) {
+          return controller.allSellers.isEmpty
+              ? const CircularProgressIndicator()
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Wrap(
+                      children: List.generate(controller.allSellers.values.length, (index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: (){
+                            Get.to(() => AllSellerInvoice(oldKey: controller.allSellers.values.toList()[index].sellerId));
                           },
-                          child: Text(model.sellerName ?? "error"));
-                    }),
-              );
-      }),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.5),borderRadius: BorderRadius.circular(10)),
+                            height: 140,
+                            width: 140,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(controller.allSellers.values.toList()[index].sellerCode??"",style: const TextStyle(fontSize: 24),),
+                                Text(controller.allSellers.values.toList()[index].sellerName??"",style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )),
+                    ),
+                  ),
+                );
+        }),
+      ),
     );
   }
 }

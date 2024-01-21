@@ -1,9 +1,8 @@
-import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
-import 'package:ba3_business_solutions/view/user_management/account_management_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 // Map<String, String> roleMap = {
@@ -44,13 +43,13 @@ class _AddUserViewState extends State<AddUserView> {
     return GetBuilder<UserManagementViewModel>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(controller.initAddUserModel?.userId ?? "new user"),
+          title: Text(controller.initAddUserModel?.userName ?? "مستخدم جديد"),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("name"),
+              Text("اسم الحساب"),
               SizedBox(
                   height: 100,
                   width: 200,
@@ -63,11 +62,14 @@ class _AddUserViewState extends State<AddUserView> {
               SizedBox(
                 height: 75,
               ),
-              Text("pin"),
+              Text("كلمة السر"),
               SizedBox(
                   height: 100,
                   width: 200,
                   child: TextFormField(
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(6),
+                      ],
                     controller: pinController,
                     onChanged: (_) {
                       controller.initAddUserModel?.userPin = _;
@@ -76,7 +78,7 @@ class _AddUserViewState extends State<AddUserView> {
               SizedBox(
                 height: 75,
               ),
-              Text("role"),
+              Text("الصلاحيات"),
               // SizedBox(
               //     height: 40,
               //     width: 90,
@@ -102,7 +104,7 @@ class _AddUserViewState extends State<AddUserView> {
               SizedBox(
                 height: 75,
               ),
-              Text("seller"),
+              Text("البائع"),
               SizedBox(
                   height: 40,
                   width: 90,

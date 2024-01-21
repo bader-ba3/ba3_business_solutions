@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
@@ -11,7 +12,6 @@ import '../../../controller/invoice_view_model.dart';
 import '../../../controller/product_view_model.dart';
 import '../../../model/invoice_record_model.dart';
 import '../../../model/product_model.dart';
-import 'dart:math' as math;
 import 'package:math_expressions/math_expressions.dart';
 
 class InvoiceRecordSource extends DataGridSource {
@@ -25,7 +25,7 @@ class InvoiceRecordSource extends DataGridSource {
 
   List<InvoiceRecordModel> records;
   AccountModel? secAccountModel;
-
+  bool? isPatternHasVat;
   InvoiceRecordSource({required this.records, this.secAccountModel, required this.accountVat}) {
     buildDataGridRows(records, accountVat);
   } //getVatFromName(accountVat)
@@ -33,16 +33,15 @@ class InvoiceRecordSource extends DataGridSource {
   void buildDataGridRows(List<InvoiceRecordModel> records, accountVat) {
     this.accountVat = accountVat;
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
+    this.isPatternHasVat = isPatternHasVat;
     for (var i = 0; i < records.length; i++) {
       if (records[i].invRecSubTotal != null) {
-        print(records[i].invRecProduct);
         var prod = searchText(records[i].invRecProduct.toString()).first;
-        print(prod.prodName.toString() + "  " + prod.prodHasVat.toString());
         records[i].invRecVat = !isPatternHasVat
             ? 0.0
             : !(prod.prodHasVat!)
                 ? 0.0
-                : (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat)))! * getVatFromName(accountVat);
+                : (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat), i))! * getVatFromName(accountVat);
         // : double.parse(((records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat)))! * (getVatFromName(accountVat))).toStringAsFixed(2));
         records[i].invRecTotal = (records[i].invRecSubTotal ?? 0) * (records[i].invRecQuantity ?? 0);
       }
@@ -73,9 +72,9 @@ class InvoiceRecordSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    // if (newCellValue == null || oldValue == newCellValue) {
+    //   return;
+    // }
     double vat = getVatFromName(accountVat);
     // if (column.columnName == Const.rowInvId) {
     //   dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -86,37 +85,17 @@ class InvoiceRecordSource extends DataGridSource {
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
     if (column.columnName == Const.rowInvProduct) {
       List<ProductModel> result = searchText(newCellValue.toString());
+      if(newCellValue==null){
+        result= productController.productDataMap.values.toList();
+      }
       if (result.isEmpty) {
-        Get.snackbar("error", "not found");
+        Get.snackbar("خطأ", "غير موجود");
       } else if (result.length == 1) {
         var prod = result[0];
         choose_product(prod, vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
-
-        // print("----");
-        // print(searchLastPrice(prod.prodId!, vat));
-        // print((searchLastPrice(prod.prodId!, vat) * (vat)));
-        // print("----");
-        // dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: Const.rowInvProduct, value: prod.prodName);
-        // records[dataRowIndex].invRecProduct = prod.prodName.toString();
-        // records[dataRowIndex].invRecId = (dataRowIndex + 1).toString();
-        // records[dataRowIndex].invRecSubTotal = (searchLastPrice(prod.prodId!, vat) - (searchLastPrice(prod.prodId!, vat) * (prod.prodHasVat! ? (vat) : 1)));
-        // records[dataRowIndex].invRecVat = !isPatternHasVat
-        //     ? 0.0
-        //     : (prod.prodHasVat ?? false) //(total - (total * vat))
-        //         // ? double.parse((searchLastPrice(prod.prodId!, vat) - (searchLastPrice(prod.prodId!, vat) / (vat + 1))).toStringAsFixed(1))
-        //         ? (searchLastPrice(prod.prodId!, vat) * (vat))
-        //         : 0.0;
-        // records[dataRowIndex].invRecQuantity = 1;
-        // records[dataRowIndex].invRecTotal = (records[dataRowIndex].invRecSubTotal ?? 0) * (records[dataRowIndex].invRecQuantity ?? 0);
-        // if (int.parse(prod.prodAllQuantity ?? "0") < 0) {
-        //   Get.snackbar("Warning", "the qunatity in store is negative (only: ${result.first.prodAllQuantity} )");
-        // }
-        // globalController.onCellTap(rowColumnIndex);
-        // buildDataGridRows(records, accountVat);
-        // updateDataGridSource();
       } else {
         Get.defaultDialog(
-            title: "choose one",
+            title: "اختر احد المواد",
             content: SizedBox(
               height: 500,
               width: 500,
@@ -140,33 +119,19 @@ class InvoiceRecordSource extends DataGridSource {
                   child: const Text("back"))
             ]);
       }
-    } else if (column.columnName == Const.rowInvQuantity) {
-      // if (int.tryParse(newCellValue) != null) {
-      //   var product_name = dataGridRows[dataRowIndex].getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
-      //   if (product_name?.value == null) {
-      //     Get.snackbar("error", "plz fill name first");
-      //   } else {
-      //     List<ProductModel> result = searchText(product_name!.value);
-      //     if (int.parse(result.first.prodAllQuantity ?? "0") - int.parse(newCellValue) < 0) {
-      //       Get.snackbar("Warning", "the qunatity is higher than all quantity in store (only: ${result.first.prodAllQuantity} )");
-      //     }
-      //     dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<int>(columnName: Const.rowInvQuantity, value: int.parse(newCellValue));
-      //     records[dataRowIndex].invRecQuantity = int.parse(newCellValue);
-      //     records[dataRowIndex].invRecTotal = (records[dataRowIndex].invRecSubTotal ?? 0) * (records[dataRowIndex].invRecQuantity ?? 0);
-      //     buildDataGridRows(records);
-      //     updateDataGridSource();
-      //   }
-      // } else {
-      //   Get.snackbar("Error", "plz write a vailed number");
-      // }
+    }
+    if (newCellValue == null || oldValue == newCellValue) {
+      return;
+    }
+    if (column.columnName == Const.rowInvQuantity) {
       var product_name = dataGridRows[dataRowIndex].getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
       if (product_name?.value == null) {
-        Get.snackbar("error", "plz fill name first");
+        Get.snackbar("خطأ", "يجب إدخال المادة اولا");
       } else {
         List<ProductModel> result = searchText(product_name!.value);
         if (int.tryParse(newCellValue) != null) {
-          if (int.parse(result.first.prodAllQuantity ?? "0") - int.parse(newCellValue) < 0) {
-            Get.snackbar("Warning", "the qunatity is higher than all quantity in store (only: ${result.first.prodAllQuantity} )");
+          if (int.parse(result.first.prodAllQuantity ?? "0") - int.parse(newCellValue) < 0 && result.first.prodType == Const.productTypeStore) {
+            Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
           }
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<int>(columnName: Const.rowInvQuantity, value: int.parse(newCellValue));
           records[dataRowIndex].invRecQuantity = int.parse(newCellValue);
@@ -176,11 +141,11 @@ class InvoiceRecordSource extends DataGridSource {
             var finalExp = exp.evaluate(EvaluationType.REAL, ContextModel()).toInt();
             dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<int>(columnName: Const.rowInvQuantity, value: finalExp);
             records[dataRowIndex].invRecQuantity = finalExp;
-            if (int.parse(result.first.prodAllQuantity ?? "0") - finalExp < 0) {
-              Get.snackbar("Warning", "the qunatity is higher than all quantity in store (only: ${result.first.prodAllQuantity} )");
+            if (int.parse(result.first.prodAllQuantity ?? "0") - finalExp < 0 && result.first.prodType == Const.productTypeStore) {
+              Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
             }
           } catch (error) {
-            Get.snackbar("Error", "plz write a vailed number");
+            Get.snackbar("خطأ", "يرجى كتابة رقم");
           }
         }
         globalController.onCellTap(rowColumnIndex);
@@ -188,34 +153,45 @@ class InvoiceRecordSource extends DataGridSource {
         buildDataGridRows(records, accountVat);
         updateDataGridSource();
       }
-    } else if (column.columnName == Const.rowInvSubTotal) {
+    }
+    if (column.columnName == Const.rowInvSubTotal) {
       var product_name = dataGridRows[dataRowIndex].getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
       if (product_name?.value == null) {
-        Get.snackbar("error", "plz fill name first");
+        Get.snackbar("خطأ", "يجب إدخال المادة اولا");
       } else {
+        List<ProductModel> result = searchText(product_name!.value);
         if (double.tryParse(newCellValue) != null) {
-          records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(newCellValue) * vat);
-          dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvSubTotal, value: double.parse(newCellValue));
-          records[dataRowIndex].invRecSubTotal = double.parse(newCellValue);
+          if(double.tryParse(newCellValue)!>=double.parse(result.first.prodMinPrice??"0")/1.05) {
+            records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(newCellValue) * vat);
+            dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvSubTotal, value: double.parse(newCellValue));
+            records[dataRowIndex].invRecSubTotal = double.parse(newCellValue);
+          }else{
+            Get.snackbar("خطأ", "السعر المكتوب اقل من اقل سعر مسموح");
+          }
         } else {
           try {
             Expression exp = Parser().parse(newCellValue);
             var finalExp = exp.evaluate(EvaluationType.REAL, ContextModel()).toString();
-            print(finalExp);
+            if(double.tryParse(finalExp)!>=double.parse(result.first.prodMinPrice!)/1.05) {
             records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(finalExp) * vat);
             dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvSubTotal, value: double.parse(finalExp));
             records[dataRowIndex].invRecSubTotal = double.parse(finalExp);
+          }else{
+              Get.snackbar("خطأ", "السعر المكتوب اقل من اقل سعر مسموح");
+            }
           } catch (error) {
             print(error);
-            Get.snackbar("Error", "plz write a vailed number");
+            Get.snackbar("خطأ", "يرجى كتابة رقم");
           }
         }
         records[dataRowIndex].invRecTotal = (records[dataRowIndex].invRecSubTotal ?? 0) * (records[dataRowIndex].invRecQuantity ?? 0);
+        records[dataRowIndex].prodChoosePriceMethod=Const.invoiceChoosePriceMethodeCustom;
         globalController.onCellTap(rowColumnIndex);
         buildDataGridRows(records, accountVat);
         updateDataGridSource();
       }
-    } else if (column.columnName == Const.rowInvTotal) {
+    }
+    if (column.columnName == Const.rowInvTotal) {
       if (double.tryParse(newCellValue) != null) {
         dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvTotal, value: double.parse(newCellValue));
         records[dataRowIndex].invRecTotal = double.parse(newCellValue);
@@ -228,7 +204,7 @@ class InvoiceRecordSource extends DataGridSource {
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvTotal, value: double.parse(finalExp));
           records[dataRowIndex].invRecTotal = double.parse(finalExp);
         } catch (error) {
-          Get.snackbar("Error", "plz write a vailed number");
+          Get.snackbar("خطأ", "يرجى كتابة رقم");
         }
       }
       records[dataRowIndex].invRecSubTotal = (records[dataRowIndex].invRecTotal ?? 0) / (records[dataRowIndex].invRecQuantity ?? 1);
@@ -237,32 +213,23 @@ class InvoiceRecordSource extends DataGridSource {
       buildDataGridRows(records, accountVat);
       updateDataGridSource();
     }
-// double.parse((searchLastPrice(result[index].prodId!, vat) - (searchLastPrice(result[index].prodId!, vat) / (vat + 1))).toStringAsFixed(1))
-
-    // print(secAccountModel?.accId);
-    // print(secAccountModel?.accHasVat);
-    // if (!(secAccountModel!.accHasVat!)) {
-    //   records[dataRowIndex].invRecVat = 0;
-    //   buildDataGridRows(records);
-    //   updateDataGridSource();
-    // }
     globalController.update();
   }
 
   void choose_product(ProductModel result, double vat, int dataRowIndex, RowColumnIndex rowColumnIndex, bool isPatternHasVat) {
-    print(searchLastPrice(result.prodId!, vat));
+    print(searchLastPrice(result.prodId!, vat, dataRowIndex));
     dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: Const.rowInvProduct, value: result.toString());
     records[dataRowIndex].invRecProduct = result.prodName!.toString();
     records[dataRowIndex].invRecId = (dataRowIndex + 1).toString();
-    records[dataRowIndex].invRecSubTotal = (searchLastPrice(result.prodId!, vat) / (result.prodHasVat! ? (vat + 1) : 1));
+    records[dataRowIndex].invRecSubTotal = (searchLastPrice(result.prodId!, vat, dataRowIndex) / (result.prodHasVat! ? (vat + 1) : 1));
     records[dataRowIndex].invRecVat = !isPatternHasVat
         ? 0
         : (result.prodHasVat ?? false)
-            ? (searchLastPrice(result.prodId!, vat) - (searchLastPrice(result.prodId!, vat) / (vat + 1)))
+            ? (searchLastPrice(result.prodId!, vat, dataRowIndex) - (searchLastPrice(result.prodId!, vat, dataRowIndex) / (vat + 1)))
             : 0;
     records[dataRowIndex].invRecQuantity = 1;
-    if (int.parse(result.prodAllQuantity ?? "0") < 0) {
-      Get.snackbar("Warning", "the qunatity in store is negative (only: ${result.prodAllQuantity} )");
+    if (int.parse(result.prodAllQuantity ?? "0") < 0 && result.prodType == Const.productTypeStore) {
+      Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
     }
     globalController.onCellTap(rowColumnIndex);
     buildDataGridRows(records, accountVat);
@@ -272,13 +239,15 @@ class InvoiceRecordSource extends DataGridSource {
 
   @override
   Widget? buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    final String displayText = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value?.toString() ?? '';
+    String displayText = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value?.toString() ?? '';
 
     newCellValue = null;
 
     final bool isNumericType = column.columnName == 'subTotal' || column.columnName == 'total';
     final bool isIntType = column.columnName == 'quantity';
-
+    if(double.tryParse(displayText)!=null){
+      displayText= double.parse(displayText).toStringAsFixed(2);
+    }
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
@@ -336,8 +305,23 @@ class InvoiceRecordSource extends DataGridSource {
         onSecondaryTapDown: (_) {
           var productName = row.getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
           if (productName?.value != null) {
-            var prodId = productController.productDataMap.values.firstWhere((element) => element.prodName == productName?.value).prodId;
-            showContextMenu(_.globalPosition, prodId);
+            var prodItem = productController.productDataMap.values.firstWhere((element) => element.prodName == productName?.value);
+            if (dataGridCell.columnName == Const.rowInvProduct) {
+              showContextMenuProductName(_.globalPosition, prodItem.prodId, effectiveRows.indexOf(row));
+            } else if (dataGridCell.columnName == Const.rowInvSubTotal) {
+              showContextMenuSubTotal(_.globalPosition, prodItem, effectiveRows.indexOf(row), isPatternHasVat!);
+            }
+          }
+        },
+        onLongPressStart: (_) {
+          var productName = row.getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
+          if (productName?.value != null) {
+            var prodItem = productController.productDataMap.values.firstWhere((element) => element.prodName == productName?.value);
+            if (dataGridCell.columnName == Const.rowInvProduct) {
+              showContextMenuProductName(_.globalPosition, prodItem.prodId, effectiveRows.indexOf(row));
+            } else if (dataGridCell.columnName == Const.rowInvSubTotal) {
+              showContextMenuSubTotal(_.globalPosition, prodItem, effectiveRows.indexOf(row), isPatternHasVat!);
+            }
           }
         },
         child: Container(
@@ -369,7 +353,6 @@ class InvoiceRecordSource extends DataGridSource {
         total += quantity * (subtotals + record.invRecVat!);
       }
     }
-    print("WE HOPE IT WILL WORK " + total.toString());
     return total;
   }
 
@@ -377,7 +360,6 @@ class InvoiceRecordSource extends DataGridSource {
   late List<ProductModel> selectedProducts = [];
 
   List<ProductModel> searchText(String query) {
-    ProductViewModel productController = Get.find<ProductViewModel>();
     products = productController.productDataMap.values.toList().where((item) {
       var prodName = item.prodName.toString().toLowerCase().contains(query.toLowerCase());
       var prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
@@ -386,24 +368,78 @@ class InvoiceRecordSource extends DataGridSource {
     return products.toList();
   }
 
-  double searchLastPrice(String prodId, vat) {
+  double searchLastPrice(String prodId, vat, index) {
     double price = 0.0;
-    ProductViewModel productController = Get.find<ProductViewModel>();
-    if (productController.productRecordMap[prodId]!.lastOrNull != null) {
-      ProductRecordModel product = productController.productRecordMap[prodId]!.last;
-      price = double.parse(product.prodRecSubTotal!) + double.parse(product.prodRecSubVat!);
-      print(price);
+    if (records[index].prodChoosePriceMethod == null) {
+      records[index].prodChoosePriceMethod = Const.invoiceChoosePriceMethodeCustomerPrice;
+    }
+    price = getPrice(records[index].prodChoosePriceMethod, prodId);
+    return price;
+  }
+
+  double getPrice(type, prodId) {
+    double price = 0;
+    ProductModel product = productController.productDataMap[prodId]!;
+    if (type == Const.invoiceChoosePriceMethodeCustomerPrice) {
+      price = double.parse(product.prodCustomerPrice??"0");
+    }
+    if (type == Const.invoiceChoosePriceMethodeWholePrice) {
+      price = double.parse(product.prodWholePrice??"0");
+    }
+    if (type == Const.invoiceChoosePriceMethodeRetailPrice) {
+      price = double.parse(product.prodRetailPrice??"0");
+    }
+    if (type == Const.invoiceChoosePriceMethodeMinPrice) {
+      price = double.parse(product.prodMinPrice??"0");
+    }
+    if (type == Const.invoiceChoosePriceMethodeCostPrice) {
+      price = double.parse(product.prodCostPrice??"0");
+    } else if (type == Const.invoiceChoosePriceMethodeLastPrice) {
+      List<ProductRecordModel>? last_price_product = productController.productDataMap[prodId]?.prodRecord;
+      if(last_price_product!.isNotEmpty){
+        price = double.parse(last_price_product.last.prodRecSubTotal!) + double.parse(last_price_product.last.prodRecSubVat!);
+      }
+    } else if (type == Const.invoiceChoosePriceMethodeHigher) {
+      List<ProductRecordModel>? higherProducts = productController.productDataMap[prodId]?.prodRecord;
+      if (higherProducts != null && higherProducts.isNotEmpty) {
+        for (var element in higherProducts) {
+          if ((double.parse(element.prodRecSubTotal!) + double.parse(element.prodRecSubVat!)) > price) {
+            price = double.parse(element.prodRecSubTotal!) + double.parse(element.prodRecSubVat!);
+          }
+        }
+      }
+    } else if (type == Const.invoiceChoosePriceMethodeLower) {
+      List<ProductRecordModel>? lowerProducts = productController.productDataMap[prodId]?.prodRecord;
+      if (lowerProducts != null && lowerProducts.isNotEmpty) {
+        price = double.parse(lowerProducts.first.prodRecSubTotal!) + double.parse(lowerProducts.first.prodRecSubVat!);
+        for (var element in lowerProducts) {
+          if ((double.parse(element.prodRecSubTotal!) + double.parse(element.prodRecSubVat!)) < price) {
+            price = double.parse(element.prodRecSubTotal!) + double.parse(element.prodRecSubVat!);
+          }
+        }
+      }
+    } else if (type == Const.invoiceChoosePriceMethodeAveragePrice) {
+      List<ProductRecordModel>? averageProducts = productController.productDataMap[prodId]?.prodRecord;
+      if (averageProducts != null && averageProducts.isNotEmpty) {
+        double allPrice = 0;
+        for (var element in averageProducts) {
+          price = double.parse(element.prodRecSubTotal!) + double.parse(element.prodRecSubVat!);
+          allPrice += price;
+        }
+        // print(allPrice);
+        // print(averageProducts.length);
+        price = allPrice / averageProducts.length;
+      }
     }
     return price;
   }
 
   @override
   Future<bool> canSubmitCell(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
-    // Return false, to retain in edit mode.
-    return true; // or super.canSubmitCell(dataGridRow, rowColumnIndex, column);
+    return true;
   }
 
-  void showContextMenu(Offset tapPosition, productId) {
+  void showContextMenuProductName(Offset tapPosition, productId, int index) {
     //final RenderBox overlay = Overlay.of(Get.context!)!.context.findRenderObject() as RenderBox;
     showMenu(
       context: Get.context!,
@@ -421,6 +457,16 @@ class InvoiceRecordSource extends DataGridSource {
           ),
           value: 'product',
         ),
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(
+              Icons.close,
+              color: Colors.red,
+            ),
+            title: Text('حذف المادة'),
+          ),
+          value: 'delete',
+        ),
       ],
     ).then((value) {
       if (value == 'product') {
@@ -428,6 +474,81 @@ class InvoiceRecordSource extends DataGridSource {
           oldKey: productId,
         ));
       }
+      if (value == 'delete') {
+        globalController.deleteOneRecord(index);
+      }
     });
+  }
+
+  void showContextMenuSubTotal(Offset tapPosition, ProductModel productModel, int index, bool isPatternHasVat) {
+    showMenu(
+      // 457
+      context: Get.context!,
+      position: RelativeRect.fromLTRB(
+        tapPosition.dx,
+        tapPosition.dy,
+        tapPosition.dx + 1.0,
+        tapPosition.dy + 1.0,
+      ),
+      items: [
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر المستهلك', Const.invoiceChoosePriceMethodeCustomerPrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الجملة', Const.invoiceChoosePriceMethodeWholePrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر المفرق', Const.invoiceChoosePriceMethodeRetailPrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'اقل سعر مسموح', Const.invoiceChoosePriceMethodeMinPrice),
+        if(checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر التكلفة', Const.invoiceChoosePriceMethodeCostPrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الوسطي', Const.invoiceChoosePriceMethodeAveragePrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'اخر سعر', Const.invoiceChoosePriceMethodeLastPrice),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الاعلى', Const.invoiceChoosePriceMethodeHigher),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الاقل', Const.invoiceChoosePriceMethodeLower),
+        PopupMenuItem(
+          height:2,
+          enabled: false,
+          child: Container(height: 2,color: Colors.grey.shade300,),),
+        PopupMenuItem(
+          enabled: false,
+          child: ListTile(
+            title: Text(
+             "الربح"+": "+((records[index].invRecSubTotal!+records[index].invRecVat!)-double.parse(productModel.prodCostPrice??"0")!).toStringAsFixed(2),
+              textDirection: TextDirection.rtl,
+            ),
+          ),
+        ),
+        PopupMenuItem(
+          enabled: false,
+          child: ListTile(
+            title: Text(
+              "نسبة الربح"+": "+((records[index].invRecSubTotal!+records[index].invRecVat!-double.parse(productModel.prodCostPrice??"0"))/double.parse(productModel.prodCostPrice??"0")*100!).toStringAsFixed(2)+"%",
+              textDirection: TextDirection.rtl,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  PopupMenuItem showContextMenuItem(index, productModel, isPatternHasVat, text, method) {
+    return PopupMenuItem(
+      onTap: () {
+        records[index].prodChoosePriceMethod = method;
+        records[index].invRecSubTotal = (searchLastPrice(productModel.prodId!, 0, index) / (productModel.prodHasVat! ? (0.05 + 1) : 1));
+        records[index].invRecVat = !isPatternHasVat
+            ? 0
+            : (productModel.prodHasVat ?? false)
+                ? (searchLastPrice(productModel.prodId!, 0, index) - (searchLastPrice(productModel.prodId!, 0, index) / (0.05 + 1)))
+                : 0;
+        buildDataGridRows(records, accountVat);
+        updateDataGridSource();
+        globalController.update();
+      },
+      enabled: true,
+      child: ListTile(
+        leading: records[index].prodChoosePriceMethod == method ? Icon(Icons.check) : null,
+        title: Text(
+          text + ": " + getPrice(method, productModel.prodId).toStringAsFixed(2),
+          textDirection: TextDirection.rtl,
+        ),
+      ),
+    );
   }
 }

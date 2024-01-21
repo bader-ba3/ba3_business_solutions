@@ -1,42 +1,43 @@
 import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/model/seller_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_view_data_grid_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'dart:math';
+import 'user_management_model.dart';
 
 class SellersViewModel extends GetxController {
   late DataGridController dataViewGridController;
   late AllSellerInvoiceViewDataGridSource recordViewDataSource;
   Map<String, SellerModel> allSellers = {};
   SellersViewModel() {
-    getallSeller();
+    getAllSeller();
   }
 
-  void getallSeller() {
-    FirebaseFirestore.instance.collection(Const.sellersCollection).snapshots().listen((event) {
+  void getAllSeller() {
+    FirebaseFirestore.instance.collection("Sellers").snapshots().listen((event) {
       allSellers.clear();
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         FirebaseFirestore.instance.collection(Const.sellersCollection).doc(element.id).collection(Const.recordCollection).snapshots().listen((event) {
           List<SellerRecModel> _ = event.docs.map((e) => SellerRecModel.fromJson(e.data())).toList();
           allSellers[element.id] = SellerModel.fromJson(element.data(), element.id, _);
+          initChart();
         });
-      });
+      }
       update();
     });
   }
 
-  addseller(SellerModel model) {
+  addSeller(SellerModel model) {
     var id = generateId(RecordType.sellers);
     model.sellerId ??= id;
     FirebaseFirestore.instance.collection(Const.sellersCollection).doc(model.sellerId).set(model.toJson());
   }
 
-  deleteseller(SellerModel model) {
+  deleteSeller(SellerModel model) {
     FirebaseFirestore.instance.collection(Const.sellersCollection).doc(model.sellerId).delete();
   }
 
@@ -60,10 +61,59 @@ class SellersViewModel extends GetxController {
     var startDate = DateTime.parse(list[0].toString().split(" ")[0]);
     var endDate = DateTime.parse(list[1].toString().split(" ")[0]);
     var _ = allSellers[key]?.sellerRecord?.where((e) => DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch <= endDate.millisecondsSinceEpoch && DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch >= startDate.millisecondsSinceEpoch).toList();
-    print(_?.map((e) => e.toJson()));
     dataViewGridController = DataGridController();
     recordViewDataSource = AllSellerInvoiceViewDataGridSource(sellerRecModel: _!);
     update();
+  }
+
+  Map<String,Map<String,double>>userMoney={};
+  Map<String,Color>colorMap={};
+  double high =0;
+  initChart(){
+    userMoney.clear();
+    colorMap.clear();
+    high=0;
+    allSellers[getMyUserSellerId()]?.sellerRecord?.forEach((element) {
+      var month=element.selleRecInvDate!.split("-")[1];
+      var day=element.selleRecInvDate!.split("-")[2];
+      if(userMoney[month]==null){
+        userMoney[month]={};
+      }
+      userMoney[month]?[day]=(userMoney[month]?[day]??0)+double.parse(element.selleRecAmount!);
+      if(high<(userMoney[month]?[day]??0)){
+        high=(userMoney[month]?[day]??0);
+      }
+    });
+
+    // userMoney=sortNestedMaps(userMoney);
+
+    userMoney=sortNestedMaps(userMoney);
+    userMoney.forEach((key, value) {
+      colorMap[key]=getRandomColor();
+    });
+    update();
+  }
+  Color getRandomColor() {
+    Random random = Random();
+
+    // Generate random values for the RGB components
+    int red = random.nextInt(256);
+    int green = random.nextInt(256);
+    int blue = random.nextInt(256);
+    Color randomColor = Color.fromARGB(255, red, green, blue);
+
+    return randomColor;
+  }
+  Map<String, Map<String, double>> sortNestedMaps(Map<String, Map<String, double>> data) {
+    Map<String, Map<String, double>> sortedData = Map.fromEntries(data.entries.toList());
+
+    sortedData.forEach((key, innerMap) {
+      var sortedInnerMap = Map.fromEntries(innerMap.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key)));
+      sortedData[key] = sortedInnerMap;
+    });
+
+    return sortedData;
   }
 }
 
@@ -122,11 +172,12 @@ String getSellerIdFromText(text) {
   }
 }
 
-String getSellerNameFromid(id) {
+String getSellerNameFromId(id) {
   if (id != null && id != " " && id != "") {
     print(id);
     return Get.find<SellersViewModel>().allSellers[id]!.sellerName!;
   } else {
     return "";
   }
+
 }

@@ -1,18 +1,7 @@
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-
-import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
-
-import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
-import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -30,86 +19,98 @@ class AllSellerInvoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<SellersViewModel>();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(oldKey ?? "new"),
-        actions: [
-          Text("Filter"),
-          SizedBox(
-            width: 20,
-          ),
-          DateRangePicker(
-            onSubmit: (_) {
-              dateRange = _;
-              controller.filter(_, oldKey);
-            },
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                dateRange = null;
-                controller.initSellerPage(oldKey);
-                controller.update();
+    SellersViewModel controller = Get.find<SellersViewModel>();
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("سجل مبيعات: " +(controller.allSellers[oldKey]?.sellerName??"")),
+          actions: [
+            Text("فلتر"),
+            SizedBox(
+              width: 20,
+            ),
+            DateRangePicker(
+              onSubmit: (_) {
+                dateRange = _;
+                controller.filter(_, oldKey);
               },
-              child: Text("Clear")),
-          SizedBox(
-            width: 20,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                Get.to(() => AddSeller(
-                      oldKey: oldKey,
-                    ));
-              },
-              child: Text("edit")),
-        ],
+            ),
+            SizedBox(
+              width: 60,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  dateRange = null;
+                  controller.initSellerPage(oldKey);
+                  controller.update();
+                },
+                child: Text("افراغ الفلتر")),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Get.to(() => AddSeller(
+                        oldKey: oldKey,
+                      ));
+                },
+                child: Text("تعديل")),
+            SizedBox(
+              width: 20,
+            ),
+          ],
+        ),
+        body: controller.allSellers.isEmpty
+            ? CircularProgressIndicator()
+            :
+            // String model = controller.allAccounts.keys.toList()[index];
+            // AccountModel accountModel=controller.accountListMyId[model]!;
+            StreamBuilder(
+                stream: FirebaseFirestore.instance.collection(Const.sellersCollection).doc(oldKey).collection(Const.recordCollection).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    return GetBuilder<SellersViewModel>(builder: (controller) {
+                      if (dateRange == null) controller.initSellerPage(oldKey);
+                      return SfDataGrid(
+                        onCellTap: (DataGridCellTapDetails details) {
+                          if (details.rowColumnIndex.rowIndex != 0) {
+                            final rowIndex = details.rowColumnIndex.rowIndex - 1;
+                            var rowData = controller.recordViewDataSource[rowIndex];
+                            String model = rowData.getCells()[0].value;
+                            print('Tapped Row Data: $model');
+                            seeDetails(model);
+                            // logger(
+                            //     newData: ChequeModel(
+                            //       cheqId: model,
+                            //     ),
+                            //     transfersType: TransfersType.read);
+                          }
+                        },
+                        columns: <GridColumn>[
+                          GridColumn(
+                              visible: false,
+                              allowEditing: false,
+                              columnName:   Const.rowSellerAllInvoiceInvId,
+                              label: const Text('ID'
+                              )),
+                         // GridColumnItem(label: "الرمز التسلسلي", name: Const.rowSellerAllInvoiceInvId),
+                          GridColumnItem(label: "قيمة الفاتورة", name: Const.rowSellerAllInvoiceAmount),
+                          GridColumnItem(label: "تاريخ الفاتورة", name: Const.rowSellerAllInvoiceAmount),
+                        ],
+                        source: controller.recordViewDataSource,
+                        allowEditing: false,
+                        selectionMode: SelectionMode.none,
+                        editingGestureType: EditingGestureType.tap,
+                        navigationMode: GridNavigationMode.cell,
+                        columnWidthMode: ColumnWidthMode.fill,
+                      );
+                    });
+                  }
+                }),
       ),
-      body: controller.allSellers.isEmpty
-          ? CircularProgressIndicator()
-          :
-          // String model = controller.allAccounts.keys.toList()[index];
-          // AccountModel accountModel=controller.accountListMyId[model]!;
-          StreamBuilder(
-              stream: FirebaseFirestore.instance.collection(Const.sellersCollection).doc(oldKey).collection(Const.recordCollection).snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else {
-                  return GetBuilder<SellersViewModel>(builder: (controller) {
-                    if (dateRange == null) controller.initSellerPage(oldKey);
-                    return SfDataGrid(
-                      onCellTap: (DataGridCellTapDetails details) {
-                        if (details.rowColumnIndex.rowIndex != 0) {
-                          final rowIndex = details.rowColumnIndex.rowIndex - 1;
-                          var rowData = controller.recordViewDataSource[rowIndex];
-                          String model = rowData.getCells()[0].value;
-                          print('Tapped Row Data: $model');
-                          seeDetails(model);
-                          // logger(
-                          //     newData: ChequeModel(
-                          //       cheqId: model,
-                          //     ),
-                          //     transfersType: TransfersType.read);
-                        }
-                      },
-                      columns: <GridColumn>[
-                        GridColumnItem(label: "الرمز التسلسلي", name: Const.rowSellerAllInvoiceInvId),
-                        GridColumnItem(label: "قيمة الفاتورة", name: Const.rowSellerAllInvoiceAmount),
-                        GridColumnItem(label: "تاريخ الفاتورة", name: Const.rowSellerAllInvoiceAmount),
-                      ],
-                      source: controller.recordViewDataSource,
-                      allowEditing: false,
-                      selectionMode: SelectionMode.none,
-                      editingGestureType: EditingGestureType.tap,
-                      navigationMode: GridNavigationMode.cell,
-                      columnWidthMode: ColumnWidthMode.fill,
-                    );
-                  });
-                }
-              }),
     );
   }
 }

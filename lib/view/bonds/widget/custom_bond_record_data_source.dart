@@ -251,7 +251,8 @@ class CustomBondRecordDataSource extends DataGridSource {
     products = accountController.accountList.values.toList().where((item) {
       var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
       var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
-      return name || code;
+      var type = item.accType==Const.accountTypeDefault;
+      return type&&(name || code);
     }).toList();
     return products.map((e) => e.accName!).toList();
   }

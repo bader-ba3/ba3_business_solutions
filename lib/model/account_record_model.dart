@@ -2,7 +2,7 @@ import 'package:ba3_business_solutions/utils/generate_id.dart';
 
 class AccountRecordModel {
   String? id, total, account;
-  int? balance;
+  double? balance;
   late RecordType type;
   AccountRecordModel.fromJson(json) {
     id = json['id'];

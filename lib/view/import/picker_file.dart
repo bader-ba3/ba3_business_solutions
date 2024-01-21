@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../controller/user_management.dart';
+import '../../controller/user_management_model.dart';
 
 class FilePickerWidget extends StatelessWidget {
 
@@ -23,7 +23,6 @@ class FilePickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade700,
    appBar: AppBar(),
       body: Center(
         child: Column(

@@ -1,10 +1,12 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../model/account_model.dart';
+import '../../cheques/all_cheques_view.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
 class AddAccount extends StatefulWidget {
@@ -48,6 +50,7 @@ class _AddAccountState extends State<AddAccount> {
       accVat = accountModel.accVat ?? "GCC";
       accParentId = accountModel.accParentId ;
       accIsRoot=accountModel.accParentId==null;
+      accountModel.accAggregateList=accountModel.accAggregateList.map((e) => getAccountNameFromId(e)).toList();
       // idController.text = accountModel.accCode??"23232332";
     } else {
       accVat = "GCC";
@@ -56,210 +59,271 @@ class _AddAccountState extends State<AddAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Account"),
-        actions: [
-          Container(
-            width: Get.width * 0.3,
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("بطاقة حساب"),
+          actions: [
+            Container(
+              width: Get.width * 0.3,
+              margin: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  const Flexible(flex: 3, child: Text("رمز الحساب")),
+                  Flexible(flex: 3, child: customTextFieldWithoutIcon(codeController, true)),
+                ],
+              ),
+            )
+          ],
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Flexible(flex: 3, child: Text("Account NO :")),
-                Flexible(flex: 3, child: customTextFieldWithoutIcon(codeController, true)),
-              ],
-            ),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Flexible(flex: 2, child: Text("Account Name :")),
-                        Flexible(flex: 3, child: customTextFieldWithoutIcon(nameController, true)),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Flexible(flex: 2, child: Text("Account Type :")),
-                        Flexible(
-                            flex: 3,
-                            child: StatefulBuilder(builder: (context, setstae) {
-                              return DropdownButton(
-                                value: accountType,
-                                items: Const.accountTypeList
-                                    .map((e) => DropdownMenuItem(
-                                          child: Text(getAccountTypefromEnum(e)),
-                                          value: e,
-                                        ))
-                                    .toList(),
-                                onChanged: (value) {
-                                  setstae(() {
-                                    accountType = value;
-                                  });
-                                },
-                              );
-                            })),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Flexible(flex: 1, child: Text("Notes:")),
-                  Flexible(flex: 3, child: customTextFieldWithoutIcon(notesController, true)),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
+                Row(
+                  children: [
+                    Flexible(
                       flex: 1,
-                      child:
-                          //  customTextFieldWithoutIcon(accVatController, true)
-                          StatefulBuilder(builder: (context, setstate) {
-                        return DropdownButton(
-                          value: accVat,
-                          items: [
-                            DropdownMenuItem<String>(
-                              child: Text("ضريبة القيمة المضافة في دول الخليج"),
-                              value: "GCC",
-                            ),
-                            DropdownMenuItem(
-                              child: Text("a"),
-                              value: "a",
-                            ),
-                          ],
-                          onChanged: (_) {
-                            setstate(() {
-                              accVat = _.toString();
-                            });
-                          },
-                        );
-                      })),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Flexible(flex: 2, child: Text("الحساب يخضع للضريبة")),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Flexible(flex: 2, child: Text("اسم الحساب :")),
+                          Flexible(flex: 3, child: customTextFieldWithoutIcon(nameController, true)),
+                        ],
+                      ),
+                    ),
+                    Flexible(
                       flex: 1,
-                      child:
-                      //  customTextFieldWithoutIcon(accVatController, true)
-                      StatefulBuilder(builder: (context, setstate) {
-                        return Container(
-                          width: double.infinity,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: Checkbox(
-                                      value: accIsRoot,
-                                      onChanged: (_) {
-                                        setstate(() {
-                                          accIsRoot = _!;
-                                          accParentId=null;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 30,
-                                  ),
-                                   Text("is root"),
-                                ],
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Flexible(
-                                      flex: 1,
-                                      child:
-                                      //  customTextFieldWithoutIcon(accVatController, true)
-                                         IgnorePointer(
-                                           ignoring: accIsRoot,
-                                           child: Container(
-                                             color: accIsRoot?Colors.grey.shade700:Colors.transparent,
-                                             child: DropdownButton(
-                                              value: accParentId,
-                                              items: accountController.accountList.keys.toList().map((e) => DropdownMenuItem(value: e,child: Text(accountController.accountList[e]!.accName!))).toList(),
-                                              onChanged: (_) {
-                                                setstate(() {
-                                                  accParentId = _.toString();
-                                                });
-                                              },
-                                        ),
-                                           ),
-                                         )),
-                                  SizedBox(
-                                    width: 30,
-                                  ),
-                                  Flexible(flex: 2, child: Text("الحساب الاب")),
-                                ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Flexible(flex: 2, child: Text("نوع الحساب :")),
+                          Flexible(
+                              flex: 3,
+                              child: StatefulBuilder(builder: (context, setstae) {
+                                return DropdownButton(
+                                  value: accountType,
+                                  items: Const.accountTypeList
+                                      .map((e) => DropdownMenuItem(
+                                            child: Text(getAccountTypefromEnum(e)),
+                                            value: e,
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+
+                                    });
+                                    setstae(() {
+                                      accountType = value;
+                                    });
+                                  },
+                                );
+                              })),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Flexible(flex: 1, child: Text("ملاحظات:")),
+                    Flexible(flex: 3, child: customTextFieldWithoutIcon(notesController, true)),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(flex: 2, child: Text("الحساب يخضع للضريبة")),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Flexible(
+                        flex: 1,
+                        child:
+                            //  customTextFieldWithoutIcon(accVatController, true)
+                            StatefulBuilder(builder: (context, setstate) {
+                          return DropdownButton(
+                            value: accVat,
+                            items: [
+                              DropdownMenuItem<String>(
+                                child: Text("ضريبة القيمة المضافة في دول الخليج"),
+                                value: "GCC",
                               ),
                             ],
-                          ),
-                        );
-                      })),
+                            onChanged: (_) {
+                              setstate(() {
+                                accVat = _.toString();
+                              });
+                            },
+                          );
+                        })),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(flex: 2, child: Text("حساب اب")),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Flexible(
+                      child: StatefulBuilder(builder: (context, setstate) {
+                          return SizedBox(
+                            width: 30,
+                            height: 100,
+                            child: Checkbox(
+                              value: accIsRoot,
+                              onChanged: (_) {
+                                setstate(() {
+                                  accIsRoot = _!;
+                                  accParentId=null;
+                                });
+                              },
+                            ),
+                          );
+                        }
+                      ),
+                    ),
+                  ],
+                ),
+                Flexible(
+                    flex: 1,
+                    child:
+                    //  customTextFieldWithoutIcon(accVatController, true)
+                    StatefulBuilder(builder: (context, setstate) {
+                      return Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(flex: 2, child: Text("الحساب الاب")),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Flexible(
+                                    flex: 1,
+                                    child:
+                                    //  customTextFieldWithoutIcon(accVatController, true)
+                                    IgnorePointer(
+                                      ignoring: accIsRoot,
+                                      child: Container(
+                                        color: accIsRoot?Colors.grey.shade700:Colors.transparent,
+                                        child: DropdownButton(
+                                          value: accParentId,
+                                          items: accountController.accountList.keys.toList().map((e) => DropdownMenuItem(value: e,child: Text(accountController.accountList[e]!.accName!))).toList(),
+                                          onChanged: (_) {
+                                            setstate(() {
+                                              accParentId = _.toString();
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    })),
+                SizedBox(height: 40,),
+                if(accountType==Const.accountTypeAggregateAccount)
+                Flexible(
+                  flex: 5,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Text("حسابات المربطة"),
+                        SizedBox(height: 5,),
+                        for(var element in accountModel.accAggregateList)
+                          Container(
+                              width: 300,height: 40,
+                              decoration: BoxDecoration(border: Border.all()),
+                              child: Center(child: Text(element))),
+                        Container(
+                            width: 300,height: 40,
+                            decoration: BoxDecoration(border: Border.all()),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                onFieldSubmitted: (_) async {
+                                  List<String> result = searchText(_.toString());
+                                  if (result.isEmpty) {
+                                    Get.snackbar("error", "not found");
+                                  } else if (result.length == 1) {
+                                    var name = result[0];
+                                    accountModel.accAggregateList.add(name);
+                                    setState(() {});
+                                  } else {
+                                    await Get.defaultDialog(
+                                        title: "choose one",
+                                        content: SizedBox(
+                                          height: 500,
+                                          width: 500,
+                                          child: ListView.builder(
+                                              itemCount: result.length,
+                                              itemBuilder: (_, index) {
+                                                return InkWell(
+                                                  onTap: () {
+                                                    accountModel.accAggregateList.add(result[index]);
+                                                    setState(() {});
+                                                    Get.back();
+                                                  },
+                                                  child: Text(result[index]),
+                                                );
+                                              }),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              child: Text("back"))
+                                        ]);
+                                  }
+                                },
+                              ),
+                            )),
+                        SizedBox(height: 40,),
+                      ],
+                    ),
+                  ),
+                ),
+                GetBuilder<AccountViewModel>(builder: (accountController) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,accParentId,accIsRoot);
+                        if (isNew) {
+                          checkPermissionForOperation(Const.roleUserWrite,Const.roleViewAccount).then((value) {
+                            if(value)accountController.addNewAccount(accountModel, withLogger: true);
+                          });
+                        } else {
+                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
+                            if(value)accountController.updateAccount(accountModel, withLogger: true);
+                          });
 
-                ],
-              ),
-
-              SizedBox(height: 40,),
-              GetBuilder<AccountViewModel>(builder: (accountController) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,accParentId,accIsRoot);
-                      if (isNew) {
-                        checkPermissionForOperation(Const.roleUserWrite,Const.roleViewAccount).then((value) {
-                          if(value)accountController.addNewAccount(accountModel, withLogger: true);
-                        });
-                      } else {
-                        checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
-                          if(value)accountController.updateAccount(accountModel, withLogger: true);
-                        });
-
-                      }
-                    },
-                    child: Text(isNew ? "Add Account" : "update"));
-              })
-            ],
+                        }
+                      },
+                      child: Text(isNew ? "إضافة حساب" : "تعديل الحساب"));
+                })
+              ],
+            ),
           ),
         ),
       ),
@@ -277,5 +341,17 @@ class _AddAccountState extends State<AddAccount> {
     }else{
       accountModel.accParentId = accParentId;
     }
+  }
+  late List<AccountModel> products = <AccountModel>[];
+
+  List<String> searchText(String query) {
+    AccountViewModel accountController = Get.find<AccountViewModel>();
+    products = accountController.accountList.values.toList().where((item) {
+      var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
+      var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
+      print(item.accCode);
+      return name || code;
+    }).toList();
+    return products.map((e) => e.accName!).toList();
   }
 }

@@ -1,7 +1,5 @@
-import 'package:syncfusion_flutter_datagrid/src/datagrid_widget/sfdatagrid.dart';
-
 class InvoiceRecordModel {
-  String? invRecId, invRecProduct;
+  String? invRecId, invRecProduct,prodChoosePriceMethod;
   int? invRecQuantity;
   double? invRecSubTotal, invRecTotal, invRecVat;
 
@@ -12,6 +10,7 @@ class InvoiceRecordModel {
     this.invRecSubTotal,
     this.invRecTotal,
     this.invRecVat,
+    this.prodChoosePriceMethod
   });
 
   InvoiceRecordModel.fromJson(Map<dynamic, dynamic> map) {

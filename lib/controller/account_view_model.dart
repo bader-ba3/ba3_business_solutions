@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/model/account_tree.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -21,7 +21,7 @@ class AccountViewModel extends GetxController {
   RxMap<String, AccountModel> _accountList = <String, AccountModel>{}.obs;
   Map<String, AccountModel> get accountList => _accountList;
   late DataGridController dataGridController;
-  final CollectionReference _accountCollectionRef = FirebaseFirestore.instance.collection("Accounts");
+  final CollectionReference _accountCollectionRef = FirebaseFirestore.instance.collection(Const.accountsCollection);
   late DataGridController dataViewGridController;
   late AccountViewDataGridSource recordViewDataSource;
 
@@ -99,6 +99,11 @@ class AccountViewModel extends GetxController {
         Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
         return;
       }
+      for (var i = 0 ; i< accountModel.accAggregateList.length;i++) {
+        if (accountModel.accAggregateList[i].substring(0, 3) != 'acc') {
+          accountModel.accAggregateList[i] = accountList.values.toList().firstWhere((e) => e.accName == accountModel.accAggregateList[i]).accId;
+        }
+      }
       if (withLogger) logger(newData: accountModel);
       _accountCollectionRef.doc(accountModel.accId).set(accountModel.toJson());
       accountList[accountModel.accId!] = AccountModel();
@@ -130,14 +135,32 @@ class AccountViewModel extends GetxController {
     }
     update();
   }
-
+  double getBalance(userId){
+    double _=0;
+    List<AccountRecordModel> allRecord =[];
+    AccountModel accountModel=accountList[userId]!;
+    allRecord.addAll(allAccounts[userId]!);
+    for (var element in accountModel.accChild) {
+      print(element);
+      allRecord.addAll(allAccounts[element]!.toList());
+    }
+    if(accountModel.accType==Const.accountTypeAggregateAccount){
+      for (var element in accountModel.accAggregateList) {
+        allRecord.addAll(allAccounts[element]!.toList());
+      }
+    }
+    if(allRecord.isNotEmpty) {
+      _= allRecord.map((e) => double.parse(e.total!)).toList().reduce((value, element) => value!+element);
+    }
+    return _;
+  }
   void calculateBalance(String modelKey) {
-    var all = 0;
+    double all = 0;
     for (AccountRecordModel element in allAccounts[modelKey] ?? []) {
       try {
         // all += double.parse(element.total!.toString());
         int? itemIndex = allAccounts[modelKey]?.indexOf(element);
-        allAccounts[modelKey]![itemIndex!].balance = all + double.parse(element.total!.toString()).toInt();
+        allAccounts[modelKey]![itemIndex!].balance = all + double.parse(element.total!.toString());
         all = (allAccounts[modelKey]![itemIndex].balance)!;
       } finally {}
     }
@@ -224,8 +247,8 @@ class AccountViewModel extends GetxController {
   }
 
   AccountTree addToModel(AccountModel element) {
-    var list = element.accChild?.map((e) => addToModel(accountList[e]!)).toList();
-    AccountTree model = AccountTree.fromJson({"name": element.accName}, element.accId, list ?? []);
+    var list = element.accChild.map((e) => addToModel(accountList[e]!)).toList();
+    AccountTree model = AccountTree.fromJson({"name": element.accName}, element.accId, list);
     return model;
   }
 
@@ -278,7 +301,7 @@ class AccountViewModel extends GetxController {
 String getAccountIdFromText(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? _= accountController.accountList.values.toList().firstWhereOrNull((element) => element!.accName == text);
+    AccountModel? _= accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == text);
         if(_==null){
           return"";
         }else{

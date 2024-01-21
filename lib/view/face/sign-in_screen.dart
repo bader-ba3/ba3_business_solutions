@@ -10,15 +10,8 @@ import 'dart:math' as math;
 import '../../controller/faceController/camera.service.dart';
 import '../../controller/faceController/ml_service.dart';
 import 'widgets/FacePainter_widget.dart';
-import 'widgets/auth-action-button_widget.dart';
 import 'widgets/camera_header_widget.dart';
 
-/*
-Title:HomePageScreen
-Purpose:HomePageScreen
-Created By:Kalpesh Khandla
-Created Date: 19 Feb 2022
-*/
 
 class SignIn extends StatefulWidget {
   const SignIn({

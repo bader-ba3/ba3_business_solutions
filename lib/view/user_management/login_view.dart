@@ -1,7 +1,9 @@
-import 'package:ba3_business_solutions/controller/user_management.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+
+import '../../Const/const.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -21,6 +23,11 @@ class LoginView extends StatelessWidget {
         // SizedBox(
         //   height: 200,
         // ),
+        Center(
+            child: Text(
+              "تسجيل الدخول الى "+Const.dataName,
+              style: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
+            )),
         Center(
             child: Text(
               "Write your Pin Code",

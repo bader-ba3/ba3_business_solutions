@@ -120,7 +120,6 @@ class BondRecordDataSource extends DataGridSource {
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: column.columnName, value: name);
           var accId = accountController.accountList.values.toList().firstWhere((e) => e.accName == name).accId;
           bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecAccount = accId;
-
           bondController.update();
         } else {
           await Get.defaultDialog(
@@ -224,7 +223,7 @@ class BondRecordDataSource extends DataGridSource {
               newCellValue = value;
               submitCell();
             } else {
-              Get.snackbar("error", "enter a valid number");
+              Get.snackbar("خطأ", "يرجى إدخال رقم صحيح");
               newCellValue = null;
             }
           }else{
@@ -248,14 +247,12 @@ class BondRecordDataSource extends DataGridSource {
 
   List<String> searchText(String query) {
     AccountViewModel accountController = Get.find<AccountViewModel>();
-    print(query);
     products = accountController.accountList.values.toList().where((item) {
       var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
       var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
-      print(item.accCode);
-      return name || code;
+      var type = item.accType==Const.accountTypeDefault;
+      return type&&(name || code);
     }).toList();
-    print(products);
     return products.map((e) => e.accName!).toList();
   }
 }

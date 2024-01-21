@@ -18,13 +18,13 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8), border: Border.all()),
+      decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all()),
       width: 150,
       height: 40,
       child: InkWell(
           onTap: () {
             Get.defaultDialog(
-                title: "pick a date",
+                title: "اختر يوم",
                 content: SizedBox(
                   height: 700,
                   width: 700,
@@ -53,12 +53,12 @@ class _DatePickerState extends State<DatePicker> {
                         Get.back();
                         setState(() {});
                       },
-                      child: Text("yes")),
+                      child: Text("تم")),
                   ElevatedButton(
                       onPressed: () {
                         Get.back();
                       },
-                      child: Text("no"))
+                      child: Text("إلغاء"))
                 ]);
           },
           child: Padding(
@@ -68,7 +68,7 @@ class _DatePickerState extends State<DatePicker> {
                 Text(widget.initDate != null
                     ? widget.initDate!
                     : date == null
-                        ? "Pick a Date"
+                        ? "اختر يوم"
                         : date.toString().split(" ").first),
                 Spacer(),
                 Icon(Icons.date_range)

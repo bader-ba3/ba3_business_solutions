@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,102 +31,128 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(widget.oldKey ?? "a"),
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(AddProduct(
-                    oldKey: widget.oldKey,
-                  ));
-                },
-                child: Text("update")),
-            SizedBox(
-              width: 30,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  productController.deleteProduct(withLogger: true);
-                  Get.back();
-                },
-                child: Text("delete")),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(50.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection(Const.productsCollection)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null ||
-                            snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else {
-                          return GetBuilder<ProductViewModel>(
-                              builder: (controller) {
-                            initPage();
-                            controller.initGrid(snapshot.data);
-                            return SfDataGrid(
-                              onCellTap: (DataGridCellTapDetails _) {
-                                if (_.rowColumnIndex.rowIndex != 0)
-                                  Get.to(() => InvoiceView(
-                                        billId: editedProductRecord[
-                                                _.rowColumnIndex.rowIndex - 1]
-                                            .invId!,
-                                        patternId: '',
-                                      ));
-                              },
-                              source: controller.recordDataSource,
-                              allowEditing: false,
-                              selectionMode: SelectionMode.none,
-                              editingGestureType: EditingGestureType.tap,
-                              navigationMode: GridNavigationMode.cell,
-                              columnWidthMode: ColumnWidthMode.fill,
-                              columns: <GridColumn>[
-                                GridColumnItem(
-                                    label: "النوع", name: Const.rowProductType),
-                                GridColumnItem(
-                                    label: 'الكمية',
-                                    name: Const.rowProductQuantity),
-                                GridColumnItem(
-                                    label: 'الرمز التسلسي للفاتورة',
-                                    name: Const.rowProductInvId),
-                              ],
-                            );
-                          });
-                        }
-                      }),
-                ),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: WillPopScope(
+        onWillPop: () async {
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text(productController.productDataMap[widget.oldKey!]!.prodName ?? ""),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Get.to(AddProduct(
+                      oldKey: widget.oldKey,
+                    ));
+                  },
+                  child: Text("بطاقة المادة")),
+              SizedBox(
+                width: 30,
               ),
-              //Spacer(),
-              // ElevatedButton(
-              //     onPressed: () {
-              //       if (editedProduct.prodId == null) {
-              //         productController.createProduct(editedProduct,
-              //             withLogger: true);
-              //         isEdit = false;
-              //       } else {
-              //         productController.updateProduct(editedProduct,
-              //             withLogger: true);
-              //         isEdit = false;
-              //       }
-              //     },
-              //     child:
-              //         Text(editedProduct.prodId == null ? "create" : "update"))
+              if (productController.productDataMap[widget.oldKey!]!.prodRecord!.isEmpty)
+                ElevatedButton(
+                    onPressed: () {
+                      checkPermissionForOperation(Const.roleUserDelete, Const.roleViewProduct).then((value) {
+                        if (value) {
+                          productController.deleteProduct(withLogger: true);
+                          Get.back();
+                        }
+                      });
+                    },
+                    child: Text("حذف"))
+              else
+                ElevatedButton(
+                    onPressed: () {
+                      productController.exportProduct(widget.oldKey);
+                    },
+                    child: Text("جرد لحركات المادة")),
+              SizedBox(
+                width: 30,
+              ),
             ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(50.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance.collection(Const.productsCollection).snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else {
+                            return GetBuilder<ProductViewModel>(builder: (controller) {
+                              initPage();
+                              // controller.initGrid(snapshot.data);
+                              return SfDataGrid(
+                                onCellTap: (DataGridCellTapDetails _) {
+                                  if (_.rowColumnIndex.rowIndex != 0) {
+                                    var invId=controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex - 1].getCells().firstWhere((element) => element.columnName==Const.rowProductInvId).value;
+                                    Get.to(() => InvoiceView(
+                                          billId: invId,
+                                          patternId: '',
+                                        ));
+                                  }
+                                },
+                                source: controller.recordDataSource,
+                                allowEditing: false,
+                                selectionMode: SelectionMode.none,
+                                editingGestureType: EditingGestureType.tap,
+                                navigationMode: GridNavigationMode.cell,
+                                columnWidthMode: ColumnWidthMode.fill,
+                                columns: <GridColumn>[
+                                  GridColumnItem(label: "المادة", name: Const.rowProductRecProduct),
+                                  GridColumnItem(label: "النوع", name: Const.rowProductType),
+                                  GridColumnItem(label: 'الكمية', name: Const.rowProductQuantity),
+                                  GridColumnItem(label: 'التاريخ', name: Const.rowProductDate),
+                                  // GridColumnItem(
+                                  //     label: 'الرمز التسلسي للفاتورة',
+                                  //     name: Const.rowProductInvId),
+                                  GridColumn(
+                                      visible: false,
+                                      allowEditing: false,
+                                      columnName: Const.rowProductInvId,
+                                      label: Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
+                                          color: Colors.grey,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'ID',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )),
+                                ],
+                              );
+                            });
+                          }
+                        }),
+                  ),
+                ),
+                //Spacer(),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       if (editedProduct.prodId == null) {
+                //         productController.createProduct(editedProduct,
+                //             withLogger: true);
+                //         isEdit = false;
+                //       } else {
+                //         productController.updateProduct(editedProduct,
+                //             withLogger: true);
+                //         isEdit = false;
+                //       }
+                //     },
+                //     child:
+                //         Text(editedProduct.prodId == null ? "create" : "update"))
+              ],
+            ),
           ),
         ),
       ),
@@ -146,18 +173,17 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   void initPage() {
     if (widget.oldKey != null) {
-      productController.productModel = ProductModel.fromJson(
-          productController.productDataMap[widget.oldKey!]!.toJson());
+      productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toFullJson());
       editedProductRecord.clear();
-      productController.productRecordMap[widget.oldKey!]?.forEach((element) {
-        editedProductRecord
-            .add(ProductRecordModel.fromJson(element.toJson(), element.invId));
+      productController.productModel?.prodRecord?.forEach((element) {
+        editedProductRecord.add(ProductRecordModel.fromJson(element.toJson(), element.invId));
       });
-      ProductModel _ = productController.productDataMap[widget.oldKey!]!;
+      // productController.productModel?.prodRecord=editedProductRecord;
+      // ProductModel _ = productController.productDataMap[widget.oldKey!]!;
     } else {
       productController.productModel = ProductModel();
       editedProductRecord = <ProductRecordModel>[];
     }
-    productController.initProductPage(editedProductRecord);
+    productController.initProductPage(productController.productModel!);
   }
 }

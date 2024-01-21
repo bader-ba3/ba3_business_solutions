@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../controller/user_management.dart';
+import '../../controller/user_management_model.dart';
 
 class AddSeller extends StatefulWidget {
   const AddSeller({super.key, this.oldKey});
@@ -21,7 +21,6 @@ class _AddSellerState extends State<AddSeller> {
   late SellerModel model;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.oldKey == null) {
       model = SellerModel();
@@ -34,69 +33,72 @@ class _AddSellerState extends State<AddSeller> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SellersViewModel>(builder: (controller) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(model.sellerId ?? "new"),
-        ),
-        body: Container(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Text("name"),
-              SizedBox(
-                width: 200,
-                child: TextFormField(
-                  controller: nameController,
-                  onChanged: (_) {
-                    model.sellerName = _;
-                  },
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: GetBuilder<SellersViewModel>(builder: (controller) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(model.sellerId ?? "جديد"),
+          ),
+          body: Container(
+            width: double.infinity,
+            child: Column(
+              children: [
+                Text("الاسم"),
+                SizedBox(
+                  width: 200,
+                  child: TextFormField(
+                    controller: nameController,
+                    onChanged: (_) {
+                      model.sellerName = _;
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Text("code"),
-              SizedBox(
-                width: 200,
-                child: TextFormField(
-                  controller: codeController,
-                  onChanged: (_) {
-                    model.sellerCode = _;
-                  },
+                SizedBox(
+                  height: 50,
                 ),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    if(model.sellerId == null) {
-                      checkPermissionForOperation(Const.roleUserWrite,Const.roleViewSeller).then((value) {
-                        if (value) sellerController.addseller(model);
-                      });
-                    }else{
-                      checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewSeller).then((value) {
-                        if (value) sellerController.addseller(model);
-                      });
-                    }
-                  },
-                  child: Text(model.sellerId == null ? "new" : "edit")),
-              SizedBox(height: 50,),
-              if (model.sellerId != null&&(model.sellerRecord??[]).isEmpty)
+                Text("الرمز"),
+                SizedBox(
+                  width: 200,
+                  child: TextFormField(
+                    controller: codeController,
+                    onChanged: (_) {
+                      model.sellerCode = _;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                ),
                 ElevatedButton(
                     onPressed: () {
-                      checkPermissionForOperation(Const.roleUserDelete,Const.roleViewSeller).then((value) {
-                        if(value)sellerController.deleteseller(model);
-                      });
-
-
+                      if(model.sellerId == null) {
+                        checkPermissionForOperation(Const.roleUserWrite,Const.roleViewSeller).then((value) {
+                          if (value) sellerController.addSeller(model);
+                        });
+                      }else{
+                        checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewSeller).then((value) {
+                          if (value) sellerController.addSeller(model);
+                        });
+                      }
                     },
-                    child: Text("delete")),
-            ],
+                    child: Text(model.sellerId == null ? "إنشاء" : "تعديل")),
+                SizedBox(height: 50,),
+                if (model.sellerId != null&&(model.sellerRecord??[]).isEmpty)
+                  ElevatedButton(
+                      onPressed: () {
+                        checkPermissionForOperation(Const.roleUserDelete,Const.roleViewSeller).then((value) {
+                          if(value)sellerController.deleteSeller(model);
+                        });
+
+
+                      },
+                      child: Text("حذف")),
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

@@ -1,11 +1,8 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/cost_center_view_model.dart';
-import 'package:ba3_business_solutions/model/cost_center_tree.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -19,58 +16,61 @@ class AccountTreeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Tree of Truth"),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                accountController.treeController?.collapseAll();
-              },
-              child: Text("-")),
-          SizedBox(
-            width: 20,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                accountController.treeController?.expandAll();
-              },
-              child: Text("+")),
-          SizedBox(
-            width: 20,
-          ),
-          ElevatedButton(
-              onPressed: () {
-              Get.to(()=>AddAccount());
-              },
-              child: Text("add Account")),
-          SizedBox(
-            width: 20,
-          ),
-        ],
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("شجرة الحسابات"),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  accountController.treeController?.collapseAll();
+                },
+                child: Text("-")),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  accountController.treeController?.expandAll();
+                },
+                child: Text("+")),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                Get.to(()=>AddAccount());
+                },
+                child: Text("اضافة حساب")),
+            SizedBox(
+              width: 20,
+            ),
+          ],
+        ),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots(),
+            builder: (context, snapshot) {
+              return GetBuilder<AccountViewModel>(builder: (controller) {
+                return accountController.allCost.isEmpty
+                    ? const CircularProgressIndicator()
+                    : TreeView<AccountTree>(
+                        treeController: accountController.treeController!,
+                        nodeBuilder: (BuildContext context, TreeEntry<AccountTree> entry) {
+                          return myTreeTile(
+                            context: context,
+                            key: ValueKey(entry.node),
+                            entry: entry,
+                            onTap: () {
+                              controller.lastIndex = entry.node.id;
+                              accountController.treeController?.toggleExpansion(entry.node);
+                            },
+                          );
+                        },
+                      );
+              });
+            }),
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots(),
-          builder: (context, snapshot) {
-            return GetBuilder<AccountViewModel>(builder: (controller) {
-              return accountController.allCost.isEmpty
-                  ? const CircularProgressIndicator()
-                  : TreeView<AccountTree>(
-                      treeController: accountController.treeController!,
-                      nodeBuilder: (BuildContext context, TreeEntry<AccountTree> entry) {
-                        return myTreeTile(
-                          context: context,
-                          key: ValueKey(entry.node),
-                          entry: entry,
-                          onTap: () {
-                            controller.lastIndex = entry.node.id;
-                            accountController.treeController?.toggleExpansion(entry.node);
-                          },
-                        );
-                      },
-                    );
-            });
-          }),
     );
   }
    myTreeTile({context,required ValueKey<AccountTree> key,required VoidCallback onTap,required TreeEntry<AccountTree> entry}) {
@@ -85,6 +85,9 @@ class AccountTreeView extends StatelessWidget {
            height: 50,
            child: GestureDetector(
              onSecondaryTapDown: (details) {
+               showContextMenu(context, details.globalPosition, accountController,entry);
+             },
+             onLongPressStart: (details) {
                showContextMenu(context, details.globalPosition, accountController,entry);
              },
              onTap: onTap,
@@ -129,21 +132,21 @@ class AccountTreeView extends StatelessWidget {
            value: 'seeDetails',
            child: ListTile(
              leading: Icon(Icons.info_outline),
-             title: Text('see Details'),
+             title: Text('عرض تفاصيل'),
            ),
          ),
          const PopupMenuItem(
            value: 'add',
            child: ListTile(
              leading: Icon(Icons.copy),
-             title: Text('add Child'),
+             title: Text('إضافة ابن'),
            ),
          ),
          const PopupMenuItem(
            value: 'rename',
            child: ListTile(
              leading: Icon(Icons.copy),
-             title: Text('rename'),
+             title: Text('اعادة تسمية'),
            ),
          ),
        ],

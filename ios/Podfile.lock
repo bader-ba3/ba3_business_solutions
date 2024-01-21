@@ -874,15 +874,22 @@ PODS:
     - MLKitImageLabelingCommon (~> 5.0)
     - MLKitObjectDetectionCommon (~> 5.0)
     - MLKitVision (~> 5.0)
+  - MTBBarcodeScanner (5.0.11)
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
     - nanopb/encode (= 2.30909.1)
   - nanopb/decode (2.30909.1)
   - nanopb/encode (2.30909.1)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - PromisesObjC (2.3.1)
-  - SDWebImage (5.18.7):
-    - SDWebImage/Core (= 5.18.7)
-  - SDWebImage/Core (5.18.7)
+  - qr_code_scanner (0.2.0):
+    - Flutter
+    - MTBBarcodeScanner
+  - SDWebImage (5.18.8):
+    - SDWebImage/Core (= 5.18.8)
+  - SDWebImage/Core (5.18.8)
   - smart_auth (0.0.1):
     - Flutter
   - SwiftyGif (5.4.4)
@@ -896,6 +903,8 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - google_ml_kit (from `.symlinks/plugins/google_ml_kit/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
   - tflite_flutter (from `.symlinks/plugins/tflite_flutter/ios`)
 
@@ -934,6 +943,7 @@ SPEC REPOS:
     - MLKitTextRecognitionCommon
     - MLKitVision
     - MLKitVisionKit
+    - MTBBarcodeScanner
     - nanopb
     - PromisesObjC
     - SDWebImage
@@ -952,6 +962,10 @@ EXTERNAL SOURCES:
     :path: Flutter
   google_ml_kit:
     :path: ".symlinks/plugins/google_ml_kit/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  qr_code_scanner:
+    :path: ".symlinks/plugins/qr_code_scanner/ios"
   smart_auth:
     :path: ".symlinks/plugins/smart_auth/ios"
   tflite_flutter:
@@ -997,9 +1011,12 @@ SPEC CHECKSUMS:
   MLKitTextRecognitionCommon: 0d48930fee25cce9d52d0ba217490d4797061aa2
   MLKitVision: 8baa5f46ee3352614169b85250574fde38c36f49
   MLKitVisionKit: 5b5472d40ffc143bda693ba20a3cff44fe627d41
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
-  SDWebImage: f9258c58221ed854cfa0e2b80ee4033710b1c6d3
+  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  SDWebImage: a81bbb3ba4ea5f810f4069c68727cb118467a04a
   smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   tflite_flutter: 9157a660578930a99728974f247369af1c3595d5

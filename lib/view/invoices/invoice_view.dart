@@ -1,23 +1,23 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
-import 'package:ba3_business_solutions/view/stores/store_details.dart';
+import 'package:ba3_business_solutions/view/stores/add_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../controller/invoice_view_model.dart';
-import '../../controller/user_management.dart';
-import '../../model/account_record_model.dart';
+import '../../controller/user_management_model.dart';
 import '../../utils/generate_id.dart';
 
 class InvoiceView extends StatefulWidget {
@@ -51,7 +51,7 @@ class _InvoiceViewState extends State<InvoiceView> {
     } else {
       widget.patternModel = globalController.patternController.patternModel[widget.patternId];
       globalController.getInit(widget.patternModel!.patId!);
-      globalController.dateController = DateTime.now().toString().split(" ")[0];
+     // globalController.dateController = DateTime.now().toString().split(" ")[0];
     }
 
     super.initState();
@@ -60,31 +60,36 @@ class _InvoiceViewState extends State<InvoiceView> {
   @override
   Widget build(BuildContext context) {
     // print(widget.patternModel!.toJson());
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Invoice"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                SizedBox(width: Get.width * 0.30, child: customTextFieldWithoutIcon(globalController.billIDController, false)),
-                const SizedBox(
-                  width: 10,
-                ),
-                SizedBox(width: Get.width * 0.30, child: customTextFieldWithoutIcon(globalController.bondIdController, false)),
-              ],
-            ),
-          )
-        ],
-      ),
-      body: GetBuilder<InvoiceViewModel>(builder: (controller) {
-        return Container(
-          clipBehavior: Clip.hardEdge,
-          height: Get.height * 1,
-          width: Get.width * 1,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(width: .5, color: Colors.white), color: Colors.white70),
-          child: Column(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title:  Text(widget.billId == "1"?"فاتورة جديدة":"تفاصبل الفاتورة"),
+          actions: [
+            IconButton(onPressed: () async {
+            var  a = await Get.to(()=>QRScannerView()) as List<ProductModel>?;
+            if(a==null){
+            }else{
+              globalController.addProductToInvoice(a);
+            }
+
+            }, icon: Icon(Icons.qr_code)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  SizedBox(width: Get.width * 0.30, child: customTextFieldWithoutIcon(globalController.billIDController, false)),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(width: Get.width * 0.30, child: customTextFieldWithoutIcon(globalController.bondIdController, false)),
+                ],
+              ),
+            )
+          ],
+        ),
+        body: GetBuilder<InvoiceViewModel>(builder: (controller) {
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -105,15 +110,14 @@ class _InvoiceViewState extends State<InvoiceView> {
                             onPressed: () {
                               globalController.prevInv(widget.patternModel!.patId!, globalController.invCodeController.text);
                             },
-                            icon: const Icon(Icons.keyboard_double_arrow_left)),
+                            icon: const Icon(Icons.keyboard_double_arrow_right)),
                         // const Text("Invoice Code : "),
                         SizedBox(width: Get.width * 0.10, child: customTextFieldWithoutIcon(globalController.invCodeController, true)),
-
                         IconButton(
                             onPressed: () {
                               globalController.nextInv(widget.patternModel!.patId!, globalController.invCodeController.text);
                             },
-                            icon: const Icon(Icons.keyboard_double_arrow_right)),
+                            icon: const Icon(Icons.keyboard_double_arrow_left)),
                       ],
                     ),
                     const SizedBox(
@@ -123,7 +127,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                       children: [
                         Row(
                           children: [
-                            const Text("Customer : ", style: TextStyle()),
+                            const Text("من : ", style: TextStyle()),
                             // color: globalController.initModel.invType == "sales"
                             //     ? Colors.redAccent
                             //     : Colors.greenAccent)),
@@ -137,11 +141,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                           ],
                         ),
                         SizedBox(
-                          width: 100,
+                          width: 30,
                         ),
                         Row(
                           children: [
-                            const Text("Date : ", style: TextStyle()),
+                            const Text("تاريخ الفاتورة : ", style: TextStyle()),
                             SizedBox(
                           //    width: Get.width * 0.07,
                               child: GetBuilder<InvoiceViewModel>(builder: (controller) {
@@ -156,6 +160,18 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           ],
                         ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Row(
+                          children: [
+                            const Text("رقم الجوال : "),
+                            SizedBox(
+                              width: 200,
+                              child: customTextFieldWithoutIcon(globalController.mobileNumberController,true),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -167,7 +183,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                         Row(
                           children: [
                             const Text(
-                              "Account : ",
+                              "الى : ",
                             ),
                             SizedBox(
                               width: Get.width * 0.30,
@@ -186,7 +202,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                         Row(
                           children: [
                             const Text(
-                              "Seller : ",
+                              "البائع : ",
                             ),
                             SizedBox(
                               width: Get.width * 0.15,
@@ -207,7 +223,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                         ),
                         Row(
                           children: [
-                            const Text("Storehouse : "),
+                            const Text("المستودع : "),
                             SizedBox(
                               width: Get.width * 0.30,
                               child: Form(
@@ -217,7 +233,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 }, onIconPressed: () {
                                   StoreModel? _ = storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == globalController.storeController.text);
                                   if (_ != null) {
-                                    Get.to(StoreDetails(oldKey: _.stId!));
+                                    Get.to(AddStore(oldKey: _.stId!));
                                   }
                                 }),
                               ),
@@ -232,7 +248,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        const Text("comments"),
+                        const Text("البيان"),
                         SizedBox(
                           height: 35,
                           width: Get.width * 0.7,
@@ -245,10 +261,10 @@ class _InvoiceViewState extends State<InvoiceView> {
               ),
               Expanded(
                 child: Container(
-
                   margin: const EdgeInsets.all(0),
                   child: LayoutBuilder(
                     builder: (context, constraints) => SfDataGrid(
+                      horizontalScrollPhysics: NeverScrollableScrollPhysics(),
                       source: globalController.invoiceRecordSource,
                       // tableSummaryRows: [
                       //   GridTableSummaryRow(color: Colors.blueGrey, showSummaryInRow: true, title: 'Total : {Total} AED', columns: [const GridSummaryColumn(name: 'Total', columnName: Const.rowInvTotal, summaryType: GridSummaryType.sum)], position: GridTableSummaryRowPosition.bottom),
@@ -260,12 +276,12 @@ class _InvoiceViewState extends State<InvoiceView> {
                             columnName: Const.rowInvId,
                             label: Container(
                               decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
                                 color: Colors.grey,
                               ),
                               alignment: Alignment.center,
                               child: const Text(
-                                'ID',
+                                'الرقم التسلسلي',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -277,7 +293,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               color: Colors.grey,
                               alignment: Alignment.center,
                               child: const Text(
-                                'Product',
+                                'المادة',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -288,7 +304,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               color: Colors.grey,
                               alignment: Alignment.center,
                               child: const Text(
-                                'Quantity',
+                                'الكمية',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -299,7 +315,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               color: Colors.grey,
                               alignment: Alignment.center,
                               child: const Text(
-                                'SubTotal',
+                                'السعر الإفرادي',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -310,7 +326,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               color: Colors.grey,
                               alignment: Alignment.center,
                               child: const Text(
-                                'Vat',
+                                'إفرادي الضريبة',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -324,22 +340,21 @@ class _InvoiceViewState extends State<InvoiceView> {
                               ),
                               alignment: Alignment.center,
                               child: const Text(
-                                'Total',
+                                'المجموع',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
                         GridColumn(
                             allowEditing: false,
-
                             columnName: Const.rowInvTotalVat,
                             label: Container(
                               decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
                                 color: Colors.grey,
                               ),
                               alignment: Alignment.center,
                               child: const Text(
-                                'Total Vat',
+                                'مجموع الضريبة',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
@@ -390,7 +405,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Text("Total Without Vat"),
+                        Text("المجموع بدون الضريبة"),
                         SizedBox(
                           width: 20,
                         ),
@@ -410,7 +425,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Text("Total Vat"),
+                        Text("مجموع الضريبة"),
                         SizedBox(
                           width: 20,
                         ),
@@ -431,7 +446,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     child: Row(
                       children: [
                         Text(
-                          "Total With Vat",
+                          "المجموع مع الضريبة",
                           style: TextStyle(fontSize: 22),
                         ),
                         SizedBox(
@@ -459,7 +474,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                           Flexible(
                             child: ElevatedButton(
                                 child: const Text(
-                                  'New Invoice',
+                                  'فاتورة جديدة',
                                   style: TextStyle(color: Colors.blueGrey, fontSize: 25),
                                 ),
                                 onPressed: () async {
@@ -483,7 +498,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   //     backgroundColor: MaterialStatePropertyAll(
                                   //         Colors.indigo)),
                                   child: const Text(
-                                    'Add Invoice',
+                                    'إضافة فاتورة',
                                     style: TextStyle(color: Colors.blueGrey, fontSize: 25),
                                   ),
                                   onPressed: () async {
@@ -505,7 +520,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       checkPermissionForOperation(Const.roleUserWrite,Const.roleViewInvoice).then((value) async {
                                         if(value){
                                           await globalController.computeTotal(globalController.records);
-                                          await globalController.addBills(_updateData(), globalController.records, false, withLogger: true);
+                                          for(var i =0;i<5000;i++){
+                                            print("-"*20);
+                                            print("start "+i.toString());
+                                            await globalController.addBills(_updateData(), globalController.records, false, withLogger: true);
+                                          }
                                         }
                                       });
 
@@ -518,7 +537,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                       if (controller.initModel.invId != null)
                         ElevatedButton(
                             child: const Text(
-                              'Save Invoice',
+                              'تعديل الفاتورة',
                               style: TextStyle(color: Colors.blueGrey, fontSize: 25),
                             ),
                             onPressed: () async {
@@ -553,15 +572,18 @@ class _InvoiceViewState extends State<InvoiceView> {
                         ElevatedButton(
                           style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.redAccent)),
                           child: const Text(
-                            'Delete Invoice',
+                            'حذف الفاتورة',
                             style: TextStyle(color: Colors.white, fontSize: 25),
                           ),
                           onPressed: () async {
                             checkPermissionForOperation(Const.roleUserDelete,Const.roleViewInvoice).then((value) async {
                               if(value){
-                                if (globalController.invCodeList.contains(globalController.invCodeController.text)) {
+
+                                // if (globalController.invCodeList.contains(globalController.invCodeController.text)) {
                                   await globalController.deleteBills(globalController.initModel, withLogger: true);
-                                }
+                                // }else{
+                                //   print(globalController.invCodeList);
+                                // }
                               }
                             });
 
@@ -573,13 +595,25 @@ class _InvoiceViewState extends State<InvoiceView> {
                 ),
               ),
             ],
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
   GlobalModel _updateData() {
-    return GlobalModel(patternId: widget.patternModel!.patId!, invType: widget.patternModel!.patType!, invTotal: globalController.total, invId: widget.billId == "1" ? generateId(RecordType.invoice) : widget.billId, invStorehouse: globalController.storeController.text, invComment: globalController.noteController.text, invPrimaryAccount: globalController.primaryAccountController.text, invSecondaryAccount: globalController.secondaryAccountController.text, invCode: globalController.invCodeController.text, invSeller: globalController.sellerController.text, invDate: globalController.dateController);
+    return GlobalModel(
+        patternId: widget.patternModel!.patId!,
+        invType: widget.patternModel!.patType!,
+        invTotal: globalController.total,
+        invId: widget.billId == "1" ? generateId(RecordType.invoice) : widget.billId,
+        invStorehouse: globalController.storeController.text,
+        invComment: globalController.noteController.text,
+        invPrimaryAccount: globalController.primaryAccountController.text,
+        invSecondaryAccount: globalController.secondaryAccountController.text,
+        invCode: globalController.invCodeController.text,
+        invSeller: globalController.sellerController.text,
+        invDate: globalController.dateController,
+      invMobileNumber: globalController.mobileNumberController.text);
   }
 }

@@ -1,8 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_details_view.dart';
 import 'package:ba3_business_solutions/view/bonds/custom_bond_details_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +28,7 @@ class BondViewModel extends GetxController {
   }
 
   getAllBonds() async {
+    print("start get bond data");
     FirebaseFirestore.instance.collection(Const.bondsCollection).snapshots().listen((QuerySnapshot querySnapshot) {
       allBondsItem.clear();
       for (var element in querySnapshot.docs) {
@@ -41,6 +40,7 @@ class BondViewModel extends GetxController {
       }
     });
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+
       update();
     });
     //update();
@@ -75,7 +75,6 @@ class BondViewModel extends GetxController {
     for (var i = 0; i < bondModel.bondRecord!.length; i++) {
       if (bondModel.bondRecord?[i].bondRecAccount?.substring(0, 3) != 'acc') {
         bondModel.bondRecord?[i].bondRecAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == bondModel.bondRecord?[i].bondRecAccount).accId;
-        print(bondModel.bondRecord?[i].bondRecAccount);
       }
     }
     if (isNew) {
@@ -84,10 +83,10 @@ class BondViewModel extends GetxController {
     }
 
     if (double.parse(bondModel.bondTotal!) != 0 && bondModel.bondType == Const.bondTypeDaily) {
-      Get.snackbar("Error", "debt and credit is not same");
+      Get.snackbar("خطأ", "خطأ بالمجموع");
       return;
     } else if (double.parse(bondModel.bondTotal!) == 0 && bondModel.bondType == Const.bondTypeDebit || bondModel.bondType == Const.bondTypeCredit) {
-      Get.snackbar("Error", "the table is empty");
+      Get.snackbar("خطأ", "فارغ");
       return;
     }
 
@@ -118,10 +117,10 @@ class BondViewModel extends GetxController {
         bondModel.bondRecord?[i].bondRecAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == bondModel.bondRecord?[i].bondRecAccount).accId;
       }
     }
-    if (bondModel.bondTotal != "0.0" && bondModel.bondType == Const.bondTypeDaily) {
-      Get.snackbar("Error", "pl000z");
-    } else if (bondModel.bondTotal == "0" && bondModel.bondType == Const.bondTypeDebit || bondModel.bondType == Const.bondTypeCredit) {
-      Get.snackbar("Error", "the table is empty");
+    if (double.parse(bondModel.bondTotal!) != 0 && bondModel.bondType == Const.bondTypeDaily) {
+      Get.snackbar("خطأ", "خطأ بالمجموع");
+    } else if (double.parse(bondModel.bondTotal!) == 0 && bondModel.bondType == Const.bondTypeDebit || bondModel.bondType == Const.bondTypeCredit) {
+      Get.snackbar("خطأ", "فارغ");
     }
     bondModel = GlobalModel.fromJson(allBondsItem[tempBondModel.bondId!]!.toFullJson());
     await FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).collection(Const.recordCollection).get().then((value) {
@@ -205,7 +204,7 @@ class BondViewModel extends GetxController {
   void changeIndexCode({required String code}) {
     var model = allBondsItem.values.toList().firstWhereOrNull((element) => element.bondCode == code);
     if (model == null) {
-      Get.snackbar("Alert", "Not FOUND");
+      Get.snackbar("خطأ", "غير موجود");
     } else {
       tempBondModel = GlobalModel.fromJson(model.toFullJson());
       bondModel = GlobalModel.fromJson(model.toFullJson());
@@ -343,7 +342,7 @@ class BondViewModel extends GetxController {
       print(element.toJson());
       if(element.bondRecAccount==''||element.bondRecAccount==null||element.bondRecId==null||(element.bondRecCreditAmount==0&&element.bondRecDebitAmount==0)){
         // print("empty");
-        _= "record empty";
+        _= "الحقول فارغة";
       }else{
         // print("ok");
       }
@@ -351,13 +350,13 @@ class BondViewModel extends GetxController {
     });
     if(_!=null)return _;
     if(tempBondModel.bondType==Const.bondTypeDaily&&double.parse(tempBondModel.bondTotal!)!=0){
-      return"total error";
+      return"خطأ بالمجموع";
     }
     if(tempBondModel.bondType!=Const.bondTypeDaily&&double.parse(tempBondModel.bondTotal!)==0){
-      return"total error";
+      return "خطأ بالمجموع";
     }
     if(tempBondModel.bondCode==null||int.tryParse(tempBondModel.bondCode!)==null){
-      return "code error";
+      return "الرمز فارغ";
     }
     return null;
   }

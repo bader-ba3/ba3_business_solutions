@@ -15,7 +15,7 @@ class PatternRecordDataSource extends DataGridSource {
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: "patId", value: e.patId),
               DataGridCell<String>(columnName: Const.patCode, value: e.patCode),
-              DataGridCell<String>(columnName: Const.patPrimary, value: getAccountNameFromId(e.patPrimary)),
+            //  DataGridCell<String>(columnName: Const.patPrimary, value: getAccountNameFromId(e.patPrimary)),
               DataGridCell<String>(columnName: Const.patName, value: e.patName),
               DataGridCell<String>(columnName: Const.patType, value: e.patType),
             ]))

@@ -1,7 +1,10 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../../controller/account_view_model.dart';
 import '../../../model/account_model.dart';
 import '../../../model/account_record_model.dart';
 
@@ -15,17 +18,18 @@ class AccountViewDataGridSource extends DataGridSource {
   List<DataGridRow> get rows => accountMap.entries.map<DataGridRow>((entry) {
         String userId = entry.key;
         AccountModel account = entry.value;
+        var accountController = Get.find<AccountViewModel>();
 
-        int? balance = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.last.balance ;
-
+        // int? balance = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.last.balance ;
+        double balance = accountController.getBalance(userId);
         int? count = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.length ;
 
         return DataGridRow(cells: [
           DataGridCell<String>(columnName: Const.rowViewAccountId, value: userId),
           DataGridCell<String>(columnName: Const.rowViewAccountCode, value: account.accCode),
           DataGridCell<String>(columnName: Const.rowViewAccountName, value: account.accName),
-          DataGridCell<int>(columnName: Const.rowViewAccountBalance, value: balance),
-          DataGridCell<int>(columnName: Const.rowViewAccountLength, value: count),
+          DataGridCell<double>(columnName: Const.rowViewAccountBalance, value: balance),
+         DataGridCell<int>(columnName: Const.rowViewAccountLength, value: count),
           // DataGridCell<String>(
           //     columnName: 'AccountId', value: account.accountId),
         ]);
@@ -38,7 +42,9 @@ class AccountViewDataGridSource extends DataGridSource {
       return Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(8.0),
-        child: Text(dataGridCell.value.toString()),
+        child: Text(dataGridCell.value.runtimeType==double
+          ?dataGridCell.value.toStringAsFixed(2)
+          :dataGridCell.value.toString(),style: TextStyle(fontSize: 22),),
       );
     }).toList());
   }

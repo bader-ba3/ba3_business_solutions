@@ -18,7 +18,7 @@ class allInvoiceDataGridSource extends DataGridSource {
           DataGridCell<String>(columnName: 'invoice.invPrimaryAccount', value: getAccountNameFromId(invoice.invPrimaryAccount)),
           DataGridCell<String>(columnName: 'invoice.invSecondaryAccount', value: getAccountNameFromId(invoice.invSecondaryAccount)),
           DataGridCell<String>(columnName: 'invoice.invTotal', value: invoice.invTotal.toString()),
-          DataGridCell<String>(columnName: 'invoice.invRecords', value: invoice.invRecords!.length.toString()),
+          //DataGridCell<String>(columnName: 'invoice.invRecords', value: invoice.invRecords!.length.toString()),
           DataGridCell<String>(columnName: 'invoice.invRecords', value: invoice.invType.toString()),
           DataGridCell<String>(columnName: 'invoice.invRecords', value: invoice.invCode.toString()),
         ]);
@@ -33,7 +33,7 @@ class allInvoiceDataGridSource extends DataGridSource {
       return Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(8.0),
-        child: Text(dataGridCell.value.toString()),
+        child: Text(dataGridCell.value.toString(),style: TextStyle(fontSize: 22),),
       );
     }).toList());
   }

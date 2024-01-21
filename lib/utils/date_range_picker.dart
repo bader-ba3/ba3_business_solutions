@@ -24,18 +24,18 @@ class _DateRangePickerState extends State<DateRangePicker> {
       child: InkWell(
           onTap: () {
             Get.defaultDialog(
-                title: "pick a date",
+                title: "اختر فترة زمنية",
                 content: SizedBox(
                   height: 700,
                   width: 700,
                   child: SfDateRangePicker(
                     initialDisplayDate: DateTime.tryParse(widget.initDate ?? ""),
                     enableMultiView: true,
-                    backgroundColor: Colors.white,
-                    headerStyle: DateRangePickerHeaderStyle(backgroundColor: Colors.white),
+                    backgroundColor: Colors.transparent,
+                    headerStyle: DateRangePickerHeaderStyle(backgroundColor: Colors.transparent,),
                     navigationDirection: DateRangePickerNavigationDirection.vertical,
                     selectionMode: DateRangePickerSelectionMode.range,
-                    monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
+                    monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false,viewHeaderStyle:DateRangePickerViewHeaderStyle(backgroundColor: Colors.transparent)),
                     showNavigationArrow: true,
                     navigationMode: DateRangePickerNavigationMode.scroll,
                     onSelectionChanged: (dateRangePickerSelectionChangedArgs) {
@@ -55,12 +55,12 @@ class _DateRangePickerState extends State<DateRangePicker> {
                         Get.back();
                         setState(() {});
                       },
-                      child: Text("yes")),
+                      child: Text("اختر")),
                   ElevatedButton(
                       onPressed: () {
                         Get.back();
                       },
-                      child: Text("no"))
+                      child: Text("الغاء"))
                 ]);
           },
           child: Padding(
@@ -70,7 +70,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
                 Text(widget.initDate != null
                     ? widget.initDate!
                     : date == null
-                        ? "Pick a Date"
+                        ? "اختر فترة زمنية"
                         : gettext()),
                 Spacer(),
                 Icon(Icons.date_range)
