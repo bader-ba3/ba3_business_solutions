@@ -13,7 +13,6 @@ class AllPattern extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.find<PatternViewModel>().clearController();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

@@ -39,16 +39,14 @@ class AccountsView extends StatelessWidget {
           //       child: Text("tree view")),
           // ],
         ),
-        body: controller.allAccounts.isEmpty
-            ? CircularProgressIndicator()
-            :
+        body:
             // String model = controller.allAccounts.keys.toList()[index];
             // AccountModel accountModel=controller.accountListMyId[model]!;
             StreamBuilder(
-                stream: FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots(),
+                stream: controller.accountList.stream,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                  if (controller.accountList.isEmpty) {
+                    return Center(child: Text("لا يوجد لديك حسابات بعد"),);
                   } else {
                     return GetBuilder<AccountViewModel>(builder: (controller) {
                       controller.initAccountViewPage();

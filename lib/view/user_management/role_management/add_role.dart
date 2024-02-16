@@ -33,58 +33,61 @@ TextEditingController nameController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     // var all=["bond","account","product"];
-    return GetBuilder<UserManagementViewModel>(
-      builder: (controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(controller.roleModel?.roleId??"new"),
-            actions: [
-              ElevatedButton(onPressed: (){
-                controller.addRole();
-              }, child: Text(controller.roleModel?.roleId==null?"add":"update"))
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: ListView(
-              children: [
-                Text("name"),
-                 Container(
-                   color: Colors.grey.shade200,
-                   child: TextFormField(
-                     controller: nameController,
-                    onChanged: (_){
-                      controller.roleModel?.roleName=_.toString();
-                    },
-                ),
-                 ),
-                for(var i in Const.allRolePage)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(i.toString(),style: TextStyle(fontSize: 25),),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 50),
-                          child: Column(
-                            children: [
-                              checkBoxWidget(i,Const.roleUserRead,controller),
-                              checkBoxWidget(i,Const.roleUserWrite,controller),
-                              checkBoxWidget(i,Const.roleUserUpdate,controller),
-                              checkBoxWidget(i,Const.roleUserDelete,controller),
-                              checkBoxWidget(i,Const.roleUserAdmin,controller),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: GetBuilder<UserManagementViewModel>(
+        builder: (controller) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(controller.roleModel?.roleName??"دور جديد"),
+              actions: [
+                ElevatedButton(onPressed: (){
+                  controller.addRole();
+                }, child: Text(controller.roleModel?.roleId==null?"إضافة":"تعديل"))
               ],
             ),
-          ),
-        );
-      }
+            body: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: ListView(
+                children: [
+                  Text("الاسم"),
+                   Container(
+                     color: Colors.grey.shade200,
+                     child: TextFormField(
+                       controller: nameController,
+                      onChanged: (_){
+                        controller.roleModel?.roleName=_.toString();
+                      },
+                  ),
+                   ),
+                  for(var i in Const.allRolePage)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(getPageNameFromEnum(i.toString())+":",style: TextStyle(fontSize: 25),),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 50),
+                            child: Column(
+                              children: [
+                                checkBoxWidget(i,Const.roleUserRead,controller),
+                                checkBoxWidget(i,Const.roleUserWrite,controller),
+                                checkBoxWidget(i,Const.roleUserUpdate,controller),
+                                checkBoxWidget(i,Const.roleUserDelete,controller),
+                                checkBoxWidget(i,Const.roleUserAdmin,controller),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }
+      ),
     );
   }
 
@@ -109,7 +112,7 @@ TextEditingController nameController=TextEditingController();
             });
           }
         ),
-        Text(text)
+        Text(getNameOfRoleFromEnum(text))
       ],
     );
   }

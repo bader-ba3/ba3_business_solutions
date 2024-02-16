@@ -63,7 +63,6 @@ class PatternViewModel extends GetxController {
   editPattern() {
     // print(editPatternModel?.toJson());
     PatternModel _ = PatternModel.fromJson(editPatternModel?.toJson());
-    print(_.patStore);
     if (!(_.patPrimary?.contains("acc") ?? false)) _.patPrimary = getAccountIdFromText(_.patPrimary);
     if (!(_.patVatAccount?.contains("acc") ?? false)) _.patVatAccount = getAccountIdFromText(_.patVatAccount);
     if (!(_.patSecondary?.contains("acc") ?? false)) _.patSecondary = getAccountIdFromText(_.patSecondary);
@@ -193,3 +192,15 @@ class PatternViewModel extends GetxController {
   //   patCodeController.text = (maxCode + 1).toString();
   // }
 }
+String? getVatAccountFromPatternId(id){
+  if (id != null && id != " " && id != "") {
+    return Get.find<PatternViewModel>().patternModel[id]?.patVatAccount!;
+  } else {
+    return null;
+  }}
+PatternModel getPatModelFromPatternId(id){
+  if (id != null && id != " " && id != "") {
+    return Get.find<PatternViewModel>().patternModel[id]!;
+  } else {
+    return PatternModel(patName: "not found");
+  }}

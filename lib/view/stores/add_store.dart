@@ -24,7 +24,7 @@ class _AddStoreState extends State<AddStore> {
     if (widget.oldKey == null) {
       storeController.editStoreModel = StoreModel();
     } else {
-      storeController.editStoreModel = StoreModel.fromJson(storeController.storeMap[widget.oldKey]?.toJson(),{});
+      storeController.editStoreModel = StoreModel.fromJson(storeController.storeMap[widget.oldKey]?.toFullJson());
       nameController.text = storeController.editStoreModel?.stName ?? "";
       codeController.text = storeController.editStoreModel?.stCode ?? "";
     }

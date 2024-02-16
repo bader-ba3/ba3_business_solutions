@@ -26,8 +26,8 @@ class _DateRangePickerState extends State<DateRangePicker> {
             Get.defaultDialog(
                 title: "اختر فترة زمنية",
                 content: SizedBox(
-                  height: 700,
-                  width: 700,
+                  height: MediaQuery.sizeOf(context).height/1.6,
+                  width: MediaQuery.sizeOf(context).height/1,
                   child: SfDateRangePicker(
                     initialDisplayDate: DateTime.tryParse(widget.initDate ?? ""),
                     enableMultiView: true,

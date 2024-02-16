@@ -1,12 +1,15 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../utils/hive.dart';
+
 enum EnvType { debug, release }
 
 //release :
 //      send data to logger
 abstract class Const {
   static String dataName='';
+
   static init({String? oldData})async{
     if(dataName==''){
       await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
@@ -15,16 +18,8 @@ abstract class Const {
     }else{
       dataName=oldData!;
     }
-    bondsCollection = '$dataName/data/Bonds';
-    accountsCollection = '$dataName/data/Accounts';
-    invoicesCollection = '$dataName/data/Invoices';
-    productsCollection = "$dataName/data/Products";
-    logsCollection = "$dataName/data/Logs";
-    patternCollection = "$dataName/data/Patterns";
-    storeCollection = "$dataName/data/Stores";
-    chequesCollection = "$dataName/data/Cheques";
-    costCenterCollection = "$dataName/data/CostCenter";
-    sellersCollection = "$dataName/data/Sellers";
+    await HiveDataBase.setDataName(dataName);
+    globalCollection=dataName;
   }
   static const EnvType env = EnvType.debug; //"debug" or "release"
   static const vatGCC = 0.05;
@@ -37,19 +32,20 @@ abstract class Const {
   static const rowBondDescription = 'description';
   ////////////--------------------------------------------------
   static const recordCollection = 'Record';
-  static String bondsCollection = '$dataName/data/Bonds';
-  static String accountsCollection = '$dataName/data/Accounts';
-  static String invoicesCollection = '$dataName/data/Invoices';
-  static String productsCollection = "$dataName/data/Products";
-  static String logsCollection = "$dataName/data/Logs";
-  static String patternCollection = "$dataName/data/Patterns";
-  static String storeCollection = "$dataName/data/Stores";
-  static String chequesCollection = "$dataName/data/Cheques";
-  static String costCenterCollection = "$dataName/data/CostCenter";
-  static String sellersCollection = "$dataName/data/Sellers";
+  static String bondsCollection = 'Bonds';
+  static String accountsCollection = 'Accounts';
+  static String invoicesCollection = 'Invoices';
+  static String productsCollection = "Products";
+  static String logsCollection = "Logs";
+  static String patternCollection = "Patterns";
+  static String storeCollection = "Stores";
+  static String chequesCollection = "Cheques";
+  static String costCenterCollection = "CostCenter";
+  static String sellersCollection = "Sellers";
   static String usersCollection = "users";
   static String roleCollection = "Role";
   static String settingCollection = "Setting";
+  static String globalCollection="$dataName";
   static String dataCollection = "data";
   ////////////--------------------------------------------------
   static const rowAccountId = 'rowAccountId';
@@ -138,9 +134,10 @@ abstract class Const {
   static const roleViewPattern = "roleViewPattern";
   static const roleViewCheques = "roleViewCheques";
   static const roleViewSeller = "roleViewSeller";
+  static const roleViewReport = "roleViewReport";
   static const roleViewImport = "roleViewImport";
   static const roleViewUserManagement = "roleViewUserManagement";
-  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewImport,roleViewUserManagement,];
+  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewImport,roleViewUserManagement,];
   ////////////--------------------------------------------------
   static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
   static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
@@ -155,8 +152,25 @@ abstract class Const {
   static const invoiceChoosePriceMethodeCustom = "invoiceChoosePriceMethodeCustom";
   ////////////--------------------------------------------------
   static const rowAccountAggregateName= "rowAccountAggregateName";
+  ////////////---------------------------------------------------
+  static const globalTypeInvoice= "globalTypeInvoice";
+  static const globalTypeBond= "globalTypeBond";
+  static const globalTypeCheque= "globalTypeCheque";
+  ////////////---------------------------------------------------
+  static const invoiceRecordCollection="invoiceRecord";
+  static const bondRecordCollection="bondRecord";
+  static const chequeRecordCollection="chequeRecord";
 }
 
+String getInvTypeFromEnum(String type) {
+  switch (type) {
+    case "sales":
+      return "بيع";
+    case "pay":
+      return "شراء";
+  }
+  return type;
+}
 String getChequeTypefromEnum(String type) {
   switch (type) {
     case Const.chequeTypeCatch:
@@ -186,7 +200,7 @@ String getProductTypeFromEnum(String type) {
     case Const.productTypeStore:
       return "مواد مستودعية";
   }
-  return "error";
+  return type;
 }
 
 String getAccountTypefromEnum(String type) {
@@ -259,10 +273,27 @@ String getPageNameFromEnum(String type) {
       return "الشيكات";
     case Const.roleViewSeller:
       return "البائعون";
+    case Const.roleViewReport:
+      return "تقارير المبيعات";
     case Const.roleViewImport:
       return "استيراد المعلومات";
     case Const.roleViewUserManagement:
       return "إدارة المستخدمين";
   }
   return "error";
+}
+String getNameOfRoleFromEnum(String type) {
+  switch (type) {
+    case Const.roleUserRead:
+      return "قراءة البيانات";
+    case Const.roleUserWrite:
+      return "كتابة البيانات";
+    case Const.roleUserUpdate:
+      return "تعديل البيانات";
+    case Const.roleUserDelete:
+      return "حذف البيانات";
+    case Const.roleUserAdmin:
+      return "إدارة البيانات";
+  }
+  return type;
 }

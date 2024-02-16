@@ -46,8 +46,8 @@ class _AddUserViewState extends State<AddUserView> {
           title: Text(controller.initAddUserModel?.userName ?? "مستخدم جديد"),
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
+          //  mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("اسم الحساب"),
               SizedBox(
@@ -123,7 +123,7 @@ class _AddUserViewState extends State<AddUserView> {
                   onPressed: () {
                     controller.addUser();
                   },
-                  child: Text("add"))
+                  child: Text("إضافة"))
             ],
           ),
         ),

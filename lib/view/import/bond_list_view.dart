@@ -1,15 +1,17 @@
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../../controller/import_view_model.dart';
 import '../../model/bond_record_model.dart';
 import '../../model/global_model.dart';
 
 class BondListView extends StatelessWidget {
   final List<GlobalModel>bondList;
    BondListView({super.key, required this.bondList});
-  var userManagementController = Get.find<UserManagementViewModel>();
+  var importViewModel = Get.find<ImportViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,8 @@ class BondListView extends StatelessWidget {
       appBar: AppBar(
         actions: [
           ElevatedButton(onPressed: (){
-           if( userManagementController.checkAllAccount(bondList)){
-             userManagementController.addBond(bondList);
+           if( importViewModel.checkAllAccount(bondList)){
+             importViewModel.addBond(bondList);
            }
           }, child: Text("add"))
         ],
@@ -82,7 +84,7 @@ class BondListView extends StatelessWidget {
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(
                           width: 300,
-                          child: Text(e.bondRecAccount.toString())),
+                          child: Text(e.bondRecAccount.toString()+" "+getAccountNameFromId(e.bondRecAccount))),
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(
                           width: 50,

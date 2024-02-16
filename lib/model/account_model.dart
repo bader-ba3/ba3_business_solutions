@@ -1,8 +1,11 @@
+import 'package:ba3_business_solutions/model/account_record_model.dart';
+
 class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat,accParentId;
   bool?accIsParent;
   List accChild=[];
   List accAggregateList=[];
+  List<AccountRecordModel> accRecord=[];
   AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode,this.accParentId,this.accIsParent});
 
   AccountModel.fromJson(Map<dynamic, dynamic> map, id) {
@@ -14,6 +17,7 @@ class AccountModel {
     accVat = map['accVat'];
     accParentId = map['accParentId'];
     accIsParent = map['accIsParent'];
+    accRecord = map['accRecord']??[];
     accChild = map['accChild']??[];
     accAggregateList = map['accAggregateList']??[];
   }
@@ -96,6 +100,7 @@ class AccountModel {
       'accIsParent': accIsParent,
       'accChild': accChild,
       'accAggregateList': accAggregateList,
+      'accRecord': accRecord,
     };
   }
 }

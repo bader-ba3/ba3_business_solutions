@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,15 +53,19 @@ class _ProductDetailsState extends State<ProductDetails> {
               SizedBox(
                 width: 30,
               ),
-              if (productController.productDataMap[widget.oldKey!]!.prodRecord!.isEmpty)
+              if ((productController.productDataMap[widget.oldKey!]!.prodRecord??[]).isEmpty)
                 ElevatedButton(
                     onPressed: () {
+                      confirmDeleteWidget().then((value) {
+                        if (value) {
                       checkPermissionForOperation(Const.roleUserDelete, Const.roleViewProduct).then((value) {
                         if (value) {
                           productController.deleteProduct(withLogger: true);
                           Get.back();
                         }
                       });
+    }
+  });
                     },
                     child: Text("حذف"))
               else
@@ -82,11 +87,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: Directionality(
                     textDirection: TextDirection.rtl,
                     child: StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection(Const.productsCollection).snapshots(),
+                        stream: productController.productDataMap.stream,
                         builder: (context, snapshot) {
-                          if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else {
+                          // if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
+                          //   return CircularProgressIndicator();
+                          // } else {
                             return GetBuilder<ProductViewModel>(builder: (controller) {
                               initPage();
                               // controller.initGrid(snapshot.data);
@@ -132,7 +137,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 ],
                               );
                             });
-                          }
+                          // }
                         }),
                   ),
                 ),

@@ -30,7 +30,9 @@ class CustomBondRecordDataSource extends DataGridSource {
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowBondId, value: e.bondRecId),
               DataGridCell<String>(columnName: Const.rowBondAccount, value: accountController.accountList.values.toList().firstWhereOrNull((_) => _.accId == e.bondRecAccount)?.accName),
-              isDebit ? DataGridCell<double>(columnName: Const.rowBondDebitAmount, value: e.bondRecDebitAmount) : DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: e.bondRecCreditAmount),
+              isDebit
+                  ? DataGridCell<double>(columnName: Const.rowBondDebitAmount, value: e.bondRecDebitAmount)
+                  : DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: e.bondRecCreditAmount),
               DataGridCell<String>(columnName: Const.rowBondDescription, value: e.bondRecDescription),
             ]))
         .toList();
@@ -74,9 +76,10 @@ class CustomBondRecordDataSource extends DataGridSource {
   Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
     final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
-    if (newCellValue == null || oldValue == newCellValue) {
-      return null;
-    }
+    // if (newCellValue == null || oldValue == newCellValue) {
+    //   return null;
+    // }
+    print(column.columnName);
     if (dataGridRows.length == dataRowIndex + 1) {
       var id = (int.parse(dataGridRows[dataRowIndex - 1].getCells()[0].value) + 1).toString();
       if (int.parse(id) < 10) id = "0$id";
@@ -129,10 +132,10 @@ class CustomBondRecordDataSource extends DataGridSource {
         bondController.update();
       } else {
         await Get.defaultDialog(
-            title: "choose one",
+            title: "اختر احد الحسابات",
             content: SizedBox(
-              height: 500,
-              width: 500,
+              height: Get.height/2,
+              width:Get.height/2,
               child: ListView.builder(
                   itemCount: result.length,
                   itemBuilder: (_, index) {
@@ -146,7 +149,7 @@ class CustomBondRecordDataSource extends DataGridSource {
                         bondController.update();
                         Get.back();
                       },
-                      child: Text(result[index]),
+                      child: Center(child: Text(result[index],style: TextStyle(fontSize: 20),)),
                     );
                   }),
             ),
@@ -155,20 +158,23 @@ class CustomBondRecordDataSource extends DataGridSource {
                   onPressed: () {
                     Get.back();
                   },
-                  child: Text("back"))
+                  child: Text("رجوع"))
             ]);
       }
     }
+
     if (column.columnName == Const.rowBondDescription) {
       // bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecDescription=newCellValue;
       bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == rows[dataRowIndex].getCells()[0].value).bondRecDescription = newCellValue;
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: column.columnName, value: newCellValue);
-    } else if (column.columnName == Const.rowBondCreditAmount) {
+    }
+    else if (column.columnName == Const.rowBondCreditAmount) {
       bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == rows[dataRowIndex].getCells()[0].value).bondRecCreditAmount = double.parse(newCellValue??"0");
       // bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecCreditAmount=int.parse(newCellValue);
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: column.columnName, value: double.parse(newCellValue??"0"));
-    } else if (column.columnName == Const.rowBondDebitAmount) {
-      bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == rows[dataRowIndex].getCells()[0].value).bondRecDebitAmount = double.parse(newCellValue??"0");
+    }
+    else if (column.columnName == Const.rowBondDebitAmount) {
+      bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId.toString() == rows[dataRowIndex].getCells()[0].value.toString()).bondRecDebitAmount = double.parse(newCellValue??"0");
       // bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecDebitAmount=int.parse(newCellValue);
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: column.columnName, value: double.parse(newCellValue??"0"));
     }
@@ -225,12 +231,18 @@ class CustomBondRecordDataSource extends DataGridSource {
           }
         },
         onSubmitted: (String value) {
-          if(double.tryParse(value)!=null){
+          if(!isNumericType){
             newCellValue = value;
             submitCell();
           } else {
-            Get.snackbar("error", "enter a valid number");
-            newCellValue = null;
+            if(double.tryParse(value)!=null){
+              newCellValue = value;
+              submitCell();
+            }else{
+              Get.snackbar("error", "enter a valid number");
+              newCellValue = null;
+            }
+
           }
 
           /// Call [CellSubmit] callback to fire the canSubmitCell and

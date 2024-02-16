@@ -24,18 +24,18 @@ class AccountRecordDataSource extends DataGridSource {
     allRecord.addAll(accountRecordModel);
     for (var element in accountModel.accChild) {
       print(element);
-      allRecord.addAll(accountController.allAccounts[element]!.toList());
+      allRecord.addAll(accountController.accountList[element]!.accRecord.toList());
     }
     if(accountModel.accType==Const.accountTypeAggregateAccount){
       for (var element in accountModel.accAggregateList) {
-        allRecord.addAll(accountController.allAccounts[element]!.toList());
+        allRecord.addAll(accountController.accountList[element]!.accRecord.toList());
       }
     }
 
     dataGridRows = allRecord
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowAccountName, value: getAccountNameFromId(e.account)),
-              DataGridCell<RecordType>(columnName: Const.rowAccountType, value: e.type),
+              DataGridCell<RecordType>(columnName: Const.rowAccountType, value: RecordType.bond),
               DataGridCell<String>(columnName: Const.rowAccountTotal, value: e.total),
               DataGridCell<double>(columnName: Const.rowAccountBalance, value: lastBalance+= double.parse(e.total!)),
               DataGridCell<String>(columnName: Const.rowAccountId, value: e.id),

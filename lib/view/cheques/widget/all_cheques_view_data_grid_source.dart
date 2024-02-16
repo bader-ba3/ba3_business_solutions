@@ -1,12 +1,13 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/model/cheque_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class AllChequesViewDataGridSource extends DataGridSource {
-  final RxMap<String, ChequeModel> cheqMap;
+  final RxMap<String, GlobalModel> cheqMap;
 
   AllChequesViewDataGridSource(
     this.cheqMap,
@@ -15,7 +16,7 @@ class AllChequesViewDataGridSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => cheqMap.entries.map<DataGridRow>((entry) {
         String cheqId = entry.key;
-        ChequeModel cheque = entry.value;
+        GlobalModel cheque = entry.value;
         return DataGridRow(cells: [
           DataGridCell<String>(columnName: Const.rowViewCheqId, value: cheqId),
           DataGridCell<String>(columnName: Const.rowViewChequeStatus, value: getChequeStatusfromEnum(cheque.cheqStatus ?? "")),

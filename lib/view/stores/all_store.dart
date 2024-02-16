@@ -32,88 +32,15 @@ class AllStore extends StatelessWidget {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Row(
-                //   children: [
-                //     Flexible(
-                //       flex: 1,
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //         children: [
-                //           const Flexible(flex: 2, child: Text("Store Name :")),
-                //           Flexible(flex: 3, child: customTextFieldWithoutIcon(storeController.nameController, true)),
-                //         ],
-                //       ),
-                //     ),
-                //     Flexible(
-                //       flex: 1,
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //         children: [
-                //           const Flexible(flex: 2, child: Text("Store code :")),
-                //           Flexible(flex: 3, child: customTextFieldWithoutIcon(storeController.codeController, true)),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(
-                //   height: 25,
-                // ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //   children: [
-                //     ElevatedButton(
-                //         style: ButtonStyle(
-                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                //         ),
-                //         onPressed: () {
-                //           storeController.addNewStore(storeController.initStoreModel());
-                //         },
-                //         child: const Text("Add")),
-                //     ElevatedButton(
-                //         style: ButtonStyle(
-                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                //           mouseCursor: MaterialStateProperty.all<MouseCursor>(storeController.idController.text == "" ? SystemMouseCursors.forbidden : SystemMouseCursors.click),
-                //         ),
-                //         onPressed: () {
-                //           if (storeController.idController.text != "") {
-                //             storeController.editStore(storeController.initStoreModel());
-                //           }
-                //         },
-                //         child: const Text("Edit")),
-                //     ElevatedButton(
-                //         style: ButtonStyle(
-                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                //         ),
-                //         onPressed: () {
-                //           storeController.clearController();
-                //           storeController.getNewCode();
-                //         },
-                //         child: const Text("New")),
-                //     ElevatedButton(
-                //         style: ButtonStyle(
-                //           backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
-                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                //           mouseCursor: MaterialStateProperty.all<MouseCursor>(storeController.idController.text == "" ? SystemMouseCursors.forbidden : SystemMouseCursors.click),
-                //         ),
-                //         onPressed: () {
-                //           if (storeController.idController.text != "") {
-                //             storeController.deleteStore(storeController.initStoreModel());
-                //           }
-                //         },
-                //         child: const Text("Delete")),
-                //   ],
-                // ),
-                // const SizedBox(
-                //   height: 25,
-                // ),
                 Expanded(
                   child: SfDataGrid(
+                    horizontalScrollPhysics: NeverScrollableScrollPhysics(),
+                    verticalScrollPhysics: BouncingScrollPhysics(),
                     controller: storeController.storeDataGridController,
                     onCellTap: (details) {
                       if (details.rowColumnIndex.rowIndex != 0) {
                         var stId = (storeController.recordViewDataSource?.dataGridRows[details.rowColumnIndex.rowIndex - 1].getCells().firstWhere((element) => element.columnName == Const.stId).value);
-                        Get.to(StoreDetails(
+                        Get.to(()=>StoreDetails(
                           oldKey: stId,
                         ));
                       }

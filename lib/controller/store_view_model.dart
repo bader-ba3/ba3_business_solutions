@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -9,6 +10,7 @@ import 'package:ba3_business_solutions/view/stores/widgets/store_dataSource.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/store_record_model.dart';
@@ -16,9 +18,8 @@ import '../model/store_record_model.dart';
 class StoreViewModel extends GetxController {
   final CollectionReference _storeCollectionRef = FirebaseFirestore.instance.collection(Const.storeCollection);
 
-  RxMap<String, StoreModel> _storesMap = <String, StoreModel>{}.obs;
+  RxMap<String, StoreModel> storeMap = <String, StoreModel>{}.obs;
 
-  RxMap<String, StoreModel> get storeMap => _storesMap;
   bool isAscending = true;
 
   DataGridController storeDataGridController = DataGridController();
@@ -27,39 +28,76 @@ class StoreViewModel extends GetxController {
 
   StoreViewModel() {
     getAllStore();
+  }
+  String? openedStore;
+  StoreRecordDataSource? recordViewDataSource;
 
+  void initGlobalStore(GlobalModel globalModel) {
+    Map<String, StoreRecProductModel> allRecTotal = {};
+    bool isPay = globalModel.invType == "pay";
+    int correctQuantity = isPay ? 1 : -1;
+    for (int i = 0; i <  globalModel.invRecords!.length; i++) {
+      if ( globalModel.invRecords![i].invRecId != null) {
+        bool isStoreProduct= getProductModelFromId( globalModel.invRecords![i].invRecProduct)!.prodType==Const.productTypeStore;
+        if(isStoreProduct) {
+          allRecTotal[ globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
+            storeRecProductId:  globalModel.invRecords![i].invRecProduct,
+            storeRecProductPrice:  globalModel.invRecords![i].invRecSubTotal.toString(),
+            storeRecProductQuantity: (correctQuantity *  globalModel.invRecords![i].invRecQuantity!).toString(),
+            storeRecProductTotal:  globalModel.invRecords![i].invRecTotal.toString(),
+          );
+        }
+      }
+    }
+    print(allRecTotal);
+    // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
+    StoreRecordModel model=   StoreRecordModel(
+        storeRecId:globalModel.invStorehouse,
+        storeRecInvId:globalModel.invId,
+        storeRecProduct:allRecTotal
+    );
+
+    if(storeMap[model.storeRecId]?.stRecords==null){
+      storeMap[model.storeRecId]?.stRecords=[model];
+    }else{
+      storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId==globalModel.invId);
+      storeMap[model.storeRecId]?.stRecords.add(model);
+    }
+    if(openedStore!=null){
+      initStorePage(openedStore);
+    }
   }
 
-  StoreRecordDataSource? recordViewDataSource;
+  void deleteGlobalStore(GlobalModel globalModel){
+    storeMap[globalModel.invStorehouse]?.stRecords.removeWhere((element) => element.storeRecInvId==globalModel.invId);
+  }
+
+
   getAllStore() {
      FirebaseFirestore.instance.collection(Const.storeCollection).snapshots().listen((value)  {
-      _storesMap.clear();
+       RxMap<String, List<StoreRecordModel>> oldStoreMap = <String, List<StoreRecordModel>>{}.obs;
+       storeMap.forEach((key, value) {
+         oldStoreMap[key]=value.stRecords;
+       });
+       storeMap.clear();
+
       for (var element in value.docs) {
-        // _storesMap[element.id] = StoreModel.fromJson(element.data());
-        element.reference.collection(Const.recordCollection).snapshots().listen((value) {
-          Map<String, StoreRecordModel> _={};
-          for (var e in value.docs) {
-            _[e.id]=StoreRecordModel.fromJson(e.data());
-          }
-          _storesMap[element.id] = StoreModel.fromJson(element.data(),_);
-
-          recordViewDataSource = StoreRecordDataSource(stores: _storesMap);
-        });
+        storeMap[element.id] = StoreModel.fromJson(element.data());
+        storeMap[element.id]?.stRecords =oldStoreMap[element.id]??[];
       }
-      recordViewDataSource = StoreRecordDataSource(stores: _storesMap);
-
+      recordViewDataSource = StoreRecordDataSource(stores: storeMap);
       update();
     });
   }
   Map<String,double> totalAmountPage={};
   initStorePage(storeId){
     totalAmountPage.clear();
-    storeMap[storeId]?.stRecords.forEach((key, value) {
+    storeMap[storeId]?.stRecords.forEach((value) {
       value.storeRecProduct?.forEach((key, value) {
         totalAmountPage[value.storeRecProductId!]=(totalAmountPage[value.storeRecProductId!]??0)+double.parse(value.storeRecProductQuantity!)!;
       });
     });
-    print(totalAmountPage);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update());
   }
   addNewStore() {
     editStoreModel?.stId = generateId(RecordType.store);
@@ -93,33 +131,33 @@ class StoreViewModel extends GetxController {
     update();
   }
 
-  void saveInvInStore(List<InvoiceRecordModel> record, String? invId, String? invType, String? storeId) {
-    Map<String, StoreRecProductModel> allRecTotal = {};
-    bool isPay = invType == "pay";
-    int correctQuantity = isPay ? 1 : -1;
-    for (int i = 0; i < record.length; i++) {
-      if (record[i].invRecId != null) {
-        bool isStoreProduct= getProductModelFromId(record[i].invRecProduct)!.prodType==Const.productTypeStore;
-        if(isStoreProduct) {
-          allRecTotal[record[i].invRecProduct!] = StoreRecProductModel(
-            storeRecProductId: record[i].invRecProduct,
-            storeRecProductPrice: record[i].invRecSubTotal.toString(),
-            storeRecProductQuantity: (correctQuantity * record[i].invRecQuantity!).toString(),
-            storeRecProductTotal: record[i].invRecTotal.toString(),
-          );
-        }
-      }
-    }
-    FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).set(StoreRecordModel(
-        storeRecId:storeId,
-        storeRecInvId:invId,
-        storeRecProduct:allRecTotal
-    ).toJson());
-  }
+  // void saveInvInStore(List<InvoiceRecordModel> record, String? invId, String? invType, String? storeId) {
+  //   Map<String, StoreRecProductModel> allRecTotal = {};
+  //   bool isPay = invType == "pay";
+  //   int correctQuantity = isPay ? 1 : -1;
+  //   for (int i = 0; i < record.length; i++) {
+  //     if (record[i].invRecId != null) {
+  //       bool isStoreProduct= getProductModelFromId(record[i].invRecProduct)!.prodType==Const.productTypeStore;
+  //       if(isStoreProduct) {
+  //         allRecTotal[record[i].invRecProduct!] = StoreRecProductModel(
+  //           storeRecProductId: record[i].invRecProduct,
+  //           storeRecProductPrice: record[i].invRecSubTotal.toString(),
+  //           storeRecProductQuantity: (correctQuantity * record[i].invRecQuantity!).toString(),
+  //           storeRecProductTotal: record[i].invRecTotal.toString(),
+  //         );
+  //       }
+  //     }
+  //   }
+  //   FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).set(StoreRecordModel(
+  //       storeRecId:storeId,
+  //       storeRecInvId:invId,
+  //       storeRecProduct:allRecTotal
+  //   ).toJson());
+  // }
 
-  void deleteRecord({required String storeId, String? invId}) {
-      FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).delete();
-  }
+  // void deleteRecord({required String storeId, String? invId}) {
+  //     FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).delete();
+  // }
 
   Future<void> exportStore(String? oldKey) async {
    List<List> data=[["اسم المادة","العدد"]];
@@ -145,7 +183,7 @@ class StoreViewModel extends GetxController {
 String getStoreIdFromText(text) {
   var storeController = Get.find<StoreViewModel>();
   if (text != null && text != " " && text != "") {
-    return storeController.storeMap.values.toList().firstWhere((element) => element.stName == text).stId!;
+    return storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == text)?.stId??"";
   } else {
     return "";
   }

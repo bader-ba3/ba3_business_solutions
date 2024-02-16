@@ -50,7 +50,7 @@ class _UserManagementTypeState extends State<UserManagementType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("إدارة المستخدمين"),
+          title: Text("الإدارة"),
         ),
         body: !isAdmin
         ?Center(child: Text("غير مصرح لك بالدخول"),)

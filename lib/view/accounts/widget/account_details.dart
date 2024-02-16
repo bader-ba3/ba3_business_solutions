@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
+import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class AccountDetails extends StatefulWidget {
 }
 
 class _AccountDetailsState extends State<AccountDetails> {
-  var controller = Get.find<AccountViewModel>();
+  var accountController = Get.find<AccountViewModel>();
   var nameController = TextEditingController();
   var codeController = TextEditingController();
   List<AccountRecordModel> record = <AccountRecordModel>[];
@@ -29,36 +30,43 @@ class _AccountDetailsState extends State<AccountDetails> {
   void initState() {
     super.initState();
 
-    controller.initAccountPage(widget.modelKey);
+    accountController.initAccountPage(widget.modelKey);
   }
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            ElevatedButton(onPressed: (){
-            Get.to(AddAccount(modelKey:widget.modelKey));
-            }, child: Text("تعديل بطاقة الحساب")),
-            if(controller.allAccounts[widget.modelKey]!.isEmpty)
-            ElevatedButton(onPressed: (){
-              checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
-                if(value) controller.deleteAccount(widget.modelKey,withLogger: true);
-              });
+      child: GetBuilder<AccountViewModel>(
+          builder: (controller) {
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                ElevatedButton(onPressed: (){
+                Get.to(AddAccount(modelKey:widget.modelKey));
+                }, child: Text("تعديل بطاقة الحساب")),
+                if(controller.accountList[widget.modelKey]!.accRecord.isEmpty)
+                ElevatedButton(onPressed: (){
+                  confirmDeleteWidget().then((value) {
+                    if(value) {
+                  checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
+                    if(value) {
+                          controller.deleteAccount(widget.modelKey, withLogger: true);
+                          Get.back();
 
-            }, child: Text("حذف")),
-          ],
-          title: Text(controller.accountList[widget.modelKey]?.accName??"error"),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Directionality(
-                textDirection:TextDirection.rtl,
-                child: GetBuilder<AccountViewModel>(
-                  builder: (controller) {
-                    return SfDataGrid(
+                    }
+                  });
+    }
+  });
+                }, child: Text("حذف")),
+              ],
+              title: Text(controller.accountList[widget.modelKey]?.accName??"error"),
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                  child: Directionality(
+                    textDirection:TextDirection.rtl,
+                    child: SfDataGrid(
                       onCellTap: (DataGridCellTapDetails _ ){
                         controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex-1].getCells().forEach((element) {
                           if(element.columnName == Const.rowAccountId){
@@ -69,7 +77,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                             else{
                               Get.to(()=>CustomBondDetailsView(oldId: value,oldModelKey: widget.modelKey,isDebit: bondController.allBondsItem[value]?.bondType == Const.bondTypeDebit,));
                             }
-                            }
+                          }
                         });
                       },
                       source: controller.recordDataSource,
@@ -100,22 +108,22 @@ class _AccountDetailsState extends State<AccountDetails> {
                             )),
                         // GridColumnItem(label: 'الرمز التسلسي للعملية',name: Const.rowAccountId),
                       ],
-                    );
-                  }
+                    )
+                  ),
                 ),
-              ),
-            ),
-            Center(child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("الرصيد النهائي"),
-                SizedBox(width: 30,),
-                Text(controller.getBalance(widget.modelKey).toStringAsFixed(2))
+                Center(child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("الرصيد النهائي"),
+                    SizedBox(width: 30,),
+                    Text(controller.getBalance(widget.modelKey).toStringAsFixed(2))
+                  ],
+                ),),
+                SizedBox(height: 50,),
               ],
-            ),),
-            SizedBox(height: 50,),
-          ],
-        ),
+            ),
+          );
+        }
       ),
     );
   }

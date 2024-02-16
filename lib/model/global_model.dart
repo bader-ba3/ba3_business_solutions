@@ -1,4 +1,5 @@
 import 'bond_record_model.dart';
+import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
 
 class GlobalModel {
@@ -18,15 +19,35 @@ class GlobalModel {
       invStorehouse,
       invComment,
       invType,
+      invFullCode,
       originId,
       patternId,
       invCode,
       invSeller,
-      invDate;
+      invDate,
+      invVatAccount,
+      invCustomerAccount,
+      globalType;
   double? invTotal;
-
   List<BondRecordModel>? bondRecord = [];
   List<InvoiceRecordModel>? invRecords = [];
+  List<String>? readFlags=[];
+
+
+
+  String?
+  cheqId,
+      cheqName,
+      cheqAllAmount,
+      cheqRemainingAmount,
+      cheqPrimeryAccount,
+      cheqSecoundryAccount,
+      cheqCode,
+      cheqDate,
+      cheqStatus,
+      cheqType,
+      cheqBankAccount;
+  List<ChequeRecModel>? cheqRecords = [];
 
   Map<String, dynamic> toJson() {
     return {
@@ -53,7 +74,24 @@ class GlobalModel {
       if (invSeller != null) "invSeller": invSeller,
       if (invDate != null) "invDate": invDate,
       if (invMobileNumber != null) "invMobileNumber": invMobileNumber,
+      if (invVatAccount != null) "invVatAccount": invVatAccount,
+      if (invCustomerAccount != null) "invCustomerAccount": invCustomerAccount,
+      if (invFullCode != null) "invFullCode": invFullCode,
+      if (readFlags != null) "readFlags": readFlags,
+      if (globalType != null) "globalType": globalType,
       // if(patternModel != null)"pattrenModel"
+
+      if (cheqId != null) 'cheqId': cheqId,
+      if (cheqName != null) 'cheqName': cheqName,
+      if (cheqAllAmount != null) 'cheqAllAmount': cheqAllAmount,
+      if (cheqRemainingAmount != null) 'cheqRemainingAmount': cheqRemainingAmount,
+      if (cheqPrimeryAccount != null) 'cheqPrimeryAccount': cheqPrimeryAccount,
+      if (cheqSecoundryAccount != null) 'cheqSecoundryAccount': cheqSecoundryAccount,
+      if (cheqCode != null) 'cheqCode': cheqCode,
+      if (cheqDate != null) 'cheqDate': cheqDate,
+      if (cheqStatus != null) 'cheqStatus': cheqStatus,
+      if (cheqType != null) 'cheqType': cheqType,
+      if (cheqBankAccount != null) 'cheqBankAccount': cheqBankAccount,
     };
   }
 
@@ -82,11 +120,32 @@ class GlobalModel {
       if (invSeller != null) "invSeller": invSeller,
       if (invDate != null) "invDate": invDate,
       if (invMobileNumber != null) "invMobileNumber": invMobileNumber,
+      if (invVatAccount != null) "invVatAccount": invVatAccount,
+      if (invCustomerAccount != null) "invCustomerAccount": invCustomerAccount,
+      if (invFullCode != null) "invFullCode": invFullCode,
+      if (readFlags != null) "readFlags": readFlags,
+      if (globalType != null) "globalType": globalType,
+
+      if (cheqId != null) 'cheqId': cheqId,
+      if (cheqName != null) 'cheqName': cheqName,
+      if (cheqAllAmount != null) 'cheqAllAmount': cheqAllAmount,
+      if (cheqRemainingAmount != null) 'cheqRemainingAmount': cheqRemainingAmount,
+      if (cheqPrimeryAccount != null) 'cheqPrimeryAccount': cheqPrimeryAccount,
+      if (cheqSecoundryAccount != null) 'cheqSecoundryAccount': cheqSecoundryAccount,
+      if (cheqCode != null) 'cheqCode': cheqCode,
+      if (cheqDate != null) 'cheqDate': cheqDate,
+      if (cheqStatus != null) 'cheqStatus': cheqStatus,
+      if (cheqType != null) 'cheqType': cheqType,
+      if (cheqBankAccount != null) 'cheqBankAccount': cheqBankAccount,
+      if (cheqRecords != null) "cheqRecords": cheqRecords?.map((record) => record.toJson()).toList(),
+
     };
   }
 
   factory GlobalModel.fromJson(json) {
-    List<BondRecordModel>? bondRecordList = json['bondRecord']?.map<BondRecordModel>((Map<String, dynamic> e) => BondRecordModel.fromJson(e)).toList();
+    List<BondRecordModel>? bondRecordList = json['bondRecord']?.map<BondRecordModel>((dynamic e) => BondRecordModel.fromJson(e)).toList();
+    List<InvoiceRecordModel>? invRecordList = json['invRecords']?.map<InvoiceRecordModel>((dynamic e) => InvoiceRecordModel.fromJson(e)).toList();
+    List<ChequeRecModel>? cheqRecord = json['cheqRecords']?.map<ChequeRecModel>((dynamic e) => ChequeRecModel.fromJson(e)).toList();
     return GlobalModel(
       bondId: json['bondId'],
       bondDescription: json['bondDescription'],
@@ -105,12 +164,32 @@ class GlobalModel {
       invComment: json['invComment'],
       invType: json['invType'],
       originId: json['originId'],
-      //    invRecords:invRecords,
+      invRecords:invRecordList,
       invCode: json['invCode'],
       patternId: json['patternId'],
       invSeller: json['invSeller'],
       invDate: json['invDate'],
       invMobileNumber: json['invMobileNumber'],
+      invVatAccount: json['invVatAccount'],
+      invCustomerAccount: json['invCustomerAccount'],
+      invFullCode: json['invFullCode'],
+      globalType: json['globalType'],
+      readFlags: (json['readFlags'] as List?)?.map((e) => e.toString()).toList(),
+
+      cheqId : json['cheqId'],
+      cheqName : json['cheqName'],
+      cheqAllAmount : json['cheqAllAmount'],
+      cheqRemainingAmount : json['cheqRemainingAmount'],
+      cheqPrimeryAccount : json['cheqPrimeryAccount'],
+      cheqSecoundryAccount : json['cheqSecoundryAccount'],
+      cheqCode : json['cheqCode'],
+      cheqDate : json['cheqDate'],
+      cheqStatus : json['cheqStatus'],
+      cheqType : json['cheqType'],
+      cheqBankAccount : json['cheqBankAccount'],
+      cheqRecords : cheqRecord,
+
+
     );
   }
   // Map difference(GlobalModel oldData) {
@@ -277,6 +356,23 @@ class GlobalModel {
     this.invSeller,
     this.invDate,
     this.invMobileNumber,
+    this.invVatAccount,
+    this.invCustomerAccount,
+    this.invFullCode,
+    this.readFlags,
+    this.globalType,
+    this.cheqId,
+    this.cheqName,
+    this.cheqAllAmount,
+    this.cheqRemainingAmount,
+    this.cheqPrimeryAccount,
+    this.cheqSecoundryAccount,
+    this.cheqCode,
+    this.cheqDate,
+    this.cheqStatus,
+    this.cheqType,
+    this.cheqBankAccount,
+    this.cheqRecords,
   });
 }
 

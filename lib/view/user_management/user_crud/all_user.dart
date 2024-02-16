@@ -14,7 +14,6 @@ class AllUserView extends StatefulWidget {
 }
 
 class _AllUserViewState extends State<AllUserView> {
-  UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
   // @override
   // void initState() {
   //   super.initState();
@@ -37,33 +36,60 @@ class _AllUserViewState extends State<AllUserView> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserManagementViewModel>(builder: (controller) {
-      return userManagementViewController.allUserList.isEmpty
-          ? Scaffold(appBar: AppBar(), body: Text("not permission to do this process"))
-          : Scaffold(
-              appBar: AppBar(
-                actions: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => AddUserView());
-                      },
-                      child: Text("add User")),
-                ],
-              ),
-              body: ListView.builder(
-                  itemCount: userManagementViewController.allUserList.length,
-                  itemBuilder: (contex, index) {
-                    return Padding(
-                      padding: EdgeInsets.all(8),
-                      child: InkWell(
-                          onTap: () {
-                            Get.to(() => AddUserView(
-                                  oldKey: userManagementViewController.allUserList.values.toList()[index].userId,
-                                ));
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: GetBuilder<UserManagementViewModel>(
+        builder: (controller) {
+          return  Scaffold(
+                  appBar: AppBar(
+                    title: Text("إدارة المستخدمين"),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Get.to(() => AddUserView());
                           },
-                          child: Text(userManagementViewController.allUserList.values.toList()[index].userName ?? "error")),
-                    );
-                  }));
-    });
+                          child: Text("إضافة مستخدم")),
+                    ],
+                  ),
+                  body: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Wrap(
+                        children: List.generate(
+                          controller.allUserList.values.length,
+                          (index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Get.to(() => AddUserView(
+                                      oldKey: controller.allUserList.values.toList()[index].userId,
+                                    ));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.5), borderRadius: BorderRadius.circular(10)),
+                                height: 140,
+                                width: 140,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      controller.allUserList.values.toList()[index].userName ?? "",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+        },
+      ),
+    );
   }
 }

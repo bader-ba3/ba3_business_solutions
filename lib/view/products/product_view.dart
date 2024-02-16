@@ -26,11 +26,11 @@ class AllProduct extends StatelessWidget {
         ),
         body: GetBuilder<ProductViewModel>(builder: (controller) {
           return Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ListView.builder(
-                itemCount: controller.productDataMap.values.length,
+                itemCount: controller.productDataMap.values.where((element) => !element.prodIsGroup!).toList().length,
                 itemBuilder: (context, index) {
-                  ProductModel model = controller.productDataMap.values.toList()[index];
+                  ProductModel model = controller.productDataMap.values.toList().where((element) => !element.prodIsGroup!).toList()[index];
                   return Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: InkWell(
@@ -42,14 +42,15 @@ class AllProduct extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-
-                          Text(model.prodCode ?? "0",style: TextStyle(fontSize: 20),),
+                          Container(
+                              width: 100,
+                              child: Text(controller.getFullCodeOfProduct(model.prodId!),style: TextStyle(fontSize: 20),)),
                           Text(" - ",style: TextStyle(fontSize: 20),),
                        //   Text(model.prodId ?? "not found"),
                           Text(model.prodName ?? "not found",style: TextStyle(fontSize: 20),),
                           SizedBox(width: 20,),
                           Text("الكمية: "),
-                          Text(model.prodAllQuantity ?? "0",style: TextStyle(fontSize: 20),),
+                          Text(model.prodFullCode.toString(),style: TextStyle(fontSize: 20),),
                         ],
                       ),
                     ),

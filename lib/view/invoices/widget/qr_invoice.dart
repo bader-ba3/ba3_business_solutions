@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 
 class QRScannerView extends StatefulWidget {
@@ -112,6 +113,9 @@ class _QRScannerViewState extends State<QRScannerView> {
                                 children: [
                                   Text(i.prodName??"not found",style: TextStyle(fontSize: 22),),
                                   SizedBox(width: 20,),
+                                  Text("السعر: "),
+                                  Text(i.prodCustomerPrice??"not found",style: TextStyle(fontSize: 22),),
+                                  SizedBox(width: 20,),
                                   InkWell(
                                     onTap: (){
                                       setState(() {
@@ -194,6 +198,7 @@ class _QRScannerViewState extends State<QRScannerView> {
 
          var _= productViewController.productDataMap.values.toList().firstWhereOrNull((element) => element.prodBarcode==scanData.code);
          if(_!=null){
+           AudioPlayer().play(AssetSource('barcode.m4a'));
            data.add(_);
            setState(() {
 

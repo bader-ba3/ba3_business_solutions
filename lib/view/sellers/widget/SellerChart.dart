@@ -76,7 +76,7 @@ class _SellerChartState extends State<SellerChart> {
                         borderData: borderData,
                         lineBarsData: controller.userMoney.entries.toList().map((e) => lineChartBarData1_1(e.value,e.key,controller)).toList(),
                         minX: 0,
-                        maxX: 30,
+                        maxX: 31,
                         maxY: controller.high,
                         minY: 0,
                       ),

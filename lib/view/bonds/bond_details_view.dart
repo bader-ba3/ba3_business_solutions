@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../model/bond_record_model.dart';
+import '../../utils/confirm_delete_dialog.dart';
+import '../../utils/hive.dart';
 
 class BondDetailsView extends StatefulWidget {
   BondDetailsView({
@@ -27,6 +30,7 @@ class BondDetailsView extends StatefulWidget {
 
 class _BondDetailsViewState extends State<BondDetailsView> {
   var bondController = Get.find<BondViewModel>();
+  var globalController = Get.find<GlobalViewModel>();
   var i = 0;
   List<BondRecordModel> record = <BondRecordModel>[];
   bool isNew = false;
@@ -36,6 +40,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
   void initState() {
     super.initState();
     initPage();
+    bondController.lastBondOpened=widget.oldModelKey;
   }
 
   void initPage() {
@@ -50,14 +55,16 @@ class _BondDetailsViewState extends State<BondDetailsView> {
       bondController.bondModel = getBondData();
       isNew = true;
     }
+    bondController.tempBondModel.readFlags= [HiveDataBase.getMyReadFlag()];
     bondController.tempBondModel.bondType = Const.bondTypeDaily;
     bondController.initPage();
 
-    newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-    while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
-      newCodeController.text = (int.parse(newCodeController.text) + 1).toString();
-      defualtCode = newCodeController.text;
-    }
+    newCodeController.text = bondController.getNextBondCode();
+    defualtCode = bondController.getNextBondCode();
+    // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
+    // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
+    //
+    // }
   }
 
   @override
@@ -88,26 +95,23 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 var validate=bondController.checkValidate();
                                 if(validate==null) {
                                   checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
-                                    bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
-                                    isNew = false;
-                                    controller.isEdit = false;
-                                  });}else{
+                                    if (value) {
+                                      if (controller.tempBondModel.bondTotal != "0") {
+                                        Get.back();
+                                        Get.snackbar("خطأ", "يجب ان يكون المدين يساوي الدائن");
+                                      } else {
+                                        globalController.updateGlobalBond(bondController.tempBondModel);
+                                        isNew = false;
+                                        controller.isEdit = false;
+                                        Get.back();
+                                      }
+                                    }
+                                  });
+
+                                }else{
                                   Get.snackbar("خطأ", validate);
                                 }
-                                checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
-                                  if (value) {
-                                    if (controller.tempBondModel.bondTotal != "0") {
-                                      Get.back();
-                                      Get.snackbar("خطأ", "يجب ان يكون المدين يساوي الدائن");
-                                    } else {
-                                      bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
-                                      isNew = false;
-                                      controller.isEdit = false;
-                                      Get.back();
-                                      Get.back();
-                                    }
-                                  }
-                                });
+
                               },
                               child: Text("قم بالتغييرات")),
                         ],
@@ -187,10 +191,16 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                         if (!isNew && controller.bondModel.originId == null)
                           ElevatedButton(
                               onPressed: () async {
-                                checkPermissionForOperation(Const.roleUserDelete,Const.roleViewBond).then((value) async {
-                                  await controller.deleteOneBonds(withLogger: true);
-                                  Get.back();
-                                  controller.update();
+                                confirmDeleteWidget().then((value) {
+                                  if(value){
+                                    checkPermissionForOperation(Const.roleUserDelete,Const.roleViewBond).then((value) async {
+                                      if(value){
+                                        globalController.deleteGlobal(bondController.tempBondModel);
+                                        Get.back();
+                                        controller.update();
+                                      }
+                                    });
+                                  }
                                 });
                               },
                               child: Text("حذف"))
@@ -204,15 +214,14 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                 children: [
                   Expanded(
                       child: StreamBuilder(
-                          stream: FirebaseFirestore.instance.collection(Const.bondsCollection).snapshots(),
+                          stream: controller.allBondsItem.stream,
                           builder: (context, snapshot) {
-                            if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else {
-                              return GetBuilder<BondViewModel>(builder: (controller) {
+                         return GetBuilder<BondViewModel>(builder: (controller) {
                                 controller.initPage();
                                 // initPage();
                                 return SfDataGrid(
+                                  horizontalScrollPhysics: NeverScrollableScrollPhysics(),
+                                  verticalScrollPhysics: BouncingScrollPhysics(),
                                   source: bondController.recordDataSource,
                                   allowEditing: controller.bondModel.originId == null,
                                   selectionMode: SelectionMode.singleDeselect,
@@ -248,7 +257,6 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                   ],
                                 );
                               });
-                            }
                           })),
                   Row(
                     children: [
@@ -257,7 +265,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                       SizedBox(width: 30),
                       GetBuilder<BondViewModel>(builder: (controller) {
                         double _ = 0;
-                        for (var element in bondController.tempBondModel.bondRecord!) {
+                        for (var element in bondController.tempBondModel.bondRecord??[]) {
                           _ = _ + element.bondRecDebitAmount!;
                         }
                         return Container(color: double.parse(controller.tempBondModel.bondTotal??"0")== 0 ? Colors.green : Colors.red, padding: EdgeInsets.all(8), child: Text(_.toStringAsFixed(2)));
@@ -265,7 +273,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                       SizedBox(width: 20),
                       Builder(builder: (context) {
                         double _ = 0;
-                        for (var element in bondController.tempBondModel.bondRecord!) {
+                        for (var element in bondController.tempBondModel.bondRecord??[]) {
                           _ = _ + element.bondRecCreditAmount!;
                         }
 
@@ -280,9 +288,12 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                         if (isNew) {
                           if(validate==null) {
                             checkPermissionForOperation(Const.roleUserWrite,Const.roleViewBond).then((value) {
-                              bondController.postOneBond(isNew, withLogger: true);
-                              isNew = false;
-                              controller.isEdit = false;
+                              if(value){
+                                globalController.addGlobalBond(bondController.tempBondModel);
+                                //bondController.postOneBond(isNew, withLogger: true);
+                                isNew = false;
+                                controller.isEdit = false;
+                              }
                             });
                           }else{
                             Get.snackbar("خطأ", validate);
@@ -290,9 +301,12 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                         } else if (controller.bondModel.originId == null) {
                           if(validate==null) {
                           checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
-                            bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
-                            isNew = false;
-                            controller.isEdit = false;
+                            if(value){
+                              globalController.updateGlobalBond(bondController.tempBondModel);
+                              // bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
+                              isNew = false;
+                              controller.isEdit = false;
+                            }
                           });}else{
                             Get.snackbar("خطأ", validate);
                           }

@@ -10,9 +10,8 @@ import 'package:get/get.dart';
 
 import '../../model/product_tree.dart';
 
-
 class ProductTreeView extends StatelessWidget {
-   ProductTreeView({super.key});
+  ProductTreeView({super.key});
   var productController = Get.find<ProductViewModel>();
 
   @override
@@ -41,7 +40,15 @@ class ProductTreeView extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                Get.to(()=>AddProduct());
+                  productController.createFolderDialog();
+                },
+                child: Text("إضافة ملف")),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Get.to(() => AddProduct());
                 },
                 child: Text("اضافة حساب")),
             SizedBox(
@@ -74,94 +81,120 @@ class ProductTreeView extends StatelessWidget {
       ),
     );
   }
-   myTreeTile({context,required ValueKey<ProductTree> key,required VoidCallback onTap,required TreeEntry<ProductTree> entry}) {
-     return TreeIndentation(
-       key: key,
-       entry: entry,
-       guide: const IndentGuide.connectingLines(indent: 48),
-       child: Padding(
-         padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
-         child: SizedBox(
-           width: 10,
-           height: 50,
-           child: GestureDetector(
-             onSecondaryTapDown: (details) {
-               showContextMenu(context, details.globalPosition, productController,entry);
-             },
-             onLongPressStart: (details) {
-               showContextMenu(context, details.globalPosition, productController,entry);
-             },
-             onTap: onTap,
-             child: Row(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 FolderButton(
-                   isOpen: entry.hasChildren ? entry.isExpanded : null,
-                   onPressed: entry.hasChildren ? onTap : null,
-                 ),
-                 if (productController.editItem != entry.node.id)
-                   Text(entry.node.name ?? "error")
-                 else
-                   SizedBox(
-                     width: 100,
-                     child: TextFormField(
-                       controller: productController.editCon,
-                       onFieldSubmitted: (_) {
-                         productController.endRenameChild();
-                       },
-                     ),
-                   ),
-               ],
-             ),
-           ),
-         ),
-       ),
-     );
-   }
 
-   void showContextMenu(BuildContext parentContext, Offset tapPosition, ProductViewModel controller,entry) {
-     showMenu(
-       context: parentContext,
-       position: RelativeRect.fromLTRB(
-         tapPosition.dx,
-         tapPosition.dy,
-         tapPosition.dx + 1.0,
-         tapPosition.dy * 1.0,
-       ),
-       items: [
-         const PopupMenuItem(
-           value: 'seeDetails',
-           child: ListTile(
-             leading: Icon(Icons.info_outline),
-             title: Text('عرض حركات المادة'),
-           ),
-         ),
-         const PopupMenuItem(
-           value: 'add',
-           child: ListTile(
-             leading: Icon(Icons.copy),
-             title: Text('إضافة ابن'),
-           ),
-         ),
-         const PopupMenuItem(
-           value: 'rename',
-           child: ListTile(
-             leading: Icon(Icons.copy),
-             title: Text('اعادة تسمية'),
-           ),
-         ),
-       ],
-     ).then((value) {
-       if (value == 'seeDetails') {
-         Get.to(()=>ProductDetails(oldKey: entry.node.id!));
-       } else if (value == 'rename') {
-         controller.startRenameChild(entry.node.id);
-       }else if (value == "add") {
-        Get.to(AddProduct(oldParent:entry.node.id));
-       }
-     });
-   }
+  myTreeTile({context, required ValueKey<ProductTree> key, required VoidCallback onTap, required TreeEntry<ProductTree> entry}) {
+    return TreeIndentation(
+      key: key,
+      entry: entry,
+      guide: const IndentGuide.connectingLines(indent: 48),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
+        child: SizedBox(
+          width: 10,
+          height: 50,
+          child: GestureDetector(
+            onSecondaryTapDown: (details) {
+              showContextMenu(context, details.globalPosition, productController, entry);
+            },
+            onLongPressStart: (details) {
+              showContextMenu(context, details.globalPosition, productController, entry);
+            },
+            onTap: onTap,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FolderButton(
+                  isOpen: entry.hasChildren ? entry.isExpanded : null,
+                  onPressed: entry.hasChildren ? onTap : null,
+                ),
+                if (productController.editItem != entry.node.id)
+                  Text(productController.getFullCodeOfProduct(entry.node.id!) + " - " + entry.node.name!)
+                else
+                  SizedBox(
+                    width: 100,
+                    child: TextFormField(
+                      controller: productController.editCon,
+                      onFieldSubmitted: (_) {
+                        productController.endRenameChild();
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, ProductViewModel controller, entry) {
+    showMenu(
+      context: parentContext,
+      position: RelativeRect.fromLTRB(
+        tapPosition.dx,
+        tapPosition.dy,
+        tapPosition.dx + 1.0,
+        tapPosition.dy * 1.0,
+      ),
+      items: [
+          const PopupMenuItem(
+            value: 'seeDetails',
+            child: ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text('عرض حركات'),
+            ),
+          ),
+        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
+        const PopupMenuItem(
+          value: 'add',
+          child: ListTile(
+            leading: Icon(Icons.add_box_outlined),
+            title: Text('إضافة مادة'),
+          ),
+        ),
+        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
+        const PopupMenuItem(
+          value: 'addFolder',
+          child: ListTile(
+            leading: Icon(Icons.folder),
+            title: Text('إضافة ملف'),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'rename',
+          child: ListTile(
+            leading: Icon(Icons.copy),
+            title: Text('اعادة تسمية'),
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value == 'seeDetails') {
+        Get.to(() => ProductDetails(oldKey: entry.node.id!));
+      } else if (value == 'rename') {
+        controller.startRenameChild(entry.node.id);
+      } else if (value == "add") {
+        Get.to(AddProduct(oldParent: entry.node.id));
+      } else if (value == "addFolder") {
+        TextEditingController nameCon = TextEditingController();
+        Get.defaultDialog(
+            title: "اختر الطريق",
+            content: SizedBox(
+              height: Get.height/2,
+              width:Get.height/2,
+              child: SizedBox(
+                height: 35,
+                width: double.infinity,
+                child: TextFormField(controller: nameCon,),
+              ),
+            ),actions: [
+          ElevatedButton(onPressed: (){
+            controller.addFolder(nameCon.text,prodParentId: entry.node.id);
+            Get.back();}, child: Text("إضافة")),
+          ElevatedButton(onPressed: (){Get.back();}, child: Text("إلغاء")),
+        ]
+        );
+      }
+    });
+  }
 }
-
-
-

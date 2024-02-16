@@ -5,12 +5,11 @@ import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
+import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +18,12 @@ import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/global_model.dart';
-import '../model/product_record_model.dart';
 import '../utils/logger.dart';
 import '../view/invoices/widget/invoice_record_source.dart';
 import 'account_view_model.dart';
-import 'package:qr/qr.dart';
+
 class InvoiceViewModel extends GetxController {
-  final CollectionReference _invoicesCollectionRef = FirebaseFirestore.instance.collection(Const.invoicesCollection);
-  final CollectionReference _accountCollectionRef = FirebaseFirestore.instance.collection(Const.accountsCollection);
-  final CollectionReference _bondCollectionRef = FirebaseFirestore.instance.collection(Const.bondsCollection);
+
 
   var accountController = Get.find<AccountViewModel>();
   var bondController = Get.find<BondViewModel>();
@@ -36,62 +32,29 @@ class InvoiceViewModel extends GetxController {
   var storeViewController = Get.find<StoreViewModel>();
   var sellerViewController = Get.find<SellersViewModel>();
 
-  List<String> _invIdList = [];
+  List<String> invIdList = [];
 
-  List<String> get invIdList => _invIdList;
+  List<String> invCodeList = [];
 
-  List<String> _invCodeList = [];
+  List<String> patternList = [];
 
-  List<String> get invCodeList => _invCodeList;
+  // String typeBill = "";
 
-  List<String> _patternList = [];
+  RxMap<String, GlobalModel> invoiceModel = <String, GlobalModel>{}.obs;
 
-  List<String> get patternList => _patternList;
+  List<InvoiceRecordModel> invoiceRecordModel = [];
 
-  List<PatternModel> _pattern = [];
 
-  List<PatternModel> get pattern => _pattern;
+  List<String> accountPickList = [];
 
-  String _typeBill = "";
+  List<String> storePickList = [];
 
-  String get typeBill => _typeBill;
-  RxMap<String, GlobalModel> _invoiceModel = <String, GlobalModel>{}.obs;
-
-  RxMap<String, GlobalModel> get invoiceModel => _invoiceModel;
-
-  List<InvoiceRecordModel> _invoiceRecordModel = [];
-
-  List<InvoiceRecordModel> get invoiceRecordModel => _invoiceRecordModel;
-
-  ValueNotifier<bool> get loading => _loading;
-  ValueNotifier<bool> _loading = ValueNotifier(false);
-
-  Map<String, String> _accountList = {};
-
-  Map<String, String> get accountList => _accountList;
-
-  List<String> _accountPickList = [];
-
-  List<String> get accountPickList => _accountPickList;
-
-  List<String> _storePickList = [];
-
-  List<String> get storePickList => _storePickList;
-
-  TextEditingController _primaryAccountController = TextEditingController();
-
-  TextEditingController get primaryAccountController => _primaryAccountController;
-
-  TextEditingController _secondaryAccountController = TextEditingController();
-  TextEditingController sellerController = TextEditingController();
   String? dateController;
-
-  TextEditingController get secondaryAccountController => _secondaryAccountController;
-
-  TextEditingController _invCodeController = TextEditingController();
-
-  TextEditingController get invCodeController => _invCodeController;
-
+  TextEditingController primaryAccountController = TextEditingController();
+  TextEditingController secondaryAccountController = TextEditingController();
+  TextEditingController invCustomerAccountController = TextEditingController();
+  TextEditingController sellerController = TextEditingController();
+  TextEditingController invCodeController = TextEditingController();
   TextEditingController storeController = TextEditingController();
   TextEditingController billIDController = TextEditingController();
   TextEditingController noteController = TextEditingController();
@@ -99,17 +62,16 @@ class InvoiceViewModel extends GetxController {
   TextEditingController mobileNumberController = TextEditingController();
   final DataGridController dataGridController = DataGridController();
   late GlobalModel initModel;
+  int colorInvoice=Colors.grey.value;
 
-  double _total = 0.0;
-
-  double get total => _total;
+  double total = 0.0;
 
   late List<InvoiceRecordModel> records;
   late InvoiceRecordSource invoiceRecordSource;
 
   late allInvoiceDataGridSource invoiceAllDataGridSource;
 
-  List<String> nextPrevList = [];
+  Map<String,String> nextPrevList = {};
 
   onCellTap(RowColumnIndex rowColumnIndex) {
     if (rowColumnIndex.rowIndex + 1 == records.length) {
@@ -127,334 +89,330 @@ class InvoiceViewModel extends GetxController {
     update();
   }
 
-  searchUser(String user) {
-    accountController.allAccounts.forEach((key, value) {
-      for (int i = 0; i < value.length; i++) {
-        value[i].account = user;
-      }
-    });
-  }
-
-  InvoiceViewModel() {
-    getAllInvoices();
-    initAllInvoice();
-  }
-
   initAllInvoice() {
     invoiceAllDataGridSource = allInvoiceDataGridSource(invoiceModel);
     invoiceAllDataGridSource.updateDataGridSource();
     update();
   }
 
-  getAllInvoices() async {
-    _invoicesCollectionRef.snapshots().listen((value) {
-      _invoiceModel.clear();
-      for (int i = 0; i < value.docs.length; i++) {
-        value.docs[i].reference.collection("invRecord").snapshots().listen((value0) {
-          List<InvoiceRecordModel> _ = [];
-          for (var element in value0.docs) {
-            _.add(InvoiceRecordModel.fromJson(element.data()));
-          }
-          _invoiceModel[value.docs[i]['invId']] = GlobalModel.fromJson(value.docs[i].data() as Map<String, dynamic>);
-          _invoiceModel[value.docs[i]['invId']]?.invRecords = _;
-          invoiceAllDataGridSource.updateDataGridSource();
-          update();
-        });
-      }
-    });
+  // getAllInvoices() async {
+    // _invoicesCollectionRef.snapshots().listen((value) {
+    //   _invoiceModel.clear();
+    //   for (int i = 0; i < value.docs.length; i++) {
+    //     value.docs[i].reference.collection("invRecord").snapshots().listen((value0) {
+    //       List<InvoiceRecordModel> _ = [];
+    //       for (var element in value0.docs) {
+    //         _.add(InvoiceRecordModel.fromJson(element.data()));
+    //       }
+    //       _invoiceModel[value.docs[i]['invId']] = GlobalModel.fromJson(value.docs[i].data() as Map<String, dynamic>);
+    //       _invoiceModel[value.docs[i]['invId']]?.invRecords = _;
+    //       invoiceAllDataGridSource.updateDataGridSource();
+    //       update();
+    //     });
+    //   }
+    // });
+  // }
+
+  initGlobalInvoice(GlobalModel globalModel){
+    invoiceModel[globalModel.invId!]=globalModel;
+    initModel=GlobalModel.fromJson(globalModel.toFullJson());
+    /// todo : edit this.
+    //nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => e.invId!));
+    initAllInvoice();
+    update();
   }
+
+  deleteGlobalInvoice(GlobalModel globalModel){
+    invoiceModel.removeWhere((key, value) => key==globalModel.invId);
+    initAllInvoice();
+  }
+
 
   computeTotal(List<InvoiceRecordModel> records) {
     int quantity = 0;
     double subtotals = 0.0;
-    _total = 0.0;
+    total = 0.0;
     for (var record in records) {
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
         subtotals = record.invRecSubTotal!;
         record.invRecTotal = quantity * (subtotals + record.invRecVat!);
-        _total += quantity * (subtotals + record.invRecVat!);
+        total += quantity * (subtotals + record.invRecVat!);
         update();
       }
     }
-    print(_total);
+    print(total);
   }
 
   double computeAllTotal() {
     int quantity = 0;
     double subtotals = 0.0;
-    _total = 0.0;
+    total = 0.0;
     for (var record in records) {
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
         subtotals = record.invRecSubTotal!;
-        _total += quantity * (subtotals + record.invRecVat!);
+        total += quantity * (subtotals + record.invRecVat!);
       }
     }
-    return _total;
+    return total;
   }
 
   double computeVatTotal() {
     int quantity = 0;
-    _total = 0.0;
+    total = 0.0;
     for (var record in records) {
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
-        _total += quantity * record.invRecVat!;
+        total += quantity * record.invRecVat!;
       }
     }
-    return _total;
+    return total;
   }
 
   double computeWithoutVatTotal() {
     int quantity = 0;
     double subtotals = 0.0;
-    _total = 0.0;
+    total = 0.0;
     for (var record in records) {
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
         subtotals = record.invRecSubTotal!;
-        _total += quantity * (subtotals);
+        total += quantity * (subtotals);
       }
     }
-    return _total;
+    return total;
   }
 
-  List<InvoiceRecordModel> getInvoiceRecords(String billId) {
-    List<InvoiceRecordModel> rec = [];
-    List<InvoiceRecordModel> rawData = invoiceModel[billId]!.invRecords!;
-    List<Map<String, dynamic>> data = [];
-    for (var item in rawData) {
-      data.add(item.toJson());
-    }
-    for (var item in data) {
-      if (item["invRecId"] != null) {
-        String prodName = productController.productDataMap[item["invRecProduct"]]!.prodName!;
-        rec.add(InvoiceRecordModel(
-          invRecQuantity: item["invRecQuantity"],
-          invRecProduct: prodName,
-          invRecId: item["invRecId"],
-          invRecSubTotal: item["invRecSubTotal"],
-          invRecTotal: item["invRecTotal"],
-          invRecVat: item["invRecVat"],
-        ));
-      }
-    }
-    return rec;
-  }
+  // List<InvoiceRecordModel> getInvoiceRecords(String billId) {
+  //   List<InvoiceRecordModel> rec = [];
+  //   List<InvoiceRecordModel> rawData = ;
+  //   List<Map<String, dynamic>> data = [];
+  //   for (var item in rawData) {
+  //     data.add(item.toJson());
+  //   }
+  //   for (var item in data) {
+  //     if (item["invRecId"] != null) {
+  //      // String prodName = productController.productDataMap[item["invRecProduct"]]!.prodName!;
+  //       rec.add(InvoiceRecordModel(
+  //         invRecQuantity: item["invRecQuantity"],
+  //         invRecProduct: prodName,
+  //         invRecId: item["invRecId"],
+  //         invRecSubTotal: item["invRecSubTotal"],
+  //         invRecTotal: item["invRecTotal"],
+  //         invRecVat: item["invRecVat"],
+  //       ));
+  //     }
+  //   }
+  //   return rec;
+  // }
 
-  addInvoice(GlobalModel invoiceModel, List<InvoiceRecordModel> record) async {
-    await _invoicesCollectionRef.doc(invoiceModel.invId).set(invoiceModel.toJson());
-    int i = 0;
-    do {
-      if (record[i].invRecId != null) {
-        await _invoicesCollectionRef.doc(invoiceModel.invId).collection("invRecord").doc(record[i].invRecId).set({
-          'invRecId': record[i].invRecId,
-          'invRecProduct': record[i].invRecProduct,
-          'invRecQuantity': record[i].invRecQuantity,
-          'invRecSubTotal': record[i].invRecSubTotal,
-          'invRecTotal': invoiceModel.invTotal,
-          'invRecVat': record[i].invRecVat,
-        });
-      }
-      i++;
-    } while (i < record.length);
-  }
+  // addInvoice(GlobalModel invoiceModel, List<InvoiceRecordModel> record) async {
+  //   await _invoicesCollectionRef.doc(invoiceModel.invId).set(invoiceModel.toJson());
+  //   int i = 0;
+  //   do {
+  //     if (record[i].invRecId != null) {
+  //       await _invoicesCollectionRef.doc(invoiceModel.invId).collection("invRecord").doc(record[i].invRecId).set({
+  //         'invRecId': record[i].invRecId,
+  //         'invRecProduct': record[i].invRecProduct,
+  //         'invRecQuantity': record[i].invRecQuantity,
+  //         'invRecSubTotal': record[i].invRecSubTotal,
+  //         'invRecTotal': invoiceModel.invTotal,
+  //         'invRecVat': record[i].invRecVat,
+  //       });
+  //     }
+  //     i++;
+  //   } while (i < record.length);
+  // }
 
+  // addBills(GlobalModel invoiceModel, List<InvoiceRecordModel> record, isEdit, {bool withLogger = false}) async {
+  //
+  //   print("Start ADD${invoiceModel.invId}");
+  //   if (!invoiceModel.invPrimaryAccount!.contains("acc")) invoiceModel.invPrimaryAccount = getAccountIdFromText(invoiceModel.invPrimaryAccount);
+  //   if (!invoiceModel.invSecondaryAccount!.contains("acc")) invoiceModel.invSecondaryAccount = getAccountIdFromText(invoiceModel.invSecondaryAccount);
+  //   if (!invoiceModel.invSeller!.contains("seller")) invoiceModel.invSeller = getSellerIdFromText(invoiceModel.invSeller);
+  //   if (!invoiceModel.invStorehouse!.contains("store")) invoiceModel.invStorehouse = getStoreIdFromText(invoiceModel.invStorehouse);
+  //   for (var element in record) {
+  //     if (!(element.invRecProduct?.contains("prod") ?? true)) record[record.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
+  //   }
+  //   if (!invCodeList.contains(invoiceModel.invCode)) {
+  //     bondController.tempBondModel = GlobalModel();
+  //     bondController.bondModel = GlobalModel();
+  //     bondController.tempBondModel.bondRecord = [];
+  //     bondController.tempBondModel.originId = invoiceModel.invId;
+  //     bondController.tempBondModel.bondTotal = "0.00";
+  //     bondController.tempBondModel.bondType = Const.bondTypeDaily;
+  //     bondController.tempBondModel.bondId = invoiceModel.originId;
+  //     if (!isEdit) {
+  //       String bondId = generateId(RecordType.bond);
+  //       bondController.tempBondModel.bondId = bondId;
+  //       invoiceModel.originId = bondId;
+  //       var bondCode = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
+  //       while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
+  //         bondCode = (int.parse(bondCode) + 1).toString();
+  //       }
+  //       invoiceModel.bondCode = bondCode;
+  //     }
+  //     bondController.tempBondModel.bondCode = invoiceModel.bondCode;
+  //     // productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType);
+  //     storeViewController.saveInvInStore(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invStorehouse);
+  //     bool isHasVat = patternController.patternModel[invoiceModel.patternId]!.patHasVat!;
+  //     switch (invoiceModel.invType) {
+  //       case "sales":
+  //         {
+  //           await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
+  //           await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
+  //           await addInvoice(invoiceModel, record);
+  //           sellerViewController.postRecord(userId: invoiceModel.invSeller!, invId: invoiceModel.invId, amount: invoiceModel.invTotal!, date: dateController);
+  //           productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invDate);
+  //           print("end ADD${invoiceModel.invId}");
+  //           if (isHasVat && computeVatTotal().toStringAsFixed(2) != "0.00") {
+  //             bondController.tempBondModel.bondRecord!.add(BondRecordModel("02", computeVatTotal(), 0, patternController.patternModel[invoiceModel.patternId]!.patVatAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
+  //             bondController.tempBondModel.bondRecord!.add(BondRecordModel("03", 0, computeVatTotal(), invoiceModel.invSecondaryAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
+  //           }
+  //         }
+  //         break;
+  //       case "pay":
+  //         {
+  //           await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.invId!);
+  //           await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.invId!);
+  //           await addInvoice(invoiceModel, record);
+  //           productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invDate);
+  //           if (isHasVat && computeVatTotal().toStringAsFixed(2) != "0.00") {
+  //             bondController.tempBondModel.bondRecord!.add(BondRecordModel("02", 0, computeVatTotal(), patternController.patternModel[invoiceModel.patternId]!.patVatAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
+  //             bondController.tempBondModel.bondRecord!.add(BondRecordModel("03", computeVatTotal(), 0, invoiceModel.invSecondaryAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
+  //           }
+  //         }
+  //         break;
+  //       // case "due sales":
+  //       //   {
+  //       //     await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
+  //       //     await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
+  //       //     await addInvoice(invoiceModel, record);
+  //       //     productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType);
+  //       //     print("end ADD${invoiceModel.invId}");
+  //       //   }
+  //       //   break;
+  //     }
+  //
+  //     if (withLogger) {
+  //       logger(newData: invoiceModel);
+  //     }
+  //
+  //     invoiceAllDataGridSource.updateDataGridSource();
+  //     bondController.postOneBond(false);
+  //     print(invoiceModel.invId!);
+  //     buildInvInit(true, invoiceModel.invId!);
+  //    // showEInvoiceDialog(mobileNumber: invoiceModel.invMobileNumber!, invId: invoiceModel.invId!);
+  //     update();
+  //     print("end ADD${invoiceModel.invId}");
+  //   } else {
+  //     Get.snackbar("رقم الفاتورة موجود يا عكروت", "اختار غير رقم يا مطيح");
+  //   }
+  // }
+  //
+  // // addInvoiceRecordToAccount(double amount, String account, String billId,) async {
+  // //   print("Start addInvoiceRecordToAccount  account: $account  billId: $billId total: $total");
+  // //   if (amount < 0) {
+  // //     bondController.tempBondModel.bondRecord!.add(BondRecordModel("00", computeWithoutVatTotal(), 0, account, "تم توليده من الفاتورة", invId: billId));
+  // //   } else {
+  // //     bondController.tempBondModel.bondRecord!.add(BondRecordModel("01", 0, computeWithoutVatTotal(), account, "تم توليده من الفاتورة", invId: billId));
+  // //   }
+  // //   print("End addInvoiceRecordToAccount  account: $account  billId: $billId total: $total");
+  // // }
+  // //
+  // // updateInvoice(GlobalModel initalModle, GlobalModel invoiceModel, List<InvoiceRecordModel> record, String bondId, {bool withLogger = false}) async {
+  // //   print("start update");
+  // //   record.forEach((element) {
+  // //     if (!(element.invRecProduct?.contains("prod") ?? true)) record[record.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
+  // //   });
+  // //   if (invoiceModel.invCode != initalModle.invCode) {
+  // //     if (!invCodeList.contains(invoiceModel.invCode)) {
+  // //       await deleteBills(initalModle);
+  // //       invoiceModel.originId = initalModle.originId;
+  // //       invoiceModel.bondCode = initalModle.bondCode;
+  // //       invoiceModel.invId = initalModle.invId;
+  // //       invoiceModel.invCode = initalModle.invCode;
+  // //       invoiceModel.invRecords = record;
+  // //       if (withLogger) {
+  // //         logger(newData: invoiceModel, oldData: initalModle);
+  // //       }
+  // //       await addBills(invoiceModel, record, true);
+  // //     } else {
+  // //       Get.snackbar("رقم الفاتورة موجود يا عكروت", "اختار غير رقم يا مطيح");
+  // //     }
+  // //   } else {
+  // //     await deleteBills(initalModle);
+  // //     invoiceModel.originId = initalModle.originId;
+  // //     invoiceModel.bondCode = initalModle.bondCode;
+  // //     invoiceModel.invId = initalModle.invId;
+  // //     invoiceModel.invCode = initalModle.invCode;
+  // //     invoiceModel.invRecords = record;
+  // //     invCodeList.clear();
+  // //     if (withLogger) {
+  // //       logger(newData: invoiceModel, oldData: initalModle);
+  // //     }
+  // //     await addBills(invoiceModel, record, true);
+  // //   }
+  // //   getInvCode();
+  // //   update();
+  // // }
+  // // deleteBills(GlobalModel invoiceModel, {bool withLogger = false}) async {
+  // //   print("Start Delete Invoice  deleteBills(GlobalModel ${invoiceModel.toJson()} ");
+  // //   invoiceModel.invRecords?.forEach((element) {
+  // //     if (!(element.invRecProduct?.contains("prod") ?? true)) invoiceModel.invRecords?[invoiceModel.invRecords!.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
+  // //   });
+  // //   if (withLogger) {
+  // //     logger(newData: invoiceModel);
+  // //   }
+  // //   productController.deleteInvFromProduct(invoiceModel.invRecords ?? [], invoiceModel.invId!);
+  // //   sellerViewController.deleteRecord(userId: invoiceModel.invSeller!, invId: invoiceModel.invId);
+  // //   storeViewController.deleteRecord(storeId: invoiceModel.invStorehouse!, invId: invoiceModel.invId);
+  // //  // await deleteInvoice(invoiceModel.invId!, invoiceModel.originId!);
+  // //   await removeBondFromAccount(invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
+  // //   await removeBondFromAccount(invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
+  // //   invoiceAllDataGridSource.updateDataGridSource();
+  // //   update();
+  // //   print("End Delete Invoice  deleteBills(GlobalModel ${invoiceModel.toJson()} ");
+  // // }
+  //
+  // // deleteInvoice(String billId, String bondId) async {
+  // //   await _invoicesCollectionRef.doc(billId).collection('invRecord').get().then((docSnapshot) async {
+  // //     for (QueryDocumentSnapshot docSnapshot in docSnapshot.docs) {
+  // //       await docSnapshot.reference.delete();
+  // //     }
+  // //   });
+  // //   await _bondCollectionRef.doc(bondId).collection(Const.recordCollection).get().then((docSnapshot) async {
+  // //     for (QueryDocumentSnapshot docSnapshot in docSnapshot.docs) {
+  // //       await docSnapshot.reference.delete();
+  // //     }
+  // //   });
+  // //   await _invoicesCollectionRef.doc(billId).delete();
+  // //   await _bondCollectionRef.doc(bondId).delete();
+  // //
+  // //   update();
+  // //   print("End delete");
+  // // }
+  //
+  // removeBondFromAccount(String account, String bondId) async {
+  //   print("Start Delete Invoice From Account  removeInvoiceFromAccount(String $account, String $bondId)");
+  //   accountPickList.clear();
+  //   accountController.accountList.forEach((key, value) {
+  //     if (account.toLowerCase() == value.accId!.toLowerCase() || account.toLowerCase() == value.accName!.toLowerCase()) {
+  //       _accountCollectionRef.doc(key).collection(Const.recordCollection).doc(bondId).delete();
+  //     }
+  //   });
+  //
+  //   print("End Delete Invoice From Account  removeInvoiceFromAccount(String $account, String $bondId)");
+  //   // });
+  // }
 
-    addBills(GlobalModel invoiceModel, List<InvoiceRecordModel> record, isEdit, {bool withLogger = false}) async {
-
-    print("Start ADD${invoiceModel.invId}");
-    if (!invoiceModel.invPrimaryAccount!.contains("acc")) invoiceModel.invPrimaryAccount = getAccountIdFromText(invoiceModel.invPrimaryAccount);
-    if (!invoiceModel.invSecondaryAccount!.contains("acc")) invoiceModel.invSecondaryAccount = getAccountIdFromText(invoiceModel.invSecondaryAccount);
-    if (!invoiceModel.invSeller!.contains("seller")) invoiceModel.invSeller = getSellerIdFromText(invoiceModel.invSeller);
-    if (!invoiceModel.invStorehouse!.contains("store")) invoiceModel.invStorehouse = getStoreIdFromText(invoiceModel.invStorehouse);
-    for (var element in record) {
-      if (!(element.invRecProduct?.contains("prod") ?? true)) record[record.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
-    }
-    if (!invCodeList.contains(invoiceModel.invCode)) {
-      bondController.tempBondModel = GlobalModel();
-      bondController.bondModel = GlobalModel();
-      bondController.tempBondModel.bondRecord = [];
-      bondController.tempBondModel.originId = invoiceModel.invId;
-      bondController.tempBondModel.bondTotal = "0.00";
-      bondController.tempBondModel.bondType = Const.bondTypeDaily;
-      bondController.tempBondModel.bondId = invoiceModel.originId;
-      if (!isEdit) {
-        String bondId = generateId(RecordType.bond);
-        bondController.tempBondModel.bondId = bondId;
-        invoiceModel.originId = bondId;
-        var bondCode = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-        while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
-          bondCode = (int.parse(bondCode) + 1).toString();
-        }
-        invoiceModel.bondCode = bondCode;
-      }
-      bondController.tempBondModel.bondCode = invoiceModel.bondCode;
-      // productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType);
-      storeViewController.saveInvInStore(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invStorehouse);
-      bool isHasVat = patternController.patternModel[invoiceModel.patternId]!.patHasVat!;
-      switch (invoiceModel.invType) {
-        case "sales":
-          {
-            await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
-            await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
-            await addInvoice(invoiceModel, record);
-            sellerViewController.postRecord(userId: invoiceModel.invSeller!, invId: invoiceModel.invId, amount: invoiceModel.invTotal!, date: dateController);
-            productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invDate);
-            print("end ADD${invoiceModel.invId}");
-            if (isHasVat && computeVatTotal().toStringAsFixed(2) != "0.00") {
-              bondController.tempBondModel.bondRecord!.add(BondRecordModel("02", computeVatTotal(), 0, patternController.patternModel[invoiceModel.patternId]!.patVatAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
-              bondController.tempBondModel.bondRecord!.add(BondRecordModel("03", 0, computeVatTotal(), invoiceModel.invSecondaryAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
-            }
-          }
-          break;
-        case "pay":
-          {
-            await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.invId!);
-            await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.invId!);
-            await addInvoice(invoiceModel, record);
-            productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invDate);
-            if (isHasVat && computeVatTotal().toStringAsFixed(2) != "0.00") {
-              bondController.tempBondModel.bondRecord!.add(BondRecordModel("02", 0, computeVatTotal(), patternController.patternModel[invoiceModel.patternId]!.patVatAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
-              bondController.tempBondModel.bondRecord!.add(BondRecordModel("03", computeVatTotal(), 0, invoiceModel.invSecondaryAccount, "ضريبة القيمة المضافة", invId: invoiceModel.originId!));
-            }
-          }
-          break;
-        // case "due sales":
-        //   {
-        //     await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
-        //     await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
-        //     await addInvoice(invoiceModel, record);
-        //     productController.saveInvInProduct(record, invoiceModel.invId, invoiceModel.invType);
-        //     print("end ADD${invoiceModel.invId}");
-        //   }
-        //   break;
-      }
-
-      if (withLogger) {
-        logger(newData: invoiceModel);
-      }
-
-      invoiceAllDataGridSource.updateDataGridSource();
-      bondController.postOneBond(false);
-      print(invoiceModel.invId!);
-      buildInvInit(true, invoiceModel.invId!);
-     // showEInvoiceDialog(mobileNumber: invoiceModel.invMobileNumber!, invId: invoiceModel.invId!);
-      update();
-      print("end ADD${invoiceModel.invId}");
-    } else {
-      Get.snackbar("رقم الفاتورة موجود يا عكروت", "اختار غير رقم يا مطيح");
-    }
-  }
-
-  addInvoiceRecordToAccount(double amount, String account, String billId,) async {
-    print("Start addInvoiceRecordToAccount  account: $account  billId: $billId total: $total");
-    if (amount < 0) {
-      bondController.tempBondModel.bondRecord!.add(BondRecordModel("00", computeWithoutVatTotal(), 0, account, "تم توليده من الفاتورة", invId: billId));
-    } else {
-      bondController.tempBondModel.bondRecord!.add(BondRecordModel("01", 0, computeWithoutVatTotal(), account, "تم توليده من الفاتورة", invId: billId));
-    }
-    print("End addInvoiceRecordToAccount  account: $account  billId: $billId total: $total");
-  }
-
-  updateInvoice(GlobalModel initalModle, GlobalModel invoiceModel, List<InvoiceRecordModel> record, String bondId, {bool withLogger = false}) async {
-    print("start update");
-    record.forEach((element) {
-      if (!(element.invRecProduct?.contains("prod") ?? true)) record[record.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
-    });
-    if (invoiceModel.invCode != initalModle.invCode) {
-      if (!invCodeList.contains(invoiceModel.invCode)) {
-        await deleteBills(initalModle);
-        invoiceModel.originId = initalModle.originId;
-        invoiceModel.bondCode = initalModle.bondCode;
-        invoiceModel.invId = initalModle.invId;
-        invoiceModel.invCode = initalModle.invCode;
-        invoiceModel.invRecords = record;
-        if (withLogger) {
-          logger(newData: invoiceModel, oldData: initalModle);
-        }
-        await addBills(invoiceModel, record, true);
-      } else {
-        Get.snackbar("رقم الفاتورة موجود يا عكروت", "اختار غير رقم يا مطيح");
-      }
-    } else {
-      await deleteBills(initalModle);
-      invoiceModel.originId = initalModle.originId;
-      invoiceModel.bondCode = initalModle.bondCode;
-      invoiceModel.invId = initalModle.invId;
-      invoiceModel.invCode = initalModle.invCode;
-      invoiceModel.invRecords = record;
-      invCodeList.clear();
-      if (withLogger) {
-        logger(newData: invoiceModel, oldData: initalModle);
-      }
-      await addBills(invoiceModel, record, true);
-    }
-    getInvCode();
-    update();
-  }
-
-  deleteBills(GlobalModel invoiceModel, {bool withLogger = false}) async {
-    print("Start Delete Invoice  deleteBills(GlobalModel ${invoiceModel.toJson()} ");
-    invoiceModel.invRecords?.forEach((element) {
-      if (!(element.invRecProduct?.contains("prod") ?? true)) invoiceModel.invRecords?[invoiceModel.invRecords!.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
-    });
-    if (withLogger) {
-      logger(newData: invoiceModel);
-    }
-    productController.deleteInvFromProduct(invoiceModel.invRecords ?? [], invoiceModel.invId!);
-    sellerViewController.deleteRecord(userId: invoiceModel.invSeller!, invId: invoiceModel.invId);
-    storeViewController.deleteRecord(storeId: invoiceModel.invStorehouse!, invId: invoiceModel.invId);
-    await deleteInvoice(invoiceModel.invId!, invoiceModel.originId!);
-    await removeBondFromAccount(invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
-    await removeBondFromAccount(invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
-    invoiceAllDataGridSource.updateDataGridSource();
-    update();
-    print("End Delete Invoice  deleteBills(GlobalModel ${invoiceModel.toJson()} ");
-  }
-
-  deleteInvoice(String billId, String bondId) async {
-    await _invoicesCollectionRef.doc(billId).collection('invRecord').get().then((docSnapshot) async {
-      for (QueryDocumentSnapshot docSnapshot in docSnapshot.docs) {
-        await docSnapshot.reference.delete();
-      }
-    });
-    await _bondCollectionRef.doc(bondId).collection(Const.recordCollection).get().then((docSnapshot) async {
-      for (QueryDocumentSnapshot docSnapshot in docSnapshot.docs) {
-        await docSnapshot.reference.delete();
-      }
-    });
-    await _invoicesCollectionRef.doc(billId).delete();
-    await _bondCollectionRef.doc(bondId).delete();
-
-    update();
-    print("End delete");
-  }
-
-  removeBondFromAccount(String account, String bondId) async {
-    print("Start Delete Invoice From Account  removeInvoiceFromAccount(String $account, String $bondId)");
-    _accountPickList.clear();
-    accountController.accountList.forEach((key, value) {
-      if (account.toLowerCase() == value.accId!.toLowerCase() || account.toLowerCase() == value.accName!.toLowerCase()) {
-        _accountCollectionRef.doc(key).collection(Const.recordCollection).doc(bondId).delete();
-      }
-    });
-
-    print("End Delete Invoice From Account  removeInvoiceFromAccount(String $account, String $bondId)");
-    // });
-  }
-
-  String checkInvCode() {
-    var invCode = (int.parse(_invoiceModel.values.lastOrNull?.invCode ?? "0") + 1).toString();
-    while (_invoiceModel.values.toList().map((e) => e.invCode).toList().contains(invCode)) {
-      invCode = (int.parse(invCode) + 1).toString();
-    }
-    return invCode;
+  bool checkInvCode() {
+    return nextPrevList.keys.toList().contains(invCodeController.text);
   }
 
   buildSource(String billId) {
-    records = getInvoiceRecords(billId) + [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
+    records = invoiceModel[billId]!.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
   }
 
@@ -462,13 +420,13 @@ class InvoiceViewModel extends GetxController {
     var inv = invoiceModel.values.where((element) => element.invCode == invCode).firstOrNull;
     if (inv == null) {
       if (nextPrevList.isNotEmpty) {
-        buildInvInit(true, nextPrevList.last);
+        buildInvInit(true, nextPrevList.values.last);
       }
     } else {
-      var index = nextPrevList.indexOf(inv.invId!);
-      if (nextPrevList.first == nextPrevList[index]) {
+      var index = nextPrevList.values.toList().indexOf(inv.invId!);
+      if (nextPrevList.values.first == nextPrevList[index]) {
       } else {
-        buildInvInit(true, nextPrevList[index - 1]);
+        buildInvInit(true, nextPrevList.values.toList()[index - 1]);
       }
     }
     update();
@@ -478,11 +436,11 @@ class InvoiceViewModel extends GetxController {
     var inv = invoiceModel.values.toList().firstWhereOrNull((element) => element.invCode == invCode);
     if (inv == null) {
     } else {
-      var index = nextPrevList.indexOf(inv.invId!);
-      if (nextPrevList.last == nextPrevList[index]) {
+      var index = nextPrevList.values.toList().indexOf(inv.invId!);
+      if (nextPrevList.values.toList().last == nextPrevList[index]) {
         getInit(patId);
       } else {
-        buildInvInit(true, nextPrevList[index + 1]);
+        buildInvInit(true, nextPrevList.values.toList()[index + 1]);
       }
       update();
     }
@@ -492,45 +450,64 @@ class InvoiceViewModel extends GetxController {
   getInit(String patternId) {
     initModel = GlobalModel();
     initModel.patternId = patternId;
-    invCodeController.text = checkInvCode();
+    initCodeList(patternId);
+    invCodeController.text = getNextCodeInv();
     primaryAccountController.text = getAccountNameFromId(patternController.patternModel[patternId]!.patPrimary!);
     secondaryAccountController.text = getAccountNameFromId(patternController.patternModel[patternId]!.patSecondary!);
     storeController.text = getStoreNameFromId(patternController.patternModel[patternId]!.patStore!);
     var vat = accountController.accountList[patternController.patternModel[patternId]!.patSecondary!]!.accVat;
     bondIdController.clear();
+    if(patternController.patternModel[patternId]!.patColor!=null){
+      colorInvoice=patternController.patternModel[patternId]!.patColor!;
+    }
+    invCustomerAccountController.clear();
     noteController.clear();
     billIDController.clear();
     mobileNumberController.clear();
     if(getMyUserSellerId()!=null){
-      print(getMyUserSellerId());
-      print(getMyUserSellerId());
       sellerController.text=getSellerNameFromId(getMyUserSellerId());
     }
     dateController=DateTime.now().toString().split(" ")[0];
     records = [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat!);
-    nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => e.invId!));
-    print(nextPrevList);
   }
-
+  initCodeList(patternId){
+    nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+  }
+  String getNextCodeInv(){
+    int _ = 0;
+    if(nextPrevList.isEmpty){
+      return "0";
+    }else{
+      _=int.parse(nextPrevList.keys.last);
+      while(nextPrevList.containsKey(_.toString())){
+        _++;
+      }
+    }
+    return _.toString();
+  }
   //int old inv
   buildInvInit(bool bool, String invId) {
     if (bool) {
       initModel = invoiceModel[invId]!;
     }
     primaryAccountController.text = getAccountNameFromId(patternController.patternModel[initModel.patternId]!.patPrimary!);
-    _typeBill = patternController.patternModel[initModel.patternId]!.patType!;
+    // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
     secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
+    invCustomerAccountController.text = initModel.invCustomerAccount!=null ?getAccountNameFromId(initModel.invCustomerAccount):"";
     sellerController.text = getSellerNameFromId(initModel.invSeller);
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
+    if(patternController.patternModel[initModel.patternId]!.patColor!=null){
+      colorInvoice=patternController.patternModel[initModel.patternId]!.patColor!;
+    }
     mobileNumberController.text = initModel.invMobileNumber??"";
     noteController.text = initModel.invComment!;
-    bondIdController.text = initModel.originId!;
+    bondIdController.text = initModel.bondId??"";
     invCodeController.text = initModel.invCode!;
     dateController=initModel.invDate;
     // dateController = initModel.invDate!;
-    nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == initModel.patternId).map((e) => e.invId!));
+    initCodeList(initModel.patternId);
     print(nextPrevList);
     buildSource(initModel.invId!);
     if (!bool) {
@@ -545,26 +522,26 @@ class InvoiceViewModel extends GetxController {
     return false;
   }
 
-  getAccountComplete() async {
-    _accountPickList = [];
+ Future<String> getAccountComplete(text) async {
+    accountPickList = [];
     accountController.accountList.forEach((key, value) {
-      _accountPickList.addIf(value.accType==Const.accountTypeDefault &&( value.accCode!.toLowerCase().contains(_secondaryAccountController.text.toLowerCase()) || value.accName!.toLowerCase().contains(_secondaryAccountController.text.toLowerCase())), value.accName!);
+      accountPickList.addIf(value.accType==Const.accountTypeDefault &&( value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
     });
-    print(_accountPickList.length);
-    if (_accountPickList.length > 1) {
-      await Get.defaultDialog(
+    print(accountPickList.length);
+    if (accountPickList.length > 1) {
+     var _= await Get.defaultDialog(
         title: "اختر احد الحسابات",
         content: SizedBox(
-          width: 500,
-          height: 500,
+          height: Get.height/2,
+          width:Get.height/2,
           child: ListView.builder(
-            itemCount: _accountPickList.length,
+            itemCount: accountPickList.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  _secondaryAccountController.text = _accountPickList[index];
-                  update();
-                  Get.back();
+                  // secondaryAccountController.text = accountPickList[index];
+                  //update();
+                  Get.back(result: accountPickList[index]);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(5),
@@ -572,7 +549,7 @@ class InvoiceViewModel extends GetxController {
                   width: 500,
                   child: Center(
                     child: Text(
-                      _accountPickList[index],
+                      accountPickList[index],
                     ),
                   ),
                 ),
@@ -581,32 +558,35 @@ class InvoiceViewModel extends GetxController {
           ),
         ),
       );
-    } else if (_accountPickList.length == 1) {
-      _secondaryAccountController.text = _accountPickList[0];
+     return _;
+    } else if (accountPickList.length == 1) {
+      return accountPickList[0];
+     // secondaryAccountController.text = accountPickList[0];
     } else {
       Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
+      return"";
     }
   }
 
   getStoreComplete() async {
-    _storePickList = [];
+    storePickList = [];
     // var userInput = storeController.text;
     // storeController.clear();
     storeViewController.storeMap.forEach((key, value) {
-      _storePickList.addIf(value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) || value.stName!.toLowerCase().contains(storeController.text.toLowerCase()), value.stName!);
+      storePickList.addIf(value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) || value.stName!.toLowerCase().contains(storeController.text.toLowerCase()), value.stName!);
     });
-    if (_storePickList.length > 1) {
+    if (storePickList.length > 1) {
       await Get.defaultDialog(
         title: "اختر احد المستودعات",
         content: SizedBox(
-          width: 500,
-          height: 500,
+          height: Get.height/2,
+          width:Get.height/2,
           child: ListView.builder(
-            itemCount: _storePickList.length,
+            itemCount: storePickList.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  storeController.text = _storePickList[index];
+                  storeController.text = storePickList[index];
                   Get.back();
                   update();
                 },
@@ -616,7 +596,7 @@ class InvoiceViewModel extends GetxController {
                   width: 500,
                   child: Center(
                     child: Text(
-                      _storePickList[index],
+                      storePickList[index],
                     ),
                   ),
                 ),
@@ -625,16 +605,16 @@ class InvoiceViewModel extends GetxController {
           ),
         ),
       );
-    } else if (_storePickList.length == 1) {
-      storeController.text = _storePickList[0];
+    } else if (storePickList.length == 1) {
+      storeController.text = storePickList[0];
     } else {
       storeController.clear();
       Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
     }
   }
 
-  bool checkAccountComplete() {
-    return accountController.accountList.values.map((e) => e.accName?.toLowerCase()).toList().contains(secondaryAccountController.text.toLowerCase());
+  bool checkAccountComplete(String text) {
+    return accountController.accountList.values.map((e) => e.accName?.toLowerCase()).toList().contains(text.toLowerCase());
   }
 
   bool checkStoreComplete() {
@@ -646,14 +626,14 @@ class InvoiceViewModel extends GetxController {
   }
 
   getInvCode() {
-    _invIdList = [];
-    _invCodeList = [];
+    invIdList = [];
+    invCodeList = [];
     invoiceModel.forEach((key, value) {
-      _invIdList.add(value.invId!);
-      _invCodeList.add(value.invCode!);
-      _patternList.add(value.patternId!);
+      invIdList.add(value.invId!);
+      invCodeList.add(value.invCode!);
+      patternList.add(value.patternId!);
     });
-    print("0----------------------------${_invCodeList.toList()}");
+    print("0----------------------------${invCodeList.toList()}");
   }
 
   // viewPattern() {
@@ -700,7 +680,7 @@ class InvoiceViewModel extends GetxController {
      var _= InvoiceRecordSource(records: [], accountVat: '');
      var price =(_.getPrice(Const.invoiceChoosePriceMethodeDefault, result[i].prodId));
      newRecord.insert(i, InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault));
-     newRecord[i].invRecProduct = result[i].prodName!.toString();
+     newRecord[i].invRecProduct = result[i].prodId!.toString();
      newRecord[i].invRecId = (i + 1).toString();
      newRecord[i].prodChoosePriceMethod = Const.invoiceChoosePriceMethodeDefault;
      newRecord[i].invRecSubTotal = price / (result[i].prodHasVat! ? (vat + 1) : 1);
@@ -732,33 +712,35 @@ class InvoiceViewModel extends GetxController {
     update();
   }
 
+
+
 }
 
 void showEInvoiceDialog({required String mobileNumber,required String invId}) {
   Get.defaultDialog(
     title: "فاتورتك الرقمية",
     content:SizedBox(
-      height: 460,
-      width: 460,
+      height: Get.height/1.8,
+      width: Get.height/1.8,
       child: Column(
         children: [
           QrImageView(
-            data: 'https://ba3-business-solutions.firebaseapp.com/?id='+invId,
+            data: 'https://ba3-business-solutions.firebaseapp.com/?id='+invId+'&year='+Const.dataName,
             version: QrVersions.auto,
-            size: 300.0,
+            size: Get.height/2.5,
           ),
-          SizedBox(height: 20,),
-          Text("مشاركة عبر",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-          SizedBox(height: 20,),
+          //SizedBox(height: 20,),
+          Text("مشاركة عبر",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+          //SizedBox(height: 20,),
           Row(
             children: [
               InkWell(
                   onTap: (){
-                    Clipboard.setData(ClipboardData(text: 'https://ba3-business-solutions.firebaseapp.com/?id='+invId));
+                    Clipboard.setData(ClipboardData(text: 'https://ba3-business-solutions.firebaseapp.com/?id='+invId+'&year='+Const.dataName,));
                   },
-                  child: CircleAvatar(radius: 40,child: Icon(Icons.copy,color: Colors.grey.shade300,),backgroundColor: Colors.grey,)),
+                  child: CircleAvatar(radius: 30,child: Icon(Icons.copy,color: Colors.grey.shade300,),backgroundColor: Colors.grey,)),
               SizedBox(width: 20,),
-              CircleAvatar(radius: 40,child: Icon(Icons.chat_bubble),),
+              CircleAvatar(radius: 30,child: Icon(Icons.chat_bubble),),
             ],
           )
         ],

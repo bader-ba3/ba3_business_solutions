@@ -26,6 +26,7 @@ class InvoiceRecordSource extends DataGridSource {
   List<InvoiceRecordModel> records;
   AccountModel? secAccountModel;
   bool? isPatternHasVat;
+  int? color;
   InvoiceRecordSource({required this.records, this.secAccountModel, required this.accountVat}) {
     buildDataGridRows(records, accountVat);
   } //getVatFromName(accountVat)
@@ -33,13 +34,16 @@ class InvoiceRecordSource extends DataGridSource {
   void buildDataGridRows(List<InvoiceRecordModel> records, accountVat) {
     this.accountVat = accountVat;
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
+    color=patternController.patternModel[globalController.initModel.patternId]!.patColor;
     this.isPatternHasVat = isPatternHasVat;
     for (var i = 0; i < records.length; i++) {
       if (records[i].invRecSubTotal != null) {
-        var prod = searchText(records[i].invRecProduct.toString()).first;
+         //searchText().first;
+        print(records[i].invRecProduct.toString());
+         var prod = getProductModelFromId(records[i].invRecProduct.toString());
         records[i].invRecVat = !isPatternHasVat
             ? 0.0
-            : !(prod.prodHasVat!)
+            : !(prod!.prodHasVat!)
                 ? 0.0
                 : (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat), i))! * getVatFromName(accountVat);
         // : double.parse(((records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat)))! * (getVatFromName(accountVat))).toStringAsFixed(2));
@@ -49,12 +53,12 @@ class InvoiceRecordSource extends DataGridSource {
     dataGridRows = records
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowInvId, value: dataGridRow.invRecId),
-              DataGridCell<String>(columnName: Const.rowInvProduct, value: dataGridRow.invRecProduct),
+              DataGridCell<String>(columnName: Const.rowInvProduct, value: getProductNameFromId(dataGridRow.invRecProduct)),
               DataGridCell<int>(columnName: Const.rowInvQuantity, value: dataGridRow.invRecQuantity),
               DataGridCell<double>(columnName: Const.rowInvSubTotal, value: dataGridRow.invRecSubTotal),
               DataGridCell<double>(columnName: Const.rowInvVat, value: dataGridRow.invRecVat),
-              DataGridCell<double>(columnName: Const.rowInvTotal, value: dataGridRow.invRecTotal),
-              DataGridCell<double>(columnName: Const.rowInvTotalVat, value: dataGridRow.invRecQuantity != null && dataGridRow.invRecSubTotal != null ? dataGridRow.invRecQuantity! * (dataGridRow.invRecVat ?? 0) : null),
+              DataGridCell<double>(columnName: Const.rowInvTotal, value: dataGridRow.invRecQuantity != null && dataGridRow.invRecSubTotal != null ? (dataGridRow.invRecQuantity! * (dataGridRow.invRecVat ?? 0))+(dataGridRow.invRecTotal??0) : null),
+              DataGridCell<double>(columnName: Const.rowInvTotalVat, value: dataGridRow.invRecQuantity != null && dataGridRow.invRecSubTotal != null ? dataGridRow.invRecQuantity! * (dataGridRow.invRecVat ?? 0)+(dataGridRow.invRecTotal??0) : null),
             ]))
         .toList();
   }
@@ -85,8 +89,9 @@ class InvoiceRecordSource extends DataGridSource {
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
     if (column.columnName == Const.rowInvProduct) {
       List<ProductModel> result = searchText(newCellValue.toString());
+      print(result.map((e) => (e.prodName,e.prodIsGroup)));
       if(newCellValue==null){
-        result= productController.productDataMap.values.toList();
+        result= productController.productDataMap.values.toList().where((element) => !(element.prodIsGroup??false)).toList();
       }
       if (result.isEmpty) {
         Get.snackbar("خطأ", "غير موجود");
@@ -97,8 +102,8 @@ class InvoiceRecordSource extends DataGridSource {
         Get.defaultDialog(
             title: "اختر احد المواد",
             content: SizedBox(
-              height: 500,
-              width: 500,
+              height: Get.height/2,
+              width:Get.height/2,
               child: ListView.builder(
                   itemCount: result.length,
                   itemBuilder: (context, index) {
@@ -219,7 +224,7 @@ class InvoiceRecordSource extends DataGridSource {
   void choose_product(ProductModel result, double vat, int dataRowIndex, RowColumnIndex rowColumnIndex, bool isPatternHasVat) {
     print(searchLastPrice(result.prodId!, vat, dataRowIndex));
     dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: Const.rowInvProduct, value: result.toString());
-    records[dataRowIndex].invRecProduct = result.prodName!.toString();
+    records[dataRowIndex].invRecProduct = result.prodId!.toString();
     records[dataRowIndex].invRecId = (dataRowIndex + 1).toString();
     records[dataRowIndex].invRecSubTotal = (searchLastPrice(result.prodId!, vat, dataRowIndex) / (result.prodHasVat! ? (vat + 1) : 1));
     records[dataRowIndex].invRecVat = !isPatternHasVat
@@ -249,11 +254,13 @@ class InvoiceRecordSource extends DataGridSource {
       displayText= double.parse(displayText).toStringAsFixed(2);
     }
     return Container(
+      color:effectiveRows.indexOf(dataGridRow) % 2 == 0?Color(color!).withOpacity(0.2): Colors.transparent,
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         autofocus: true,
         controller: editingController..text = displayText,
         decoration: const InputDecoration(
+          fillColor: Colors.black,
           contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
         ),
         keyboardType: TextInputType.text,
@@ -292,8 +299,8 @@ class InvoiceRecordSource extends DataGridSource {
   DataGridRowAdapter? buildRow(DataGridRow row) {
     Color getRowBackgroundColor() {
       final int index = effectiveRows.indexOf(row);
-      if (index % 2 != 0) {
-        return Colors.lightBlue.withOpacity(0.1);
+      if (index % 2 == 0) {
+        return Color(color!).withOpacity(0.2);
       }
 
       return Colors.transparent;
@@ -361,9 +368,11 @@ class InvoiceRecordSource extends DataGridSource {
 
   List<ProductModel> searchText(String query) {
     products = productController.productDataMap.values.toList().where((item) {
-      var prodName = item.prodName.toString().toLowerCase().contains(query.toLowerCase());
-      var prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
-      return prodName || prodCode;
+      bool prodName = item.prodName.toString().toLowerCase().contains(query.toLowerCase());
+      // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
+      bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
+      //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
+      return (prodName || prodCode) && !item.prodIsGroup!;
     }).toList();
     return products.toList();
   }

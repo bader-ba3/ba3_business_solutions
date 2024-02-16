@@ -24,7 +24,7 @@ class BondRecordDataSource extends DataGridSource {
 
   buildRowInit(GlobalModel recordData) {
     recordData.bondRecord?.map((e) => print(e.bondRecAccount));
-    dataGridRows = recordData.bondRecord!
+    dataGridRows = (recordData.bondRecord??[])
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowBondId, value: e.bondRecId),
               DataGridCell<String>(columnName: Const.rowBondAccount, value: accountController.accountList.values.toList().firstWhereOrNull((_) => _.accId == e.bondRecAccount)?.accName),
@@ -78,6 +78,9 @@ class BondRecordDataSource extends DataGridSource {
   Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
     final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
+    if(dataRowIndex==-1){
+      return;
+    }
     if (newCellValue == null || oldValue == newCellValue) {}
     if (dataGridRows.length == dataRowIndex + 1) {
       var id = (int.parse(dataGridRows[dataRowIndex - 1].getCells()[0].value) + 1).toString();
@@ -114,7 +117,7 @@ class BondRecordDataSource extends DataGridSource {
         print(newCellValue.toString());
         List<String> result = searchText(newCellValue.toString());
         if (result.isEmpty) {
-          Get.snackbar("error", "not found");
+          Get.snackbar("خطأ", "الحساب غير موجود");
         } else if (result.length == 1) {
           var name = result[0];
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: column.columnName, value: name);
@@ -123,10 +126,10 @@ class BondRecordDataSource extends DataGridSource {
           bondController.update();
         } else {
           await Get.defaultDialog(
-              title: "choose one",
+              title: "اختر احد الحسابات",
               content: SizedBox(
-                height: 500,
-                width: 500,
+                height: Get.height/2,
+                width:Get.height/2,
                 child: ListView.builder(
                     itemCount: result.length,
                     itemBuilder: (_, index) {
@@ -138,7 +141,7 @@ class BondRecordDataSource extends DataGridSource {
                           bondController.initPage();
                           Get.back();
                         },
-                        child: Text(result[index]),
+                        child: Center(child: Text(result[index],style: TextStyle(fontSize: 20),)),
                       );
                     }),
               ),
@@ -147,7 +150,7 @@ class BondRecordDataSource extends DataGridSource {
                     onPressed: () {
                       Get.back();
                     },
-                    child: Text("back"))
+                    child: Text("رجوع"))
               ]);
         }
       }

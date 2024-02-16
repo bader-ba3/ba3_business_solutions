@@ -36,6 +36,7 @@ class _AddProductState extends State<AddProduct> {
   ProductViewModel productController = Get.find<ProductViewModel>();
   bool isEdit = false;
   bool hasVat = true;
+  bool isGroup = false;
 
   @override
   void initState() {
@@ -95,85 +96,127 @@ class _AddProductState extends State<AddProduct> {
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: Column(
-              children: [
-                Wrap(
-                    children: [
-                      item(text: "اسم الماة",controller:nameController ,onChange:(_) {
-                        editedProduct.prodName= _;
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: Container(
+              width: double.infinity,
+              child: ListView(
+                      children: [
+                        item(text: "اسم المادة",controller:nameController ,onChange:(_) {
+                          editedProduct.prodName= _;
+                            isEdit = true;
+                        }),
+                        item(text: "الرمز",controller:codeController ,onChange:(_) {
+                          editedProduct.prodCode= _;
                           isEdit = true;
-                      }),
-                      item(text: "الرمز",controller:codeController ,onChange:(_) {
-                        editedProduct.prodCode= _;
-                        isEdit = true;
-                      }),
-                      item(text: "سعر مستهلك",controller:customerPriceController ,onChange:(_) {
-                        editedProduct.prodCustomerPrice = _;
-                        isEdit = true;
-                      }),
-                      item(text: "سعر الجملة",controller:wholePriceController ,onChange:(_) {
-                        editedProduct.prodWholePrice = _;
-                        isEdit = true;
-                      }),
-                      item(text: "سعر مفرق",controller:retailPriceController ,onChange:(_) {
-                        editedProduct.prodRetailPrice = _;
-                        isEdit = true;
-                      }),
-                      item(text: "سعر تكلفة",controller:costPriceController ,onChange:(_) {
-                        editedProduct.prodCostPrice = _;
-                        isEdit = true;
-                      }),
-                      item(text: "اقل سعر مسموح",controller:minPriceController ,onChange:(_) {
-                        editedProduct.prodMinPrice = _;
-                        isEdit = true;
-                      }),
-                      item(text: "الباركود",controller:barcodeController ,onChange:(_) {
-                        editedProduct.prodBarcode = _;
-                        isEdit = true;
-                      }),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(flex: 2, child: Text("حساب اب")),
-                          SizedBox(
-                            width: 30,
-                          ),
-                          Flexible(
-                            child: StatefulBuilder(builder: (context, setstate) {
-                              return SizedBox(
-                                width: 30,
-                                height: 100,
-                                child: Checkbox(
-                                  value: editedProduct.prodIsParent??false,
-                                  onChanged: (_) {
-                                    setstate(() {
-                                      editedProduct.prodIsParent = _!;
-                                      editedProduct.prodParentId=null;
-                                    });
-                                  },
-                                ),
-                              );
-                            }
+                        }),
+                        item(text: "سعر مستهلك",controller:customerPriceController ,onChange:(_) {
+                          editedProduct.prodCustomerPrice = _;
+                          isEdit = true;
+                        }),
+                        item(text: "سعر الجملة",controller:wholePriceController ,onChange:(_) {
+                          editedProduct.prodWholePrice = _;
+                          isEdit = true;
+                        }),
+                        item(text: "سعر مفرق",controller:retailPriceController ,onChange:(_) {
+                          editedProduct.prodRetailPrice = _;
+                          isEdit = true;
+                        }),
+                        item(text: "سعر تكلفة",controller:costPriceController ,onChange:(_) {
+                          editedProduct.prodCostPrice = _;
+                          isEdit = true;
+                        }),
+                        item(text: "اقل سعر مسموح",controller:minPriceController ,onChange:(_) {
+                          editedProduct.prodMinPrice = _;
+                          isEdit = true;
+                        }),
+                        item(text: "الباركود",controller:barcodeController ,onChange:(_) {
+                          editedProduct.prodBarcode = _;
+                          isEdit = true;
+                        }),
+                        SizedBox(height: 20,),
+                        Row(
+                          children: [
+                            SizedBox(
+                                width:70,
+                                child: Text("يخضع للضريبة")),
+                            SizedBox(
+                              width: 30,
                             ),
-                          ),
-                        ],
-                      ),
-                      StatefulBuilder(builder: (context, setstate) {
-                        return Container(
-                          child: Column(
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: StatefulBuilder(builder: (context, setstate) {
+                                return Switch(
+                                    mouseCursor: editedProduct.prodId == null ? null : SystemMouseCursors.forbidden,
+                                    value: hasVat,
+                                    onChanged: editedProduct.prodId == null
+                                        ? (_) {
+                                      setstate(() {
+                                        hasVat = _;
+                                        editedProduct.prodHasVat = _;
+                                        isEdit = true;
+                                      });
+                                    }
+                                        : (_) {});
+                              }),
+                            ),
+                          ],
+                        ),
+                        // SizedBox(height: 30,),
+                        // StatefulBuilder(builder: (context, setstate) {
+                        //   return Column(
+                        //     children: [
+                        //       Row(
+                        //         children: [
+                        //           Text("حساب مجموعة" ),
+                        //           SizedBox(
+                        //             width: 30,
+                        //             height: 30,
+                        //             child: Checkbox(
+                        //               value: editedProduct.prodIsGroup??false,
+                        //               onChanged: (_) {
+                        //                 setstate(() {
+                        //                   editedProduct.prodIsGroup = _!;
+                        //                 });
+                        //               },
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ],
+                        //   );
+                        // }),
+                        SizedBox(height: 30,),
+                        StatefulBuilder(builder: (context, setstate) {
+                          return Column(
                             children: [
                               Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("حساب اب"),
+                                  SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: Checkbox(
+                                      value: editedProduct.prodIsParent??false,
+                                      onChanged: (_) {
+                                        setstate(() {
+                                          editedProduct.prodIsParent = _!;
+                                          editedProduct.prodParentId=null;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 30,),
+                              Row(
                                 children: [
                                   Flexible(flex: 2, child: Text("الحساب الاب")),
                                   SizedBox(
                                     width: 30,
                                   ),
                                   Flexible(
-                                      flex: 1,
+                                      flex: 3,
                                       child:
                                       //  customTextFieldWithoutIcon(accVatController, true)
                                       IgnorePointer(
@@ -182,7 +225,7 @@ class _AddProductState extends State<AddProduct> {
                                           color:   editedProduct.prodIsParent??false?Colors.grey.shade700:Colors.transparent,
                                           child: DropdownButton(
                                             value: editedProduct.prodParentId,
-                                            items: productController.productDataMap.entries.toList().map((MapEntry<String, ProductModel> e) => DropdownMenuItem(value: e.key,child: Text(e.value.prodName!))).toList(),
+                                            items: productController.productDataMap.entries.toList().where((element) => element.value.prodIsGroup!).map((MapEntry<String, ProductModel> e) => DropdownMenuItem(value: e.key,child: Text(e.value.prodCode! +" - "+ e.value.prodName!))).toList(),
                                             onChanged: (_) {
                                               setstate(() {
                                                 editedProduct.prodParentId = _.toString();
@@ -194,88 +237,55 @@ class _AddProductState extends State<AddProduct> {
                                 ],
                               ),
                             ],
-                          ),
-                        );
-                      }),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width:70,
-                              child: Text("يخضع للضريبة")),
-                          SizedBox(
-                            width: 30,
-                          ),
-                          SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: StatefulBuilder(builder: (context, setstate) {
-                              return Switch(
-                                  mouseCursor: editedProduct.prodId == null ? null : SystemMouseCursors.forbidden,
-                                  value: hasVat,
-                                  onChanged: editedProduct.prodId == null
-                                      ? (_) {
-                                          setstate(() {
-                                            hasVat = _;
-                                            editedProduct.prodHasVat = _;
-                                            isEdit = true;
-                                          });
-                                        }
-                                      : (_) {});
-                            }),
-                          ),
-
-                        ],
-                      ),
-                      SizedBox(height: 50,),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width:70,
-                              child: Text("نوع الحساب")),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          SizedBox(
-                              height: 35,
-                              width: 130,
-                              child: StatefulBuilder(
-                                builder: (context,setstate) {
-                                  return DropdownButton(
-                                    value: editedProduct.prodType,
-                                      items: [Const.productTypeStore,Const.productTypeService].map((e) => DropdownMenuItem(value: e,child: Text(getProductTypeFromEnum(e.toString())))).toList(), onChanged: (_){
-                                      setstate((){
-                                        editedProduct.prodType=_;
-                                      });
-                                  });
-                                }
-                              )),
-                        ],
-                      )
-                    ],
-                  ),
-                SizedBox(
-                  height: 30,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      if (editedProduct.prodId == null) {
-                        checkPermissionForOperation(Const.roleUserWrite,Const.roleViewProduct).then((value) {
-                          if(value){
-                            productController.createProduct(editedProduct, withLogger: true);
-                            isEdit = false;
-                          }
-                        });
-                      } else {
-                        checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewProduct).then((value) {
-                          if(value){
-                            productController.updateProduct(editedProduct, withLogger: true);
-                            isEdit = false;
-                          }
-                        });
-                      }
-                    },
-                    child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل"))
-              ],
+                          );
+                        }),
+                        SizedBox(height: 30,),
+                        Row(
+                          children: [
+                            SizedBox(
+                                width:70,
+                                child: Text("نوع الحساب")),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                                height: 35,
+                                width: 130,
+                                child: StatefulBuilder(
+                                  builder: (context,setstate) {
+                                    return DropdownButton(
+                                      value: editedProduct.prodType,
+                                        items: [Const.productTypeStore,Const.productTypeService].map((e) => DropdownMenuItem(value: e,child: Text(getProductTypeFromEnum(e.toString())))).toList(), onChanged: (_){
+                                        setstate((){
+                                          editedProduct.prodType=_;
+                                        });
+                                    });
+                                  }
+                                )),
+                          ],
+                        ),
+                        SizedBox(height: 30,),
+                  ElevatedButton(
+                      onPressed: () {
+                        if (editedProduct.prodId == null) {
+                          checkPermissionForOperation(Const.roleUserWrite,Const.roleViewProduct).then((value) {
+                            if(value){
+                              productController.createProduct(editedProduct, withLogger: true);
+                              isEdit = false;
+                            }
+                          });
+                        } else {
+                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewProduct).then((value) {
+                            if(value){
+                              productController.updateProduct(editedProduct, withLogger: true);
+                              isEdit = false;
+                            }
+                          });
+                        }
+                      },
+                      child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل"))
+                ],
+              ),
             ),
           ),
         ),
@@ -302,6 +312,7 @@ class _AddProductState extends State<AddProduct> {
       barcodeController.text = _.prodBarcode!;
       productType=_.prodType;
       hasVat = _.prodHasVat ?? false;
+      isGroup = _.prodIsGroup ?? false;
       // editedProduct.prodParentId = _.prodParentId ;
       // editedProduct.prodIsParent=_.prodParentId==null;
       print(_.toFullJson());
@@ -310,7 +321,11 @@ class _AddProductState extends State<AddProduct> {
       productController.productModel = ProductModel();
       editedProductRecord = <ProductRecordModel>[];
       hasVat = true;
+      isGroup = false;
+      editedProduct.prodCode = productController.getNextProductCode();
+      codeController.text = editedProduct.prodCode!;
       editedProduct.prodHasVat = true;
+      editedProduct.prodIsGroup = false;
       if(widget.oldBarcode!=null){
         barcodeController.text=widget.oldBarcode!;
         editedProduct.prodBarcode=widget.oldBarcode;

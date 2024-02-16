@@ -1,4 +1,7 @@
 import 'package:ba3_business_solutions/core/bindings.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
+import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
+import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
 import 'package:ba3_business_solutions/view/user_management/account_management_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'Const/const.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'Test.dart';
 import 'controller/invoice_view_model.dart';
 import 'firebase_options.dart';
 
@@ -15,11 +20,20 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await HiveDataBase.init();
   await Const.init();
+
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    // DeviceOrientation.landscapeRight,
+    // DeviceOrientation.portraitUp,
+    // DeviceOrientation.portraitDown,
   ]);
+
   runApp(const MyApp());
 }
 
@@ -28,24 +42,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
        return GetMaterialApp(
-      initialBinding: GetBinding(),
-      debugShowCheckedModeBanner: false,
-      title: "Ba3 Business",
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-            backgroundColor:Color.fromARGB(255, 255, 247, 222) ,
-            foregroundColor:Colors.black ,
-            surfaceTintColor: Color.fromARGB(255, 255, 247, 221) ,
-            // color: Color.fromARGB(255, 255, 248, 228),
-        elevation: 0
-        ),
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            background: Color.fromARGB(255, 255, 247, 221)
-        ),
-        useMaterial3: true,
-      ),
-      home: UserManagement(),
+          initialBinding: GetBinding(),
+          debugShowCheckedModeBanner: false,
+          title: "Ba3 Business",
+          theme: ThemeData(
+            appBarTheme: const AppBarTheme(
+                backgroundColor:Color.fromARGB(255, 255, 247, 222) ,
+                foregroundColor:Colors.black ,
+                surfaceTintColor: Color.fromARGB(255, 255, 247, 221) ,
+                // color: Color.fromARGB(255, 255, 248, 228),
+            elevation: 0
+            ),
+              elevatedButtonTheme:ElevatedButtonThemeData(
+                style:  ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.lightBlue.shade100),
+                  elevation: MaterialStatePropertyAll(0),)
+              ),
+            colorScheme: ColorScheme.fromSeed(
+              primary: Colors.black,
+                seedColor: Colors.black,
+                background: Color.fromARGB(255, 255, 247, 221)
+            ),
+            useMaterial3: true,
+          ),
+          // home: Test(),
+          // home: InvoiceView(billId: '1', patternId: 'pat1705592956032580',)
+          home: UserManagement(),
     );
   }
 }

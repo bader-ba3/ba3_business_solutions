@@ -7,10 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../controller/account_view_model.dart';
+import '../../controller/global_view_model.dart';
 import '../../controller/user_management_model.dart';
 import '../../model/account_model.dart';
 
 import '../../model/bond_record_model.dart';
+import '../../utils/confirm_delete_dialog.dart';
 import '../../utils/see_details.dart';
 
 
@@ -35,6 +37,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
   var bondController = Get.find<BondViewModel>();
   var i = 0;
   List<BondRecordModel> record = <BondRecordModel>[];
+  var globalController = Get.find<GlobalViewModel>();
+
   bool isNew = false;
   var newCodeController = TextEditingController();
   var userAccountController = TextEditingController();
@@ -64,11 +68,13 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
     }
     bondController.initPage();
 
-    newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-    while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
-      newCodeController.text = (int.parse(newCodeController.text) + 1).toString();
-      defualtCode = newCodeController.text;
-    }
+    newCodeController.text = bondController.getNextBondCode();
+    defualtCode = bondController.getNextBondCode();
+    // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
+    // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
+    //   newCodeController.text = (int.parse(newCodeController.text) + 1).toString();
+    //   defualtCode = newCodeController.text;
+    // }
   }
 
   @override
@@ -96,18 +102,23 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                               child: Text("تجاهل")),
                           ElevatedButton(
                               onPressed: () {
+                                var validate=bondController.checkValidate();
+                                if(validate==null) {
                                 var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == userAccountController.text).accId;
                                 var total = double.parse(bondController.tempBondModel.bondTotal!);
                                 bondController.tempBondModel.bondRecord?.add(BondRecordModel("0", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "BondRecDescription"));
                                 if (isNew) {
-                                  bondController.postOneBond(isNew);
+                                  globalController.addGlobalBond(bondController.tempBondModel);
                                   isNew = false;
                                   controller.isEdit = false;
                                 } else {
-                                  bondController.updateBond(modelKey: widget.oldModelKey);
+                                  globalController.updateGlobalBond(bondController.tempBondModel);
                                   isNew = false;
                                   controller.isEdit = false;
                                 }
+                              }else{
+                          Get.snackbar("خطأ", validate);
+                          }
                               },
                               child: Text("قم بالتغييرات")),
 
@@ -133,7 +144,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             controller: newCodeController,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             onTapOutside: (_) {
-                              if (controller.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
+                              if (controller.codeList.keys.toList().contains(newCodeController.text)) {
                                 Get.snackbar("Error", "Is Used");
                                 newCodeController.text = defualtCode;
                               } else {
@@ -141,7 +152,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                               }
                             },
                             onFieldSubmitted: (_) {
-                              if (controller.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
+                              if (controller.codeList.keys.toList().contains(newCodeController.text)) {
                                 Get.snackbar("Error", "Is Used");
                                 newCodeController.text = defualtCode;
                               } else {
@@ -208,11 +219,15 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                         if (!isNew)
                           ElevatedButton(
                               onPressed: () async {
-                                checkPermissionForOperation(Const.roleUserDelete, Const.roleViewBond).then((value) async{
+                                confirmDeleteWidget().then((value) {
                                   if(value){
-                                    await controller.deleteOneBonds();
-                                    Get.back();
-                                    controller.update();
+                                    checkPermissionForOperation(Const.roleUserDelete, Const.roleViewBond).then((value) async{
+                                      if(value){
+                                        globalController.deleteGlobal(bondController.tempBondModel);
+                                        Get.back();
+                                        controller.update();
+                                      }
+                                    });
                                   }
                                 });
                               },
@@ -285,10 +300,10 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                   ),
                   Expanded(
                     child: StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection(Const.bondsCollection).doc(controller.tempBondModel.bondId).snapshots(),
+                        stream: controller.allBondsItem.stream,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting && (controller.bondModel.originId != null)) {
-                            return Center(child: CircularProgressIndicator());
+                          if (snapshot.data == "null" ) {
+                            return CircularProgressIndicator();
                           } else {
                             return GetBuilder<BondViewModel>(builder: (controller) {
                               // if (controller.bondModel.originId != null) {
@@ -324,7 +339,9 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                 columns: <GridColumn>[
                                   GridColumnItem(label: "الرمز التسلسلي", name: Const.rowBondId),
                                   GridColumnItem(label: 'الحساب', name: Const.rowBondAccount),
-                                  widget.isDebit ? GridColumnItem(label: ' مدين', name: Const.rowBondDebitAmount) : GridColumnItem(label: ' دائن', name: Const.rowBondCreditAmount),
+                                  widget.isDebit
+                                      ? GridColumnItem(label: ' مدين', name: Const.rowBondDebitAmount)
+                                      : GridColumnItem(label: ' دائن', name: Const.rowBondCreditAmount),
                                   GridColumnItem(label: "البيان", name: Const.rowBondDescription),
                                 ],
                               );
@@ -394,7 +411,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                           if (validate2 == null) {
                             checkPermissionForOperation(Const.roleUserWrite,Const.roleViewBond).then((value) {
                               if (value) {
-                                bondController.postOneBond(isNew, withLogger: true);
+                                print(bondController.tempBondModel.bondRecord?.map((e) => e.toJson()));
+                                globalController.addGlobalBond(bondController.tempBondModel);
                                 isNew = false;
                                 controller.isEdit = false;
                                 bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "0");
@@ -407,7 +425,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                           if (validate2 == null) {
                             checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
                               if (value) {
-                                bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
+                                globalController.updateGlobalBond(bondController.tempBondModel);
                                 isNew = false;
                                 controller.isEdit = false;
                               }

@@ -16,7 +16,7 @@ class SellerModel {
     };
   }
 
-  SellerModel.fromJson(Map<String, dynamic> json, this.sellerId, this.sellerRecord) {
+  SellerModel.fromJson(Map<String, dynamic> json, this.sellerId) {
     sellerName = json['sellerName'];
     sellerCode = json['sellerCode'];
   }

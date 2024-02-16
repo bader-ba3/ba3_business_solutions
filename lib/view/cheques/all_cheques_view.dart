@@ -10,6 +10,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
+import '../../model/global_model.dart';
 
 class AllCheques extends StatelessWidget {
   const AllCheques({super.key});
@@ -22,19 +23,19 @@ class AllCheques extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text("الشيكات")),
-        body: controller.allCheques.isEmpty
-            ? CircularProgressIndicator()
-            :
+        body:
+
             // String model = controller.allAccounts.keys.toList()[index];
             // AccountModel accountModel=controller.accountListMyId[model]!;
             StreamBuilder(
-                stream: FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots(),
+                stream: controller.allCheques.stream,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else {
                     return GetBuilder<ChequeViewModel>(builder: (controller) {
                       controller.initChequeViewPage();
+                      if(controller.allCheques.isEmpty) {
+                        return const Center(child: Text("لا يوجد شيكات بعد"),);
+                      }
+
                       return SfDataGrid(
                         onCellTap: (DataGridCellTapDetails details) {
                           if (details.rowColumnIndex.rowIndex != 0) {
@@ -43,7 +44,7 @@ class AllCheques extends StatelessWidget {
                             String model = rowData.getCells()[0].value;
                             print('Tapped Row Data: $model');
                             logger(
-                                newData: ChequeModel(
+                                newData: GlobalModel(
                                   cheqId: model,
                                 ),
                                 transfersType: TransfersType.read);
@@ -70,7 +71,7 @@ class AllCheques extends StatelessWidget {
                         columnWidthMode: ColumnWidthMode.fill,
                       );
                     });
-                  }
+
                 }),
       ),
     );

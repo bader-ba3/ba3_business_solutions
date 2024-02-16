@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -11,8 +15,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
+import '../model/card_model.dart';
 import '../model/global_model.dart';
+import 'cards_view_model.dart';
 
 enum UserManagementStatus {
   first,
@@ -31,6 +38,7 @@ class UserManagementViewModel extends GetxController {
   UserManagementStatus? userStatus;
   Map<String, UserModel> allUserList = {};
   String? userPin;
+  String? cardNumber;
   UserModel? myUserModel;
   UserModel? initAddUserModel;
 
@@ -43,41 +51,67 @@ class UserManagementViewModel extends GetxController {
     });
   }
   void checkUserStatus() async {
-    FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) {
-      print('From Cache: ${value.metadata.isFromCache}');
-      // if (value.metadata.isFromCache) {
-      //   userStatus = null;
-      //   Get.defaultDialog(barrierDismissible: false, title: "you are offline", middleText: "plz reconnect to the internet", actions: [
-      //     ElevatedButton(
-      //         onPressed: () {
-      //           Get.back();
-      //           checkUserStatus();
-      //         },
-      //         child: Text("Retry"))
-      //   ]);
-      // } else
-
+    if (userPin != null) {
+      FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) {
         if (userPin == null) {
-        userStatus = UserManagementStatus.first;
-        Get.offAll(() => LoginView());
-      } else if (value.docs.isNotEmpty) {
-        print(value.docs.first.data());
-        myUserModel = UserModel.fromJson(value.docs.first.data());
-        userStatus = UserManagementStatus.login;
-        Get.offAll(() => HomeView());
-      } else if (value.docs.isEmpty) {
-        if (Get.currentRoute != "/LoginView") {
           userStatus = UserManagementStatus.first;
           Get.offAll(() => LoginView());
+        } else if (value.docs.isNotEmpty) {
+          myUserModel = UserModel.fromJson(value.docs.first.data());
+          userStatus = UserManagementStatus.login;
+          Get.put(GlobalViewModel(), permanent: true);
+        } else if (value.docs.isEmpty) {
+          if (Get.currentRoute != "/LoginView") {
+            userStatus = UserManagementStatus.first;
+            Get.offAll(() => LoginView());
+          } else {
+            Get.snackbar("error", "not matched");
+          }
+          userPin = null;
+          cardNumber = null;
         } else {
-          Get.snackbar("error", "not matched");
+          userStatus = null;
         }
-        userPin = null;
-      } else {
-        userStatus = null;
-      }
-      update();
-    });
+        update();
+      });
+    }else if (cardNumber!=null){
+      FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).snapshots().listen((value) {
+        if (cardNumber == null) {
+          userStatus = UserManagementStatus.first;
+          Get.offAll(() => LoginView());
+        } else if (value.docs.first.data()["isDisabled"]) {
+          Get.snackbar("خطأ", "تم إلغاء تفعيل البطاقة");
+          userStatus = UserManagementStatus.first;
+          Get.offAll(() => LoginView());
+        } else if (value.docs.isNotEmpty) {
+          print(value.docs.first.data());
+          FirebaseFirestore.instance.collection(Const.usersCollection).doc(value.docs.first.data()["userId"]).get().then((value0) {
+          myUserModel = UserModel.fromJson(value0.data()!);
+          userStatus = UserManagementStatus.login;
+          Get.put(GlobalViewModel(), permanent: true);
+          });
+        } else if (value.docs.isEmpty) {
+          if (Get.currentRoute != "/LoginView") {
+            userStatus = UserManagementStatus.first;
+            Get.offAll(() => LoginView());
+          } else {
+            Get.snackbar("error", "not matched");
+          }
+          userPin = null;
+          cardNumber = null;
+        } else {
+          userStatus = null;
+        }
+        update();
+      });
+    }else{
+      print("else");
+      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+        userStatus = UserManagementStatus.first;
+        Get.offAll(() => LoginView());
+      });
+
+    }
   }
 
   void initAllUser() {
@@ -104,35 +138,7 @@ class UserManagementViewModel extends GetxController {
     update();
   }
 
-  bool checkAllAccount(List<GlobalModel>bondList) {
-    List<String>finalList=[];
-    bondList.forEach((e) {
-      e.bondRecord?.forEach((element) {
-        if(getAccountIdFromText(element.bondRecAccount)==""){
-          finalList.add(element.bondRecAccount!);
-        }
-      });
-    });
-    if(finalList.isEmpty) {
-    return true;
-    }else{
-      Get.defaultDialog(middleText: "some account is not defind",cancel: Column(
-        children: [
-          for(var i=0;i<finalList.length;i++)
-            Text(finalList[i]),
-          ElevatedButton(onPressed: (){Get.back();}, child: Text("ok"))
-        ],
-      ));
-      return false;
-    }
-  }
 
-  void addBond(List<GlobalModel> bondList) {
-    BondViewModel bondController=Get.find<BondViewModel>();
-    bondList.forEach((element) {
-      bondController.fastAddBond(oldBondCode: element.bondCode,bondId:element.bondId ,originId: null, total: double.parse("0.00"), record: element.bondRecord!,bondDate: element.bondDate,bondType: element.bondType);
-    });
-  }
 
 }
 
@@ -156,6 +162,14 @@ getMyUserRole() {
   UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
   return userManagementViewController.myUserModel?.userRole;
 }
+getUserNameById(id) {
+  UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
+  return userManagementViewController.allUserList[id]?.userName;
+}
+UserModel getUserModelById(id) {
+  UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
+  return userManagementViewController.allUserList[id]!;
+}
 
 bool checkPermission(role,page){
   UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
@@ -170,53 +184,102 @@ bool checkPermission(role,page){
 Future<bool> checkPermissionForOperation(role,page) async {
   UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
   Map<String, List<String>>? userRole=userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
+  String error = "";
+  // _ndefWrite();
   if (userRole?[page]?.contains(role)??false) {
     print("same");
     return true;
   }
   else {
     print("you need to evelotion");
+    bool init = false;
+    bool isNfcAvailable = (Platform.isAndroid||Platform.isIOS)&&await NfcManager.instance.isAvailable();
     var a = await Get.defaultDialog(
         barrierDismissible: false,
         title: "احتاج الاذن"+"\n"+"ل "+getRoleNameFromEnum(role.toString())+"\n"+"في "+getPageNameFromEnum(page.toString()),
-        content: Pinput(
-            keyboardType : TextInputType.number,
-          defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
-          length: 6,
-          onCompleted: (_) {
-            FirebaseFirestore.instance.collection("users").where('userPin', isEqualTo: _).get().then((value) {
-              if (value.docs.isEmpty) {
-                Get.snackbar("خطأ", "الحساب غير موجود");
-              } else {
-                Map<String, List<String>>? newUserRole=userManagementViewController.allRole[value.docs.first.data()['userRole']]?.roles;
-                print(page);
-                print(newUserRole?[page]);
-                print(role);
-                if (newUserRole?[page]?.contains(role)??false) {
-                  Get.back(result: "ok");
-                  Get.snackbar("", "تمت المصادقة");
-                  print("scss");
+        content: StatefulBuilder(
+          builder: (context,setstate) {
+            if(!init&&isNfcAvailable){
+              init = true;
+              NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+                List<int> idList = tag.data["ndef"]['identifier'];
+                String id ='';
+                for(var e in idList){
+                  if(id==''){
+                    id="${e.toRadixString(16).padLeft(2,"0")}";
+                  }else{
+                    id="$id:${e.toRadixString(16).padLeft(2,"0")}";
+                  }
                 }
-                else {
-                  Get.snackbar("خطأ", "هذا الحساب غير مصرح له بالقيام بهذه العملية");
-                  print("not permission to do this process");
+                var cardId=id.toUpperCase();
+                CardsViewModel cardViewController = Get.find<CardsViewModel>();
+                if(cardViewController.allCards.containsKey(cardId)){
+                  CardModel cardModel = cardViewController.allCards[cardId]!;
+                  Map<String, List<String>>? newUserRole=userManagementViewController.allRole[getUserModelById(cardModel.userId).userRole]?.roles;
+                  if (newUserRole?[page]?.contains(role)??false) {
+                    Get.back(result: true);
+                    NfcManager.instance.stopSession();
+                  }else{
+                    error =  "هذا الحساب غير مصرح له بالقيام بهذه العملية";
+                    setstate((){});
+                  }
+                }else{
+                  error="البطاقة غير موجودة";
+                  setstate((){});
                 }
-              }
-            });
-          },
+              });
+            }
+            return Column(
+              children: [
+                if(!isNfcAvailable)
+                  Column(
+                    children: [
+                      Pinput(
+                        keyboardType : TextInputType.number,
+                        defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
+                        length: 6,
+                        onCompleted: (_) {
+                          UserModel? user = userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin==_);
+                          if(user!=null){
+                            Map<String, List<String>>? newUserRole=userManagementViewController.allRole[user.userRole]?.roles;
+                            if (newUserRole?[page]?.contains(role)??false) {
+                              Get.back(result: true);
+                              NfcManager.instance.stopSession();
+                            }else{
+                              error =  "هذا الحساب غير مصرح له بالقيام بهذه العملية";
+                              setstate((){});
+                            }
+                          }else{
+                          error="الحساب غير موجود";
+                          setstate((){});
+                          }
+
+                        },
+                      ),
+                      SizedBox(height: 5,),
+                    ],
+                  ),
+                Text(error,style: TextStyle(fontSize: 22,color: Colors.red),),
+                if(error!="")
+                SizedBox(height: 5,),
+                if(isNfcAvailable)
+                Column(children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10,),
+                ],)
+              ],
+            );
+          }
         ),
         actions: [
           ElevatedButton(
               onPressed: () {
-                Get.back(result: "no");
+                Get.back(result: false);
               },
               child: Text("cancel"))
         ]);
-    print(a);
-    if (a == "ok") {
-      return true;
-    } else {
-      return false;
-    }
+
+    print("a:"+a.toString());
+   return a;
   }
 }

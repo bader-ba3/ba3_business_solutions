@@ -1,8 +1,8 @@
 enum RecordType { bond, invoice, product, account, pattern, undefined, store, cheque, costCenter, sellers, user,role }
 
-String generateId(RecordType type) {
+String generateId(RecordType recordType) {
   var _ = DateTime.now().microsecondsSinceEpoch.toString();
-  switch (type) {
+  switch (recordType) {
     case RecordType.bond:
       return "bon$_";
     case RecordType.invoice:

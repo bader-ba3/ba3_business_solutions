@@ -1,29 +1,29 @@
 import 'package:ba3_business_solutions/view/import/import_configuration_view.dart';
-import 'package:ba3_business_solutions/view/import/product_list_invoice_view_data_grid_source.dart';
+import 'package:ba3_business_solutions/view/import/widget/preview_view_data_grid_source.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class ProductListView extends StatefulWidget {
+class PreviewView extends StatefulWidget {
   final List<List<String>> productList;
   final List<String> rows;
 
-  ProductListView({super.key, required this.productList, required this.rows});
+  PreviewView({super.key, required this.productList, required this.rows});
 
   @override
-  State<ProductListView> createState() => _ProductListViewState();
+  State<PreviewView> createState() => _PreviewViewState();
 }
 
-class _ProductListViewState extends State<ProductListView> {
+class _PreviewViewState extends State<PreviewView> {
   List<DateTime>? dateRange;
-  ProductListViewDataGridSource? recordViewDataSource;
+  PreViewViewDataGridSource? recordViewDataSource;
 
   @override
   void initState() {
     super.initState();
-    recordViewDataSource = ProductListViewDataGridSource(productList: widget.productList, rows: widget.rows);
+    recordViewDataSource = PreViewViewDataGridSource(productList: widget.productList, rows: widget.rows);
   }
 
   @override

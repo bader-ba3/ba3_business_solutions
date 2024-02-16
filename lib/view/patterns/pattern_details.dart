@@ -5,6 +5,7 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:get/get.dart';
 import '../../controller/user_management_model.dart';
 
@@ -61,42 +62,53 @@ class _PatternDetailsState extends State<PatternDetails> {
         body: GetBuilder<PatternViewModel>(
           builder: (patternController) {
             return Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
                 children: [
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Row(children: [
-                    const Text("الاسم :"),
-                    const SizedBox(
-                      width: 25,
-                    ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                     SizedBox(
-                      width: Get.width * 0.3,
-                      child: customTextFieldWithoutIcon(
-                        nameController,
-                        true,
-                        onChanged: (_) {
-                          patternController.editPatternModel?.patName = _;
-                        },
+                      width: Get.width/2.5,
+                      child: Row(
+                        children: [
+                          const Text("الاسم :"),
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          Expanded(
+                            child: customTextFieldWithoutIcon(
+                              nameController,
+                              true,
+                              onChanged: (_) {
+                                patternController.editPatternModel?.patName = _;
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(
                       width: 25,
                     ),
-                    const Text("الرمز :"),
-                    const SizedBox(
-                      width: 25,
-                    ),
                     SizedBox(
-                      width: Get.width * 0.3,
-                      child: customTextFieldWithoutIcon(
-                        codeController,
-                        true,
-                        onChanged: (_) {
-                          patternController.editPatternModel?.patCode = _;
-                        },
+                      width: Get.width/2.5,
+                      child: Row(
+                        children: [
+                          const Text("الرمز :"),
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          Expanded(
+                            child: customTextFieldWithoutIcon(
+                              codeController,
+                              true,
+                              onChanged: (_) {
+                                patternController.editPatternModel?.patCode = _;
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ]),
@@ -104,44 +116,57 @@ class _PatternDetailsState extends State<PatternDetails> {
                     height: 40,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("من :"),
-                      const SizedBox(
-                        width: 25,
-                      ),
                       SizedBox(
-                        width: Get.width * 0.3,
-                        child: customTextFieldWithIcon(
-                          primaryController,
-                          (text) async {
-                            var a = await patternController.getComplete(text);
-                            patternController.editPatternModel?.patPrimary = a;
-                            primaryController.text = a;
-                          },
-                          onChanged: (_) {
-                            patternController.editPatternModel?.patPrimary = _;
-                          },
+                        width: Get.width/2.5,
+                        child: Row(
+                          children: [
+                            const Text("من :"),
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            Expanded(
+                              child: customTextFieldWithIcon(
+                                primaryController,
+                                (text) async {
+                                  var a = await patternController.getComplete(text);
+                                  patternController.editPatternModel?.patPrimary = a;
+                                  primaryController.text = a;
+                                },
+                                onChanged: (_) {
+                                  patternController.editPatternModel?.patPrimary = _;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(
                         width: 25,
                       ),
-                      const Text("الى :"),
-                      const SizedBox(
-                        width: 25,
-                      ),
                       SizedBox(
-                        width: Get.width * 0.3,
-                        child: customTextFieldWithIcon(
-                          secondaryController,
-                          (text) async {
-                            var a = await patternController.getComplete(text);
-                            patternController.editPatternModel?.patSecondary = a;
-                            secondaryController.text = a;
-                          },
-                          onChanged: (_) {
-                            patternController.editPatternModel?.patSecondary = _;
-                          },
+                        width: Get.width/2.5,
+                        child: Row(
+                          children: [
+                            const Text("الى :"),
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            Expanded(
+                              child: customTextFieldWithIcon(
+                                secondaryController,
+                                (text) async {
+                                  var a = await patternController.getComplete(text);
+                                  patternController.editPatternModel?.patSecondary = a;
+                                  secondaryController.text = a;
+                                },
+                                onChanged: (_) {
+                                  patternController.editPatternModel?.patSecondary = _;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -150,43 +175,54 @@ class _PatternDetailsState extends State<PatternDetails> {
                     height: 40,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
-                      const Text("النوع :"),
+                      SizedBox(
+                        width: Get.width/3,
+                        child: Row(
+                          children: [
+                            const Text("النوع :"),
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            DropdownMenu(
+                              requestFocusOnTap: false,
+                              controller: typeController,
+                            width: Get.width/4,
+                              hintText: "اختر النمط",
+                              onSelected: (value) {
+                                patternController.editPatternModel?.patType = value;
+                              },
+                              dropdownMenuEntries: const [
+                                DropdownMenuEntry(value: "sales", label: "مبيع"),
+                                DropdownMenuEntry(value: "pay", label: "شراء"),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(
                         width: 25,
                       ),
-                      DropdownMenu(
-                        requestFocusOnTap: false,
-                        controller: typeController,
-                        width: Get.width * 0.3,
-                        hintText: "اختر النمط",
-                        onSelected: (value) {
-                          patternController.editPatternModel?.patType = value;
-                        },
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(value: "sales", label: "sales"),
-                          // DropdownMenuEntry(value: "1", label: "due sale"),
-                          DropdownMenuEntry(value: "pay", label: "pay"),
-                          // DropdownMenuEntry(value: "3", label: "due pay"),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 40,
-                      ),
-                      Text("حساب الضريبة "),
                       SizedBox(
-                        width: Get.width * 0.3,
-                        child: customTextFieldWithIcon(
-                          vatAccountController,
-                          (text) async {
-                            var a = await patternController.getComplete(text);
-                            patternController.editPatternModel?.patVatAccount = a;
-                            vatAccountController.text = a;
-                          },
-                          onChanged: (_) {
-                            patternController.editPatternModel?.patVatAccount = _;
-                          },
+                        width: Get.width/3,
+                        child: Row(
+                          children: [
+                            Text("حساب الضريبة "),
+                            Expanded(
+                              child: customTextFieldWithIcon(
+                                vatAccountController,
+                                (text) async {
+                                  var a = await patternController.getComplete(text);
+                                  patternController.editPatternModel?.patVatAccount = a;
+                                  vatAccountController.text = a;
+                                },
+                                onChanged: (_) {
+                                  patternController.editPatternModel?.patVatAccount = _;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(
@@ -206,6 +242,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                     height: 40,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text("المستودع :"),
                       const SizedBox(
@@ -225,6 +262,19 @@ class _PatternDetailsState extends State<PatternDetails> {
                           },
                         ),
                       ),
+                      SizedBox(width: 50,),
+                      SizedBox(
+                        width: Get.width * 0.5,
+                        child: MaterialColorPicker(
+                            allowShades: false, // default true
+                            onMainColorChange: (ColorSwatch? color) {
+                              print(color?.value);
+                              patternController.editPatternModel?.patColor=color?.value;
+                              // Handle main color changes
+                            },
+                            selectedColor: Color(patternController.editPatternModel?.patColor??4294198070)
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(
@@ -250,8 +300,6 @@ class _PatternDetailsState extends State<PatternDetails> {
                               checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewPattern).then((value) {
                                 if(value)patternController.editPattern();
                               });
-
-
                             },
                             child: const Text("تعديل"))
                       else

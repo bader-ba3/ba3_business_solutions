@@ -1,4 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -27,11 +29,18 @@ class ImportConfigurationView extends StatefulWidget {
 class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Map<String, RecordType> typeMap = {"حسابات": RecordType.account, "منتجات": RecordType.product};
   Map configProduct = {
-    "الاسم": "prodName",
-    "رمز المادة": "prodCode",
-    "السعر": "prodPrice",
-    "الباركود": "prodBarcode",
-    "رمز المجموعة": "prodGroupCode",
+  'اسم المادة' :'prodName',
+  'رمز المادة' :'prodCode',
+  'اسم المجموعة' :'prodParentId',
+  'سعر المستهلك' :'prodCustomerPrice',
+  'سعر جملة' :'prodWholePrice',
+  'سعر مفرق' :'prodRetailPrice',
+  'سعر التكلفة' :'prodCostPrice',
+  'اقل سعر مسموح' :'prodMinPrice',
+  'باركود المادة' :'prodBarcode',
+  'هل يخضع ضريبة' :'prodHasVat',
+  'رمز المجموعة' :'prodGroupCode',
+  'نوع المادة' :'prodType',
   };
 
   Map configAccount = {
@@ -39,6 +48,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     "بيان الحساب": "accComment",
     "النوع": "accType",
     "رمز الحساب": "accCode",
+  "نوع الضريبة" : 'accVat',
+  "اسم المجموعة" : 'accParentId',
   };
 
   Map config = {};
@@ -72,47 +83,54 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
               Text("النوع"),
             ],
           ),
-          if (type != null)
-            SizedBox(
-                height: 220,
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  children: List.generate(
-                      config.keys.toList().length,
-                      (index) => SizedBox(
-                            height: 120,
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 10,
+          if (type == null)
+            Expanded(child: SizedBox())
+            else
+              Expanded(
+              child: SizedBox(
+                  width: double.infinity,
+                  child:Wrap(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    // mainAxisSize: MainAxisSize.max,
+                    children: List.generate(
+                        config.keys.toList().length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                                height: 120,
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(config.keys.toList()[index]),
+                                    Text("||"),
+                                    Text("V"),
+                                    SizedBox(
+                                      height: 30,
+                                      width: 300,
+                                      child: DropdownButton<int>(
+
+                                          value: setting[config.values.toList()[index]],
+                                          items: widget.rows
+                                              .map((e) => DropdownMenuItem(
+                                                    value: widget.rows.indexOf(e!),
+                                                    child: Text(e.toString()),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (_) {
+                                            // print(widget.rows.indexOf(_!));
+                                            setting[config.values.toList()[index]] = _;
+                                            print(setting);
+                                            setState(() {});
+                                          }),
+                                    )
+                                  ],
                                 ),
-                                Text(config.keys.toList()[index]),
-                                Text("||"),
-                                Text("V"),
-                                SizedBox(
-                                  width: 100,
-                                  height: 30,
-                                  child: DropdownButton<int>(
-                                      value: setting[config.values.toList()[index]],
-                                      items: widget.rows
-                                          .map((e) => DropdownMenuItem(
-                                                value: widget.rows.indexOf(e!),
-                                                child: Text(e.toString()),
-                                              ))
-                                          .toList(),
-                                      onChanged: (_) {
-                                        // print(widget.rows.indexOf(_!));
-                                        setting[config.values.toList()[index]] = _;
-                                        print(setting);
-                                        setState(() {});
-                                      }),
-                                )
-                              ],
-                            ),
-                          )),
-                )),
+                              ),
+                        )),
+                  )),
+            ),
           ElevatedButton(
               onPressed: () async {
                 if (type == RecordType.product) {
@@ -155,14 +173,33 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
         prodName: element[setting["prodName"]],
         prodCode: element[setting["prodCode"]],
         prodBarcode: element[setting["prodBarcode"]],
-        prodGroupCode: element[setting["prodGroupCode"]],
-        // prodPrice: element[setting["prodPrice"]],
-        prodHasVat: true,
+        // prodGroupCode: element[setting["prodGroupCode"]],
+        prodCustomerPrice : element[setting['prodCustomerPrice']],
+        prodWholePrice : element[setting['prodWholePrice']],
+        prodRetailPrice : element[setting['prodRetailPrice']],
+        prodCostPrice : element[setting['prodCostPrice']],
+        prodMinPrice : element[setting['prodMinPrice']],
+        prodHasVat : (int.tryParse(element[setting['prodHasVat']])??0)==5,
+        prodType : element[setting['prodType']]=="خدمية"?Const.productTypeService:Const.productTypeStore,
+        prodParentId : element[setting['prodParentId']].isEmpty?null:element[setting['prodParentId']],
+        prodIsParent : element[setting['prodParentId']].isEmpty,
+        prodIsGroup: !(element[setting['prodType']]=="خدمية"||element[setting['prodType']]=="مستودعية")
       ));
     }
     print(finalData.map((e) => e.toJson()));
+
     for (var element in finalData) {
       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
+    }
+    for (var element in finalData) {
+      if(!element.prodIsParent!){
+        FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromName(element.prodParentId)).update({
+          'prodChild': FieldValue.arrayUnion([element.prodId]),
+        });
+        FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
+          "prodParentId":getProductIdFromName(element.prodParentId)
+        });
+      }
     }
   }
 
@@ -174,13 +211,25 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
         accName: element[setting["accName"]],
         accCode: element[setting["accCode"]],
         accComment: element[setting["accComment"]],
-        accType: element[setting["accType"]],
-        accVat: "GCC",
+        accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
+        accVat : element[setting['accVat']],
+        accParentId : element[setting['accParentId']].isEmpty?null:element[setting['accParentId']],
+        accIsParent : element[setting['accParentId']].isEmpty,
       ));
     }
     print(finalData.map((e) => e.toJson()));
     for (var element in finalData) {
       await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+    }
+    for (var element in finalData) {
+      if(!element.accIsParent!){
+        FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId)).update({
+          'accChild': FieldValue.arrayUnion([element.accId]),
+        });
+        FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).update({
+          "accParentId":getAccountIdFromText(element.accParentId)
+        });
+      }
     }
   }
 }

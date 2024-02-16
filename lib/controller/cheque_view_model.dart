@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/cheque_model.dart';
 import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/cheques/widget/all_cheques_view_data_grid_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,67 +12,101 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../Const/const.dart';
 import '../utils/generate_id.dart';
+import 'global_view_model.dart';
 
 
 class ChequeViewModel extends GetxController {
-  RxMap<String, ChequeModel> allCheques = <String, ChequeModel>{}.obs;
-  late AllChequesViewDataGridSource chequeRecordDataSource;
-  late AllChequesViewDataGridSource recordDataSource;
-  late DataGridController dataGridController;
+  RxMap<String, GlobalModel> allCheques = <String, GlobalModel>{}.obs;
+  late AllChequesViewDataGridSource chequeRecordViewDataSource;
   late DataGridController dataViewGridController;
   late AllChequesViewDataGridSource recordViewDataSource;
   var accountController = Get.find<AccountViewModel>();
   var bondController = Get.find<BondViewModel>();
-  ChequeModel? initModel;
-  ChequeModel? chequeModel;
+  GlobalModel? initModel;
+  GlobalModel? chequeModel;
 
   ChequeViewModel() {
-    getAllCheques();
+    // getAllCheques();
     initChequeViewPage();
   }
 
+  ///checked
   initChequeViewPage() {
     dataViewGridController = DataGridController();
     recordViewDataSource = AllChequesViewDataGridSource(allCheques);
     //update();
   }
 
-  void getAllCheques() async {
-    FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots().listen((value) async {
-      allCheques.clear();
-      for (var element in value.docs) {
-        element.reference.collection(Const.recordCollection).snapshots().listen((value0) async {
-          allCheques[element.id]?.cheqRecords = [];
-          var _ = value0.docs.map((e) => ChequeRecModel.fromJson(e.data())).toList();
-          allCheques[element.id] = ChequeModel.fromJson(element.data(), element.id, _);
-          initChequePage();
-          update();
-        });
-      }
-      update();
+  // void getAllCheques() async {
+  //   FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots().listen((value) async {
+  //     allCheques.clear();
+  //     for (var element in value.docs) {
+  //       element.reference.collection(Const.recordCollection).snapshots().listen((value0) async {
+  //         allCheques[element.id]?.cheqRecords = [];
+  //         var _ = value0.docs.map((e) => ChequeRecModel.fromJson(e.data())).toList();
+  //         allCheques[element.id] = GlobalModel.fromJson(element.data());
+  //         allCheques[element.id]?.cheqId=element.id;
+  //         allCheques[element.id]?.cheqRecords=_;
+  //         initChequeViewPage();
+  //         update();
+  //       });
+  //     }
+  //     update();
+  //   });
+  // }
+  ///checked
+  void initGlobalCheque(GlobalModel globalModel){
+    if(allCheques.containsKey(globalModel.cheqId)){
+      print("delete old cheqe");
+      allCheques[globalModel.cheqId]?.cheqRecords?.forEach((element) {
+        var globalController = Get.find<GlobalViewModel>();
+        if(bondController.allBondsItem.containsKey(element.cheqRecBondId)){
+          globalController.deleteDataInAll(bondController.allBondsItem[element.cheqRecBondId]!);
+        }
+      });
+    }
+    allCheques[globalModel.cheqId!]=globalModel;
+    print(globalModel.toFullJson());
+    globalModel.cheqRecords?.forEach((element) {
+      bondController.fastAddBondAddToModel(bondId: element.cheqRecBondId, originId: globalModel.cheqId!, total: double.parse(globalModel.cheqAllAmount!), record: [
+        BondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
+        BondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
+      ]);
+      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecPrimeryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?(-double.parse(element.cheqRecAmount!)).toString():element.cheqRecAmount );
+      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecSecoundryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?element.cheqRecAmount:(-double.parse(element.cheqRecAmount!)).toString());
     });
+    initChequeViewPage();
   }
 
-  initChequePage() {
-    dataGridController = DataGridController();
-    recordDataSource = AllChequesViewDataGridSource(allCheques);
+  ///checked
+  deleteGlobalCheque(GlobalModel globalModel)async{
+    allCheques.removeWhere((key, value) => key==globalModel.cheqId);
+    globalModel.cheqRecords?.forEach((element) {
+      bondController.deleteBondById(element.cheqRecBondId);
+      accountController.deleteAccountRecordById(element.cheqRecBondId,element.cheqRecPrimeryAccount);
+      accountController.deleteAccountRecordById(element.cheqRecBondId,element.cheqRecSecoundryAccount);
+    });
+    initChequeViewPage();
+    update();
   }
 
+  ///checked
   addCheque({String? oldId, String? oldBondId}) async {
     if (oldId != null) {
       initModel?.cheqId = oldId;
     } else {
       initModel?.cheqId = generateId(RecordType.cheque);
     }
-
     initModel?.cheqRemainingAmount = initModel?.cheqAllAmount;
     if (!initModel!.cheqPrimeryAccount!.contains("acc")) initModel!.cheqPrimeryAccount = getAccountIdFromText(initModel!.cheqPrimeryAccount);
     if (!initModel!.cheqSecoundryAccount!.contains("acc")) initModel!.cheqSecoundryAccount = getAccountIdFromText(initModel!.cheqSecoundryAccount);
     if (!initModel!.cheqBankAccount!.contains("acc")) initModel!.cheqBankAccount = getAccountIdFromText(initModel!.cheqBankAccount);
     initModel?.cheqStatus = Const.chequeStatusNotPaid;
-    await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).set(initModel?.toJson());
+    ///////
+    // await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).set(initModel!.toJson());
     var bondId = oldBondId ?? generateId(RecordType.bond);
-    bondController.fastAddBond(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
       BondRecordModel("00", double.parse(initModel!.cheqAllAmount!), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqPrimeryAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(initModel!.cheqAllAmount!), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqPrimeryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);
@@ -88,17 +123,21 @@ class ChequeViewModel extends GetxController {
     //   "cheqRecBondId": bondId,
     //   "cheqRecType": Const.chequeRecTypeInit,
     // };
+
     initModel?.cheqRecords?.add(ChequeRecModel.fromJson(recMap.toJson()));
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
+    var globalController = Get.find<GlobalViewModel>();
+
+    globalController.addGlobalCheque(initModel!);
+    // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
     update();
   }
 
   Future<void> updateCheque({withLogger = false}) async {
-    await deleteCheque().then((value) async {
+    await deleteGlobalCheque(initModel!).then((value) async {
       if (!initModel!.cheqPrimeryAccount!.contains("acc")) initModel!.cheqPrimeryAccount = getAccountIdFromText(initModel!.cheqPrimeryAccount);
       if (!initModel!.cheqSecoundryAccount!.contains("acc")) initModel!.cheqSecoundryAccount = getAccountIdFromText(initModel!.cheqSecoundryAccount);
       if (withLogger) logger(oldData: allCheques[initModel?.cheqId]!, newData: initModel);
-      await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).delete();
+      //await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).delete();
       var initBond = initModel!.cheqRecords?.where((element) => element.cheqRecType == Const.chequeRecTypeInit).first;
       initModel!.cheqRecords?.remove(initBond);
       await addCheque(oldId: initModel?.cheqId, oldBondId: initBond?.cheqRecBondId);
@@ -109,46 +148,75 @@ class ChequeViewModel extends GetxController {
         if (element.cheqRecType == Const.chequeRecTypePartPayment) {
           payAmount(element.cheqRecAmount, oldBondId: element.cheqRecBondId, ispayEdit: true);
         }
+
         // addRecord(element);
       });
 
-      initChequePage();
+      initChequeViewPage();
       update();
     });
   }
+  // Future<void> deleteCheque({withLogger = false}) async {
+  //   var id = initModel?.cheqId;
+  //   if (withLogger) logger(oldData: allCheques[id]!);
+  //   for (var element in initModel!.cheqRecords!) {
+  //     await updateDeleteRecord(element.cheqRecBondId, isPayEdit: true);
+  //   }
+  //   // initModel!.cheqRecords = [];
+  //   await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(id).delete();
+  //   // initModel?.cheqRecords?.forEach((element) async {
+  //   //   await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(id).collection(Const.recordCollection).doc(element.cheqRecBondId).delete();
+  //   // });
+  //   print("finish delete");
+  //   print("---------------------------------------");
+  //   //allCheques.remove(id);
+  //   initChequeViewPage();
+  //   update();
+  //   //Get.back();
+  // }
+  // Future<void> updateGlobalCheque() async {
+  //   if (!initModel!.cheqPrimeryAccount!.contains("acc")) initModel!.cheqPrimeryAccount = getAccountIdFromText(initModel!.cheqPrimeryAccount);
+  //   if (!initModel!.cheqSecoundryAccount!.contains("acc")) initModel!.cheqSecoundryAccount = getAccountIdFromText(initModel!.cheqSecoundryAccount);
+  //   //if (withLogger) logger(oldData: allCheques[initModel?.cheqId]!, newData: initModel);
+  //   var initBond = initModel!.cheqRecords?.where((element) => element.cheqRecType == Const.chequeRecTypeInit).first;
+  //   initModel!.cheqRecords?.remove(initBond);
+  //   await addCheque(oldId: initModel?.cheqId, oldBondId: initBond?.cheqRecBondId);
+  //   initModel!.cheqRecords?.forEach((element) {
+  //     if (element.cheqRecType == Const.chequeRecTypeAllPayment) {
+  //       payAllAmount(oldBondId: element.cheqRecBondId, ispayEdit: true);
+  //     }
+  //     if (element.cheqRecType == Const.chequeRecTypePartPayment) {
+  //       payAmount(element.cheqRecAmount, oldBondId: element.cheqRecBondId, ispayEdit: true);
+  //     }
+  //     // addRecord(element);
+  //   });
+  //
+  //   var globalController = Get.find<GlobalViewModel>();
+  //   globalController.updateGlobalCheque(initModel!);
+  //   //FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
+  //   initChequeViewPage();
+  //   update();
+  // }
 
-  Future<void> deleteCheque({withLogger = false}) async {
-    var id = initModel?.cheqId;
-    if (withLogger) logger(oldData: allCheques[id]!);
-    for (var element in initModel!.cheqRecords!) {
-      await updateDeleteRecord(element.cheqRecBondId, isPayEdit: true);
-    }
-    // initModel!.cheqRecords = [];
-    await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(id).delete();
-    // initModel?.cheqRecords?.forEach((element) async {
-    //   await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(id).collection(Const.recordCollection).doc(element.cheqRecBondId).delete();
-    // });
-    print("finish delete");
-    print("---------------------------------------");
-    //allCheques.remove(id);
-    initChequePage();
-    update();
-    //Get.back();
-  }
-
+  ///checked
   Future<void> updateDeleteRecord(id, {type, required bool isPayEdit}) async {
     if (type != null) {
       initModel?.cheqStatus = type;
-      await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": type});
     }
-    if (!isPayEdit) {
-      initModel?.cheqRecords?.removeWhere((element) => element.cheqRecBondId == id);
-    }
-    await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(id).delete();
-    bondController.deleteOneBonds(bondId: id);
+
+    ChequeRecModel _=initModel!.cheqRecords!.where((element) => element.cheqRecBondId == id).first;
+    initModel?.cheqRecords?.removeWhere((element) => element.cheqRecBondId == id);
+
+   var globalController = Get.find<GlobalViewModel>();
+    globalController.deleteDataInAll(bondController.allBondsItem[id]!);
+    globalController.updateGlobalCheque(initModel!);
+
+   // bondController.deleteGlobalBond(GlobalModel(bondId:id ));
     update();
   }
 
+
+  ///checked
   List<String> _accountPickList = [];
   Future<String> getAccountComplete(text, type) async {
     _accountPickList = [];
@@ -158,10 +226,10 @@ class ChequeViewModel extends GetxController {
     });
     if (_accountPickList.length > 1) {
       await Get.defaultDialog(
-        title: "Chosse form dialog",
+        title: "اختر احد الحسابات",
         content: SizedBox(
-          width: 500,
-          height: 500,
+          width: Get.height/2,
+          height: Get.height/2,
           child: ListView.builder(
             itemCount: _accountPickList.length,
             itemBuilder: (context, index) {
@@ -177,8 +245,8 @@ class ChequeViewModel extends GetxController {
                   width: 500,
                   child: Center(
                     child: Text(
-                      _accountPickList[index],
-                    ),
+                      _accountPickList[index]
+                  ,style: TextStyle(fontSize: 20),  ),
                   ),
                 ),
               );
@@ -195,7 +263,7 @@ class ChequeViewModel extends GetxController {
     }
   }
 
-
+  ///checked
   bool checkAccountComplete(text, type)  {
     _accountPickList = [];
     var _;
@@ -204,19 +272,20 @@ class ChequeViewModel extends GetxController {
     });
       if (_accountPickList.length == 1) {
         if(text==_accountPickList.first){
-          print(text);
-          print(_accountPickList.first);
           return true;
         }
     }
     return false;
   }
 
+  ///checked
   void payAllAmount({String? oldBondId, required bool ispayEdit}) {
     initModel?.cheqStatus = Const.chequeStatusPaid;
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": Const.chequeStatusPaid});
+    allCheques[initModel?.cheqId]?.cheqStatus=Const.chequeStatusPaid;
+
+    // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": Const.chequeStatusPaid});
     var bondId = oldBondId ?? generateId(RecordType.bond);
-    bondController.fastAddBond(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
       BondRecordModel("00", double.parse(initModel!.cheqAllAmount!), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqBankAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(initModel!.cheqAllAmount!), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqBankAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);
@@ -234,14 +303,20 @@ class ChequeViewModel extends GetxController {
     //   "cheqRecAmount": initModel!.cheqAllAmount!,
     //   "cheqRecType": Const.chequeRecTypeAllPayment,
     // };
-    if (!ispayEdit) {
+    initModel?.cheqRecords?.removeWhere((element) => element.cheqRecBondId==bondId);
+    allCheques[initModel?.cheqId]?.cheqRecords?.removeWhere((element) => element.cheqRecBondId==bondId);
+    // if (!ispayEdit) {
       initModel?.cheqRecords?.add(ChequeRecModel.fromJson(recMap.toJson()));
-    }
+      allCheques[initModel?.cheqId]?.cheqRecords?.add(ChequeRecModel.fromJson(recMap.toJson()));
+    // }
+    var globalController = Get.find<GlobalViewModel>();
+    globalController.updateGlobalCheque(initModel!);
     //initModel?.cheqRecords?.add(ChequeRecModel.fromJson(recMap.toJson()));
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
-    initChequePage();
+    // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
+    initChequeViewPage();
     update();
   }
+
 
   void payAmount(amount, {String? oldBondId, required bool ispayEdit}) {
     var status;
@@ -275,9 +350,9 @@ class ChequeViewModel extends GetxController {
     }
     print(amount + "  " + initModel!.cheqAllAmount!);
     print("_________________________");
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": status});
+    // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": status});
     var bondId = oldBondId ?? generateId(RecordType.bond);
-    bondController.fastAddBond(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
       BondRecordModel("00", double.parse(amount), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqBankAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(amount), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqBankAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);
@@ -298,25 +373,27 @@ class ChequeViewModel extends GetxController {
     if (!ispayEdit) {
       initModel?.cheqRecords?.add(ChequeRecModel.fromJson(recMap.toJson()));
     }
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
-    initChequePage();
+    var globalController = Get.find<GlobalViewModel>();
+    globalController.updateGlobalCheque(initModel!);
+    //FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).collection(Const.recordCollection).doc(bondId).set(recMap.toJson());
+    initChequeViewPage();
     update();
   }
 
-  addRecord(ChequeRecModel model) {
-    bondController.fastAddBond(bondId: model.cheqRecBondId, originId: model!.cheqRecId!, total: double.parse(model!.cheqRecAmount!), record: [
-      BondRecordModel("00", double.parse(model!.cheqRecAmount!), 0, model?.cheqRecChequeType == Const.chequeTypeCatch ? model!.cheqRecPrimeryAccount! : model!.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: model?.cheqRecId),
-      BondRecordModel("01", 0, double.parse(model!.cheqRecAmount!), model?.cheqRecChequeType == Const.chequeTypeCatch ? model!.cheqRecSecoundryAccount! : model!.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: model?.cheqRecId),
-    ]);
-    //initModel?.cheqRecords?.add(model);
-    FirebaseFirestore.instance.collection(Const.chequesCollection).doc(model?.cheqRecId).collection(Const.recordCollection).doc(model.cheqRecBondId).set(model.toJson());
-  }
+  // addRecord(ChequeRecModel model) {
+  //   bondController.fastAddBondAddToModel(bondId: model.cheqRecBondId, originId: model!.cheqRecId!, total: double.parse(model!.cheqRecAmount!), record: [
+  //     BondRecordModel("00", double.parse(model!.cheqRecAmount!), 0, model?.cheqRecChequeType == Const.chequeTypeCatch ? model!.cheqRecPrimeryAccount! : model!.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: model?.cheqRecId),
+  //     BondRecordModel("01", 0, double.parse(model!.cheqRecAmount!), model?.cheqRecChequeType == Const.chequeTypeCatch ? model!.cheqRecSecoundryAccount! : model!.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: model?.cheqRecId),
+  //   ]);
+  //   //initModel?.cheqRecords?.add(model);
+  //   FirebaseFirestore.instance.collection(Const.chequesCollection).doc(model?.cheqRecId).collection(Const.recordCollection).doc(model.cheqRecBondId).set(model.toJson());
+  // }
 
   prevCheq() {
     var index = allCheques.keys.toList().indexOf(initModel!.cheqId!);
     if (allCheques.keys.toList().first == allCheques.keys.toList()[index]) {
     } else {
-      initModel = ChequeModel.fromFullJson(allCheques.values.toList()[index - 1].toFullJson());
+      initModel = GlobalModel.fromJson(allCheques.values.toList()[index - 1].toFullJson());
       update();
     }
   }
@@ -325,7 +402,7 @@ class ChequeViewModel extends GetxController {
     var index = allCheques.keys.toList().indexOf(initModel!.cheqId!);
     if (allCheques.keys.toList().last == allCheques.keys.toList()[index]) {
     } else {
-      initModel = ChequeModel.fromFullJson(allCheques.values.toList()[index + 1].toFullJson());
+      initModel = GlobalModel.fromJson(allCheques.values.toList()[index + 1].toFullJson());
       update();
     }
   }
@@ -335,7 +412,7 @@ class ChequeViewModel extends GetxController {
     if (model == null) {
       Get.snackbar("error", "not found");
     } else {
-      initModel = ChequeModel.fromFullJson(model.toFullJson());
+      initModel = GlobalModel.fromJson(model.toFullJson());
       update();
     }
   }

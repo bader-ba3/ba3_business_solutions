@@ -45,6 +45,8 @@ class AllInvoice extends StatelessWidget {
                       ),
                     )
                   : SfDataGrid(
+                      horizontalScrollPhysics: NeverScrollableScrollPhysics(),
+                      verticalScrollPhysics: BouncingScrollPhysics(),
                       onCellTap: (DataGridCellTapDetails details) {
                         final rowIndex = details.rowColumnIndex.rowIndex - 1;
                         var rowData = controller.invoiceAllDataGridSource[rowIndex];
@@ -71,11 +73,6 @@ class AllInvoice extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             )),
-                        // GridColumnItem(
-                        //
-                        //   label: "id",
-                        //
-                        // ),
                         GridColumnItem(label: 'المدين', name: "Const.rowViewAccountId"),
                         GridColumnItem(label: 'الدائن', name: "Const.rowViewAccountName"),
                         GridColumnItem(label: 'قيمة الفاتورة', name: "Const.rowAccountBalance"),

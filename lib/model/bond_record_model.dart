@@ -3,7 +3,7 @@ class BondRecordModel {
   double? bondRecCreditAmount, bondRecDebitAmount;
 
   BondRecordModel(this.bondRecId, this.bondRecCreditAmount, this.bondRecDebitAmount, this.bondRecAccount, this.bondRecDescription, {this.invId});
-  BondRecordModel.fromJson(Map<String, dynamic> json) {
+  BondRecordModel.fromJson(json) {
     bondRecId = json['bondRecId'];
     bondRecAccount = json['bondRecAccount'];
     bondRecDescription = json['bondRecDescription'];

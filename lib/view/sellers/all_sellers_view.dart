@@ -19,7 +19,7 @@ class AllSellers extends StatelessWidget {
         ),
         body: GetBuilder<SellersViewModel>(builder: (controller) {
           return controller.allSellers.isEmpty
-              ? const CircularProgressIndicator()
+              ? const Center(child: Text("لا يوجد بائعون بعد"),)
               : Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(

@@ -26,13 +26,13 @@ class _DatePickerState extends State<DatePicker> {
             Get.defaultDialog(
                 title: "اختر يوم",
                 content: SizedBox(
-                  height: 700,
-                  width: 700,
+                  height: MediaQuery.sizeOf(context).height/1.6,
+                  width: MediaQuery.sizeOf(context).height/1,
                   child: SfDateRangePicker(
                     initialDisplayDate: DateTime.tryParse(widget.initDate ?? ""),
                     enableMultiView: true,
-                    backgroundColor: Colors.white,
-                    headerStyle: DateRangePickerHeaderStyle(backgroundColor: Colors.white),
+                    backgroundColor: Colors.transparent,
+                    headerStyle: DateRangePickerHeaderStyle(backgroundColor: Colors.transparent),
                     navigationDirection: DateRangePickerNavigationDirection.vertical,
                     selectionMode: DateRangePickerSelectionMode.single,
                     monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),

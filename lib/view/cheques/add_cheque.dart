@@ -1,14 +1,18 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
+import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/cheque_model.dart';
 import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
+import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
+import '../../model/global_model.dart';
 
 class AddCheque extends StatefulWidget {
   final String? modelKey;
@@ -34,13 +38,17 @@ class _AddChequeState extends State<AddCheque> {
   void initState() {
     super.initState();
     if (widget.modelKey == null) {
-      chequeController.initModel = ChequeModel(cheqRecords: []);
+      chequeController.initModel = GlobalModel(cheqRecords: []);
       chequeType = Const.chequeTypeList[0];
       chequeController.initModel?.cheqType = Const.chequeTypeList[0];
-      codeController.text = (int.parse(chequeController.allCheques.values.last.cheqCode ?? "0") + 1).toString();
+      if (chequeController.allCheques.isNotEmpty) {
+        codeController.text = (int.parse(chequeController.allCheques.values.last.cheqCode ?? "0") + 1).toString();
+      } else {
+        codeController.text = "1";
+      }
       chequeController.initModel?.cheqCode = codeController.text;
     } else {
-      chequeController.initModel = ChequeModel.fromFullJson(chequeController.allCheques[widget.modelKey]?.toFullJson());
+      chequeController.initModel = GlobalModel.fromJson(chequeController.allCheques[widget.modelKey]?.toFullJson());
       initPage();
     }
   }
@@ -79,9 +87,9 @@ class _AddChequeState extends State<AddCheque> {
             children: [
               Container(
                 width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: ListView(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     // textForm("cheque name", nameController),
                     Row(
@@ -136,14 +144,13 @@ class _AddChequeState extends State<AddCheque> {
                     textForm("رقم الشيك", numberController, onChanged: (_) => controller.initModel?.cheqName = _),
                     //textForm("cheque code", codeController, onChanged: (_) => controller.initModel?.cheqCode = _),
                     textForm("قيمة الشيك", allAmountController, onChanged: (_) {
-                      if(double.tryParse(_)!=null){
+                      if (double.tryParse(_) != null) {
                         controller.initModel?.cheqAllAmount = _;
-                      }else{
-                        if(_!="") {
+                      } else {
+                        if (_ != "") {
                           Get.snackbar("خطأ", "يرجى كتابة رقم");
                         }
                       }
-
                     }),
                     textForm(
                       "من",
@@ -175,241 +182,245 @@ class _AddChequeState extends State<AddCheque> {
                     SizedBox(
                       height: 20,
                     ),
-                    DatePicker(
-                      initDate: controller.initModel?.cheqDate,
-                      onSubmit: (_) {
-                        controller.initModel?.cheqDate = _.toString().split(" ").first;
-                        print(_);
-                      },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DatePicker(
+                          initDate: controller.initModel?.cheqDate,
+                          onSubmit: (_) {
+                            controller.initModel?.cheqDate = _.toString().split(" ").first;
+                            print(_);
+                          },
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      height: 50,
+                      height: 30,
                     ),
                     if (controller.initModel?.cheqId == null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                              onPressed: () async {
-                                if(double.tryParse(controller.initModel?.cheqAllAmount??"a")==null){
-                                  Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
-                                }else if(controller.initModel?.cheqName?.isEmpty??true){
-                                  Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
-                                }
-                                else if(controller.initModel?.cheqDate?.isEmpty??true){
-                                  Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
-                                }
-                                else if(controller.initModel?.cheqCode?.isEmpty??true){
-                                  Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
-                                }
-                                else if(bankController.text.isEmpty||!controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)){
-                                Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
-                                }
-                                else if(primeryController.text.isEmpty||!controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault )){
-                                  Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                                }
-                                else if(secoundryController.text.isEmpty||!controller.checkAccountComplete(secoundryController.text,  Const.accountTypeDefault)){
-                                  Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                                }
-                                else{
-                                  checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
-                                    if(value) controller.addCheque();
-                                  });
-                                }
-
-                              },
-                              child: Text("إضافة")),
-                        ],
-                      )
+                      ElevatedButton(
+                          onPressed: () async {
+                            if (double.tryParse(controller.initModel?.cheqAllAmount ?? "a") == null) {
+                              Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
+                            } else if (controller.initModel?.cheqName?.isEmpty ?? true) {
+                              Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
+                            } else if (controller.initModel?.cheqDate?.isEmpty ?? true) {
+                              Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
+                            } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
+                              Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
+                            } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)) {
+                              Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
+                            } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
+                              Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                            } else if (secoundryController.text.isEmpty || !controller.checkAccountComplete(secoundryController.text, Const.accountTypeDefault)) {
+                              Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                            } else {
+                              checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                if (value) controller.addCheque();
+                              });
+                            }
+                          },
+                          child: Text("إضافة"))
                     else
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Column(
                         children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
-                               if(payment_list!.isNotEmpty){
-                                 if ((payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) > double.parse(controller.initModel!.cheqAllAmount!)) {
-                                   Get.snackbar("خطأ", "الدفعات اكبر من القيمة الجديدة");
-                                 }
-                               }else
-                               if(double.tryParse(controller.initModel?.cheqAllAmount??"a")==null){
-                                 Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
-                               }else if(controller.initModel?.cheqName?.isEmpty??true){
-                                 Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
-                               }
-                               else if(controller.initModel?.cheqDate?.isEmpty??true){
-                                 Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
-                               }
-                               else if(controller.initModel?.cheqCode?.isEmpty??true){
-                                 Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
-                               }
-                               else if(bankController.text.isEmpty||!controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)){
-                                 Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
-                               }
-                               else if(primeryController.text.isEmpty||!controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault )){
-                                 Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                               }
-                               else if(secoundryController.text.isEmpty||!controller.checkAccountComplete(secoundryController.text,  Const.accountTypeDefault)){
-                                 Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                               }
-                               else{
-                                 checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
-                                   if(value) controller.updateCheque();
-                                 });
-                               }
-                              },
-                              child: Text("تعديل")),
-                          SizedBox(
-                            width: 100,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
-                                  if(value) controller.deleteCheque();
-                                });
-                              },
-                              child: Text("حذف")),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                var bondId = controller.initModel?.cheqRecords?.firstWhere((e) => e.cheqRecType == Const.chequeRecTypeInit).cheqRecBondId;
-                                seeDetails(bondId!);
-                              },
-                              child: Text("السند الاساسي")),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          Builder(builder: (context) {
-                            var record = controller.initModel?.cheqRecords?.toList().firstWhereOrNull((e) => e.cheqRecType == Const.chequeRecTypeAllPayment);
-                            if (record == null && controller.initModel?.cheqStatus == Const.chequeStatusNotPaid) {
-                              return ElevatedButton(
+                          Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
                                   onPressed: () {
-                                    checkPermissionForOperation(Const.roleUserWrite,Const.roleViewCheques).then((value) {
-                                      if(value) controller.payAllAmount(ispayEdit: false);
+                                    List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
+                                    if (payment_list!.isNotEmpty) {
+                                      if ((payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                        Get.snackbar("خطأ", "الدفعات اكبر من القيمة الجديدة");
+                                      }
+                                    } else if (double.tryParse(controller.initModel?.cheqAllAmount ?? "a") == null) {
+                                      Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
+                                    } else if (controller.initModel?.cheqName?.isEmpty ?? true) {
+                                      Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
+                                    } else if (controller.initModel?.cheqDate?.isEmpty ?? true) {
+                                      Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
+                                    } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
+                                      Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
+                                    } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)) {
+                                      Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
+                                    } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
+                                      Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                                    } else if (secoundryController.text.isEmpty || !controller.checkAccountComplete(secoundryController.text, Const.accountTypeDefault)) {
+                                      Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                                    } else {
+                                      checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                        if (value) controller.updateCheque();
+                                      });
+                                    }
+                                  },
+                                  child: Text("تعديل")),
+                              SizedBox(
+                                width: 50,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    confirmDeleteWidget().then((value) {
+                                      if (value) {
+                                        checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
+                                          if (value) {
+                                            var globalController = Get.find<GlobalViewModel>();
+                                            globalController.deleteGlobal(controller.initModel!);
+                                          }
+                                        });
+                                      }
                                     });
                                   },
-                                  child: Text("تسديد كل المبلغ"));
-                            } else {
-                              if (record != null) {
-                                return Row(
-                                  children: [
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          seeDetails(record.cheqRecBondId!);
-                                        },
-                                        child: Text("سند تسديد كل المبلغ")),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          checkPermissionForOperation(Const.roleUserDelete,Const.roleViewCheques).then((value) {
-                                            if(value) controller.updateDeleteRecord(record.cheqRecBondId!, type: Const.chequeStatusNotPaid, isPayEdit: false);
-                                          });
-                                        },
-                                        child: Text("حذف سند تسديد كل المبلغ"))
-                                  ],
-                                );
-                              } else {
-                                return SizedBox();
-                              }
-                            }
-                          }),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          Builder(builder: (context) {
-                            var record = controller.initModel?.cheqRecords?.toList().cast<ChequeRecModel?>().where((e) => e?.cheqRecType == Const.chequeRecTypePartPayment).toList();
-                            print(record);
-                            if ((record == null || record.isEmpty) && controller.initModel?.cheqStatus != Const.chequeStatusPaid) {
-                              return ElevatedButton(
+                                  child: Text("حذف")),
+                              SizedBox(
+                                width: 50,
+                              ),
+                              ElevatedButton(
                                   onPressed: () {
-                                    var con = TextEditingController();
-                                    Get.defaultDialog(
-                                        title: "اكتب المبلغ",
-                                        content: SizedBox(
-                                          height: 100,
-                                          width: 100,
-                                          child: TextFormField(
-                                            controller: con,
-                                          ),
-                                        ),
-                                        actions: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
-
-                                                if ((payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
-                                                } else {
-                                                  checkPermissionForOperation(Const.roleUserWrite,Const.roleViewCheques).then((value) {
-                                                    if(value){
-                                                      Get.back();
-                                                      controller.payAmount(con.text, ispayEdit: false);
+                                    var bondId = controller.initModel?.cheqRecords?.firstWhere((e) => e.cheqRecType == Const.chequeRecTypeInit).cheqRecBondId;
+                                    seeDetails(bondId!);
+                                  },
+                                  child: Text("السند الاساسي")),
+                              SizedBox(
+                                width: 50,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10,),
+                          SizedBox(
+                            height: 70,
+                            width: double.infinity,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                              Builder(builder: (context) {
+                                var record = controller.initModel?.cheqRecords?.toList().firstWhereOrNull((e) => e.cheqRecType == Const.chequeRecTypeAllPayment);
+                                if (record == null && controller.initModel?.cheqStatus == Const.chequeStatusNotPaid) {
+                                  return ElevatedButton(
+                                      onPressed: () {
+                                        checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                          if (value) controller.payAllAmount(ispayEdit: false);
+                                        });
+                                      },
+                                      child: Text("تسديد كل المبلغ"));
+                                } else {
+                                  if (record != null) {
+                                    return Row(
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              seeDetails(record.cheqRecBondId!);
+                                            },
+                                            child: Text("سند تسديد كل المبلغ")),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              confirmDeleteWidget().then((value) {
+                                                if (value) {
+                                                  checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
+                                                    if (value) {
+                                                      controller.updateDeleteRecord(record.cheqRecBondId!, type: Const.chequeStatusNotPaid, isPayEdit: false);
                                                     }
                                                   });
-
                                                 }
-                                              },
-                                              child: Text("دفع")),
+                                              });
+                                            },
+                                            child: Text("حذف سند تسديد كل المبلغ"))
+                                      ],
+                                    );
+                                  } else {
+                                    return SizedBox();
+                                  }
+                                }
+                              }),
+                              SizedBox(
+                                width: 50,
+                              ),
+                              Builder(builder: (context) {
+                                var record = controller.initModel?.cheqRecords?.toList().cast<ChequeRecModel?>().where((e) => e?.cheqRecType == Const.chequeRecTypePartPayment).toList();
+                                if ((record == null || record.isEmpty) && controller.initModel?.cheqStatus != Const.chequeStatusPaid) {
+                                  return ElevatedButton(
+                                      onPressed: () {
+                                        var con = TextEditingController();
+                                        Get.defaultDialog(
+                                            title: "اكتب المبلغ",
+                                            content: SizedBox(
+                                              height: 100,
+                                              width: 100,
+                                              child: TextFormField(
+                                                controller: con,
+                                              ),
+                                            ),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
+                                                    if (payment_list!.isNotEmpty && (payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                                    } else {
+                                                      checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                                        if (value) {
+                                                          Get.back();
+                                                          controller.payAmount(con.text, ispayEdit: false);
+                                                        }
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text("دفع")),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  child: Text("إلغاء"))
+                                            ]);
+                                      },
+                                      child: Text("دفع قسم من المبلغ"));
+                                } else {
+                                  if (record!.isNotEmpty) {
+                                    return Row(
+                                      children: [
+                                        if (record?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) != double.parse(controller.initModel!.cheqAllAmount!))
                                           ElevatedButton(
                                               onPressed: () {
-                                                Get.back();
-                                              },
-                                              child: Text("إلغاء"))
-                                        ]);
-                                  },
-                                  child: Text("دفع قسم من المبلغ"));
-                            } else {
-                              if (record!.isNotEmpty) {
-                                return Row(
-                                  children: [
-                                    if (record?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) != double.parse(controller.initModel!.cheqAllAmount!))
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            var con = TextEditingController();
-                                            Get.defaultDialog(
-                                                title: "اكتب المبلغ",
-                                                content: SizedBox(
-                                                  height: 100,
-                                                  width: 100,
-                                                  child: TextFormField(
-                                                    controller: con,
-                                                  ),
-                                                ),
-                                                actions: [
-                                                  ElevatedButton(
-                                                      onPressed: () {
-                                                        List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
+                                                var con = TextEditingController();
+                                                Get.defaultDialog(
+                                                    title: "اكتب المبلغ",
+                                                    content: SizedBox(
+                                                      height: 100,
+                                                      width: 100,
+                                                      child: TextFormField(
+                                                        controller: con,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
 
-                                                        if ((payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
-                                                        } else {
-                                                          checkPermissionForOperation(Const.roleUserWrite,Const.roleViewCheques).then((value) {
-                                                            if(value){
-                                                              Get.back();
-                                                              controller.payAmount(con.text, ispayEdit: false);
+                                                            if (payment_list!.isNotEmpty && (payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                                            } else {
+                                                              checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                                                if (value) {
+                                                                  Get.back();
+                                                                  controller.payAmount(con.text, ispayEdit: false);
+                                                                }
+                                                              });
                                                             }
-                                                          });
-                                                        }
-                                                      },
-                                                      child: Text("دفع")),
-                                                  ElevatedButton(
-                                                      onPressed: () {
-                                                        Get.back();
-                                                      },
-                                                      child: Text("إلغاء"))
-                                                ]);
-                                          },
-                                          child: Text("دفع قسم من المبلغ")),
-                                    ...List<Widget>.generate(
-                                        record!.length,
-                                        (index) => SizedBox(
+                                                          },
+                                                          child: Text("دفع")),
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.back();
+                                                          },
+                                                          child: Text("إلغاء"))
+                                                    ]);
+                                              },
+                                              child: Text("دفع قسم من المبلغ")),
+                                        ...List<Widget>.generate(
+                                            record!.length,
+                                                (index) => SizedBox(
                                               height: 70,
                                               width: 150,
                                               child: Column(children: [
                                                 Text(record[index]!.cheqRecAmount!),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -424,8 +435,14 @@ class _AddChequeState extends State<AddCheque> {
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        checkPermissionForOperation(Const.roleUserDelete,Const.roleViewCheques).then((value) {
-                                                          if(value)controller.updateDeleteRecord(record![index]!.cheqRecBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
+                                                        confirmDeleteWidget().then((value) {
+                                                          if (value) {
+                                                            checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
+                                                              if (value) {
+                                                                controller.updateDeleteRecord(record![index]!.cheqRecBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
+                                                              }
+                                                            });
+                                                          }
                                                         });
                                                       },
                                                       child: Text("حذف"),
@@ -434,15 +451,20 @@ class _AddChequeState extends State<AddCheque> {
                                                 )
                                               ]),
                                             )).toList()
-                                  ],
-                                );
-                              } else {
-                                return SizedBox();
-                              }
-                            }
-                          })
+                                      ],
+                                    );
+                                  } else {
+                                    return SizedBox();
+                                  }
+                                }
+                              })
+                            ],),
+                          )
                         ],
                       ),
+                    SizedBox(
+                      height: 30,
+                    ),
                   ],
                 ),
               ),
@@ -483,7 +505,9 @@ class _AddChequeState extends State<AddCheque> {
               else
                 Row(
                   children: [
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text("الرمز التسلسلي:"),
                     Padding(
                       padding: const EdgeInsets.all(30.0),

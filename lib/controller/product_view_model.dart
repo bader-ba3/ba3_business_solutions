@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -22,31 +23,89 @@ class ProductViewModel extends GetxController {
   late ProductRecordDataSource recordDataSource;
 
   ProductModel? productModel;
+
   ProductViewModel() {
     getAllProduct();
   }
 
+  void initGlobalProduct(GlobalModel globalModel) {
+   // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
+      Map<String, List> allRecTotal = {};
+      bool isPay = globalModel.invType == "pay";
+      int correctQuantity = isPay ? 1 : -1;
+      for (int i = 0; i < globalModel.invRecords!.length; i++) {
+        if (globalModel.invRecords![i].invRecId != null) {
+          if (allRecTotal[globalModel.invRecords![i].invRecProduct] == null) {
+            allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * globalModel.invRecords![i].invRecQuantity!)];
+          } else {
+            allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * globalModel.invRecords![i].invRecQuantity!));
+          }
+        }
+      }
+      allRecTotal.forEach((key, value) {
+        var recCredit = value.reduce((value, element) => value + element);
+        bool isStoreProduct = productDataMap[key]!.prodType == Const.productTypeStore;
+        InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
+        // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
+        if(productDataMap[key]?.prodRecord==null){
+          productDataMap[key]?.prodRecord=[ProductRecordModel(
+              globalModel.invId,
+              globalModel.invType,
+              key,
+              (isStoreProduct ? recCredit : "0").toString(),
+              element.invRecId,
+              element.invRecTotal.toString(),
+              element.invRecSubTotal.toString(),
+              globalModel.invDate,
+              element.invRecVat.toString()
+          )];
+        }else{
+          productDataMap[key]?.prodRecord?.removeWhere((element) => element.invId==globalModel.invId);
+          productDataMap[key]?.prodRecord?.add(ProductRecordModel(
+              globalModel.invId,
+              globalModel.invType,
+              key,
+              (isStoreProduct ? recCredit : "0").toString(),
+              element.invRecId,
+              element.invRecTotal.toString(),
+              element.invRecSubTotal.toString(),
+              globalModel.invDate,
+              element.invRecVat.toString()
+          ));
+        }
+        WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+          update();
+          initModel();
+          initPage();
+          go(lastIndex);
+        });
+      });
+  }
+
+  void deleteGlobalProduct(GlobalModel globalModel){
+    globalModel.invRecords?.forEach((element) {
+      productDataMap[element.invRecProduct]?.prodRecord?.removeWhere((element) => element.invId==globalModel.invId);
+    });
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+      update();
+      initModel();
+      initPage();
+      go(lastIndex);
+    });
+  }
+
   void getAllProduct() async {
     FirebaseFirestore.instance.collection(Const.productsCollection).snapshots().listen((value) async {
-      productDataMap = <String, ProductModel>{}.obs;
+      RxMap<String, ProductModel> oldProductDataMap = <String, ProductModel>{}.obs;
+      productDataMap.forEach((key, value) {
+        oldProductDataMap[key]=ProductModel.fromJson(value.toFullJson());
+      });
+      productDataMap.clear();
       for (var element in value.docs) {
         productDataMap[element.id] = ProductModel.fromJson(element.data());
-        element.reference.collection(Const.recordCollection).snapshots().listen((value0) {
-          // productRecordMap[element.id] = <ProductRecordModel>[];
-          List<ProductRecordModel> _=[];
-          for (var element0 in value0.docs) {
-            _.add(ProductRecordModel.fromJson(element0.data(), element0.id));
-          }
-          productDataMap[element.id]?.prodRecord=_;
-          String? allQuantity;
-          var allItem = productDataMap[element.id]?.prodRecord?.map((e) => e.prodRecQuantity).toList();
-          if (allItem!.isNotEmpty) {
-            allQuantity = (productDataMap[element.id]?.prodRecord?.map((e) => e.prodRecQuantity).toList() ?? ["0"]).reduce((value, element) => (int.parse(value!) + int.parse(element!)).toString());
-          }
-          productDataMap[element.id]?.prodAllQuantity = allQuantity ?? "0";
-          initProductPage(productDataMap[element.id]!);
-        });
+        productDataMap[element.id]?.prodRecord=oldProductDataMap[element.id]?.prodRecord??[];
       }
+
       WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
         update();
         initModel();
@@ -55,13 +114,30 @@ class ProductViewModel extends GetxController {
       });
     });
   }
+  String getNextProductCode() {
+    int code = 0;
+    if(productDataMap.isEmpty){
+      return "00";
+    }
 
+    return code.toString();
+  }
+  int padNumber = 2;
+ String getFullCodeOfProduct(String accID){
+   String code = productDataMap[accID]!.prodCode!.padLeft(padNumber,"0");
+   if(productDataMap[accID]!.prodIsParent!){
+     return code;
+   }else{
+     var perCode= getFullCodeOfProduct(productDataMap[accID]!.prodParentId!);
+     return perCode+code;
+   }
+  }
   void createProduct(ProductModel editProductModel, {withLogger = false}) {
     editProductModel.prodId = generateId(RecordType.product);
+    editProductModel.prodIsGroup ??= false;
     if(editProductModel.prodParentId==null){
       editProductModel.prodIsParent=true;
     }else{
-      print(editProductModel.prodParentId);
       FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
       });
@@ -80,10 +156,10 @@ class ProductViewModel extends GetxController {
 
   void updateProduct(ProductModel editProductModel, {withLogger = false}) {
     if (withLogger) logger(oldData: productDataMap[editProductModel.prodId], newData: editProductModel);
+    editProductModel.prodIsGroup ??= false;
     if(editProductModel.prodParentId==null){
       editProductModel.prodIsParent=true;
     }else{
-      print(editProductModel.prodParentId);
       FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
       });
@@ -91,6 +167,18 @@ class ProductViewModel extends GetxController {
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).update(editProductModel.toJson());
     update();
+  }
+
+  int getCountOfProduct(ProductModel productModel){
+    List<ProductRecordModel> allRec=[];
+
+    allRec.addAll(productModel.prodRecord??[]);
+    productModel.prodChild?.forEach((element) {
+      allRec.addAll(productDataMap[element]?.prodRecord??[]);
+    });
+    if(allRec.isEmpty)return 0;
+    int _ = allRec.map((e) => int.parse(e.prodRecQuantity!)).toList().reduce((value, element) => value+element);
+    return _;
   }
 
   Future<void> deleteProduct({withLogger = false}) async {
@@ -102,45 +190,11 @@ class ProductViewModel extends GetxController {
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(productModel?.prodId).delete();
     productModel == null;
+
     update();
   }
 
-  Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
-    Map<String, List> allRecTotal = {};
-    bool isPay = type == "pay";
-    int correctQuantity = isPay ? 1 : -1;
-    for (int i = 0; i < record.length; i++) {
-      if (record[i].invRecId != null) {
-        if (allRecTotal[record[i].invRecProduct] == null) {
-          allRecTotal[record[i].invRecProduct!] = [(correctQuantity * record[i].invRecQuantity!)];
-        } else {
-          allRecTotal[record[i].invRecProduct]!.add((correctQuantity * record[i].invRecQuantity!));
-        }
-      }
-    }
-    allRecTotal.forEach((key, value) {
-      var recCredit = value.reduce((value, element) => value + element);
-      bool isStoreProduct= getProductModelFromId(key)!.prodType==Const.productTypeStore;
-      InvoiceRecordModel element = record.firstWhere((element) => element.invRecProduct == key);
-      FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(invId).set({
-        'invId': invId,
-        'prodRecId': element.invRecId,
-        'prodRecProduct': key,
-        'prodRecQuantity': isStoreProduct?recCredit:0,
-        'prodRecSubTotal': element.invRecSubTotal,
-        'prodRecSubVat': element.invRecVat,
-        'prodRecTotal': element.invRecTotal,
-        'prodType': type,
-        'prodRecDate': date,
-      });
-    }); //prodRecSubVat
-  }
 
-  void deleteInvFromProduct(List<InvoiceRecordModel> record, invId) {
-    for (var element in record) {
-      FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.invRecProduct).collection(Const.recordCollection).doc(invId).delete();
-    }
-  }
 
   void initProductPage(ProductModel editedProduct) {
     recordDataSource = ProductRecordDataSource(productModel: editedProduct);
@@ -150,29 +204,6 @@ class ProductViewModel extends GetxController {
     return productDataMap.values.toList().firstWhere((element) => element.prodName == name).prodId!;
   }
 
-  // void initGrid(value) async {
-  //   productDataMap = <String, ProductModel>{}.obs;
-  //   for (var element in value.docs) {
-  //     productDataMap[element.id] = ProductModel.fromJson(element.data());
-  //     element.reference.collection(Const.recordCollection).snapshots().listen((value0) {
-  //       productRecordMap[element.id] = <ProductRecordModel>[];
-  //       for (var element0 in value0.docs) {
-  //         productRecordMap[element.id]?.add(ProductRecordModel.fromJson(element0.data(), element0.id));
-  //       }
-  //       String? allQuantity;
-  //       var allItem = productRecordMap[element.id]?.map((e) => e.prodRecQuantity).toList();
-  //       if (allItem!.isNotEmpty) {
-  //         allQuantity = (productRecordMap[element.id]?.map((e) => e.prodRecQuantity).toList() ?? ["0"]).reduce((value, element) => (int.parse(value!) + int.parse(element!)).toString());
-  //       }
-  //       productDataMap[element.id]?.prodAllQuantity = allQuantity ?? "0";
-  //       initProductPage(productRecordMap[element.id]!);
-  //     });
-  //   }
-  //   WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-  //     update();
-  //   });
-  //   // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update());
-  // }
 
 
   //--=-=-==-==--=-=-=-==-==-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=--=-
@@ -180,7 +211,7 @@ class ProductViewModel extends GetxController {
   String? editItem;
   TextEditingController? editCon;
 
-  var lastIndex;
+  String? lastIndex;
 
   List<ProductTree> allProductTree = [];
 
@@ -196,6 +227,11 @@ class ProductViewModel extends GetxController {
 
   ProductTree addToModel(ProductModel element) {
     var list = element.prodChild?.map((e) => addToModel(productDataMap[e]!)).toList();
+    print(element.prodName.toString() +list!.length.toString() );
+    if(list!.length>99){
+      padNumber=3;
+    }
+    productDataMap[element.prodId]?.prodFullCode=getFullCodeOfProduct(element.prodId!);
     ProductTree model = ProductTree.fromJson({"name": element.prodName}, element.prodId, list??[]);
     return model;
   }
@@ -208,10 +244,10 @@ class ProductViewModel extends GetxController {
     update();
   }
 
-  void setupParentList(parent) {
+  void setupParentList(String parent) {
     allPer.add(productDataMap[parent]!.prodId);
     if (productDataMap[parent]!.prodParentId != null) {
-      setupParentList(productDataMap[parent]!.prodIsParent);
+      setupParentList(productDataMap[parent]!.prodParentId!);
     }
   }
 
@@ -244,6 +280,7 @@ class ProductViewModel extends GetxController {
     editItem = null;
     update();
   }
+  
   Future<void> exportProduct(String? oldKey) async {
     List<List> data=[["اسم المادة","الفاتورة","العدد","التاريخ"]];
     List<ProductRecordModel> allRec=[];
@@ -276,8 +313,101 @@ class ProductViewModel extends GetxController {
     }
 
   }
-}
 
+  void createFolderDialog() {
+    var nameCon =TextEditingController();
+    String? prodParentId ;
+    String? rootName ;
+    List<String> rootFolder = productDataMap.values.toList().where((element) => element.prodIsParent!&&element.prodIsGroup!).map((e) => e.prodId!).toList();
+    Map<String ,List<String>> allParent = {};
+    Map<String ,String> dropDownList = {};
+    Get.defaultDialog(
+      title: "اختر الطريق",
+      content: SizedBox(
+        height: Get.height/2,
+        width:Get.height/2,
+        child: StatefulBuilder(
+          builder: (context,setstate) {
+            return ListView(
+              children: [
+                SizedBox(
+                  height: 35,
+                  width: double.infinity,
+                  child: TextFormField(controller: nameCon,),
+                ),
+                SizedBox(height: 10,),
+                DropdownButton(
+                    value: rootName,
+                    items: rootFolder.map((e) => DropdownMenuItem(value: e,child: Text(getProductNameFromId(e)))).toList(), onChanged: (_){
+                  prodParentId=_;
+                  rootName = _;
+                  Iterable<ProductModel> a = productDataMap.values.toList().where((element) => element.prodParentId==_&&element.prodIsGroup!);
+                  if(a.isNotEmpty){
+                    allParent[_!] = a.toList().map((e) => e.prodId!).toList();
+                  }
+                  setstate((){});
+                }),
+                for(List<String> element in allParent.values)
+                  DropdownButton(
+                    value: dropDownList[element.toString()],
+                      items: element.map((e) => DropdownMenuItem(value: e,child: Text(getProductNameFromId(e)))).toList(), onChanged: (_){
+                    prodParentId=_;
+                    dropDownList[element.toString()]=_!;
+                    Iterable<ProductModel> a = productDataMap.values.toList().where((element) => element.prodParentId==_&&element.prodIsGroup!);
+                    if(a.isNotEmpty){
+                      allParent[_!] = a.toList().map((e) => e.prodId!).toList();
+                    }
+                    setstate((){});
+                  }),
+              ],
+            );
+          }
+        ),
+      ),actions: [
+      ElevatedButton(onPressed: (){
+        addFolder(nameCon.text,prodParentId: prodParentId);
+        Get.back();}, child: Text("إضافة")),
+      ElevatedButton(onPressed: (){Get.back();}, child: Text("إلغاء")),
+    ]
+    );
+  }
+
+  void addFolder(name,{String? prodParentId}) {
+    int code = 0;
+    if(prodParentId==null){
+      code = productDataMap.values.toList().where((element) => element.prodIsParent!).map((e) => int.parse(e.prodCode!)).toList().last+1;
+    }else{
+      Iterable<ProductModel> a = productDataMap.values.toList().where((element) => element.prodParentId==prodParentId);
+      if(a.isNotEmpty){
+        code = a.map((e) => int.parse(e.prodCode!)).toList().last+1;
+      }
+    }
+    var prodModel = ProductModel(
+      prodIsGroup: true,
+      prodIsParent: prodParentId==null,
+      prodParentId: prodParentId,
+      prodName: name,
+      prodCode: code.toString(),
+      prodId: generateId(RecordType.product)
+    );
+    if(prodParentId!=null){
+      FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodParentId).update({
+        'prodChild': FieldValue.arrayUnion([prodModel.prodId]),
+      });
+    }
+    FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodModel.prodId).set(prodModel.toJson());
+
+  }
+
+
+
+}
+String getProductIdFromName(name) {
+  if (name != null && name != " " && name != "") {
+    return Get.find<ProductViewModel>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodName==name||element?.prodCode==name)?.prodId??"";
+  } else {
+    return "";
+  }}
 String getProductNameFromId(id) {
   if (id != null && id != " " && id != "") {
     return Get.find<ProductViewModel>().productDataMap[id]!.prodName!;
@@ -285,6 +415,7 @@ String getProductNameFromId(id) {
     return "";
   }}
 ProductModel? getProductModelFromId(id) {
+  print(id);
   if (id != null && id != " " && id != "") {
     return Get.find<ProductViewModel>().productDataMap[id]!;
   } else {

@@ -23,6 +23,20 @@ class DataBaseType extends StatefulWidget {
 
 class _DataBaseTypeState extends State<DataBaseType> {
   DataBaseViewModel dataBaseController=Get.find<DataBaseViewModel>();
+
+  @override
+  void initState() {
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value){
+    checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewUserManagement).then((value) {
+      if(value){
+      }else{
+        Get.back();
+      }
+    });
+     });
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Directionality(

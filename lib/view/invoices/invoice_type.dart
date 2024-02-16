@@ -25,7 +25,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
         appBar: AppBar(
           title: Text("الفواتير"),
         ),
-        body: Column(
+        body: ListView(
           children: [
             for (MapEntry<String, PatternModel> i in patternController.patternModel.entries.toList())
               Padding(
@@ -36,7 +36,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                   },
                   child: Container(
                     width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: Color(i.value.patColor!).withOpacity(0.2),borderRadius: BorderRadius.circular(20)),
                       padding: const EdgeInsets.all(30.0),
                       child: Text(i.value.patName??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
                 ),

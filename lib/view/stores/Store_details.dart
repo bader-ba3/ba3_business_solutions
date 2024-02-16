@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
+import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,9 +22,14 @@ class _StoreDetailsState extends State<StoreDetails> {
   var storeViewController = Get.find<StoreViewModel>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     storeViewController.initStorePage(widget.oldKey);
+    storeViewController.openedStore=widget.oldKey;
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    storeViewController.openedStore=null;
   }
   @override
   Widget build(BuildContext context) {
@@ -39,6 +45,7 @@ class _StoreDetailsState extends State<StoreDetails> {
             ElevatedButton(onPressed: (){
               storeViewController.exportStore(widget.oldKey);
             }, child: Text("إستخراج البيانات")),
+            SizedBox(width: 20,),
             if(storeViewController.totalAmountPage.isEmpty)
               ElevatedButton(
                   style: ButtonStyle(
@@ -46,13 +53,16 @@ class _StoreDetailsState extends State<StoreDetails> {
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () {
+                    confirmDeleteWidget().then((value) {
+                      if(value){
                     checkPermissionForOperation(Const.roleUserDelete,Const.roleViewStore).then((value) {
                       if(value){
                         storeViewController.deleteStore();
                         Get.back();
                       }
                     });
-
+    }
+  });
 
                   },
                   child: const Text("حذف")),
@@ -62,7 +72,7 @@ class _StoreDetailsState extends State<StoreDetails> {
         body: GetBuilder<StoreViewModel>(
           builder: (controller) {
            return controller.totalAmountPage.isEmpty
-             ?CircularProgressIndicator()
+             ?Center(child: Text("هذا المستودع فارغ"),)
              :ListView.builder(
                itemCount: controller.totalAmountPage.length,
                itemBuilder: (context,index){

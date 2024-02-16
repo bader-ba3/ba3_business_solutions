@@ -49,7 +49,7 @@ class AccountTreeView extends StatelessWidget {
           ],
         ),
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots(),
+            stream: accountController.accountList.stream,
             builder: (context, snapshot) {
               return GetBuilder<AccountViewModel>(builder: (controller) {
                 return accountController.allCost.isEmpty

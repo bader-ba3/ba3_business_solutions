@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class ProductListViewDataGridSource extends DataGridSource {
+class PreViewViewDataGridSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
 
-  ProductListViewDataGridSource({required List<List<String>> productList, required List<String> rows}) {
+  PreViewViewDataGridSource({required List<List<String>> productList, required List<String> rows}) {
     dataGridRows.clear();
     // dataGridRows = (productList ?? [])
     //     .map<DataGridRow>((e) => DataGridRow(cells: [

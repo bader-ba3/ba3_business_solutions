@@ -10,9 +10,9 @@ import '../../../model/account_record_model.dart';
 
 class AccountViewDataGridSource extends DataGridSource {
   final Map<String, AccountModel> accountMap;
-  Map<String, List<AccountRecordModel>> accountRecordMap;
+  // List<AccountRecordModel> accountRecordMap=[];
 
-  AccountViewDataGridSource(this.accountMap, this.accountRecordMap);
+  AccountViewDataGridSource(this.accountMap);
 
   @override
   List<DataGridRow> get rows => accountMap.entries.map<DataGridRow>((entry) {
@@ -22,7 +22,8 @@ class AccountViewDataGridSource extends DataGridSource {
 
         // int? balance = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.last.balance ;
         double balance = accountController.getBalance(userId);
-        int? count = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.length ;
+        int count = accountController.getCount(userId);
+        //int? count = accountRecordMap==null ||accountRecordMap!.isEmpty?0: accountRecordMap!.length ;
 
         return DataGridRow(cells: [
           DataGridCell<String>(columnName: Const.rowViewAccountId, value: userId),

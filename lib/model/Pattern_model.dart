@@ -1,5 +1,6 @@
 class PatternModel {
   String? patName, patCode, patType, patPrimary, patId, patVatAccount, patSecondary,patStore;
+  int? patColor;
   bool? patHasVat;
   PatternModel({
     this.patName,
@@ -11,6 +12,7 @@ class PatternModel {
     this.patVatAccount,
     this.patSecondary,
     this.patStore,
+    this.patColor,
   });
 
   PatternModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class PatternModel {
     patSecondary = json['patSecondary'];
     patStore = json['patStore'];
     patId = json['patId'];
+    patColor = json['patColor'];
   }
 
   toJson() {
@@ -36,6 +39,7 @@ class PatternModel {
       'patHasVat': patHasVat,
       'patSecondary': patSecondary,
       'patStore': patStore,
+      'patColor': patColor,
     };
   }
 }

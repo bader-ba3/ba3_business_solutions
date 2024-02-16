@@ -3,7 +3,7 @@ import 'bond_record_model.dart';
 class ProductRecordModel {
   String? invId, prodRecId, prodRecProduct, prodRecQuantity, prodRecSubTotal, prodRecTotal, prodType, prodRecSubVat,prodRecDate;
 
-  ProductRecordModel(this.invId, this.prodType, this.prodRecProduct, this.prodRecQuantity, this.prodRecId, this.prodRecTotal, this.prodRecSubTotal);
+  ProductRecordModel(this.invId, this.prodType, this.prodRecProduct, this.prodRecQuantity, this.prodRecId, this.prodRecTotal, this.prodRecSubTotal,this.prodRecDate,this.prodRecSubVat);
 
   ProductRecordModel.fromJson(Map<dynamic, dynamic> map, _invId) {
     invId = _invId;

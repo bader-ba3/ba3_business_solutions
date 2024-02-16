@@ -1,5 +1,7 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/cards_view_model.dart';
+import 'package:ba3_business_solutions/controller/import_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
@@ -58,6 +60,8 @@ class DataBaseViewModel extends GetxController {
     Get.put(FaceDetectorService(),permanent: true);
     Get.put(MLService(),permanent: true);
     Get.put(DataBaseViewModel(),permanent: true);
+    Get.put(ImportViewModel(),permanent: true);
+    Get.put(CardsViewModel(),permanent: true);
     Get.offAll(
           () => UserManagement(),
       binding: GetBinding(),

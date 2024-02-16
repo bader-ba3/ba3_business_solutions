@@ -76,7 +76,7 @@ class AllBonds extends StatelessWidget {
                                 children: [
                                   Text(controller.allBondsItem[key]!.bondCode??"",style: TextStyle(fontSize: 20),),
                                   Text(" - ",style: TextStyle(fontSize: 22),),
-                                  Text("سند "+getBondTypeFromEnum(controller.allBondsItem[key]!.bondType!) ,style: TextStyle(fontSize: 22),),
+                                 Text("سند "+getBondTypeFromEnum(controller.allBondsItem[key]!.bondType!) ,style: TextStyle(fontSize: 22),),
                                 ],
                               )),
                         );

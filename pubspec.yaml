@@ -51,6 +51,11 @@ dependencies:
   csv:
   qr_flutter: ^4.1.0
   path_provider:
+  hive:
+  hive_flutter:
+  flutter_material_color_picker:
+  audioplayers:
+  nfc_manager:
 dev_dependencies:
   flutter_test:
     sdk: flutter
