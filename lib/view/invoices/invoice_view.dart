@@ -3,11 +3,11 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/model/Pattern_model.dart';
-import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/model/product_model.dart';
-import 'package:ba3_business_solutions/model/store_model.dart';
+import 'package:ba3_business_solutions/old_model/Pattern_model.dart';
+import 'package:ba3_business_solutions/old_model/account_model.dart';
+import 'package:ba3_business_solutions/old_model/global_model.dart';
+import 'package:ba3_business_solutions/old_model/product_model.dart';
+import 'package:ba3_business_solutions/old_model/store_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
@@ -23,7 +23,7 @@ import '../../controller/bond_view_model.dart';
 import '../../controller/invoice_view_model.dart';
 import '../../controller/pattern_model_view.dart';
 import '../../controller/user_management_model.dart';
-import '../../model/invoice_record_model.dart';
+import '../../old_model/invoice_record_model.dart';
 import '../../utils/generate_id.dart';
 import '../../utils/see_details.dart';
 
@@ -556,6 +556,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     } else {
                                       checkPermissionForOperation(Const.roleUserWrite,Const.roleViewInvoice).then((value) async {
                                         if(value){
+                                          print("**/*/*/*/*/");
+                                          print(controller.initModel.invId);
+                                          print("**/*/*/*/*/");
                                           await invoiceController.computeTotal(invoiceController.records);
                                          globalController.addGlobalInvoice(_updateData(invoiceController.records));
                                           }
@@ -604,6 +607,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   } else {
                                     checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewInvoice).then((value) async {
                                       if(value){
+                                        print("**/*/*/*/*/");
+                                        print(controller.initModel.invId);
+                                        print("**/*/*/*/*/");
                                         await invoiceController.computeTotal(invoiceController.records);
                                         globalController.updateGlobalInvoice(_updateData(invoiceController.records));
                                       }
@@ -649,24 +655,24 @@ class _InvoiceViewState extends State<InvoiceView> {
     return GlobalModel(
         readFlags: [HiveDataBase.getMyReadFlag()],
         invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
-        bondId: widget.billId == "1" ? generateId(RecordType.bond) : invoiceController.bondIdController.text,
+        bondId: invoiceController.initModel.invId==null ? generateId(RecordType.bond) : invoiceController.initModel.bondId,
         invRecords: record,
         patternId: widget.patternModel!.patId!,
         invType: widget.patternModel!.patType!,
         invTotal: invoiceController.total,
-        invFullCode: widget.billId == "1" ? widget.patternModel!.patName!+": "+invoiceController.invCodeController.text:invoiceController.initModel.invFullCode,
-        invId: widget.billId == "1" ? generateId(RecordType.invoice) : widget.billId,
+        invFullCode: invoiceController.initModel.invId==null ? widget.patternModel!.patName!+": "+invoiceController.invCodeController.text:invoiceController.initModel.invFullCode,
+        invId: invoiceController.initModel.invId==null ? generateId(RecordType.invoice) : invoiceController.initModel.invId,
         invStorehouse: getStoreIdFromText(invoiceController.storeController.text),
         invComment: invoiceController.noteController.text,
         invPrimaryAccount: getAccountIdFromText(invoiceController.primaryAccountController.text),
         invSecondaryAccount: getAccountIdFromText(invoiceController.secondaryAccountController.text),
         invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty ?"":getAccountIdFromText(invoiceController.invCustomerAccountController.text),
-        invCode: widget.billId == "1" ?invoiceController.invCodeController.text:invoiceController.initModel.invCode,
+        invCode: invoiceController.initModel.invId==null ?invoiceController.invCodeController.text:invoiceController.initModel.invCode,
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: invoiceController.dateController,
         invMobileNumber: invoiceController.mobileNumberController.text,
         bondType: Const.bondTypeDaily,
-        bondCode: widget.billId == "1" ? (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString() : invoiceController.initModel.bondCode,
+        bondCode: invoiceController.initModel.invId==null ? (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString() : invoiceController.initModel.bondCode,
         globalType: Const.globalTypeInvoice
     );
   }

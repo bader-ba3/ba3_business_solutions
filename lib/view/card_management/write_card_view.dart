@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-import '../../model/card_model.dart';
+import '../../old_model/card_model.dart';
 
 class WriteCardView extends StatefulWidget {
   const WriteCardView({super.key});

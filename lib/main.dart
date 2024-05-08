@@ -1,17 +1,12 @@
 import 'package:ba3_business_solutions/core/bindings.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
-import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
+import 'package:ba3_business_solutions/utils/realm.dart';
 import 'package:ba3_business_solutions/view/user_management/account_management_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'Const/const.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'Test.dart';
-import 'controller/invoice_view_model.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -22,11 +17,7 @@ void main() async {
   );
   await HiveDataBase.init();
   await Const.init();
-
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+  await RealmDataBase.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     // DeviceOrientation.landscapeRight,

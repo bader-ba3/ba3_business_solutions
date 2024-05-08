@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
-import '../../model/product_tree.dart';
+import '../../old_model/product_tree.dart';
 
 class ProductTreeView extends StatelessWidget {
   ProductTreeView({super.key});
@@ -137,6 +137,14 @@ class ProductTreeView extends StatelessWidget {
         tapPosition.dy * 1.0,
       ),
       items: [
+        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
+           PopupMenuItem(
+            value: 'adddda',
+            child: ListTile(
+              leading: Icon(Icons.add_box_outlined),
+              title: Text('الازاحة '+getProductModelFromId(entry.node.id)!.prodGroupPad.toString()),
+            ),
+          ),
           const PopupMenuItem(
             value: 'seeDetails',
             child: ListTile(

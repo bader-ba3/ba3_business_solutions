@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/old_model/global_model.dart';
+import 'package:ba3_business_solutions/utils/realm.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ba3_business_solutions/model/product_record_model.dart';
+import 'package:ba3_business_solutions/old_model/product_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
@@ -10,10 +11,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
+import 'package:realm/realm.dart';
 import '../Const/const.dart';
-import '../model/invoice_record_model.dart';
-import '../model/product_model.dart';
-import '../model/product_tree.dart';
+import '../model/products_model.dart';
+import '../old_model/invoice_record_model.dart';
+import '../old_model/product_model.dart';
+import '../old_model/product_tree.dart';
 import '../utils/logger.dart';
 import '../view/products/widget/product_record_data_source.dart';
 
@@ -27,6 +30,8 @@ class ProductViewModel extends GetxController {
   ProductViewModel() {
     getAllProduct();
   }
+
+
 
   void initGlobalProduct(GlobalModel globalModel) {
    // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
@@ -114,47 +119,76 @@ class ProductViewModel extends GetxController {
       });
     });
   }
+
   String getNextProductCode() {
     int code = 0;
     if(productDataMap.isEmpty){
       return "00";
     }
-
     return code.toString();
   }
-  int padNumber = 2;
+
+  int padNumber = 1;
+
  String getFullCodeOfProduct(String accID){
-   String code = productDataMap[accID]!.prodCode!.padLeft(padNumber,"0");
    if(productDataMap[accID]!.prodIsParent!){
+
+     String code = productDataMap[accID]!.prodCode!.padLeft(padNumber,"0");
      return code;
    }else{
+    int? pad =  productDataMap[productDataMap[accID]!.prodParentId!]!.prodGroupPad;
+     String code = productDataMap[accID]!.prodCode!.padLeft(pad??padNumber,"0");
      var perCode= getFullCodeOfProduct(productDataMap[accID]!.prodParentId!);
      return perCode+code;
    }
   }
-  void createProduct(ProductModel editProductModel, {withLogger = false}) {
-    editProductModel.prodId = generateId(RecordType.product);
-    editProductModel.prodIsGroup ??= false;
-    if(editProductModel.prodParentId==null){
-      editProductModel.prodIsParent=true;
-    }else{
-      FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
-        'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
-      });
-      editProductModel.prodIsParent=false;
-    }
-    FirebaseFirestore.instance.collection(Const.productsCollection).where('prodCode', isEqualTo: editProductModel.prodCode).get().then((value) async {
-      if (value.docs.isNotEmpty) {
-        Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
-        return;
+
+  void createProduct(ProductModel editProductModel, {withLogger = false}) async{
+   print(editProductModel.prodCode);
+   var fullCode='';
+   if(editProductModel.prodParentId==null){
+     fullCode=editProductModel.prodCode!;
+   }else{
+     fullCode=productDataMap[editProductModel.prodParentId]!.prodFullCode!+editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad??padNumber,"0");
+   }
+   ProductModel? productModel = productDataMap.values.toList().firstWhereOrNull((element) => element.prodFullCode == fullCode);
+   if(productModel!=null){
+     Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
+     return;
+   }
+     print(fullCode);
+      editProductModel.prodFullCode = fullCode;
+      editProductModel.prodId = generateId(RecordType.product);
+      editProductModel.prodIsGroup ??= false;
+      if(editProductModel.prodParentId==null){
+        editProductModel.prodIsParent=true;
+      }else{
+        FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
+          'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
+        });
+        editProductModel.prodIsParent=false;
       }
       if (withLogger) logger(newData: editProductModel);
       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).set(editProductModel.toJson());
-      Get.snackbar("فحص المطاييح", '${editProductModel.toJson()} تم اضافة المطيح');
-    });
+      Get.snackbar("فحص المطاييح", ' تم اضافة المطيح');
+
   }
 
   void updateProduct(ProductModel editProductModel, {withLogger = false}) {
+    print(editProductModel.prodCode);
+    var fullCode='';
+    if(editProductModel.prodParentId==null){
+      fullCode=editProductModel.prodCode!;
+    }else{
+      fullCode=productDataMap[editProductModel.prodParentId]!.prodFullCode!+editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad??padNumber,"0");
+    }
+    ProductModel? productModel = productDataMap.values.toList().firstWhereOrNull((element) => element.prodFullCode == fullCode);
+    if(productModel!=null){
+      Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
+      return;
+    }
+    print(fullCode);
+    editProductModel.prodFullCode = fullCode;
     if (withLogger) logger(oldData: productDataMap[editProductModel.prodId], newData: editProductModel);
     editProductModel.prodIsGroup ??= false;
     if(editProductModel.prodParentId==null){
@@ -195,7 +229,6 @@ class ProductViewModel extends GetxController {
   }
 
 
-
   void initProductPage(ProductModel editedProduct) {
     recordDataSource = ProductRecordDataSource(productModel: editedProduct);
   }
@@ -227,10 +260,9 @@ class ProductViewModel extends GetxController {
 
   ProductTree addToModel(ProductModel element) {
     var list = element.prodChild?.map((e) => addToModel(productDataMap[e]!)).toList();
-    print(element.prodName.toString() +list!.length.toString() );
-    if(list!.length>99){
-      padNumber=3;
-    }
+    // if(list!.length>99){
+    //   padNumber=2;
+    // }
     productDataMap[element.prodId]?.prodFullCode=getFullCodeOfProduct(element.prodId!);
     ProductTree model = ProductTree.fromJson({"name": element.prodName}, element.prodId, list??[]);
     return model;
@@ -399,9 +431,14 @@ class ProductViewModel extends GetxController {
 
   }
 
-
-
 }
+
+String getProductIdFromFullName(name) {
+  if (name != null && name != " " && name != "") {
+    return Get.find<ProductViewModel>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) =>element?.prodFullCode==name)?.prodId??"";
+  } else {
+    return "";
+  }}
 String getProductIdFromName(name) {
   if (name != null && name != " " && name != "") {
     return Get.find<ProductViewModel>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodName==name||element?.prodCode==name)?.prodId??"";
@@ -415,7 +452,6 @@ String getProductNameFromId(id) {
     return "";
   }}
 ProductModel? getProductModelFromId(id) {
-  print(id);
   if (id != null && id != " " && id != "") {
     return Get.find<ProductViewModel>().productDataMap[id]!;
   } else {

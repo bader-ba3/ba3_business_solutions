@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
-import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/old_model/global_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,9 +9,9 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../controller/account_view_model.dart';
 import '../../controller/global_view_model.dart';
 import '../../controller/user_management_model.dart';
-import '../../model/account_model.dart';
+import '../../old_model/account_model.dart';
 
-import '../../model/bond_record_model.dart';
+import '../../old_model/bond_record_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
 import '../../utils/see_details.dart';
 

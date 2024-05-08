@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
+import '../../old_model/Pattern_model.dart';
 
 class CardManagementType extends StatefulWidget {
   const CardManagementType({super.key});

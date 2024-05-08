@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import '../../Const/const.dart';
 import '../../controller/product_view_model.dart';
 import '../../controller/user_management_model.dart';
-import '../../model/store_record_model.dart';
+import '../../old_model/store_record_model.dart';
 import 'add_store.dart';
 
 class StoreDetails extends StatefulWidget {

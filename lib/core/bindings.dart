@@ -20,6 +20,7 @@ import '../controller/user_management_model.dart';
 class GetBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(ImportViewModel());
     Get.put(ProductViewModel());
     Get.put(UserManagementViewModel());
     Get.put(AccountViewModel());
@@ -30,12 +31,11 @@ class GetBinding extends Bindings {
     Get.put(InvoiceViewModel());
     Get.put(ChequeViewModel());
     Get.put(CostCenterViewModel());
-    Get.put(CameraService());
-    Get.put(FaceDetectorService());
-    Get.put(MLService());
+    // Get.put(CameraService());
+    // Get.put(FaceDetectorService());
+    // Get.put(MLService());
     Get.put(DataBaseViewModel());
-    Get.put(ImportViewModel());
     Get.put(CardsViewModel());
-    // Get.lazyPut(()=>GlobalViewModel(),fenix: true);
+    Get.lazyPut(()=>GlobalViewModel(),fenix: true);
   }
 }

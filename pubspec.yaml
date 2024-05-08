@@ -17,7 +17,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
-
+# gxHcHPqrVtgYAgUv
+# baderalmasre330
+# mongodb+srv://<username>:<password>@ba3businesssolutions.x1cmsow.mongodb.net/?retryWrites=true&w=majority&appName=ba3BusinessSolutions
+# mongodb+srv://<username>:<password>@ba3businesssolutions.x1cmsow.mongodb.net/
 environment:
   sdk: '>=3.1.5 <4.0.0'
 
@@ -43,7 +46,6 @@ dependencies:
   pinput:
   fl_chart: 0.60.0
   plugin_platform_interface:
-  tflite_flutter: ^0.8.0
   google_ml_kit: ^0.5.1
   camera: ^0.10.5+7
   image: ^3.0.2
@@ -56,6 +58,8 @@ dependencies:
   flutter_material_color_picker:
   audioplayers:
   nfc_manager:
+  realm : ^2.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -89,6 +93,7 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
   assets:
     - assets/
+    - assets/config/
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

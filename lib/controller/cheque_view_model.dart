@@ -1,9 +1,9 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
-import 'package:ba3_business_solutions/model/bond_record_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
-import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
-import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/old_model/bond_record_model.dart';
+import 'package:ba3_business_solutions/old_model/cheque_model.dart';
+import 'package:ba3_business_solutions/old_model/cheque_rec_model.dart';
+import 'package:ba3_business_solutions/old_model/global_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/cheques/widget/all_cheques_view_data_grid_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

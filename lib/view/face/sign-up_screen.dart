@@ -1,240 +1,240 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:math' as math;
-import 'package:camera/camera.dart';
-import 'package:get/get.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
-import 'package:flutter/material.dart';
-
-import '../../controller/faceController/camera.service.dart';
-import '../../controller/faceController/face_detector_service.dart';
-import '../../controller/faceController/ml_service.dart';
-import 'widgets/FacePainter_widget.dart';
-import 'widgets/auth-action-button_widget.dart';
-import 'widgets/camera_header_widget.dart';
-
-/*
-Title:SignUpScreen
-Purpose:SignUpScreen
-Created By:Kalpesh Khandla
-Created Date: 19 Feb 2022
-*/
-
-class SignUpScreen extends StatefulWidget {
-
-  const SignUpScreen({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  SignUpState createState() => SignUpState();
-}
-
-class SignUpState extends State<SignUpScreen> {
-
-  String? imagePath;
-  Face? faceDetected;
-  Size? imageSize;
-
-  bool _detectingFaces = false;
-  bool pictureTaked = false;
-
-  Future? _initializeControllerFuture;
-  bool cameraInitializated = false;
-
-  // switchs when the user press the camera
-  bool _saving = false;
-  bool _bottomSheetVisible = false;
-
-  // service injection
-  FaceDetectorService _faceDetectorService = Get.find<FaceDetectorService>();
-  CameraService _cameraService = Get.find<CameraService>();
-  MLService _mlService = Get.find<MLService>();
-
-  @override
-  void initState() {
-    super.initState();
-
-
-    _start();
-  }
-
-  @override
-  void dispose() {
-    _cameraService.dispose();
-    super.dispose();
-  }
-
-  _start() async {
-   await availableCameras().then((value) async {
-      var _ = value.firstWhere(
-            (CameraDescription camera) =>
-        camera.lensDirection == CameraLensDirection.front,
-      );
-      _initializeControllerFuture = _cameraService.startService(_);
-      await _initializeControllerFuture;
-      setState(() {
-        cameraInitializated = true;
-      });
-      _frameFaces();
-    });
-
-  }
-
-  Future<bool> onShot() async {
-    if (faceDetected == null) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text('No face detected!'),
-          );
-        },
-      );
-
-      return false;
-    } else {
-      _saving = true;
-      await Future.delayed(Duration(milliseconds: 500));
-      await _cameraService.cameraController?.stopImageStream();
-      await Future.delayed(Duration(milliseconds: 200));
-      XFile file = await _cameraService.takePicture();
-      imagePath = file.path;
-
-      setState(() {
-        _bottomSheetVisible = true;
-        pictureTaked = true;
-      });
-
-      return true;
-    }
-  }
-
-  _frameFaces() {
-    imageSize = _cameraService.getImageSize();
-
-    _cameraService.cameraController?.startImageStream((image) async {
-      if (_cameraService.cameraController != null) {
-        if (_detectingFaces) return;
-
-        _detectingFaces = true;
-
-        try {
-          List<Face> faces = await _faceDetectorService.getFacesFromImage(image);
-          if (faces.isNotEmpty) {
-            setState(() {
-              faceDetected = faces[0];
-              print(faceDetected?.trackingId);
-              print("kadsjfsdkjfkjsdf");
-              _mlService.setCurrentPrediction(image, faceDetected!);
-            });
-            if (_saving) {
-              _mlService.setCurrentPrediction(image, faceDetected!);
-              setState(() {
-                _saving = false;
-              });
-            }
-          } else {
-            setState(() {
-              faceDetected = null;
-            });
-          }
-
-          _detectingFaces = false;
-        } catch (e) {
-          print(e);
-          _detectingFaces = false;
-        }
-      }
-    });
-  }
-
-  _onBackPressed() {
-    Navigator.of(context).pop();
-  }
-
-  _reload() {
-    setState(() {
-      _bottomSheetVisible = false;
-      cameraInitializated = false;
-      pictureTaked = false;
-    });
-    this._start();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double mirror = math.pi;
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-        body: !cameraInitializated
-            ? CircularProgressIndicator()
-            : Stack(
-                children: [
-                  FutureBuilder<void>(
-                    future: _initializeControllerFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (pictureTaked) {
-                          return Container(
-                            width: width,
-                            height: height,
-                            child: Transform(
-                                alignment: Alignment.center,
-                                child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: Image.file(File(imagePath!)),
-                                ),
-                                transform: Matrix4.rotationY(mirror)),
-                          );
-                        } else {
-                          return Transform.scale(
-                            scale: 1.0,
-                            child: AspectRatio(
-                              aspectRatio: MediaQuery.of(context).size.aspectRatio,
-                              child: OverflowBox(
-                                alignment: Alignment.center,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: Container(
-                                    width: width,
-                                    height: width * _cameraService.cameraController!.value.aspectRatio,
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: <Widget>[
-                                        CameraPreview(_cameraService.cameraController!),
-                                        CustomPaint(
-                                          painter: FacePainter(face: faceDetected, imageSize: imageSize!),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
-                  CameraHeader(
-                    "SIGN UP",
-                    onBackPressed: _onBackPressed,
-                  )
-                ],
-              ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: !_bottomSheetVisible &&cameraInitializated
-            ? AuthActionButtonWidget(
-                _initializeControllerFuture!,
-                onPressed: onShot,
-                isLogin: false,
-                reload: _reload,
-              )
-            : Container());
-
-  }
-}
+// import 'dart:async';
+// import 'dart:io';
+// import 'dart:math' as math;
+// import 'package:camera/camera.dart';
+// import 'package:get/get.dart';
+// import 'package:google_ml_kit/google_ml_kit.dart';
+// import 'package:flutter/material.dart';
+//
+// import '../../controller/faceController/camera.service.dart';
+// import '../../controller/faceController/face_detector_service.dart';
+// import '../../controller/faceController/ml_service.dart';
+// import 'widgets/FacePainter_widget.dart';
+// import 'widgets/auth-action-button_widget.dart';
+// import 'widgets/camera_header_widget.dart';
+//
+// /*
+// Title:SignUpScreen
+// Purpose:SignUpScreen
+// Created By:Kalpesh Khandla
+// Created Date: 19 Feb 2022
+// */
+//
+// class SignUpScreen extends StatefulWidget {
+//
+//   const SignUpScreen({
+//     Key? key,
+//   }) : super(key: key);
+//
+//   @override
+//   SignUpState createState() => SignUpState();
+// }
+//
+// class SignUpState extends State<SignUpScreen> {
+//
+//   String? imagePath;
+//   Face? faceDetected;
+//   Size? imageSize;
+//
+//   bool _detectingFaces = false;
+//   bool pictureTaked = false;
+//
+//   Future? _initializeControllerFuture;
+//   bool cameraInitializated = false;
+//
+//   // switchs when the user press the camera
+//   bool _saving = false;
+//   bool _bottomSheetVisible = false;
+//
+//   // service injection
+//   FaceDetectorService _faceDetectorService = Get.find<FaceDetectorService>();
+//   CameraService _cameraService = Get.find<CameraService>();
+//   MLService _mlService = Get.find<MLService>();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//
+//     _start();
+//   }
+//
+//   @override
+//   void dispose() {
+//     _cameraService.dispose();
+//     super.dispose();
+//   }
+//
+//   _start() async {
+//    await availableCameras().then((value) async {
+//       var _ = value.firstWhere(
+//             (CameraDescription camera) =>
+//         camera.lensDirection == CameraLensDirection.front,
+//       );
+//       _initializeControllerFuture = _cameraService.startService(_);
+//       await _initializeControllerFuture;
+//       setState(() {
+//         cameraInitializated = true;
+//       });
+//       _frameFaces();
+//     });
+//
+//   }
+//
+//   Future<bool> onShot() async {
+//     if (faceDetected == null) {
+//       showDialog(
+//         context: context,
+//         builder: (context) {
+//           return AlertDialog(
+//             content: Text('No face detected!'),
+//           );
+//         },
+//       );
+//
+//       return false;
+//     } else {
+//       _saving = true;
+//       await Future.delayed(Duration(milliseconds: 500));
+//       await _cameraService.cameraController?.stopImageStream();
+//       await Future.delayed(Duration(milliseconds: 200));
+//       XFile file = await _cameraService.takePicture();
+//       imagePath = file.path;
+//
+//       setState(() {
+//         _bottomSheetVisible = true;
+//         pictureTaked = true;
+//       });
+//
+//       return true;
+//     }
+//   }
+//
+//   _frameFaces() {
+//     imageSize = _cameraService.getImageSize();
+//
+//     _cameraService.cameraController?.startImageStream((image) async {
+//       if (_cameraService.cameraController != null) {
+//         if (_detectingFaces) return;
+//
+//         _detectingFaces = true;
+//
+//         try {
+//           List<Face> faces = await _faceDetectorService.getFacesFromImage(image);
+//           if (faces.isNotEmpty) {
+//             setState(() {
+//               faceDetected = faces[0];
+//               print(faceDetected?.trackingId);
+//               print("kadsjfsdkjfkjsdf");
+//               _mlService.setCurrentPrediction(image, faceDetected!);
+//             });
+//             if (_saving) {
+//               _mlService.setCurrentPrediction(image, faceDetected!);
+//               setState(() {
+//                 _saving = false;
+//               });
+//             }
+//           } else {
+//             setState(() {
+//               faceDetected = null;
+//             });
+//           }
+//
+//           _detectingFaces = false;
+//         } catch (e) {
+//           print(e);
+//           _detectingFaces = false;
+//         }
+//       }
+//     });
+//   }
+//
+//   _onBackPressed() {
+//     Navigator.of(context).pop();
+//   }
+//
+//   _reload() {
+//     setState(() {
+//       _bottomSheetVisible = false;
+//       cameraInitializated = false;
+//       pictureTaked = false;
+//     });
+//     this._start();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final double mirror = math.pi;
+//     final width = MediaQuery.of(context).size.width;
+//     final height = MediaQuery.of(context).size.height;
+//     return Scaffold(
+//         body: !cameraInitializated
+//             ? CircularProgressIndicator()
+//             : Stack(
+//                 children: [
+//                   FutureBuilder<void>(
+//                     future: _initializeControllerFuture,
+//                     builder: (context, snapshot) {
+//                       if (snapshot.connectionState == ConnectionState.done) {
+//                         if (pictureTaked) {
+//                           return Container(
+//                             width: width,
+//                             height: height,
+//                             child: Transform(
+//                                 alignment: Alignment.center,
+//                                 child: FittedBox(
+//                                   fit: BoxFit.cover,
+//                                   child: Image.file(File(imagePath!)),
+//                                 ),
+//                                 transform: Matrix4.rotationY(mirror)),
+//                           );
+//                         } else {
+//                           return Transform.scale(
+//                             scale: 1.0,
+//                             child: AspectRatio(
+//                               aspectRatio: MediaQuery.of(context).size.aspectRatio,
+//                               child: OverflowBox(
+//                                 alignment: Alignment.center,
+//                                 child: FittedBox(
+//                                   fit: BoxFit.fitHeight,
+//                                   child: Container(
+//                                     width: width,
+//                                     height: width * _cameraService.cameraController!.value.aspectRatio,
+//                                     child: Stack(
+//                                       fit: StackFit.expand,
+//                                       children: <Widget>[
+//                                         CameraPreview(_cameraService.cameraController!),
+//                                         CustomPaint(
+//                                           painter: FacePainter(face: faceDetected, imageSize: imageSize!),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           );
+//                         }
+//                       } else {
+//                         return Center(child: CircularProgressIndicator());
+//                       }
+//                     },
+//                   ),
+//                   CameraHeader(
+//                     "SIGN UP",
+//                     onBackPressed: _onBackPressed,
+//                   )
+//                 ],
+//               ),
+//         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//         floatingActionButton: !_bottomSheetVisible &&cameraInitializated
+//             ? AuthActionButtonWidget(
+//                 _initializeControllerFuture!,
+//                 onPressed: onShot,
+//                 isLogin: false,
+//                 reload: _reload,
+//               )
+//             : Container());
+//
+//   }
+// }

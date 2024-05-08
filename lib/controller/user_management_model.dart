@@ -5,8 +5,8 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/model/role_model.dart';
-import 'package:ba3_business_solutions/model/user_model.dart';
+import 'package:ba3_business_solutions/old_model/role_model.dart';
+import 'package:ba3_business_solutions/old_model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/user_management/login_view.dart';
 import 'package:ba3_business_solutions/view/home/home_view.dart';
@@ -17,8 +17,8 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-import '../model/card_model.dart';
-import '../model/global_model.dart';
+import '../old_model/card_model.dart';
+import '../old_model/global_model.dart';
 import 'cards_view_model.dart';
 
 enum UserManagementStatus {

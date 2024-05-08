@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
+import 'package:ba3_business_solutions/old_model/cheque_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,7 +10,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
-import '../../model/global_model.dart';
+import '../../old_model/global_model.dart';
 
 class AllCheques extends StatelessWidget {
   const AllCheques({super.key});

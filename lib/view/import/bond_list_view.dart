@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 
 import '../../Const/const.dart';
 import '../../controller/import_view_model.dart';
-import '../../model/bond_record_model.dart';
-import '../../model/global_model.dart';
+import '../../old_model/bond_record_model.dart';
+import '../../old_model/global_model.dart';
 
 class BondListView extends StatelessWidget {
   final List<GlobalModel>bondList;

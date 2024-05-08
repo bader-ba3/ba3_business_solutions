@@ -11,10 +11,11 @@ class FilePickerWidget extends StatelessWidget {
 
    final List allSeparator=["Tab (  )","comma (,)","semicolon (;)"];
    final List allSeparatorValue=["	",",",";"];
-   final importViewModel = Get.find<ImportViewModel>();
 
    @override
   Widget build(BuildContext context) {
+     final importViewModel = Get.find<ImportViewModel>();
+
      var separator;
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -39,9 +40,11 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewImport).then((value) {
-                      if(value)importViewModel.pickFile(separator);
-                    });
+                    importViewModel.pickFile(separator);
+                    //TODO:firebase
+                    // checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewImport).then((value) {
+                    //   if(value);
+                    // });
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }

@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
 import '../../../controller/user_management_model.dart';
-import '../../../model/product_model.dart';
-import '../../../model/product_record_model.dart';
+import '../../../old_model/product_model.dart';
+import '../../../old_model/product_record_model.dart';
 
 class AddProduct extends StatefulWidget {
   final String? oldKey;
@@ -158,6 +158,31 @@ class _AddProductState extends State<AddProduct> {
                                       });
                                     }
                                         : (_) {});
+                              }),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 30,),
+                        Row(
+                          children: [
+                            SizedBox(
+                                width:70,
+                                child: Text("isLocal")),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: StatefulBuilder(builder: (context, setstate) {
+                                return Switch(
+                                    value: editedProduct.prodIsLocal!,
+                                    onChanged:  (_) {
+                                      setstate(() {
+                                        editedProduct.prodIsLocal = _;
+                                        isEdit = true;
+                                      });
+                                    });
                               }),
                             ),
                           ],
@@ -322,6 +347,7 @@ class _AddProductState extends State<AddProduct> {
       editedProductRecord = <ProductRecordModel>[];
       hasVat = true;
       isGroup = false;
+      editedProduct.prodIsLocal = false;
       editedProduct.prodCode = productController.getNextProductCode();
       codeController.text = editedProduct.prodCode!;
       editedProduct.prodHasVat = true;

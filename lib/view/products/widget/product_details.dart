@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
-import '../../../model/product_model.dart';
-import '../../../model/product_record_model.dart';
+import '../../../old_model/product_model.dart';
+import '../../../old_model/product_record_model.dart';
 
 class ProductDetails extends StatefulWidget {
   final String? oldKey;
@@ -43,6 +43,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             centerTitle: true,
             title: Text(productController.productDataMap[widget.oldKey!]!.prodName ?? ""),
             actions: [
+              if(!productController.productDataMap[widget.oldKey!]!.prodIsGroup!)
               ElevatedButton(
                   onPressed: () {
                     Get.to(AddProduct(

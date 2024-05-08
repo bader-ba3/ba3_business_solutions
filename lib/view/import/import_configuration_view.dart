@@ -1,10 +1,8 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/product_model.dart';
+import 'package:ba3_business_solutions/old_model/account_model.dart';
+import 'package:ba3_business_solutions/old_model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +29,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Map configProduct = {
   'اسم المادة' :'prodName',
   'رمز المادة' :'prodCode',
-  'اسم المجموعة' :'prodParentId',
+  // 'اسم المجموعة' :'prodParentId',
   'سعر المستهلك' :'prodCustomerPrice',
   'سعر جملة' :'prodWholePrice',
   'سعر مفرق' :'prodRetailPrice',
@@ -39,7 +37,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   'اقل سعر مسموح' :'prodMinPrice',
   'باركود المادة' :'prodBarcode',
   'هل يخضع ضريبة' :'prodHasVat',
-  'رمز المجموعة' :'prodGroupCode',
+  'رمز المجموعة' :'prodParentId',
   'نوع المادة' :'prodType',
   };
 
@@ -138,7 +136,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 } else if (type == RecordType.account) {
                   await addAccount();
                 }
-                Get.offAll(() => HomeView());
+                // Get.offAll(() => HomeView());
               },
               child: Text("ending")),
           SizedBox(
@@ -167,12 +165,30 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
 
   Future<void> addProduct() async {
     List<ProductModel> finalData = [];
+
+
+
     for (var element in widget.productList) {
+      print(element[setting["prodName"]]);
+      var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
+      var parentId = element[setting["prodParentId"]];
+      var isRoot = element[setting["prodParentId"]].isBlank;
+      print("code "+code);
+      print("parentId "+parentId);
+      print("FullCode "+element[setting["prodCode"]]);
+      print("isRoot "+isRoot.toString());
+      print(element[setting['prodType']].removeAllWhitespace);
+      print(element[setting['prodType']].removeAllWhitespace=="مستودعية");
+      print(!(element[setting['prodType']].removeAllWhitespace=="خدمية"||element[setting['prodType']].removeAllWhitespace=="مستودعية"));
+      print("===");
       finalData.add(ProductModel(
         prodId: generateId(RecordType.product),
         prodName: element[setting["prodName"]],
-        prodCode: element[setting["prodCode"]],
+        // prodCode: element[setting["prodCode"]],
+          prodCode: code,
         prodBarcode: element[setting["prodBarcode"]],
+        prodIsLocal: true,
+        prodFullCode: element[setting["prodCode"]],
         // prodGroupCode: element[setting["prodGroupCode"]],
         prodCustomerPrice : element[setting['prodCustomerPrice']],
         prodWholePrice : element[setting['prodWholePrice']],
@@ -180,27 +196,41 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
         prodCostPrice : element[setting['prodCostPrice']],
         prodMinPrice : element[setting['prodMinPrice']],
         prodHasVat : (int.tryParse(element[setting['prodHasVat']])??0)==5,
-        prodType : element[setting['prodType']]=="خدمية"?Const.productTypeService:Const.productTypeStore,
-        prodParentId : element[setting['prodParentId']].isEmpty?null:element[setting['prodParentId']],
-        prodIsParent : element[setting['prodParentId']].isEmpty,
-        prodIsGroup: !(element[setting['prodType']]=="خدمية"||element[setting['prodType']]=="مستودعية")
+        prodType : element[setting['prodType']].removeAllWhitespace=="خدمية"?Const.productTypeService:Const.productTypeStore,
+        prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
+        prodIsParent : element[setting['prodParentId']].isBlank,
+        prodIsGroup: !(element[setting['prodType']].removeAllWhitespace=="خدمية"||element[setting['prodType']].removeAllWhitespace=="مستودعية")
       ));
     }
-    print(finalData.map((e) => e.toJson()));
+    var i = 0;
 
-    for (var element in finalData) {
-      await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
-    }
-    for (var element in finalData) {
-      if(!element.prodIsParent!){
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromName(element.prodParentId)).update({
-          'prodChild': FieldValue.arrayUnion([element.prodId]),
-        });
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
-          "prodParentId":getProductIdFromName(element.prodParentId)
-        });
-      }
-    }
+
+    // for (var element in finalData) {
+    //  i++;
+    //  print(i.toString() + " OF "+finalData.length.toString() );
+    //   // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
+    //
+    // }
+    // i = 0;
+    // for (var element in finalData) {
+    //   i++;
+    //   print(i.toString() + " OF "+finalData.length.toString() );
+    //   if(!element.prodIsParent!){
+    //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
+    //       'prodChild': FieldValue.arrayUnion([element.prodId]),
+    //     });
+    //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
+    //       "prodParentId":getProductIdFromFullName(element.prodParentId)
+    //     });
+    //    ProductModel prodParentId = getProductModelFromId(getProductIdFromFullName(element.prodParentId))!;
+    //     if(prodParentId.prodGroupPad==null){
+    //       int pad= element.prodFullCode!.replaceAll(prodParentId.prodFullCode!, "").length;
+    //       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodParentId.prodId).update({
+    //         "prodGroupPad":pad
+    //       });
+    //     }
+    //   }
+    // }
   }
 
   Future<void> addAccount() async {

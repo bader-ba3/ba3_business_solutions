@@ -14,6 +14,7 @@ abstract class Const {
     if(dataName==''){
       await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
         dataName=value.data()?['defaultDataName'];
+
       });
     }else{
       dataName=oldData!;
@@ -30,6 +31,8 @@ abstract class Const {
   static const rowBondDebitAmount = 'debit';
   static const rowBondAccount = 'secondary';
   static const rowBondDescription = 'description';
+  static const noVatKey = 'noVat-';
+  static const isFilterFree = false;
   ////////////--------------------------------------------------
   static const recordCollection = 'Record';
   static String bondsCollection = 'Bonds';
@@ -160,6 +163,8 @@ abstract class Const {
   static const invoiceRecordCollection="invoiceRecord";
   static const bondRecordCollection="bondRecord";
   static const chequeRecordCollection="chequeRecord";
+  ////////////----------------------------------------------------
+  static const productsAllSubscription  = "productsAllSubscription";
 }
 
 String getInvTypeFromEnum(String type) {
