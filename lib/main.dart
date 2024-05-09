@@ -17,7 +17,6 @@ void main() async {
   );
   await HiveDataBase.init();
   await Const.init();
-  await RealmDataBase.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     // DeviceOrientation.landscapeRight,

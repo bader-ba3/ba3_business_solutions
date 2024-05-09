@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
-import '../../old_model/product_tree.dart';
+import '../../model/product_tree.dart';
 
 class ProductTreeView extends StatelessWidget {
   ProductTreeView({super.key});

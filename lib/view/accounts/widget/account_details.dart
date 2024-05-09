@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/old_model/account_record_model.dart';
+import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';

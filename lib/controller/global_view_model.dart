@@ -4,11 +4,11 @@ import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/old_model/account_model.dart';
-import 'package:ba3_business_solutions/old_model/cheque_rec_model.dart';
-import 'package:ba3_business_solutions/old_model/global_model.dart';
-import 'package:ba3_business_solutions/old_model/invoice_record_model.dart';
-import 'package:ba3_business_solutions/old_model/product_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
+import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
-import '../old_model/bond_record_model.dart';
+import '../model/bond_record_model.dart';
 import '../view/home/home_view.dart';
 import 'invoice_view_model.dart';
 

@@ -1,7 +1,7 @@
 // import 'dart:io';
 // import 'dart:math';
 // import 'dart:typed_data';
-// import 'package:ba3_business_solutions/old_model/user_model.dart';
+// import 'package:ba3_business_solutions/model/user_model.dart';
 // import 'package:camera/camera.dart';
 // import 'package:get/get.dart';
 // import 'package:google_ml_kit/google_ml_kit.dart';

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../old_model/Pattern_model.dart';
+import '../../model/Pattern_model.dart';
 import 'bond_details_view.dart';
 import 'custom_bond_details_view.dart';
 

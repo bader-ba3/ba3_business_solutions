@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
-import '../../../old_model/product_model.dart';
-import '../../../old_model/product_record_model.dart';
+import '../../../model/product_model.dart';
+import '../../../model/product_record_model.dart';
 
 class ProductDetails extends StatefulWidget {
   final String? oldKey;

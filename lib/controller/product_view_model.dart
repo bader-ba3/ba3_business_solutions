@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:ba3_business_solutions/old_model/global_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/realm.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ba3_business_solutions/old_model/product_record_model.dart';
+import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
@@ -11,12 +11,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
-import 'package:realm/realm.dart';
 import '../Const/const.dart';
-import '../model/products_model.dart';
-import '../old_model/invoice_record_model.dart';
-import '../old_model/product_model.dart';
-import '../old_model/product_tree.dart';
+import '../model/invoice_record_model.dart';
+import '../model/product_model.dart';
+import '../model/product_tree.dart';
 import '../utils/logger.dart';
 import '../view/products/widget/product_record_data_source.dart';
 

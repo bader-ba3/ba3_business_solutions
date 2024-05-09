@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../old_model/account_model.dart';
+import '../../../model/account_model.dart';
 import '../../cheques/all_cheques_view.dart';
 import '../../invoices/widget/custom_TextField.dart';
 

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/old_model/account_record_model.dart';
+import 'package:ba3_business_solutions/model/account_record_model.dart';
 
 class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat,accParentId;

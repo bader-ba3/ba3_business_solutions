@@ -3,8 +3,8 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/old_model/cheque_model.dart';
-import 'package:ba3_business_solutions/old_model/cheque_rec_model.dart';
+import 'package:ba3_business_solutions/model/cheque_model.dart';
+import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../old_model/global_model.dart';
+import '../../model/global_model.dart';
 
 class AddCheque extends StatefulWidget {
   final String? modelKey;

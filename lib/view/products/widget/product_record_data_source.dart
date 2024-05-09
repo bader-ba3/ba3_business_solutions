@@ -1,11 +1,11 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/old_model/product_record_model.dart';
+import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../Const/const.dart';
-import '../../../old_model/product_model.dart';
+import '../../../model/product_model.dart';
 
 
 

@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/old_model/seller_model.dart';
+import 'package:ba3_business_solutions/model/seller_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 

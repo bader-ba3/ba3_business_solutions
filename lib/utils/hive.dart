@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/adapter/global_model_adapter.dart';
-import 'package:ba3_business_solutions/old_model/global_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveDataBase {

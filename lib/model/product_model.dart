@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/old_model/product_record_model.dart';
+import 'package:ba3_business_solutions/model/product_record_model.dart';
 
 class ProductModel {
   String? prodId,prodName, prodCode,prodFullCode, prodCustomerPrice,prodWholePrice,prodRetailPrice,prodCostPrice,prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode,prodType,prodParentId;

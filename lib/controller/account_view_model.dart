@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/old_model/account_model.dart';
-import 'package:ba3_business_solutions/old_model/account_tree.dart';
-import 'package:ba3_business_solutions/old_model/global_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
+import 'package:ba3_business_solutions/model/account_tree.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../Const/const.dart';
-import '../old_model/account_record_model.dart';
+import '../model/account_record_model.dart';
 import '../utils/generate_id.dart';
 import '../view/accounts/widget/account_record_data_source.dart';
 import '../view/accounts/widget/account_view_data_grid_source.dart';

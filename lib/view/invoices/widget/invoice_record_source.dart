@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/old_model/account_model.dart';
-import 'package:ba3_business_solutions/old_model/product_record_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
+import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,8 +10,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../Const/const.dart';
 import '../../../controller/invoice_view_model.dart';
 import '../../../controller/product_view_model.dart';
-import '../../../old_model/invoice_record_model.dart';
-import '../../../old_model/product_model.dart';
+import '../../../model/invoice_record_model.dart';
+import '../../../model/product_model.dart';
 import 'package:math_expressions/math_expressions.dart';
 
 class InvoiceRecordSource extends DataGridSource {

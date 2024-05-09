@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 
-import 'package:ba3_business_solutions/old_model/account_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
 
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/accounts/account_tree_view.dart';

@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/old_model/product_model.dart';
+import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

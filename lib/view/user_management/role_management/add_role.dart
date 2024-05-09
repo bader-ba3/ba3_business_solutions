@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/old_model/role_model.dart';
+import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

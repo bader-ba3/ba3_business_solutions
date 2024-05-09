@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
 import '../../../controller/user_management_model.dart';
-import '../../../old_model/product_model.dart';
-import '../../../old_model/product_record_model.dart';
+import '../../../model/product_model.dart';
+import '../../../model/product_record_model.dart';
 
 class AddProduct extends StatefulWidget {
   final String? oldKey;

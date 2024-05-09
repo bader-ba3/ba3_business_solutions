@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/old_model/global_model.dart';
-import 'package:ba3_business_solutions/old_model/invoice_record_model.dart';
-import 'package:ba3_business_solutions/old_model/store_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/stores/widgets/store_dataSource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +13,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import '../old_model/store_record_model.dart';
+import '../model/store_record_model.dart';
 
 class StoreViewModel extends GetxController {
   final CollectionReference _storeCollectionRef = FirebaseFirestore.instance.collection(Const.storeCollection);
