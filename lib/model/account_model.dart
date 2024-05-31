@@ -1,4 +1,8 @@
+import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
+import 'package:get/get.dart';
 
 class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat,accParentId;
@@ -8,8 +12,8 @@ class AccountModel {
   List<AccountRecordModel> accRecord=[];
   AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode,this.accParentId,this.accIsParent});
 
-  AccountModel.fromJson(Map<dynamic, dynamic> map, id) {
-    accId = id;
+  AccountModel.fromJson(Map<dynamic, dynamic> map) {
+    accId = map['accId'];
     accName = map['accName'];
     accComment = map['accComment'];
     accType = map['accType'];
@@ -17,7 +21,18 @@ class AccountModel {
     accVat = map['accVat'];
     accParentId = map['accParentId'];
     accIsParent = map['accIsParent'];
-    accRecord = map['accRecord']??[];
+    if(map['accRecord']!=null && map['accRecord']!=[]){
+      map['accRecord'].forEach((element) {
+        if(element.runtimeType == AccountRecordModel){
+          accRecord.add(element);
+        }else{
+          accRecord.add(AccountRecordModel.fromJson(element));
+        }
+         }
+      )??[];
+    }else{
+      accRecord=[];
+    }
     accChild = map['accChild']??[];
     accAggregateList = map['accAggregateList']??[];
   }
@@ -72,6 +87,9 @@ class AccountModel {
   String? affectedId() {
     return accId;
   }
+  String? affectedKey({String? type}) {
+    return "accId";
+  }
 
   toJson() {
     return {
@@ -100,7 +118,18 @@ class AccountModel {
       'accIsParent': accIsParent,
       'accChild': accChild,
       'accAggregateList': accAggregateList,
-      'accRecord': accRecord,
+      'accRecord': accRecord.map((e) => e.toJson()).toList(),
+    };
+  }
+  Map<String,dynamic> toAR() {
+    return {
+      'رمز الحساب': accCode,
+      'اسم الحساب': accName,
+      'نوع الحساب': getAccountTypefromEnum(accType??""),
+      'نوع الضريبة': accVat,
+      'حساب الاب': getAccountNameFromIdIsolate(accParentId),
+      'الوصف': accComment,
+      'الرصيد': getAccountBalanceFromIdIsolate(accId),
     };
   }
 }

@@ -296,7 +296,7 @@
 //       storeViewController.saveInvInStore(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invStorehouse);
 //       bool isHasVat = patternController.patternModel[invoiceModel.patternId]!.patHasVat!;
 //       switch (invoiceModel.invType) {
-//         case "sales":
+//         case Const.invoiceTypeSales:
 //           {
 //             await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
 //             await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
@@ -310,7 +310,7 @@
 //             }
 //           }
 //           break;
-//         case "pay":
+//         case Const.invoiceTypeBuy:
 //           {
 //             await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.invId!);
 //             await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.invId!);

@@ -5,8 +5,8 @@ class StoreRecordModel {
 
   StoreRecordModel({this.storeRecId, this.storeRecInvId, this.storeRecProduct});
 
-  factory StoreRecordModel.fromJson(Map<String, dynamic> json) {
-    Map<String, dynamic>? storeRecProductJson = json['storeRecProduct'];
+  factory StoreRecordModel.fromJson(Map<dynamic, dynamic> json) {
+    Map<dynamic, dynamic> storeRecProductJson = json['storeRecProduct'];
     Map<String, StoreRecProductModel> storeRecProductMap={};
 
     if (storeRecProductJson != null) {
@@ -49,7 +49,7 @@ class StoreRecProductModel {
     this.storeRecProductTotal,
   });
 
-  factory StoreRecProductModel.fromJson(Map<String, dynamic> json) {
+  factory StoreRecProductModel.fromJson(Map<dynamic, dynamic> json) {
     return StoreRecProductModel(
       storeRecProductId: json['storeRecProductId'],
       storeRecProductQuantity: json['storeRecProductQuantity'],

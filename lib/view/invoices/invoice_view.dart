@@ -48,7 +48,7 @@ class _InvoiceViewState extends State<InvoiceView> {
 
   late Map<String, double> columnWidths = {'id': double.nan, 'product': double.nan, 'quantity': double.nan, 'subTotal': double.nan, 'total': double.nan};
 
-  String typeBill = "sales";
+  String typeBill = Const.invoiceTypeSales;
 
   @override
   void initState() {
@@ -136,8 +136,6 @@ class _InvoiceViewState extends State<InvoiceView> {
         ),
         body: GetBuilder<InvoiceViewModel>(builder: (controller) {
           return ListView(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
                 height:  250,
@@ -152,7 +150,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                         Row(
                           children: [
                             // const Text("من : ", style: TextStyle()),
-                            // color: globalController.initModel.invType == "sales"
+                            // color: globalController.initModel.invType == Const.invoiceTypeSales
                             //     ? Colors.redAccent
                             //     : Colors.greenAccent)),
                             SizedBox(
@@ -545,8 +543,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                    }else if (invoiceController.primaryAccountController.text.isEmpty) {
-                                      Get.snackbar("خطأ تعباية", "يرجى كتابة حشاب البائع");
+                                    }else if (invoiceController.primaryAccountController.text.isEmpty &&widget.patternModel!.patType !=Const.invoiceTypeAdd ) {
+                                      Get.snackbar("خطأ تعباية", "يرجى كتابة حساب البائع");
                                     } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
                                       Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
                                     } else if (invoiceController.records.length < 2) {
@@ -556,9 +554,6 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     } else {
                                       checkPermissionForOperation(Const.roleUserWrite,Const.roleViewInvoice).then((value) async {
                                         if(value){
-                                          print("**/*/*/*/*/");
-                                          print(controller.initModel.invId);
-                                          print("**/*/*/*/*/");
                                           await invoiceController.computeTotal(invoiceController.records);
                                          globalController.addGlobalInvoice(_updateData(invoiceController.records));
                                           }

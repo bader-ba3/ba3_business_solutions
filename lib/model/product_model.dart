@@ -1,3 +1,6 @@
+import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 
 class ProductModel {
@@ -45,7 +48,18 @@ class ProductModel {
     prodParentId = map['prodParentId'];
     prodIsParent = map['prodIsParent'];
     prodChild = map['prodChild'];
-    prodRecord = map['prodRecord'];
+    if(map['prodRecord']!=[] &&map['prodRecord']!=null){
+      map['prodRecord'].forEach((e){
+        if(e.runtimeType ==Map<dynamic, dynamic>){
+          prodRecord?.add(ProductRecordModel.fromJson(e));
+        }else{
+          prodRecord?.add(e);
+        }
+      });
+
+    }else{
+      prodRecord=[];
+    }
     prodIsGroup = map['prodIsGroup'];
     prodIsLocal = map['prodIsLocal'];
     prodGroupPad = map['prodGroupPad'];
@@ -55,6 +69,7 @@ class ProductModel {
     prodHasVat = false;
     return this;
   }
+
   Map difference(ProductModel oldData) {
     assert(oldData.prodId == prodId && oldData.prodId != null && prodId != null || oldData.prodId == prodId && oldData.prodId != null && prodId != null);
     Map<String, dynamic> newChanges = {};
@@ -137,7 +152,9 @@ class ProductModel {
   String? affectedId() {
     return prodId;
   }
-
+  String? affectedKey({String? type}) {
+    return "prodId";
+  }
   toJson() {
     return {
       'prodId': prodId,
@@ -164,6 +181,7 @@ class ProductModel {
 
   Map<String,dynamic> toFullJson() {
     return {
+      'prodId': prodId,
       'prodName': prodName,
       'prodCode': prodCode,
       'prodFullCode': prodFullCode,
@@ -183,6 +201,32 @@ class ProductModel {
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
       'prodGroupPad': prodGroupPad,
+    };
+  }
+
+   Map<String,dynamic> toAR() {
+    return {
+      // 'الرمز التسليلي': prodId,
+      'رمز المادة': prodFullCode,
+      'اسم المادة': prodName,
+      // 'prodCode': prodCode,
+    'اسم الاب': getProductNameFromIdIsolate(prodParentId),
+      'سعر المستهلك': prodCustomerPrice,
+      'سعر الجملة': prodWholePrice,
+      'سعر المبيع': prodRetailPrice,
+      'سعر الكلفة': prodCostPrice,
+      'اقل سعر مسموح': prodMinPrice,
+      // 'يحوي ضريبة': prodHasVat,
+      'الباركود': prodBarcode,
+      // 'prodGroupCode': prodGroupCode,
+     'النوع': getProductTypeFromEnum(prodType??""),
+
+      // 'prodIsParent': prodIsParent,
+      // 'prodChild': prodChild,
+      // 'prodRecord': prodRecord,
+      // 'prodIsGroup': prodIsGroup,
+      // 'prodIsLocal': prodIsLocal,
+      // 'prodGroupPad': prodGroupPad,
     };
   }
 }

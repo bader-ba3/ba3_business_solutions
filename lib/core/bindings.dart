@@ -7,11 +7,14 @@ import 'package:ba3_business_solutions/controller/faceController/ml_service.dart
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/import_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:get/get.dart';
+import '../controller/changes_view_model.dart';
 import '../controller/database_view_model.dart';
 import '../controller/faceController/camera.service.dart';
 import '../controller/faceController/face_detector_service.dart';
@@ -20,6 +23,7 @@ import '../controller/user_management_model.dart';
 class GetBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(ChangesViewModel());
     Get.put(ImportViewModel());
     Get.put(ProductViewModel());
     Get.put(UserManagementViewModel());
@@ -34,8 +38,10 @@ class GetBinding extends Bindings {
     // Get.put(CameraService());
     // Get.put(FaceDetectorService());
     // Get.put(MLService());
+    Get.put(IsolateViewModel());
     Get.put(DataBaseViewModel());
     Get.put(CardsViewModel());
+    Get.put(TargetViewModel());
     Get.lazyPut(()=>GlobalViewModel(),fenix: true);
   }
 }

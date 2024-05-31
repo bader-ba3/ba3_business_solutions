@@ -25,6 +25,8 @@ class _AddSellerState extends State<AddSeller> {
     super.initState();
     if (widget.oldKey == null) {
       model = SellerModel();
+      int code = int.parse(sellerController.allSellers.values.last.sellerCode??"0")+1;
+      codeController.text = code.toString();
     } else {
       model = sellerController.allSellers[widget.oldKey]!;
       nameController.text = model.sellerName ?? "error";
@@ -73,14 +75,16 @@ class _AddSellerState extends State<AddSeller> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      if(model.sellerId == null) {
-                        checkPermissionForOperation(Const.roleUserWrite,Const.roleViewSeller).then((value) {
-                          if (value) sellerController.addSeller(model);
-                        });
-                      }else{
-                        checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewSeller).then((value) {
-                          if (value) sellerController.addSeller(model);
-                        });
+                      if(nameController.text.isNotEmpty &&codeController.text.isNotEmpty){
+                        if (model.sellerId == null) {
+                          checkPermissionForOperation(Const.roleUserWrite, Const.roleViewSeller).then((value) {
+                            if (value) sellerController.addSeller(model);
+                          });
+                        } else {
+                          checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewSeller).then((value) {
+                            if (value) sellerController.addSeller(model);
+                          });
+                        }
                       }
                     },
                     child: Text(model.sellerId == null ? "إنشاء" : "تعديل")),
@@ -93,6 +97,8 @@ class _AddSellerState extends State<AddSeller> {
                         checkPermissionForOperation(Const.roleUserDelete,Const.roleViewSeller).then((value) {
                           if(value) {
                             sellerController.deleteSeller(model);
+                            Get.back();
+                            Get.back();
                           }
                         });
                       }

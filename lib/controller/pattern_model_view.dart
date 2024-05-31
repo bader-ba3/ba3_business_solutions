@@ -17,15 +17,13 @@ class PatternViewModel extends GetxController {
     // recordViewDataSource=PatternRecordDataSource(patternRecordModel: patternModel);
   }
 
-  RxMap<String, PatternModel> _patternModel = <String, PatternModel>{}.obs;
+  RxMap<String, PatternModel> patternModel = <String, PatternModel>{}.obs;
 
-  RxMap<String, PatternModel> get patternModel => _patternModel;
 
   final CollectionReference _patternCollectionRef = FirebaseFirestore.instance.collection(Const.patternCollection);
 
-  List<String> _accountPickList = [];
+  List<String> accountPickList = [];
 
-  List<String> get accountPickList => _accountPickList;
 
   var accountController = Get.find<AccountViewModel>();
   var storeController = Get.find<StoreViewModel>();
@@ -35,13 +33,13 @@ class PatternViewModel extends GetxController {
   getAllPattern() {
     _patternCollectionRef.snapshots().listen((value) {
 
-      _patternModel.clear();
+      patternModel.clear();
       for (var element in value.docs) {
-        _patternModel[element.id] = PatternModel();
-        _patternModel[element.id] = PatternModel.fromJson(element.data() as Map<String, dynamic>);
+        patternModel[element.id] = PatternModel();
+        patternModel[element.id] = PatternModel.fromJson(element.data() as Map<String, dynamic>);
       }
       recordViewDataSource = PatternRecordDataSource(patternRecordModel: {});
-      recordViewDataSource = PatternRecordDataSource(patternRecordModel: _patternModel);
+      recordViewDataSource = PatternRecordDataSource(patternRecordModel: patternModel);
 
       WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
         update();
@@ -50,6 +48,11 @@ class PatternViewModel extends GetxController {
   }
 
   addPattern() {
+    List a = patternModel.values.where((element) => editPatternModel!.patCode == element.patCode).toList();
+    if(a.isNotEmpty){
+      Get.snackbar("خطأ", "الرمز مستخدم");
+      return;
+    }
     editPatternModel?.patId ??= generateId(RecordType.pattern);
     PatternModel _ = PatternModel.fromJson(editPatternModel?.toJson());
     _.patPrimary = getAccountIdFromText(_.patPrimary);
@@ -83,23 +86,23 @@ class PatternViewModel extends GetxController {
 
   Future<String> getComplete(text) async {
     var _ = '';
-    _accountPickList = [];
+    accountPickList = [];
     accountController.accountList.forEach((key, value) {
-      _accountPickList.addIf(value.accType==Const.accountTypeDefault&&(value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
+      accountPickList.addIf(value.accType==Const.accountTypeDefault&&(value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
     });
-    // print(_accountPickList.length);
-    if (_accountPickList.length > 1) {
+    // print(accountPickList.length);
+    if (accountPickList.length > 1) {
       await Get.defaultDialog(
         title: "Chose form dialog",
         content: SizedBox(
           width: 500,
           height: 500,
           child: ListView.builder(
-            itemCount: _accountPickList.length,
+            itemCount: accountPickList.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  _ = _accountPickList[index];
+                  _ = accountPickList[index];
                   update();
                   Get.back();
                 },
@@ -109,7 +112,7 @@ class PatternViewModel extends GetxController {
                   width: 500,
                   child: Center(
                     child: Text(
-                      _accountPickList[index],
+                      accountPickList[index],
                     ),
                   ),
                 ),
@@ -118,8 +121,8 @@ class PatternViewModel extends GetxController {
           ),
         ),
       );
-    } else if (_accountPickList.length == 1) {
-      _ = _accountPickList[0];
+    } else if (accountPickList.length == 1) {
+      _ = accountPickList[0];
     } else {
       Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
     }

@@ -182,7 +182,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toFullJson());
       editedProductRecord.clear();
       productController.productModel?.prodRecord?.forEach((element) {
-        editedProductRecord.add(ProductRecordModel.fromJson(element.toJson(), element.invId));
+        editedProductRecord.add(ProductRecordModel.fromJson(element.toJson()));
       });
       // productController.productModel?.prodRecord=editedProductRecord;
       // ProductModel _ = productController.productDataMap[widget.oldKey!]!;

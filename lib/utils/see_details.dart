@@ -17,7 +17,7 @@ void seeDetails(String id) {
         ));
   } else if (id.contains("bon")) {
     Get.to(() => BondDetailsView(
-          oldId: id,
+          oldId: id, isStart: false,
         ));
   } else {
     assert(false);

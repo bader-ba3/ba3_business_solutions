@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/utils/realm.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -22,6 +23,7 @@ class ProductViewModel extends GetxController {
   // RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
   RxMap<String, ProductModel> productDataMap = <String, ProductModel>{}.obs;
   late ProductRecordDataSource recordDataSource;
+  ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
   ProductModel? productModel;
 
@@ -31,10 +33,12 @@ class ProductViewModel extends GetxController {
 
 
 
+
+
   void initGlobalProduct(GlobalModel globalModel) {
    // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
       Map<String, List> allRecTotal = {};
-      bool isPay = globalModel.invType == "pay";
+      bool isPay = globalModel.invType == Const.invoiceTypeBuy;
       int correctQuantity = isPay ? 1 : -1;
       for (int i = 0; i < globalModel.invRecords!.length; i++) {
         if (globalModel.invRecords![i].invRecId != null) {
@@ -76,12 +80,12 @@ class ProductViewModel extends GetxController {
               element.invRecVat.toString()
           ));
         }
-        WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+        //WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
           update();
           initModel();
           initPage();
           go(lastIndex);
-        });
+       // });
       });
   }
 
@@ -89,46 +93,81 @@ class ProductViewModel extends GetxController {
     globalModel.invRecords?.forEach((element) {
       productDataMap[element.invRecProduct]?.prodRecord?.removeWhere((element) => element.invId==globalModel.invId);
     });
-    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+   // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
       update();
       initModel();
       initPage();
       go(lastIndex);
-    });
+    //});
   }
 
   void getAllProduct() async {
-    FirebaseFirestore.instance.collection(Const.productsCollection).snapshots().listen((value) async {
-      RxMap<String, ProductModel> oldProductDataMap = <String, ProductModel>{}.obs;
-      productDataMap.forEach((key, value) {
-        oldProductDataMap[key]=ProductModel.fromJson(value.toFullJson());
-      });
+    if(HiveDataBase.productModelBox.values.isEmpty) {
+      FirebaseFirestore.instance.collection(Const.productsCollection).get().then((value) async {
       productDataMap.clear();
       for (var element in value.docs) {
+        HiveDataBase.productModelBox.put(element.id, ProductModel.fromJson(element.data()));
         productDataMap[element.id] = ProductModel.fromJson(element.data());
-        productDataMap[element.id]?.prodRecord=oldProductDataMap[element.id]?.prodRecord??[];
       }
-
-      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+     // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
         update();
         initModel();
         initPage();
         go(lastIndex);
-      });
+     // });
     });
+    }else{
+      for (var element in HiveDataBase.productModelBox.values.toList()) {
+        productDataMap[element.prodId!] = element;
+      }
+    //  WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+        update();
+        initModel();
+        initPage();
+        go(lastIndex);
+     // });
+      // for (var i =0;i< productDataMap.values.toList().length;i++){
+      //   ProductModel product =  productDataMap.values.toList()[i];
+      //   if(product.prodCustomerPrice!.contains("٫") ||
+      //       product.prodRetailPrice!.contains("٫")||
+      //       product.prodMinPrice!.contains("٫")||
+      //       product.prodCostPrice!.contains("٫")||
+      //       product.prodWholePrice!.contains("٫")) {
+      //     product.prodCustomerPrice = (product.prodCustomerPrice)!.split("٫")[0];
+      //     product.prodRetailPrice = (product.prodRetailPrice)!.split("٫")[0];
+      //     product.prodMinPrice = (product.prodMinPrice)!.split("٫")[0];
+      //     product.prodCostPrice = (product.prodCostPrice)!.split("٫")[0];
+      //     product.prodWholePrice = (product.prodWholePrice)!.split("٫")[0];
+      //      updateProduct(product);
+      //   }
+      // }
+    }
   }
 
-  String getNextProductCode() {
+  String getNextProductCode({String? perantId}) {
     int code = 0;
     if(productDataMap.isEmpty){
       return "00";
+    }
+    if(perantId!=null){
+      List<String?>? childIds =  productDataMap[perantId]?.prodChild?.map((e) => productDataMap[e]?.prodCode).toList();
+      if(childIds!=null&&childIds.isNotEmpty){
+        return (int.parse(childIds.last!)+1).toString().padLeft(productDataMap[perantId]!.prodGroupPad??2,"0");
+      }else{
+        return "0".padLeft(productDataMap[perantId]!.prodGroupPad??2,"0");
+      }
+    }else{
+      List<String?>? parentIds =  productDataMap.values.toList().where((element) => element.prodIsParent!).map((e) => e.prodCode).toList();
+      if(parentIds.isNotEmpty){
+        return ((int.tryParse(parentIds.last!)??0)+1).toString().padLeft(2,"0");
+      }
     }
     return code.toString();
   }
 
   int padNumber = 1;
 
- String getFullCodeOfProduct(String accID){
+  String getFullCodeOfProduct(String accID){
    if(productDataMap[accID]!.prodIsParent!){
 
      String code = productDataMap[accID]!.prodCode!.padLeft(padNumber,"0");
@@ -168,8 +207,25 @@ class ProductViewModel extends GetxController {
       }
       if (withLogger) logger(newData: editProductModel);
       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).set(editProductModel.toJson());
+      changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
       Get.snackbar("فحص المطاييح", ' تم اضافة المطيح');
 
+  }
+
+  addProductToMemory(Map json){
+   print("addProductToMemory");
+   ProductModel productModel = ProductModel.fromJson(json);
+   List<ProductRecordModel> oldDate= [];
+   if(productDataMap[productModel.prodId!]!=null){
+     oldDate=productDataMap[productModel.prodId!]!.prodRecord!;
+   }
+     productModel.prodRecord = oldDate;
+    productDataMap[productModel.prodId!] = productModel;
+    HiveDataBase.productModelBox.put(productModel.prodId, productModel);
+   update();
+   initModel();
+   initPage();
+   go(lastIndex);
   }
 
   void updateProduct(ProductModel editProductModel, {withLogger = false}) {
@@ -181,11 +237,10 @@ class ProductViewModel extends GetxController {
       fullCode=productDataMap[editProductModel.prodParentId]!.prodFullCode!+editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad??padNumber,"0");
     }
     ProductModel? productModel = productDataMap.values.toList().firstWhereOrNull((element) => element.prodFullCode == fullCode);
-    if(productModel!=null){
+    if(productModel!=null &&editProductModel.prodId !=productModel.prodId){
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
     }
-    print(fullCode);
     editProductModel.prodFullCode = fullCode;
     if (withLogger) logger(oldData: productDataMap[editProductModel.prodId], newData: editProductModel);
     editProductModel.prodIsGroup ??= false;
@@ -198,6 +253,7 @@ class ProductViewModel extends GetxController {
       editProductModel.prodIsParent=false;
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).update(editProductModel.toJson());
+    changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
     update();
   }
 
@@ -213,6 +269,7 @@ class ProductViewModel extends GetxController {
     return _;
   }
 
+
   Future<void> deleteProduct({withLogger = false}) async {
     if (withLogger) logger(oldData: productModel);
     if (productModel?.prodParentId != null) {
@@ -221,11 +278,25 @@ class ProductViewModel extends GetxController {
       });
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(productModel?.prodId).delete();
+    changesViewModel.addRemoveChangeToChanges(productModel!.toFullJson(), Const.productsCollection);
     productModel == null;
 
     update();
   }
 
+  void removeProductFromMemory(Map json) {
+    ProductModel productModel = ProductModel.fromJson(json);
+    if (productModel.prodParentId != null) {
+      productDataMap[productModel.prodParentId]?.prodChild?.remove(productModel.prodId);
+      HiveDataBase.productModelBox.put(productModel.prodParentId, productDataMap[productModel.prodParentId]!);
+    }
+    productDataMap.remove(productModel.prodId);
+    HiveDataBase.productModelBox.delete(productModel.prodId);
+    update();
+    initModel();
+    initPage();
+    go(lastIndex);
+  }
 
   void initProductPage(ProductModel editedProduct) {
     recordDataSource = ProductRecordDataSource(productModel: editedProduct);
@@ -428,6 +499,8 @@ class ProductViewModel extends GetxController {
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodModel.prodId).set(prodModel.toJson());
 
   }
+
+
 
 }
 

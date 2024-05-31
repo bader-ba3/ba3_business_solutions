@@ -56,28 +56,24 @@ class ProductTreeView extends StatelessWidget {
             ),
           ],
         ),
-        body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection(Const.productsCollection).snapshots(),
-            builder: (context, snapshot) {
-              return GetBuilder<ProductViewModel>(builder: (controller) {
-                return productController.allProductTree.isEmpty
-                    ? const CircularProgressIndicator()
-                    : TreeView<ProductTree>(
-                        treeController: productController.treeController!,
-                        nodeBuilder: (BuildContext context, TreeEntry<ProductTree> entry) {
-                          return myTreeTile(
-                            context: context,
-                            key: ValueKey(entry.node),
-                            entry: entry,
-                            onTap: () {
-                              controller.lastIndex = entry.node.id;
-                              productController.treeController?.toggleExpansion(entry.node);
-                            },
-                          );
-                        },
-                      );
-              });
-            }),
+        body: GetBuilder<ProductViewModel>(builder: (controller) {
+          return productController.allProductTree.isEmpty
+              ? const CircularProgressIndicator()
+              : TreeView<ProductTree>(
+                  treeController: productController.treeController!,
+                  nodeBuilder: (BuildContext context, TreeEntry<ProductTree> entry) {
+                    return myTreeTile(
+                      context: context,
+                      key: ValueKey(entry.node),
+                      entry: entry,
+                      onTap: () {
+                        controller.lastIndex = entry.node.id;
+                        productController.treeController?.toggleExpansion(entry.node);
+                      },
+                    );
+                  },
+                );
+        }),
       ),
     );
   }
@@ -137,37 +133,37 @@ class ProductTreeView extends StatelessWidget {
         tapPosition.dy * 1.0,
       ),
       items: [
-        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
-           PopupMenuItem(
+        if (getProductModelFromId(entry.node.id)!.prodIsGroup!)
+          PopupMenuItem(
             value: 'adddda',
             child: ListTile(
               leading: Icon(Icons.add_box_outlined),
-              title: Text('الازاحة '+getProductModelFromId(entry.node.id)!.prodGroupPad.toString()),
+              title: Text('الازاحة ' + getProductModelFromId(entry.node.id)!.prodGroupPad.toString()),
             ),
           ),
+        const PopupMenuItem(
+          value: 'seeDetails',
+          child: ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('عرض حركات'),
+          ),
+        ),
+        if (getProductModelFromId(entry.node.id)!.prodIsGroup!)
           const PopupMenuItem(
-            value: 'seeDetails',
+            value: 'add',
             child: ListTile(
-              leading: Icon(Icons.info_outline),
-              title: Text('عرض حركات'),
+              leading: Icon(Icons.add_box_outlined),
+              title: Text('إضافة مادة'),
             ),
           ),
-        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
-        const PopupMenuItem(
-          value: 'add',
-          child: ListTile(
-            leading: Icon(Icons.add_box_outlined),
-            title: Text('إضافة مادة'),
+        if (getProductModelFromId(entry.node.id)!.prodIsGroup!)
+          const PopupMenuItem(
+            value: 'addFolder',
+            child: ListTile(
+              leading: Icon(Icons.folder),
+              title: Text('إضافة ملف'),
+            ),
           ),
-        ),
-        if(getProductModelFromId(entry.node.id)!.prodIsGroup!)
-        const PopupMenuItem(
-          value: 'addFolder',
-          child: ListTile(
-            leading: Icon(Icons.folder),
-            title: Text('إضافة ملف'),
-          ),
-        ),
         const PopupMenuItem(
           value: 'rename',
           child: ListTile(
@@ -188,20 +184,29 @@ class ProductTreeView extends StatelessWidget {
         Get.defaultDialog(
             title: "اختر الطريق",
             content: SizedBox(
-              height: Get.height/2,
-              width:Get.height/2,
+              height: Get.height / 2,
+              width: Get.height / 2,
               child: SizedBox(
                 height: 35,
                 width: double.infinity,
-                child: TextFormField(controller: nameCon,),
+                child: TextFormField(
+                  controller: nameCon,
+                ),
               ),
-            ),actions: [
-          ElevatedButton(onPressed: (){
-            controller.addFolder(nameCon.text,prodParentId: entry.node.id);
-            Get.back();}, child: Text("إضافة")),
-          ElevatedButton(onPressed: (){Get.back();}, child: Text("إلغاء")),
-        ]
-        );
+            ),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    controller.addFolder(nameCon.text, prodParentId: entry.node.id);
+                    Get.back();
+                  },
+                  child: Text("إضافة")),
+              ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text("إلغاء")),
+            ]);
       }
     });
   }

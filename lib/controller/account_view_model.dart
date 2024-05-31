@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/account_tree.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ import '../model/account_record_model.dart';
 import '../utils/generate_id.dart';
 import '../view/accounts/widget/account_record_data_source.dart';
 import '../view/accounts/widget/account_view_data_grid_source.dart';
+import 'changes_view_model.dart';
+import 'isolate_view_model.dart';
 
 class AccountViewModel extends GetxController {
   // RxMap<String, RxList<AccountRecordModel>> allAccounts = <String, RxList<AccountRecordModel>>{}.obs;
@@ -25,7 +28,7 @@ class AccountViewModel extends GetxController {
   late AccountViewDataGridSource recordViewDataSource;
   List<AccountModel> aggregateList = [];
   double total = 0.0;
-
+  ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
   AccountViewModel() {
     getAllAccount();
   }
@@ -82,23 +85,59 @@ class AccountViewModel extends GetxController {
     //update();
   }
 
-  getAllAccount() async {
-    FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots().listen((value) {
+  getAllAccount()  {
+    if(HiveDataBase.accountModelBox.isEmpty) {
+      FirebaseFirestore.instance.collection(Const.accountsCollection).get().then((value) {
       RxMap<String, List<AccountRecordModel>> oldAccountList = <String, List<AccountRecordModel>>{}.obs;
       accountList.forEach((key, value) {
         oldAccountList[key]=value.accRecord;
       });
       accountList.clear();
       for (var element in value.docs) {
-        accountList[element.id] = AccountModel.fromJson(element.data(), element.id);
+       HiveDataBase.accountModelBox.put(element.id, AccountModel.fromJson(element.data()));
+        accountList[element.id] = AccountModel.fromJson(element.data());
         accountList[element.id]?.accRecord = oldAccountList[element.id] ?? [];
       }
       initModel();
       initPage();
       go(lastIndex);
-      // update();
     });
+    }else{
+      for (var element in HiveDataBase.accountModelBox.values) {
+        accountList[element.accId!] = element;
+      }
+        initModel();
+        initPage();
+        go(lastIndex);
+    }
   }
+
+  addAccountToMemory(Map json){
+    AccountModel accountModel = AccountModel.fromJson(json);
+    List<AccountRecordModel> oldData=[];
+    if(accountList[accountModel.accId!]!=null){
+      oldData = accountList[accountModel.accId!]!.accRecord;
+    }
+    accountModel.accRecord = oldData;
+    accountList[accountModel.accId!] = accountModel;
+    HiveDataBase.accountModelBox.put(accountModel.accId, accountModel);
+
+    update();
+    initModel();
+    initPage();
+    go(lastIndex);
+  }
+
+  void removeAccountFromMemory(Map json) {
+    AccountModel accountModel = AccountModel.fromJson(json);
+    accountList.remove(accountModel.accId);
+    HiveDataBase.accountModelBox.delete(accountModel.accId);
+    update();
+    initModel();
+    initPage();
+    go(lastIndex);
+  }
+
 
   String? lastAccountOpened;
   // void getAllAccounts({oldKey}) async {
@@ -131,15 +170,13 @@ class AccountViewModel extends GetxController {
 
   ///----------------------------
 
-  addNewAccount(AccountModel accountModel, {bool withLogger = false}) {
-    String id = generateId(RecordType.account);
-    accountModel.accId ??= id;
+  addNewAccount(AccountModel accountModel, {bool withLogger = false}) async {
     if(accountList.values.toList().map((e) => e.accCode).toList().contains(accountModel.accCode)){
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
     }
-    print(accountModel.accParentId);
-    print(accountModel.accIsParent);
+    String id = generateId(RecordType.account);
+    accountModel.accId ??= id;
     if (accountModel.accParentId == null) {
       accountModel.accIsParent = true;
     } else {
@@ -155,7 +192,8 @@ class AccountViewModel extends GetxController {
       // }
       accountModel.accAggregateList.assignAll(aggregateList.map((e) => e.accId));
       if (withLogger) logger(newData: accountModel);
-      FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).set(accountModel.toJson());
+     await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).set(accountModel.toJson());
+    await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
       accountList[accountModel.accId!] = AccountModel();
       accountList[accountModel.accId!] = accountModel;
       Get.snackbar("", " تم اضافة الحساب");
@@ -163,7 +201,9 @@ class AccountViewModel extends GetxController {
       // recordViewDataSource.updateDataGridSource();
       // accountRecordDataSource.updateDataGridSource();
       update();
-
+    initModel();
+    initPage();
+    go(lastIndex);
   }
   // Future<void> updateInAccount(GlobalModel model, {String? modelKey}) async {
   //   Map<String, int> oldIndex = {};
@@ -288,24 +328,35 @@ class AccountViewModel extends GetxController {
       editProductModel.accIsParent = false;
     }
     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accId).update(editProductModel.toJson());
+    changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
+    IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
+    // isolateViewModel.init();
     update();
+    initModel();
+    initPage();
+    go(lastIndex);
   }
 
-  Future<void> deleteAccount(String id, {withLogger = false}) async {
-    if (withLogger) logger(oldData: accountList[id]!);
-    if (accountList[id]?.accParentId != null) {
-      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[id]?.accParentId).update({
-        'accChild': FieldValue.arrayRemove([id]),
+  Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) async {
+    if (withLogger) logger(oldData: accountList[accountModel.accId]!);
+    if (accountList[accountModel.accId]?.accParentId != null) {
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[accountModel.accId]?.accParentId).update({
+        'accChild': FieldValue.arrayRemove([accountModel.accId]),
       });
     }
-    await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(id).delete();
-    accountList.removeWhere((key, value) => key == id);
+    await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).delete();
+    changesViewModel.addRemoveChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
+    accountList.removeWhere((key, value) => key == accountModel.accId);
     // initAccountViewPage();
     // Get.back();
     update();
+    initModel();
+    initPage();
+    go(lastIndex);
   }
 
   void addAccountRecord({bondId, accountId, amount}) {
+
     accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
     accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0));
     calculateBalance(accountId);
@@ -325,6 +376,7 @@ class AccountViewModel extends GetxController {
   }
 
   //----=--=-=--=-=-==-==-=-=-==-=-=-==-=-=-=-=-=-=-=-=-=-=/-
+
   String? editItem;
   TextEditingController? editCon;
 
@@ -427,6 +479,13 @@ String getAccountNameFromId(id) {
     return Get.find<AccountViewModel>().accountList[id]!.accName!;
   } else {
     return "";
+  }
+}
+double getAccountBalanceFromId(id) {
+  if (id != null && id != " " && id != "") {
+    return Get.find<AccountViewModel>().getBalance(id)!;
+  } else {
+    return 0;
   }
 }
 

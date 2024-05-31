@@ -143,8 +143,7 @@ class ReportGridViewState extends State<ReportGridView> {
             source: _DataSource,
             isScrollbarAlwaysShown: true,
             verticalScrollController: scrollController,
-            columns: rowList
-                .map((e) => GridColumn(
+            columns: rowList.map((e) => GridColumn(
               width: 150,
                     columnName: e,
                     label: Column(
@@ -163,8 +162,7 @@ class ReportGridViewState extends State<ReportGridView> {
                           ),
                         ),
                       ],
-                    )))
-                .toList(),
+                    ))).toList(),
             columnWidthMode: ColumnWidthMode.fill,
           ),
         ),

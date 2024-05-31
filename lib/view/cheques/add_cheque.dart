@@ -22,18 +22,19 @@ class AddCheque extends StatefulWidget {
   State<AddCheque> createState() => _AddChequeState();
 }
 
-var chequeController = Get.find<ChequeViewModel>();
 
-var nameController = TextEditingController();
-var numberController = TextEditingController();
-var codeController = TextEditingController();
-var allAmountController = TextEditingController();
-var primeryController = TextEditingController();
-var secoundryController = TextEditingController();
-var bankController = TextEditingController();
-var chequeType;
 
 class _AddChequeState extends State<AddCheque> {
+  var chequeController = Get.find<ChequeViewModel>();
+
+  var nameController = TextEditingController();
+  var numberController = TextEditingController();
+  var codeController = TextEditingController();
+  var allAmountController = TextEditingController();
+  var primeryController = TextEditingController();
+  var secoundryController = TextEditingController();
+  var bankController = TextEditingController();
+  var chequeType;
   @override
   void initState() {
     super.initState();

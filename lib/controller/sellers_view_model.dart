@@ -7,6 +7,7 @@ import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_vi
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:pinput/pinput.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -20,7 +21,8 @@ import 'user_management_model.dart';
 class SellersViewModel extends GetxController {
   late DataGridController dataViewGridController;
   late AllSellerInvoiceViewDataGridSource recordViewDataSource;
-  Map<String, SellerModel> allSellers = {};
+  RxMap<String, SellerModel> allSellers = <String, SellerModel>{}.obs;
+
   SellersViewModel() {
     getAllSeller();
   }
@@ -37,12 +39,20 @@ class SellersViewModel extends GetxController {
         allSellers[element.id] = SellerModel.fromJson(element.data(), element.id);
         allSellers[element.id]?.sellerRecord=oldSellerList[element.id]??[];
       }
-      initChart();
+      // initChart();
       update();
     });
   }
 
   addSeller(SellerModel model) {
+    List<SellerModel> _ = allSellers.values.where((element) => element.sellerCode == model.sellerCode).toList();
+    if(_.isNotEmpty){
+      if(model.sellerId ==null ){
+        return ;
+      }else if(model.sellerId !=null &&model.sellerId != _.first.sellerId){
+        return;
+      }
+    }
     var id = generateId(RecordType.sellers);
     model.sellerId ??= id;
     FirebaseFirestore.instance.collection(Const.sellersCollection).doc(model.sellerId).set(model.toJson());
@@ -101,35 +111,36 @@ class SellersViewModel extends GetxController {
   Map<String,Map<String,double>>userMoney={};
   Map<String,Color>colorMap={};
   double high =0;
-  initChart(){
-    userMoney.clear();
-    colorMap.clear();
-    high=0;
-    allSellers[getMyUserSellerId()]?.sellerRecord?.forEach((element) {
-      var month=element.selleRecInvDate!.split("-")[1];
-      var day=element.selleRecInvDate!.split("-")[2];
-      if(userMoney[month]==null){
-        userMoney[month]={};
-      }
-      userMoney[month]?[day]=(userMoney[month]?[day]??0)+double.parse(element.selleRecAmount!);
-      if(high<(userMoney[month]?[day]??0)){
-        high=(userMoney[month]?[day]??0);
-      }
-    });
+  // initChart(){
+  //   userMoney.clear();
+  //   colorMap.clear();
+  //   high=0;
+  //   allSellers[getMyUserSellerId()]?.sellerRecord?.forEach((element) {
+  //     var month=element.selleRecInvDate!.split("-")[1];
+  //     var day=element.selleRecInvDate!.split("-")[2];
+  //     if(userMoney[month]==null){
+  //       userMoney[month]={};
+  //     }
+  //     userMoney[month]?[day]=(userMoney[month]?[day]??0)+double.parse(element.selleRecAmount!);
+  //     if(high<(userMoney[month]?[day]??0)){
+  //       high=(userMoney[month]?[day]??0);
+  //     }
+  //   });
+  //
+  //   // userMoney=sortNestedMaps(userMoney);
+  //
+  //   userMoney=sortNestedMaps(userMoney);
+  //   userMoney.forEach((key, value) {
+  //     colorMap[key]=getRandomColor();
+  //   });
+  //   // WidgetsFlutterBinding.ensureInitialized()
+  //   //     .waitUntilFirstFrameRasterized
+  //   //     .then((value) {
+  //   //   update();
+  //   // });
+  //   // update();
+  // }
 
-    // userMoney=sortNestedMaps(userMoney);
-
-    userMoney=sortNestedMaps(userMoney);
-    userMoney.forEach((key, value) {
-      colorMap[key]=getRandomColor();
-    });
-    // WidgetsFlutterBinding.ensureInitialized()
-    //     .waitUntilFirstFrameRasterized
-    //     .then((value) {
-    //   update();
-    // });
-    // update();
-  }
   Color getRandomColor() {
     Random random = Random();
 
@@ -141,6 +152,7 @@ class SellersViewModel extends GetxController {
 
     return randomColor;
   }
+
   Map<String, Map<String, double>> sortNestedMaps(Map<String, Map<String, double>> data) {
     Map<String, Map<String, double>> sortedData = Map.fromEntries(data.entries.toList());
 
@@ -152,9 +164,9 @@ class SellersViewModel extends GetxController {
 
     return sortedData;
   }
+
 }
 
-List<String> _accountPickList = [];
 Future<String> getSellerComplete(text) async {
   var sellerController = Get.find<SellersViewModel>();
   List<SellerModel> _accountPickList = [];
@@ -191,7 +203,6 @@ Future<String> getSellerComplete(text) async {
         ),
       ),
     );
-    // return _;
   }
   else if (_accountPickList.length == 1) {
     sellerModel= _accountPickList[0];
@@ -200,108 +211,8 @@ Future<String> getSellerComplete(text) async {
     return "";
   }
   if(sellerModel!.sellerId!=getMyUserSellerId()){
-    print("need to prevet");
 
-    CardsViewModel cardViewController = Get.find<CardsViewModel>();
-    UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
-    bool init = false;
-    String error = '';
-    bool isNfcAvailable = (Platform.isAndroid||Platform.isIOS)&&await NfcManager.instance.isAvailable();
-    var a = await Get.defaultDialog(
-        barrierDismissible: false,
-        title: "تحتاج لبطاقة للدخول ",
-        content: StatefulBuilder(
-            builder: (context,setstate) {
-              if(!init&&isNfcAvailable){
-                init = true;
-                NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-                  List<int> idList = tag.data["ndef"]['identifier'];
-                  String id ='';
-                  for(var e in idList){
-                    if(id==''){
-                      id="${e.toRadixString(16).padLeft(2,"0")}";
-                    }else{
-                      id="$id:${e.toRadixString(16).padLeft(2,"0")}";
-                    }
-                  }
-                  var cardId=id.toUpperCase();
-                  if(cardViewController.allCards.containsKey(cardId)){
-                    CardModel cardModel = cardViewController.allCards[cardId]!;
-                   var  user = userManagementViewController.allUserList[cardModel.userId];
-                    Map<String, List<String>>? newUserRole=userManagementViewController.allRole[user?.userRole]?.roles;
-                    // Map<String, List<String>>? newUserRole=userManagementViewController.allRole[getUserModelById(cardModel.userId).userRole]?.roles;
-                    // if (newUserRole?[page]?.contains(role)??false) {
-                    if(sellerModel?.sellerId ==user!.userId ||(newUserRole![Const.roleViewInvoice]?.contains(Const.roleUserAdmin)??false)){
-                      Get.back(result: true);
-                      NfcManager.instance.stopSession();
-                    }else{
-                      error =  "هذا الحساب غير مصرح له بالقيام بهذه العملية";
-                      setstate((){});
-                    }
-                  }else{
-                    error="البطاقة غير موجودة";
-                    setstate((){});
-                  }
-                });
-              }
-              return Column(
-                children: [
-                  if(!isNfcAvailable)
-                    Column(
-                      children: [
-                        Pinput(
-                          keyboardType : TextInputType.number,
-                          defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
-                          length: 6,
-                          onCompleted: (_) {
-                            UserModel? user = userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin==_);
-                            if(user!=null){
-                              Map<String, List<String>>? newUserRole=userManagementViewController.allRole[user.userRole]?.roles;
-                              if(sellerModel?.sellerId ==user.userSellerId ||(newUserRole![Const.roleViewInvoice]?.contains(Const.roleUserAdmin)??false)){
-                                Get.back(result: true);
-                                NfcManager.instance.stopSession();
-                              }else{
-                                error =  "هذا الحساب غير مصرح له بالقيام بهذه العملية";
-                                setstate((){});
-                              }
-                              // Map<String, List<String>>? newUserRole=userManagementViewController.allRole[user.userRole]?.roles;
-                              // if (newUserRole?[page]?.contains(role)??false) {
-                              //   Get.back(result: true);
-                              //   NfcManager.instance.stopSession();
-                              // }else{
-                              //   error =  "هذا الحساب غير مصرح له بالقيام بهذه العملية";
-                              //   setstate((){});
-                              // }
-                            }else{
-                              error="الحساب غير موجود";
-                              setstate((){});
-                            }
-
-                          },
-                        ),
-                        SizedBox(height: 5,),
-                      ],
-                    ),
-                  Text(error,style: TextStyle(fontSize: 22,color: Colors.red),),
-                  if(error!="")
-                    SizedBox(height: 5,),
-                  if(isNfcAvailable)
-                    Column(children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 10,),
-                    ],)
-                ],
-              );
-            }
-        ),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                Get.back(result: false);
-              },
-              child: Text("cancel"))
-        ]);
-  if(a){
+  if(await checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewInvoice)){
     return sellerModel!.sellerName!;
   }else{
     return getSellerNameFromId(getMyUserSellerId());

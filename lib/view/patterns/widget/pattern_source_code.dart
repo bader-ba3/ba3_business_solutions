@@ -17,7 +17,7 @@ class PatternRecordDataSource extends DataGridSource {
               DataGridCell<String>(columnName: Const.patCode, value: e.patCode),
             //  DataGridCell<String>(columnName: Const.patPrimary, value: getAccountNameFromId(e.patPrimary)),
               DataGridCell<String>(columnName: Const.patName, value: e.patName),
-              DataGridCell<String>(columnName: Const.patType, value: e.patType),
+              DataGridCell<String>(columnName: Const.patType, value: getInvTypeFromEnum(e.patType!)),
             ]))
         .toList();
   }

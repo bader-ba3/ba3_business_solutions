@@ -7,7 +7,7 @@ import '../../../Const/const.dart';
 
 
 class AddRoleView extends StatefulWidget {
-  AddRoleView({super.key, this.oldKey});
+  const AddRoleView({super.key, this.oldKey});
   final String? oldKey;
 
   @override
@@ -20,15 +20,14 @@ var userManagementController = Get.find<UserManagementViewModel>();
 TextEditingController nameController=TextEditingController();
 @override
   void initState() {
-
-    super.initState();
     if(widget.oldKey==null){
       userManagementController.roleModel=RoleModel(roles: {});
     }else{
-      userManagementController.roleModel=userManagementController.allRole[widget.oldKey];
-      allMap= userManagementController.allRole[widget.oldKey]?.roles??{};
+      userManagementController.roleModel=RoleModel.fromJson(userManagementController.allRole[widget.oldKey]!.toJson());
+      allMap= userManagementController.roleModel?.roles??{};
       nameController.text=userManagementController.allRole[widget.oldKey]?.roleName??"";
     }
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,9 @@ TextEditingController nameController=TextEditingController();
               title: Text(controller.roleModel?.roleName??"دور جديد"),
               actions: [
                 ElevatedButton(onPressed: (){
-                  controller.addRole();
+                  if(controller.roleModel?.roleName?.isNotEmpty??false) {
+                    controller.addRole();
+                  }
                 }, child: Text(controller.roleModel?.roleId==null?"إضافة":"تعديل"))
               ],
             ),
@@ -66,7 +67,7 @@ TextEditingController nameController=TextEditingController();
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(getPageNameFromEnum(i.toString())+":",style: TextStyle(fontSize: 25),),
+                          Text("${getPageNameFromEnum(i.toString())}:",style: TextStyle(fontSize: 25),),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 50),
                             child: Column(
@@ -106,8 +107,7 @@ TextEditingController nameController=TextEditingController();
               }else{
                 allMap[keys]?.remove(text);
               }
-              print(allMap);
-              controller.roleModel?.roles=allMap;
+              userManagementController.roleModel?.roles=allMap;
               setstate((){});
             });
           }

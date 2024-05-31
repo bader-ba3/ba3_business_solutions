@@ -1,6 +1,8 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 
@@ -105,31 +107,41 @@ class _AddProductState extends State<AddProduct> {
                           editedProduct.prodName= _;
                             isEdit = true;
                         }),
-                        item(text: "الرمز",controller:codeController ,onChange:(_) {
-                          editedProduct.prodCode= _;
-                          isEdit = true;
-                        }),
-                        item(text: "سعر مستهلك",controller:customerPriceController ,onChange:(_) {
+                        Row(
+                          children: [
+                            item(text: "الرمز",controller:codeController ,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChange:(_) {
+                                editedProduct.prodCode= _;
+                                isEdit = true;
+                              }),
+
+                            if(editedProduct.prodParentId!=null)
+                            Text(getProductModelFromId(editedProduct.prodParentId)!.prodFullCode!),
+                            Spacer(),
+                          ],
+                        ),
+                        item(text: "سعر مستهلك",controller:customerPriceController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodCustomerPrice = _;
                           isEdit = true;
                         }),
-                        item(text: "سعر الجملة",controller:wholePriceController ,onChange:(_) {
+                        item(text: "سعر الجملة",controller:wholePriceController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodWholePrice = _;
                           isEdit = true;
                         }),
-                        item(text: "سعر مفرق",controller:retailPriceController ,onChange:(_) {
+                        item(text: "سعر مفرق",controller:retailPriceController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodRetailPrice = _;
                           isEdit = true;
                         }),
-                        item(text: "سعر تكلفة",controller:costPriceController ,onChange:(_) {
+                        item(text: "سعر تكلفة",controller:costPriceController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodCostPrice = _;
                           isEdit = true;
                         }),
-                        item(text: "اقل سعر مسموح",controller:minPriceController ,onChange:(_) {
+                        item(text: "اقل سعر مسموح",controller:minPriceController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodMinPrice = _;
                           isEdit = true;
                         }),
-                        item(text: "الباركود",controller:barcodeController ,onChange:(_) {
+                        item(text: "الباركود",controller:barcodeController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodBarcode = _;
                           isEdit = true;
                         }),
@@ -146,13 +158,13 @@ class _AddProductState extends State<AddProduct> {
                               height: 20,
                               width: 20,
                               child: StatefulBuilder(builder: (context, setstate) {
-                                return Switch(
+                                return Checkbox(
                                     mouseCursor: editedProduct.prodId == null ? null : SystemMouseCursors.forbidden,
                                     value: hasVat,
                                     onChanged: editedProduct.prodId == null
                                         ? (_) {
                                       setstate(() {
-                                        hasVat = _;
+                                        hasVat = _!;
                                         editedProduct.prodHasVat = _;
                                         isEdit = true;
                                       });
@@ -175,7 +187,7 @@ class _AddProductState extends State<AddProduct> {
                               height: 20,
                               width: 20,
                               child: StatefulBuilder(builder: (context, setstate) {
-                                return Switch(
+                                return Checkbox(
                                     value: editedProduct.prodIsLocal!,
                                     onChanged:  (_) {
                                       setstate(() {
@@ -211,7 +223,9 @@ class _AddProductState extends State<AddProduct> {
                         //     ],
                         //   );
                         // }),
+                        if(widget.oldKey != null)
                         SizedBox(height: 30,),
+                        if(widget.oldKey != null)
                         StatefulBuilder(builder: (context, setstate) {
                           return Column(
                             children: [
@@ -280,7 +294,9 @@ class _AddProductState extends State<AddProduct> {
                                   builder: (context,setstate) {
                                     return DropdownButton(
                                       value: editedProduct.prodType,
-                                        items: [Const.productTypeStore,Const.productTypeService].map((e) => DropdownMenuItem(value: e,child: Text(getProductTypeFromEnum(e.toString())))).toList(), onChanged: (_){
+                                        isExpanded: true,
+                                        items: [Const.productTypeStore,Const.productTypeService].map((e) => DropdownMenuItem(value: e,child:
+                                        Text(getProductTypeFromEnum(e.toString())))).toList(), onChanged: (_){
                                         setstate((){
                                           editedProduct.prodType=_;
                                         });
@@ -290,25 +306,27 @@ class _AddProductState extends State<AddProduct> {
                           ],
                         ),
                         SizedBox(height: 30,),
-                  ElevatedButton(
-                      onPressed: () {
-                        if (editedProduct.prodId == null) {
-                          checkPermissionForOperation(Const.roleUserWrite,Const.roleViewProduct).then((value) {
-                            if(value){
-                              productController.createProduct(editedProduct, withLogger: true);
-                              isEdit = false;
-                            }
-                          });
-                        } else {
-                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewProduct).then((value) {
-                            if(value){
-                              productController.updateProduct(editedProduct, withLogger: true);
-                              isEdit = false;
-                            }
-                          });
+                        ElevatedButton(
+                          onPressed: () {
+                            if(checkInput()) {
+                          if (editedProduct.prodId == null) {
+                            checkPermissionForOperation(Const.roleUserWrite, Const.roleViewProduct).then((value) {
+                              if (value) {
+                                productController.createProduct(editedProduct, withLogger: true);
+                                isEdit = false;
+                              }
+                            });
+                          } else {
+                            checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewProduct).then((value) {
+                              if (value) {
+                                productController.updateProduct(editedProduct, withLogger: true);
+                                isEdit = false;
+                              }
+                            });
+                          }
                         }
                       },
-                      child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل"))
+                          child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل"))
                 ],
               ),
             ),
@@ -324,7 +342,7 @@ class _AddProductState extends State<AddProduct> {
       productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toJson());
       editedProductRecord.clear();
       productController.productModel?.prodRecord?.forEach((element) {
-        editedProductRecord.add(ProductRecordModel.fromJson(element.toJson(), element.invId));
+        editedProductRecord.add(ProductRecordModel.fromJson(element.toJson()));
       });
       ProductModel _ = productController.productDataMap[widget.oldKey!]!;
       nameController.text = _.prodName!;
@@ -341,31 +359,62 @@ class _AddProductState extends State<AddProduct> {
       // editedProduct.prodParentId = _.prodParentId ;
       // editedProduct.prodIsParent=_.prodParentId==null;
       print(_.toFullJson());
-    } else {
+    }
+    else {
       editedProduct = ProductModel();
       productController.productModel = ProductModel();
       editedProductRecord = <ProductRecordModel>[];
       hasVat = true;
       isGroup = false;
       editedProduct.prodIsLocal = false;
-      editedProduct.prodCode = productController.getNextProductCode();
-      codeController.text = editedProduct.prodCode!;
+
+      editedProduct.prodType = Const.productTypeStore;
       editedProduct.prodHasVat = true;
       editedProduct.prodIsGroup = false;
       if(widget.oldBarcode!=null){
         barcodeController.text=widget.oldBarcode!;
         editedProduct.prodBarcode=widget.oldBarcode;
       }
+      if(widget.oldParent!=null){
+        editedProduct.prodCode = productController.getNextProductCode(perantId: widget.oldParent);
+        editedProduct.prodParentId = widget.oldParent ;
+        editedProduct.prodIsParent=false;
+      }else{
+        editedProduct.prodCode = productController.getNextProductCode();
+      }
+      codeController.text = editedProduct.prodCode!;
     }
-    if(widget.oldParent!=null){
-      editedProduct.prodParentId = widget.oldParent ;
-      editedProduct.prodIsParent=false;
+     // productController.initProductPage(editedProductRecord);
+  }
+  bool checkInput() {
+    if(editedProduct.prodName?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة اسم");
+    }else if (editedProduct.prodCode?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة رمز");
     }
-    //  productController.initProductPage(editedProductRecord);
+    else if (editedProduct.prodCustomerPrice?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة سعر المستهلك");
+    }
+    else if (editedProduct.prodWholePrice?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة السعر الجملة");
+    }
+    else if (editedProduct.prodCostPrice?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة السعر التكلفة");
+    }
+    else if (editedProduct.prodRetailPrice?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة سعر المفرق");
+    }
+    else if (editedProduct.prodMinPrice?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة اقل سعر مسموح");
+    }else if (editedProduct.prodBarcode?.isEmpty??true){
+      Get.snackbar("خطأ", "يرجى كتابة باركود");
+    }else{
+      return true;
+    }
+    return false;
   }
 
-
-  Widget item({required String text,required TextEditingController controller,required Function(String _) onChange}){
+  Widget item({required String text,required TextEditingController controller,required Function(String _) onChange ,List<TextInputFormatter>? inputFormatters}){
     return Column(
       children: [
         Row(
@@ -380,6 +429,7 @@ class _AddProductState extends State<AddProduct> {
               height: 50,
               width: 200,
               child: TextFormField(
+                inputFormatters:inputFormatters ,
                 controller: controller,
                 onChanged: onChange
               ),
@@ -393,3 +443,5 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 }
+
+

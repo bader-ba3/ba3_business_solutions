@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-Widget customTextFieldWithIcon(TextEditingController controller, void Function(String) onSubmitted, {Function()? onIconPressed, void Function(String _)? onChanged}) {
+Widget customTextFieldWithIcon(TextEditingController controller, void Function(String) onSubmitted, {Function()? onIconPressed, void Function(String _)? onChanged,List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}) {
   return TextFormField(
     // validator: validator,
     onFieldSubmitted: onSubmitted,
     onChanged: onChanged,
     // onSubmitted: onSubmitted,
     controller: controller,
+inputFormatters: inputFormatters,
     // onTapOutside: onTapOutside,
     decoration: InputDecoration(
       border: OutlineInputBorder(
@@ -37,11 +39,13 @@ Widget customTextFieldWithIcon(TextEditingController controller, void Function(S
   );
 }
 
-Widget customTextFieldWithoutIcon(TextEditingController controller, bool enabled, {void Function(String)? onChanged}) {
+Widget customTextFieldWithoutIcon(TextEditingController controller, bool enabled, {void Function(String)? onChanged ,List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}) {
   return TextFormField(
     onChanged: onChanged,
     enabled: enabled,
     controller: controller,
+    keyboardType:keyboardType,
+    inputFormatters: inputFormatters,
     decoration: InputDecoration(
       border: OutlineInputBorder(
         borderSide: const BorderSide(

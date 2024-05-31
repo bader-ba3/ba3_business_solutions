@@ -1,13 +1,14 @@
 import 'package:ba3_business_solutions/controller/database_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds.dart';
+import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
 import 'package:ba3_business_solutions/view/database/database_view.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
+import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:ba3_business_solutions/view/patterns/all_pattern.dart';
 import 'package:ba3_business_solutions/view/patterns/pattern_details.dart';
-import 'package:ba3_business_solutions/view/products/product_view.dart';
+import 'package:ba3_business_solutions/view/products/product_view_old_old.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,6 +38,7 @@ class _DataBaseTypeState extends State<DataBaseType> {
     super.initState();
 
   }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -48,26 +50,66 @@ class _DataBaseTypeState extends State<DataBaseType> {
         body: Column(
           children: [
             Item("إضافة قاعدة بيانات",(){
+              TextEditingController textController = TextEditingController();
               Get.defaultDialog(content: SizedBox(
                 height: 100,
                 width: 200,
-                child: TextFormField(onFieldSubmitted: (_){
-                  Get.back();
-                  dataBaseController.newDataBase(_);
-                },),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: textController,
+
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    InkWell(
+                      onTap: (){
+                        if(textController.text.isNotEmpty&&!dataBaseController.databaseList.contains(textController.text)){
+                          Get.back();
+                          dataBaseController.newDataBase(textController.text);
+                        }
+                      },
+                      child: Container(
+                        width: 180,
+                        height: 50,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color:Colors.lightBlue.shade100,
+                      ),
+                        child: Center(child: Text("موافق")),
+                      ),
+                    )
+                  ],
+                ),
               ));
             }),
 
             Item("تحديد قاعدة البيانات الافتراضية",(){
-              // Get.to(() => AddDataBase());
               Get.defaultDialog(content: SizedBox(
-                height: 100,
-                width: 200,
-                child: TextFormField(onFieldSubmitted: (_){
-                  Get.back();
-                  dataBaseController.setDefaultDataBase(_);
-                },),
+                height: MediaQuery.sizeOf(context).height/2,
+                width: MediaQuery.sizeOf(context).height/2,
+                child: ListView.builder(
+                    itemCount: dataBaseController.databaseList.length,
+                    itemBuilder: (context,index){
+                  var text = dataBaseController.databaseList[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                        onTap: (){
+                          Get.back();
+                          dataBaseController.setDefaultDataBase(text);
+                        },
+                        child: Text(text,textDirection: TextDirection.rtl,style: TextStyle(fontSize: 22),)),
+                  );
+                })
               ));
+              // Get.defaultDialog(content: SizedBox(
+              //   height: 100,
+              //   width: 200,
+              //   child: TextFormField(onFieldSubmitted: (_){
+              //     Get.back();
+              //     // dataBaseController.setDefaultDataBase(_);
+              //   },),
+              // ));
 
             }),
             Item("تغيير قاعدة البيانات",(){

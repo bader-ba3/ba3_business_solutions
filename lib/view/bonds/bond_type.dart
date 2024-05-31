@@ -1,12 +1,13 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
+import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
+import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
 import '../../model/Pattern_model.dart';
+import 'all_bonds.dart';
 import 'bond_details_view.dart';
 import 'custom_bond_details_view.dart';
 
@@ -30,13 +31,16 @@ class _BondTypeState extends State<BondType> {
         body: Column(
           children: [
             Item("سند يومية",(){
-              Get.to(() => BondDetailsView());
+              Get.to(() => BondDetailsView(isStart: false,));
             }),
             Item("سند دفع",(){
               Get.to(() => CustomBondDetailsView(isDebit: true));
             }),
             Item("سند قبض",(){
               Get.to(() => CustomBondDetailsView(isDebit: false));
+            }),
+            Item("قيد افتتاحي",(){
+              Get.to(() => BondDetailsView(isStart:true));
             }),
             Item("عرض جميع السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {

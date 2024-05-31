@@ -12,10 +12,10 @@ import '../../../controller/account_view_model.dart';
 import '../../bonds/bond_details_view.dart';
 import '../../bonds/custom_bond_details_view.dart';
 
-
 class AccountDetails extends StatefulWidget {
   final String modelKey;
-  const AccountDetails({super.key, required this.modelKey});
+  final Function? initFun;
+  const AccountDetails({super.key, required this.modelKey, this.initFun});
 
   @override
   State<AccountDetails> createState() => _AccountDetailsState();
@@ -32,50 +32,66 @@ class _AccountDetailsState extends State<AccountDetails> {
 
     accountController.initAccountPage(widget.modelKey);
   }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<AccountViewModel>(
-          builder: (controller) {
-          return Scaffold(
-            appBar: AppBar(
-              actions: [
-                ElevatedButton(onPressed: (){
-                Get.to(AddAccount(modelKey:widget.modelKey));
-                }, child: Text("تعديل بطاقة الحساب")),
-                if(controller.accountList[widget.modelKey]!.accRecord.isEmpty)
-                ElevatedButton(onPressed: (){
-                  confirmDeleteWidget().then((value) {
-                    if(value) {
-                  checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
-                    if(value) {
-                          controller.deleteAccount(widget.modelKey, withLogger: true);
-                          Get.back();
-
-                    }
-                  });
-    }
-  });
-                }, child: Text("حذف")),
-              ],
-              title: Text(controller.accountList[widget.modelKey]?.accName??"error"),
-            ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: Directionality(
-                    textDirection:TextDirection.rtl,
-                    child: SfDataGrid(
-                      onCellTap: (DataGridCellTapDetails _ ){
-                        controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex-1].getCells().forEach((element) {
-                          if(element.columnName == Const.rowAccountId){
-                            var value = element.value;
-                            if(bondController.allBondsItem[value]?.bondType ==Const.bondTypeDaily){
-                              Get.to(()=>BondDetailsView(oldId: value,oldModelKey: widget.modelKey,));
+      child: GetBuilder<AccountViewModel>(builder: (controller) {
+        return Scaffold(
+          appBar: AppBar(
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Get.to(AddAccount(modelKey: widget.modelKey));
+                  },
+                  child: Text("تعديل بطاقة الحساب")),
+              if (controller.accountList[widget.modelKey]!.accRecord.isEmpty)
+                ElevatedButton(
+                    onPressed: () {
+                      confirmDeleteWidget().then((value) {
+                        if (value) {
+                          checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewAccount).then((value) {
+                            if (value) {
+                              controller.deleteAccount(controller.accountList[widget.modelKey]!, withLogger: true);
+                              Get.back();
                             }
-                            else{
-                              Get.to(()=>CustomBondDetailsView(oldId: value,oldModelKey: widget.modelKey,isDebit: bondController.allBondsItem[value]?.bondType == Const.bondTypeDebit,));
+                          });
+                        }
+                      });
+                    },
+                    child: Text("حذف")),
+            ],
+            title: Text(controller.accountList[widget.modelKey]?.accName ?? "error"),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: SfDataGrid(
+                      onCellTap: (DataGridCellTapDetails _) {
+                        controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex - 1].getCells().forEach((element) {
+                          if (element.columnName == Const.rowAccountId) {
+                            var value = element.value;
+                            if (bondController.allBondsItem[value]?.bondType == Const.bondTypeDaily) {
+                              Get.to(() => BondDetailsView(
+                                    oldId: value,
+                                    initFun:widget.initFun,
+                                    oldModelKey: widget.modelKey, isStart: false,
+                                  ));
+                            } else if (bondController.allBondsItem[value]?.bondType == Const.bondTypeStart) {
+                              Get.to(() => BondDetailsView(
+                                oldId: value,
+                                initFun:widget.initFun,
+                                oldModelKey: widget.modelKey, isStart: true,
+                              ));
+                            } else {
+                              Get.to(() => CustomBondDetailsView(
+                                    oldId: value,
+                                    oldModelKey: widget.modelKey,
+                                    isDebit: bondController.allBondsItem[value]?.bondType == Const.bondTypeDebit,
+                                  ));
                             }
                           }
                         });
@@ -87,10 +103,10 @@ class _AccountDetailsState extends State<AccountDetails> {
                       navigationMode: GridNavigationMode.cell,
                       columnWidthMode: ColumnWidthMode.fill,
                       columns: <GridColumn>[
-                        GridColumnItem(label: "الحساب",name: Const.rowAccountName),
-                        GridColumnItem(label: "النوع",name: Const.rowAccountType),
-                        GridColumnItem(label: 'المجموع',name: Const.rowAccountTotal),
-                        GridColumnItem(label: ' الحساب بعد العملية',name: Const.rowAccountBalance),
+                        GridColumnItem(label: "الحساب", name: Const.rowAccountName),
+                        GridColumnItem(label: "النوع", name: Const.rowAccountType),
+                        GridColumnItem(label: 'المجموع', name: Const.rowAccountTotal),
+                        GridColumnItem(label: ' الحساب بعد العملية', name: Const.rowAccountBalance),
                         GridColumn(
                             visible: false,
                             allowEditing: false,
@@ -108,28 +124,33 @@ class _AccountDetailsState extends State<AccountDetails> {
                             )),
                         // GridColumnItem(label: 'الرمز التسلسي للعملية',name: Const.rowAccountId),
                       ],
-                    )
-                  ),
-                ),
-                Center(child: Row(
+                    )),
+              ),
+              Center(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("الرصيد النهائي"),
-                    SizedBox(width: 30,),
+                    SizedBox(
+                      width: 30,
+                    ),
                     Text(controller.getBalance(widget.modelKey).toStringAsFixed(2))
                   ],
-                ),),
-                SizedBox(height: 50,),
-              ],
-            ),
-          );
-        }
-      ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
-  GridColumn GridColumnItem({required label,name}) {
+
+  GridColumn GridColumnItem({required label, name}) {
     return GridColumn(
-        allowEditing:false,
+        allowEditing: false,
         columnName: name,
         label: Container(
             padding: EdgeInsets.all(16.0),

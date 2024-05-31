@@ -234,25 +234,37 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   }
 
   Future<void> addAccount() async {
+    AccountViewModel accountViewModel = Get.find<AccountViewModel>();
     List<AccountModel> finalData = [];
     for (var element in widget.productList) {
       finalData.add(AccountModel(
         accId: generateId(RecordType.account),
         accName: element[setting["accName"]],
         accCode: element[setting["accCode"]],
-        accComment: element[setting["accComment"]],
-        accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
-        accVat : element[setting['accVat']],
+        accComment: '',
+        // accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
+        accType: Const.accountTypeDefault,
+        accVat : 'GCC',
         accParentId : element[setting['accParentId']].isEmpty?null:element[setting['accParentId']],
         accIsParent : element[setting['accParentId']].isEmpty,
       ));
     }
-    print(finalData.map((e) => e.toJson()));
+    int i =0;
+    print(finalData.length);
+    // print(finalData.map((e) => e.toJson()));
     for (var element in finalData) {
+      i++;
+      print(i.toString());
+      // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+      // await accountViewModel.addNewAccount(element, withLogger: false);
       await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+
     }
+    i=0;
     for (var element in finalData) {
-      if(!element.accIsParent!){
+      i++;
+      print(i.toString());
+      if(!element.accIsParent! ||element.accParentId!=null){
         FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId)).update({
           'accChild': FieldValue.arrayUnion([element.accId]),
         });

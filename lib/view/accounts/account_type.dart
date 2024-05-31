@@ -1,15 +1,17 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/accounts/acconts_view.dart';
+import 'package:ba3_business_solutions/view/accounts/acconts_view_old.dart';
 import 'package:ba3_business_solutions/view/accounts/account_tree_view.dart';
+import 'package:ba3_business_solutions/view/accounts/account_view.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
+import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
+import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
 import '../../model/Pattern_model.dart';
+import 'account_view_old.dart';
 
 class AccountType extends StatefulWidget {
   const AccountType({super.key});
@@ -33,16 +35,22 @@ class _AccountTypeState extends State<AccountType> {
             Item("إنشاء حساب", () {
               Get.to(() => AddAccount());
             }),
+            Item("معاينة الحسابات", () {
+              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+                if (value) Get.to(() => AllAccountOLD());
+              });
+            }),
+            Item("معاينة الحسابات", () {
+              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+                if (value) Get.to(() => AllAccount());
+              });
+            }),
             Item("شجرة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
-            Item("معاينة الحسابات", () {
-              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-                if (value) Get.to(() => AccountsView());
-              });
-            }),
+
           ],
         ),
       ),

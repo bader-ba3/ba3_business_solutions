@@ -6,7 +6,7 @@ class StoreModel {
   List<StoreRecordModel> stRecords=[];
   StoreModel({this.stId, this.stCode, this.stName});
 
-  StoreModel.fromJson(Map<String, dynamic> map) {
+  StoreModel.fromJson(Map<dynamic, dynamic> map) {
     List<StoreRecordModel>? stRecord = map['stRecords']?.map<StoreRecordModel>((dynamic e) => StoreRecordModel.fromJson(e)).toList();
     stId = map['stId'];
     stCode = map['stCode'];
@@ -15,10 +15,10 @@ class StoreModel {
 
   }
 
-  toJson() {
+  Map<String, dynamic> toJson() {
     return {'stId': stId, 'stCode': stCode, 'stName': stName};
     }
-  toFullJson() {
-    return {'stId': stId, 'stCode': stCode, 'stName': stName,"":stRecords.map((value) => value.toJson())};
+  Map<String, dynamic> toFullJson() {
+    return {'stId': stId, 'stCode': stCode, 'stName': stName,"stRecords":stRecords.map((value) => value.toJson()).toList()};
   }
 }

@@ -1,3 +1,10 @@
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
+import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/store_view_model.dart';
+
+import '../Const/const.dart';
 import 'bond_record_model.dart';
 import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
@@ -331,6 +338,9 @@ class GlobalModel {
   String? affectedId() {
     return invId ?? bondId;
   }
+  String? affectedKey({String? type}) {
+    return type==Const.globalTypeInvoice?"invId":"bondId";
+  }
 
   GlobalModel({
     this.bondId,
@@ -374,6 +384,106 @@ class GlobalModel {
     this.cheqBankAccount,
     this.cheqRecords,
   });
+
+
+  Map<String,dynamic> toAR({String? type}) {
+    if(invId!=null||type==Const.globalTypeInvoice){
+    return  {
+      "الرمز": invCode,
+      'النوع': getInvTypeFromEnum(invType??""),
+      "التاريخ": invDate,
+      // "invFullCode": invFullCode,
+      'المجموع الكلي': invTotal,
+      'المستودع': getStoreNameFromIdIsolate(invStorehouse),
+      'الحساب الاول': getAccountNameFromIdIsolate(invPrimaryAccount),
+      'الحساب الثاني': getAccountNameFromIdIsolate(invSecondaryAccount),
+      "رقم جوال العميل": invMobileNumber,
+      "حساب العميل": getAccountNameFromIdIsolate(invCustomerAccount),
+      "النمط": getPatModelFromPatternIdIsolate(patternId).patName,
+      "حساب البائع": getSellerNameFromIdIsolate(invSeller),
+      'وصف': invComment,
+
+    };
+    }
+    else if (bondId!=null||type==Const.globalTypeBond){
+      return {
+        'bondCode': bondCode,
+        'bondType': getBondTypeFromEnum(bondType??""),
+        'bondDate': bondDate,
+        'bondTotal': bondTotal,
+        'bondDescription': bondDescription,
+
+      };
+    }
+    else if (cheqId!=null||type==Const.globalTypeCheque){
+      return {
+        'cheqId': cheqId,
+        'cheqName': cheqName,
+        'cheqAllAmount': cheqAllAmount,
+        'cheqRemainingAmount': cheqRemainingAmount,
+        'cheqPrimeryAccount': cheqPrimeryAccount,
+        'cheqSecoundryAccount': cheqSecoundryAccount,
+        'cheqCode': cheqCode,
+        'cheqDate': cheqDate,
+        'cheqStatus': cheqStatus,
+        'cheqType': cheqType,
+        'cheqBankAccount': cheqBankAccount,
+      };
+    }
+      else{
+        print("UNKNOW TYPE");
+      return toFullJson();
+    }
+  }
+  Map<String,dynamic> toBondAR({String? type}) {
+    return {
+      'bondCode': bondCode,
+      'bondType': getBondTypeFromEnum(bondType??""),
+      'bondDate': bondDate,
+      'bondTotal': bondRecord?.map((e) => e.bondRecDebitAmount).reduce((value, element) => value!+element!),
+      'bondDescription': bondDescription,
+    };
+  }
+
+  //  Map<String,dynamic> toAR({String? type}) {
+  //   return {
+  //     'invId': invId,
+  //      'bondId': bondId,
+  //     'bondDescription': bondDescription,
+  //      'bondTotal': bondTotal,
+  //      'bondDate': bondDate,
+  //     'bondCode': bondCode,
+  //      'bondType': bondType,
+  //      'invName': invName,
+  //      'invTotal': invTotal,
+  //      'invSubTotal': invSubTotal,
+  //      'invPrimaryAccount': invPrimaryAccount,
+  //      'invSecondaryAccount': invSecondaryAccount,
+  //       'invStorehouse': invStorehouse,
+  //    'invComment': invComment,
+  //      'invType': invType,'originId': originId,
+  //      "invCode": invCode,"patternId": patternId,"invSeller": invSeller,
+  //      "invDate": invDate,
+  //        "invMobileNumber": invMobileNumber,
+  //       "invVatAccount": invVatAccount,
+  //       "invCustomerAccount": invCustomerAccount,
+  //      "invFullCode": invFullCode,
+  //    "readFlags": readFlags,
+  //    "globalType": globalType,
+  //      'cheqId': cheqId,
+  //     'cheqName': cheqName,
+  //       'cheqAllAmount': cheqAllAmount,
+  //     'cheqRemainingAmount': cheqRemainingAmount,
+  //     'cheqPrimeryAccount': cheqPrimeryAccount,
+  //      'cheqSecoundryAccount': cheqSecoundryAccount,
+  //     'cheqCode': cheqCode,
+  //     'cheqDate': cheqDate,
+  //    'cheqStatus': cheqStatus,
+  //     'cheqType': cheqType,
+  //      'cheqBankAccount': cheqBankAccount,
+  //   };
+  // }
+
 }
 
 GlobalModel getBondData() {

@@ -51,25 +51,28 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
     super.initState();
     initPage();
   }
-
+  late AccountModel primeryAccount ;
   void initPage() {
     if (widget.oldId != null || widget.oldBondModel != null) {
+      print("init");
       bondController.tempBondModel = GlobalModel.fromJson(widget.oldBondModel?.toFullJson() ?? bondController.allBondsItem[widget.oldId]!.toFullJson());
       bondController.bondModel = widget.oldBondModel ?? bondController.allBondsItem[widget.oldId]!;
       isNew = false;
-      var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
-      userAccountController.text = _!;
-      bondController.tempBondModel.bondRecord?.removeAt(0);
+      var aa =  bondController.tempBondModel.bondRecord?.where((element) => element.bondRecId == "X",).first.bondRecAccount;
+      // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
+      userAccountController.text = getAccountNameFromId(aa)!;
+      bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X",);
     } else {
       bondController.tempBondModel = getBondData();
       bondController.bondModel = getBondData();
       isNew = true;
       bondController.tempBondModel.bondType = widget.isDebit ? Const.bondTypeDebit : Const.bondTypeCredit;
+      newCodeController.text = bondController.getNextBondCode();
+      bondController.tempBondModel.bondCode = newCodeController.text;
     }
+    defualtCode = bondController.tempBondModel.bondCode!;
     bondController.initPage();
 
-    newCodeController.text = bondController.getNextBondCode();
-    defualtCode = bondController.getNextBondCode();
     // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
     // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
     //   newCodeController.text = (int.parse(newCodeController.text) + 1).toString();
@@ -173,7 +176,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                 controller.prevBond();
                                 var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
                                 userAccountController.text = _!;
-                                bondController.tempBondModel.bondRecord?.removeAt(0);
+                                bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X",);
                               },
                               child: Text("السابق"))
                         else
@@ -206,7 +209,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                 controller.nextBond();
                                 var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
                                 userAccountController.text = _!;
-                                bondController.tempBondModel.bondRecord?.removeAt(0);
+                                bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X",);
                               },
                               child: Text("التالي"))
                         else
@@ -239,7 +242,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                         SizedBox(
                           width: 50,
                         ),
-                      ]),
+                      ]
+            ),
             body: Directionality(
               textDirection: TextDirection.rtl,
               child: Column(
@@ -312,6 +316,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                               controller.initPage();
                               return SfDataGrid(
                                 source: bondController.customBondRecordDataSource,
+                                controller: bondController.dataGridController,
                                 allowEditing: controller.bondModel.originId == null,
                                 selectionMode: SelectionMode.singleDeselect,
                                 editingGestureType: EditingGestureType.tap,
@@ -402,20 +407,20 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                         });
                         // var total = int.parse(bondController.tempBondModel.bondTotal!);
 
-                        if (!isNew) {
-                          bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "0");
-                        }
-                        bondController.tempBondModel.bondRecord?.add(BondRecordModel("0", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "تم توليده بشكل تلقائي"));
+                        // if (!isNew) {
+                        //   bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X");
+                        // }
+                        bondController.tempBondModel.bondRecord?.add(BondRecordModel("X", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "تم توليده بشكل تلقائي"));
                         var validate2 = bondController.checkValidate();
                         if (isNew) {
                           if (validate2 == null) {
-                            checkPermissionForOperation(Const.roleUserWrite,Const.roleViewBond).then((value) {
+                            checkPermissionForOperation(Const.roleUserWrite,Const.roleViewBond).then((value) async {
                               if (value) {
                                 print(bondController.tempBondModel.bondRecord?.map((e) => e.toJson()));
-                                globalController.addGlobalBond(bondController.tempBondModel);
+                               await globalController.addGlobalBond(bondController.tempBondModel);
                                 isNew = false;
                                 controller.isEdit = false;
-                                bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "0");
+                                bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X");
                               }
                             });
                           } else {
@@ -423,11 +428,15 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                           }
                         } else if (controller.bondModel.originId == null) {
                           if (validate2 == null) {
-                            checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
+                            checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) async {
                               if (value) {
-                                globalController.updateGlobalBond(bondController.tempBondModel);
+                               GlobalModel temp =  GlobalModel.fromJson(bondController.tempBondModel.toFullJson());
+                              bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X");
+                              await  globalController.updateGlobalBond(temp);
+
                                 isNew = false;
                                 controller.isEdit = false;
+
                               }
                             });
                           } else {

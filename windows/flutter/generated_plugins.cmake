@@ -5,8 +5,8 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   cloud_firestore
+  desktop_window
   firebase_core
-  realm
   smart_auth
 )
 

@@ -31,7 +31,7 @@ class _AddAccountState extends State<AddAccount> {
   // TextEditingController accVatController = TextEditingController();
   String? accVat;
   String? accParentId;
-  bool accIsRoot=false;
+  bool accIsRoot=true;
   AccountModel accountModel = AccountModel();
   bool isNew = true;
   AccountViewModel accountController = Get.find<AccountViewModel>();
@@ -42,7 +42,7 @@ class _AddAccountState extends State<AddAccount> {
       accParentId=widget.oldParent;
     if (widget.modelKey != null) {
       isNew = false;
-      accountModel = AccountModel.fromJson(accountController.accountList[widget.modelKey]!.toJson(), widget.modelKey);
+      accountModel = AccountModel.fromJson(accountController.accountList[widget.modelKey]!.toJson());
       nameController.text = accountModel.accName ?? "23232332";
       accountType = accountModel.accType ?? "23232332";
       notesController.text = accountModel.accComment ?? "23232332";
@@ -55,6 +55,7 @@ class _AddAccountState extends State<AddAccount> {
     } else {
       accVat = "GCC";
       codeController.text=accountController.getLastCode();
+      accountType = Const.accountTypeList[0];
     }
   }
 
@@ -190,9 +191,7 @@ class _AddAccountState extends State<AddAccount> {
                             child: Checkbox(
                               value: accIsRoot,
                               onChanged: (_) {
-                                setState(() {
-
-                                });
+                                setState(() {});
                                 setstate(() {
                                   accIsRoot = _!;
                                   accParentId=null;
@@ -303,16 +302,17 @@ class _AddAccountState extends State<AddAccount> {
                 GetBuilder<AccountViewModel>(builder: (accountController) {
                   return ElevatedButton(
                       onPressed: () async {
-                        await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,accParentId,accIsRoot);
-                        if (accountModel.accId==null) {
-                          checkPermissionForOperation(Const.roleUserWrite,Const.roleViewAccount).then((value) {
-                            if(value)accountController.addNewAccount(accountModel, withLogger: true);
-                          });
-                        } else {
-                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewAccount).then((value) {
-                            if(value)accountController.updateAccount(accountModel, withLogger: true);
-                          });
-
+                        if(checkInput()){
+                          await updateData(nameController, accountType!, notesController, idController, accVat!, codeController, accParentId, accIsRoot);
+                          if (accountModel.accId == null) {
+                            checkPermissionForOperation(Const.roleUserWrite, Const.roleViewAccount).then((value) {
+                              if (value) accountController.addNewAccount(accountModel, withLogger: true);
+                            });
+                          } else {
+                            checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewAccount).then((value) {
+                              if (value) accountController.updateAccount(accountModel, withLogger: true);
+                            });
+                          }
                         }
                       },
                       child: Text(accountModel.accId==null ? "إضافة حساب" : "تعديل الحساب"));
@@ -348,5 +348,23 @@ class _AddAccountState extends State<AddAccount> {
       return name || code;
     }).toList();
     return products.map((e) => e.accName!).toList();
+  }
+
+  bool checkInput() {
+    if(nameController.text.isEmpty){
+      Get.snackbar("خطأ", "يرجى كتابة اسم");
+    }else if(accountType==null){
+      Get.snackbar("خطأ", "يرجى كتابة نوع حساب");
+    }
+    else if(accVat==null){
+      Get.snackbar("خطأ", "يرجى اختيار نوع الضريبة");
+    }else if(codeController.text.isEmpty){
+      Get.snackbar("خطأ", "يرجى كتابة رمز");
+    }else if(!accIsRoot &&accParentId==null){
+      Get.snackbar("خطأ", "يرجى إضافة حساب اب");
+    }else{
+      return true;
+    }
+    return false;
   }
 }

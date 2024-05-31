@@ -10,6 +10,7 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
+import 'package:ba3_business_solutions/view/loading/loading_view.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class ImportViewModel extends GetxController {
       return true;
     } else {
       Get.defaultDialog(
-          middleText: "some account is not defind",
+          middleText: "some account is not defined",
           cancel: Column(
             children: [
               for (var i = 0; i < finalList.length; i++) Text(finalList[i]),
@@ -61,9 +62,10 @@ class ImportViewModel extends GetxController {
 
   void addBond(List<GlobalModel> bondList) {
     BondViewModel bondController = Get.find<BondViewModel>();
-    for (var element in bondList) {
-      bondController.fastAddBond(oldBondCode: element.bondCode, bondId: element.bondId, originId: null, total: double.parse("0.00"), record: element.bondRecord!, bondDate: element.bondDate, bondType: element.bondType);
-    }
+    showLoadingDialog(total: bondList.length , fun: (index)async{
+      GlobalModel element = bondList[index];
+      await bondController.fastAddBondToFirebase(oldBondCode: element.bondCode, bondId: element.bondId, originId: null, total: double.parse("0.00"), record: element.bondRecord!, bondDate: element.bondDate, bondType: element.bondType);
+    });
   }
 
   void addInvoice(List<GlobalModel> invList) {
@@ -140,6 +142,7 @@ class ImportViewModel extends GetxController {
           dateList.add(element[indexOfDate]);
           totalList.add(element[indexOfTotal]);
           codeList.add(element[indexOfType].split(":")[1]);
+          typeList.add(element[indexOfType].split(":")[0]);
         } else {
           accountTemp.add(element[indexOfAccount].split("-")[1]);
           creditTemp.add(element[indexOfCredit].toString());
@@ -161,12 +164,24 @@ class ImportViewModel extends GetxController {
             recordTemp.add(BondRecordModel(j.toString().padLeft(2, '0'), double.parse(creditList[i][j]), double.parse(debitList[i][j]), getAccountIdFromText(accountList[i][j]), ''));
           }
         }
-        GlobalModel model = GlobalModel(bondRecord: recordTemp.toList(), bondId: generateId(RecordType.bond), bondDate: dateList[i], bondTotal: totalList[i], bondCode: int.parse(codeList[i]).toString(), bondDescription: "", bondType: Const.bondTypeDaily);
+        // print(typeList[i].removeAllWhitespace);
+        // print(typeList[i].removeAllWhitespace=="دفع");
+        String type =
+        typeList[i].removeAllWhitespace=="دفع"
+            ?Const.bondTypeDebit
+            : typeList[i].removeAllWhitespace=="قبض"
+              ? Const.bondTypeCredit
+              :typeList[i].removeAllWhitespace=="ق.إ"
+                ?Const.bondTypeStart
+                :Const.bondTypeDaily;
+        // print(type);
+        GlobalModel model = GlobalModel(bondRecord: recordTemp.toList(), bondId: generateId(RecordType.bond), bondDate: dateList[i], bondTotal: totalList[i], bondCode: int.parse(codeList[i]).toString(), bondDescription: "", bondType: type);
         // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
       }
       print(bondList.map((e) => e.toFullJson()));
+      correctDebitAndCredit(bondList);
       Get.to(() => BondListView(
             bondList: bondList,
           ));
@@ -174,6 +189,32 @@ class ImportViewModel extends GetxController {
       //   productList: dataList,
       //   rows: row as List<String>,
       // ));
+    }
+  }
+
+  correctDebitAndCredit(List bondList) {
+    for(var index = 0 ; index <bondList.length ; index++){
+      GlobalModel model = bondList[index];
+      if(model.bondType == Const.bondTypeDebit ||model.bondType == Const.bondTypeCredit){
+        Map <String,double> allRec= {};
+        for (var ji  = 0 ; ji< (model.bondRecord??[]).length;ji++) {
+          BondRecordModel  element = model.bondRecord![ji];
+          if(model.bondType == Const.bondTypeDebit &&element.bondRecCreditAmount!=0){
+            if(allRec[element.bondRecAccount!]==null)allRec[element.bondRecAccount!]=0;
+            allRec[element.bondRecAccount!] = allRec[element.bondRecAccount]! + element.bondRecCreditAmount!;
+          }else if(model.bondType == Const.bondTypeCredit &&element.bondRecDebitAmount!=0){
+            if(allRec[element.bondRecAccount!]==null)allRec[element.bondRecAccount!]=0;
+            allRec[element.bondRecAccount!] = allRec[element.bondRecAccount]! + element.bondRecDebitAmount!;
+          }
+        }
+        if(model.bondType == Const.bondTypeCredit){
+          model.bondRecord?.removeWhere((e) => e.bondRecDebitAmount !=0 );
+          model.bondRecord?.add(BondRecordModel("X", 0, allRec.entries.first.value, allRec.entries.first.key, ""));
+        }else{
+          model.bondRecord?.removeWhere((e) => e.bondRecCreditAmount !=0 );
+          model.bondRecord?.add(BondRecordModel("X",allRec.entries.first.value ,0,   allRec.entries.first.key, ""));
+        }
+      }
     }
   }
 
@@ -280,7 +321,7 @@ class ImportViewModel extends GetxController {
               bondDate: element[indexOfDate],
               invVatAccount: patternModel.patVatAccount,
               invTotal: double.parse(element[indexOfTotalWithVat].replaceAll("٬", "").replaceAll("٫", ".")),
-              // invType:  element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="مبيع"?"sales":"pay",
+              // invType:  element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="مبيع"?Const.invoiceTypeSales:Const.invoiceTypeBuy,
               invType: patternModel.patType,
               invCode: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
               readFlags: [

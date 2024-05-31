@@ -14,6 +14,7 @@ final bondController = Get.find<BondViewModel>();
 class BondRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
   dynamic newCellValue;
+  dynamic newCellValuea;
   TextEditingController editingController = TextEditingController();
 
   BondRecordDataSource({required GlobalModel recordData}) {
@@ -74,14 +75,18 @@ class BondRecordDataSource extends DataGridSource {
     );
   }
 
-  @override
-  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
+  Future<void> submitCella(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column,) async {
     final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
-    final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
-    if(dataRowIndex==-1){
-      return;
+    final int dataRowIndex = rowColumnIndex.rowIndex;
+    print(newCellValuea);
+    print(newCellValuea);
+    // if(dataRowIndex==-1){
+    //   return;
+    // }
+    print(dataGridRows.map((e) => e.getCells().map((e) => e.value)));
+    if (newCellValue == null || oldValue == newCellValue) {
+      print("you input null value");
     }
-    if (newCellValue == null || oldValue == newCellValue) {}
     if (dataGridRows.length == dataRowIndex + 1) {
       var id = (int.parse(dataGridRows[dataRowIndex - 1].getCells()[0].value) + 1).toString();
       if (int.parse(id) < 10) id = "0$id";
@@ -115,7 +120,11 @@ class BondRecordDataSource extends DataGridSource {
     } else {
       if (column.columnName == Const.rowBondAccount) {
         print(newCellValue.toString());
+        print(newCellValue.toString());
+        print(dataRowIndex);
         List<String> result = searchText(newCellValue.toString());
+        print(result);
+        print(result);
         if (result.isEmpty) {
           Get.snackbar("خطأ", "الحساب غير موجود");
         } else if (result.length == 1) {
@@ -185,24 +194,19 @@ class BondRecordDataSource extends DataGridSource {
 
   @override
   Widget? buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
     var displayText = dataGridRows[rowColumnIndex.rowIndex].getCells()[rowColumnIndex.columnIndex].value;
     displayText ??= '';
     if(displayText.toString()=="0.0")displayText="";
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
     newCellValue = null;
 
     final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
-
-    // Holds regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(isNumericType, column.columnName);
-
+    FocusNode focusNode=FocusNode();
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.center,
-      child: TextField(
+      child: TextFormField(
+        focusNode: focusNode,
         autofocus: true,
         controller: editingController..text = displayText.toString(),
         textAlign: TextAlign.center,
@@ -216,26 +220,24 @@ class BondRecordDataSource extends DataGridSource {
           if (value.isNotEmpty) {
             newCellValue = value;
           } else {
-            newCellValue = null;
+           // newCellValue = null;
           }
         },
-        onSubmitted: (String value) {
-          print(value);
+        onFieldSubmitted: (String value) {
           if(column.columnName == Const.rowBondDebitAmount||column.columnName == Const.rowBondCreditAmount){
             if (double.tryParse(value) != null) {
               newCellValue = value;
-              submitCell();
+              bondController.dataGridController.endEdit();
+              submitCella(dataGridRow, rowColumnIndex, column,);
             } else {
               Get.snackbar("خطأ", "يرجى إدخال رقم صحيح");
               newCellValue = null;
             }
           }else{
             newCellValue = value;
-            submitCell();
+            bondController.dataGridController.endEdit();
+            submitCella(dataGridRow, rowColumnIndex, column,);
           }
-
-          /// Call [CellSubmit] callback to fire the canSubmitCell and
-          /// onCellSubmit to commit the new value in single place.
         },
       ),
     );
@@ -253,8 +255,8 @@ class BondRecordDataSource extends DataGridSource {
     products = accountController.accountList.values.toList().where((item) {
       var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
       var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
-      var type = item.accType==Const.accountTypeDefault;
-      return type&&(name || code);
+      // var type = item.accType==Const.accountTypeDefault;
+      return (name || code);
     }).toList();
     return products.map((e) => e.accName!).toList();
   }

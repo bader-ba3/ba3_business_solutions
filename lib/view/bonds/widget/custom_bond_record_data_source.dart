@@ -72,8 +72,7 @@ class CustomBondRecordDataSource extends DataGridSource {
     );
   }
 
-  @override
-  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
+  Future<void> onCellSubmitFun(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
     final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
     // if (newCellValue == null || oldValue == newCellValue) {
@@ -209,7 +208,7 @@ class CustomBondRecordDataSource extends DataGridSource {
 
     // Holds regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(isNumericType, column.columnName);
-
+    FocusNode focusNode = FocusNode();
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.center,
@@ -233,11 +232,13 @@ class CustomBondRecordDataSource extends DataGridSource {
         onSubmitted: (String value) {
           if(!isNumericType){
             newCellValue = value;
-            submitCell();
+            onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
+            bondController.dataGridController.endEdit();
           } else {
             if(double.tryParse(value)!=null){
               newCellValue = value;
-              submitCell();
+              onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
+              bondController.dataGridController.endEdit();
             }else{
               Get.snackbar("error", "enter a valid number");
               newCellValue = null;

@@ -1,70 +1,115 @@
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/utils/logger.dart';
-import 'package:ba3_business_solutions/utils/realm.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
+import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../Const/const.dart';
-import '../../model/product_model.dart';
+import '../../utils/logger.dart';
+import '../widget/filtering_data_grid.dart';
+//
+// class AllProduct extends StatelessWidget {
+//   const AllProduct({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     ProductViewModel productViewModel = Get.find<ProductViewModel>();
+//     // RxMap<String, ProductModel> data = Map.fromEntries(productViewModel.productDataMap.entries.where((element) => !element.value.prodIsGroup!).toList()).obs;
+//     RxMap<String, ProductModel> data = productViewModel.productDataMap;
+//     return Scaffold(
+//       body: FilteringDataGrid<ProductModel>(
+//         title: "مواد",
+//         constructor: ProductModel(),
+//         dataGridSource:data,
+//         onCellTap: (index,id) {
+//           ProductModel model = data[id]!;
+//           logger(newData: model, transfersType: TransfersType.read);
+//           Get.to(() => ProductDetails(
+//             oldKey: model.prodId,
+//           ));
+//         },
+//         init: ()async {
+//           InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
+//             ProductViewModel productViewModel =Get.find<ProductViewModel>();
+//           await   compute<({ ProductViewModel b }),List<DataGridRow>>((message) {
+//              Get.put(message.b);
+//              List<DataGridRow> dataGridRow  = message.b.productDataMap.values.toList()
+//                   .map<DataGridRow>((order) => DataGridRow(cells: [
+//                 DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
+//                 ...order!
+//                     .toAR()
+//                     .entries
+//                     .map((mapEntry) {
+//                   // if (mapEntry.key ==  'سعر الجملة'||mapEntry.key ==  'سعر المستهلك'||mapEntry.key ==  'سعر المبيع'||mapEntry.key ==  'سعر الكلفة'||mapEntry.key ==  'سعر اقل سعر مسموح') {
+//                   //   return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
+//                   // }
+//                   // else if (int.tryParse(mapEntry.value.toString()) != null) {
+//                   //   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
+//                   // }
+//                  // else{
+//                     return DataGridCell<String>(columnName: mapEntry.key, value: mapEntry.value.toString());
+//                   // }
+//                 }).cast<DataGridCell<dynamic>>().toList()
+//               ])).toList();
+//               Get.delete<ProductViewModel>();
+//               return dataGridRow;
+//
+//             },(b:productViewModel)).then((value) {
+//               infoDataGridSource!.dataGridRows =value;
+//             });
+//             return infoDataGridSource;
+//
+//         },
+//       ),
+//     );
+//   }
+// }
 
 class AllProduct extends StatelessWidget {
   const AllProduct({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-        //     actions: [
-        //   ElevatedButton(
-        //       onPressed: () {
-        //         Get.to(() => AddProduct());
-        //       },
-        //       child: const Text("create"))
-        // ]
-        ),
-        body: GetBuilder<ProductViewModel>(builder: (controller) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: ListView.builder(
-                itemCount: controller.productDataMap.values.where((element) => !element.prodIsGroup!&&(Const.isFilterFree ? element.prodIsLocal!: true)).toList().length,
-                itemBuilder: (context, index) {
-                  ProductModel model = controller.productDataMap.values.toList().where((element) => !element.prodIsGroup!&&(Const.isFilterFree ? element.prodIsLocal!: true)).toList()[index];
-                  return _prodItemWidget(model ,controller);
-                }),
-          );
-        }),
-      ),
-    );
-  }
-
-
-  Widget _prodItemWidget(ProductModel model,controller){
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: InkWell(
-        onTap: () {
+    ProductViewModel productViewModel = Get.find<ProductViewModel>();
+    // RxMap<String, ProductModel> data = Map.fromEntries(productViewModel.productDataMap.entries.where((element) => !element.value.prodIsGroup!).toList()).obs;
+    RxMap<String, ProductModel> data = productViewModel.productDataMap;
+    return Scaffold(
+      body: FilteringDataGrid<ProductModel>(
+        title: "مواد",
+        constructor: ProductModel(),
+        dataGridSource:data,
+        onCellTap: (index,id,init) {
+          ProductModel model = data[id]!;
           logger(newData: model, transfersType: TransfersType.read);
           Get.to(() => ProductDetails(
             oldKey: model.prodId,
           ));
         },
-        child: Row(
-          children: [
-            Container(
-                width: 100,
-                child: Text(controller.getFullCodeOfProduct(model.prodId!),style: TextStyle(fontSize: 20),)),
-            Text(" - ",style: TextStyle(fontSize: 20),),
-            //   Text(model.prodId ?? "not found"),
-            Text(model.prodName ?? "not found",style: TextStyle(fontSize: 20),),
-            SizedBox(width: 20,),
-            Text("الكمية: "),
-            Text(model.prodFullCode.toString(),style: TextStyle(fontSize: 20),),
-          ],
-        ),
+        init: ()async {
+          IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
+          isolateViewModel.init();
+          print("from product View");
+          final a = await   compute<({IsolateViewModel isolateViewModel}),List<DataGridRow>>((message) {
+            Get.put(message.isolateViewModel);
+            List<DataGridRow> dataGridRow  = message.isolateViewModel.productDataMap.values.where((element) => !element.prodIsGroup!).toList()
+                .map<DataGridRow>((order) => DataGridRow(cells: [
+              DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
+              ...order!
+                  .toAR()
+                  .entries
+                  .map((mapEntry) {
+                return DataGridCell<String>(columnName: mapEntry.key, value: mapEntry.value.toString());
+              }).cast<DataGridCell<dynamic>>().toList()
+            ])).toList();
+            return dataGridRow;
+          },(isolateViewModel:isolateViewModel));
+          InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
+          infoDataGridSource!.dataGridRows =a;
+          return infoDataGridSource;
+
+        },
       ),
     );
   }

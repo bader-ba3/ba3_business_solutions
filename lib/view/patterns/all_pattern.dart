@@ -2,15 +2,11 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/view/patterns/pattern_details.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-import '../accounts/acconts_view.dart';
-
+import '../accounts/acconts_view_old.dart';
 class AllPattern extends StatelessWidget {
   const AllPattern({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Directionality(

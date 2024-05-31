@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
+import 'package:ba3_business_solutions/view/sellers/seller_targets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,10 +53,20 @@ class AllSellerInvoice extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   Get.to(() => AddSeller(
-                        oldKey: oldKey,
-                      ));
+                    oldKey: oldKey,
+                  ));
                 },
                 child: Text("تعديل")),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Get.to(() => SellerTarget(
+                    sellerId: oldKey!,
+                      ));
+                },
+                child: Text("التارغيت")),
             SizedBox(
               width: 20,
             ),

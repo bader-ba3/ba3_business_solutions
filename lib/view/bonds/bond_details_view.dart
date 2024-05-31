@@ -17,12 +17,16 @@ class BondDetailsView extends StatefulWidget {
   BondDetailsView({
     Key? key,
     this.oldBondModel,
+    required this.isStart,
+    this.initFun,
     this.oldId,
     this.oldModelKey,
   }) : super(key: key);
   final GlobalModel? oldBondModel;
   final String? oldModelKey;
   final String? oldId;
+  final bool isStart ;
+  final Function? initFun ;
 
   @override
   _BondDetailsViewState createState() => _BondDetailsViewState();
@@ -40,7 +44,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
   void initState() {
     super.initState();
     initPage();
-    bondController.lastBondOpened=widget.oldModelKey;
+    bondController.lastBondOpened=widget.oldId;
   }
 
   void initPage() {
@@ -53,14 +57,14 @@ class _BondDetailsViewState extends State<BondDetailsView> {
     } else {
       bondController.tempBondModel = getBondData();
       bondController.bondModel = getBondData();
+      bondController.tempBondModel.bondCode = bondController.getNextBondCode();
       isNew = true;
     }
     bondController.tempBondModel.readFlags= [HiveDataBase.getMyReadFlag()];
-    bondController.tempBondModel.bondType = Const.bondTypeDaily;
+    bondController.tempBondModel.bondType = widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily;
     bondController.initPage();
-
-    newCodeController.text = bondController.getNextBondCode();
-    defualtCode = bondController.getNextBondCode();
+    newCodeController.text = bondController.tempBondModel.bondCode!;
+    defualtCode = bondController.tempBondModel.bondCode!;
     // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
     // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
     //
@@ -125,7 +129,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
           child: Scaffold(
             appBar: AppBar(
                 centerTitle: true,
-                title: Text(bondController.bondModel.bondId ?? "سند جديد"),
+                title: Text((bondController.bondModel.bondId ?? "سند جديد")+" "+  getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
                 leading: BackButton(),
                 actions: isNew
                     ? [
@@ -300,12 +304,17 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                           }
                         } else if (controller.bondModel.originId == null) {
                           if(validate==null) {
-                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
+                          checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) async {
                             if(value){
-                              globalController.updateGlobalBond(bondController.tempBondModel);
-                              // bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
                               isNew = false;
                               controller.isEdit = false;
+                             await globalController.updateGlobalBond(bondController.tempBondModel);
+                              // bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
+                              if(widget.initFun!=null){
+                                widget.initFun!("");
+
+                              }
+
                             }
                           });}else{
                             Get.snackbar("خطأ", validate);

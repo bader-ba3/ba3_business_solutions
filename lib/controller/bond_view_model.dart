@@ -90,7 +90,7 @@ class BondViewModel extends GetxController {
     int bondRecId=0;
     globalModel.invRecords?.forEach((element) {
       String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
-      if(globalModel.invType=="sales"){
+      if(globalModel.invType==Const.invoiceTypeSales){
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
       }else{
@@ -271,8 +271,13 @@ class BondViewModel extends GetxController {
       bondModel = GlobalModel.fromJson(model.toFullJson());
       if (bondModel.bondType == Const.bondTypeDaily) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
+              oldId: bondModel.bondId, isStart: false,
             ));
+        update();
+      } else if (bondModel.bondType == Const.bondTypeStart) {
+        Get.off(() => BondDetailsView(
+          oldId: bondModel.bondId, isStart: true,
+        ));
         update();
       } else {
         Get.off(() => CustomBondDetailsView(
@@ -308,13 +313,15 @@ class BondViewModel extends GetxController {
     initTotal();
     if (tempBondModel.bondType == Const.bondTypeDaily) {
       recordDataSource = BondRecordDataSource(recordData: tempBondModel);
-    } else {
+    }  else if (tempBondModel.bondType == Const.bondTypeStart) {
+      recordDataSource = BondRecordDataSource(recordData: tempBondModel);
+    }  else {
       customBondRecordDataSource = CustomBondRecordDataSource(recordData: tempBondModel, oldisDebit: tempBondModel.bondType == Const.bondTypeDebit);
     }
     dataGridController = DataGridController();
 
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-      // update();
+      update();
     });
   }
 
@@ -328,7 +335,7 @@ class BondViewModel extends GetxController {
     tempBondModel.bondTotal = (debit - credit).toStringAsFixed(2);
   }
 
-  void fastAddBond({String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) {
+  Future<void> fastAddBond({String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
     tempBondModel = GlobalModel();
     bondModel = GlobalModel();
     tempBondModel.bondRecord = record;
@@ -341,7 +348,7 @@ class BondViewModel extends GetxController {
     }
     tempBondModel.bondTotal = total.toString();
     tempBondModel.bondType = bondType;
-    tempBondModel.bondType = Const.bondTypeDaily;
+    tempBondModel.bondType ??= Const.bondTypeDaily;
     tempBondModel.globalType=Const.globalTypeBond;
     var bondCode = "";
     if (!isEdit) {
@@ -359,9 +366,40 @@ class BondViewModel extends GetxController {
     tempBondModel.bondDate=bondDate;
     tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
     var globalController = Get.find<GlobalViewModel>();
-    globalController.updateGlobalBond(tempBondModel);
+   await globalController.updateGlobalBond(tempBondModel);
 
     // postOneBond(false);
+  }
+  Future<void> fastAddBondToFirebase({String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
+    tempBondModel = GlobalModel();
+    tempBondModel.bondRecord = record;
+    tempBondModel.originId = originId;
+    if (bondId == null) {
+      tempBondModel.bondId = generateId(RecordType.bond);
+    } else {
+      tempBondModel.bondId = bondId;
+    }
+    tempBondModel.bondTotal = total.toString();
+    tempBondModel.bondType = bondType;
+    tempBondModel.bondType ??= Const.bondTypeDaily;
+    tempBondModel.globalType=Const.globalTypeBond;
+    var bondCode = "";
+    if (!isEdit) {
+      // String bondId = generateId(RecordType.bond);
+      bondCode = (int.parse(allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
+      while (allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
+        bondCode = (int.parse(bondCode) + 1).toString();
+      }
+    }
+    if(oldBondCode==null){
+      tempBondModel.bondCode = bondCode;
+    }else{
+      tempBondModel.bondCode = oldBondCode;
+    }
+    tempBondModel.bondDate=bondDate;
+    tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
+    var globalController = Get.find<GlobalViewModel>();
+    await globalController.addBondToFirebase(tempBondModel);
   }
 
   void fastAddBondAddToModel({String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) {
@@ -420,8 +458,13 @@ class BondViewModel extends GetxController {
       bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index - 1]]?.toFullJson());
       if (bondModel.bondType == Const.bondTypeDaily) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
+              oldId: bondModel.bondId, isStart: false,
             ));
+        update();
+      }else if (bondModel.bondType == Const.bondTypeStart) {
+        Get.off(() => BondDetailsView(
+          oldId: bondModel.bondId, isStart: true,
+        ));
         update();
       } else {
         Get.off(() => CustomBondDetailsView(
@@ -441,8 +484,13 @@ class BondViewModel extends GetxController {
       bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index + 1]]?.toFullJson());
       if (bondModel.bondType == Const.bondTypeDaily) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
+              oldId: bondModel.bondId, isStart: false,
             ));
+        update();
+      }else if (bondModel.bondType == Const.bondTypeStart) {
+        Get.off(() => BondDetailsView(
+          oldId: bondModel.bondId, isStart: true,
+        ));
         update();
       } else {
         Get.off(() => CustomBondDetailsView(
@@ -478,10 +526,10 @@ class BondViewModel extends GetxController {
 
     });
     if(_!=null)return _;
-    if(tempBondModel.bondType==Const.bondTypeDaily&&double.parse(tempBondModel.bondTotal!)!=0){
+    if((tempBondModel.bondType==Const.bondTypeDaily||tempBondModel.bondType==Const.bondTypeStart)&&double.parse(tempBondModel.bondTotal!)!=0){
       return"خطأ بالمجموع";
-    }
-    if(tempBondModel.bondType!=Const.bondTypeDaily&&double.parse(tempBondModel.bondTotal!)==0){
+    }else
+    if((tempBondModel.bondType!=Const.bondTypeDaily&&tempBondModel.bondType!=Const.bondTypeStart)&&double.parse(tempBondModel.bondTotal!)==0){
       return "خطأ بالمجموع";
     }
     if(tempBondModel.bondCode==null||int.tryParse(tempBondModel.bondCode!)==null){

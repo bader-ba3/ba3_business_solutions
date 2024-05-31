@@ -5,8 +5,8 @@ class ProductRecordModel {
 
   ProductRecordModel(this.invId, this.prodType, this.prodRecProduct, this.prodRecQuantity, this.prodRecId, this.prodRecTotal, this.prodRecSubTotal,this.prodRecDate,this.prodRecSubVat);
 
-  ProductRecordModel.fromJson(Map<dynamic, dynamic> map, _invId) {
-    invId = _invId;
+  ProductRecordModel.fromJson(Map<dynamic, dynamic> map) {
+    invId = map['invId'];
     prodRecId = map['prodRecId'];
     prodRecProduct = map['prodRecProduct'];
     prodRecQuantity = map['prodRecQuantity'].toString();

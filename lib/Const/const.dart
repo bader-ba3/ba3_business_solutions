@@ -14,7 +14,6 @@ abstract class Const {
     if(dataName==''){
       await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
         dataName=value.data()?['defaultDataName'];
-
       });
     }else{
       dataName=oldData!;
@@ -22,6 +21,7 @@ abstract class Const {
     await HiveDataBase.setDataName(dataName);
     globalCollection=dataName;
   }
+
   static const EnvType env = EnvType.debug; //"debug" or "release"
   static const vatGCC = 0.05;
   static const vat0_01 = 0.01;
@@ -32,11 +32,15 @@ abstract class Const {
   static const rowBondAccount = 'secondary';
   static const rowBondDescription = 'description';
   static const noVatKey = 'noVat-';
+  static const minMobileTarget = 1000;
+  static const minOtherTarget = 1000;
   static const isFilterFree = false;
   ////////////--------------------------------------------------
+  static const changesCollection = 'Changes';
   static const recordCollection = 'Record';
   static String bondsCollection = 'Bonds';
   static String accountsCollection = 'Accounts';
+  static String tasksCollection = 'Tasks';
   static String invoicesCollection = 'Invoices';
   static String productsCollection = "Products";
   static String logsCollection = "Logs";
@@ -82,12 +86,17 @@ abstract class Const {
   static const bondTypeDaily = "bondTypeDaily";
   static const bondTypeDebit = "bondTypeDebit";
   static const bondTypeCredit = "bondTypeCredit";
+  static const bondTypeStart = "bondTypeStart";
   ////////////--------------------------------------------------
   static const patId = "patId";
   static const patCode = "patCode";
   static const patPrimary = "patPrimary";
   static const patName = "patName";
   static const patType = "patType";
+  ////////////--------------------------------------------------
+  static const invoiceTypeSales = "invoiceTypeSales";
+  static const invoiceTypeBuy = 'invoiceTypeBuy';
+  static const invoiceTypeAdd = "invoiceTypeAdd";
   ////////////--------------------------------------------------
   static const stCode = "stCode";
   static const stId = "stId";
@@ -139,8 +148,10 @@ abstract class Const {
   static const roleViewSeller = "roleViewSeller";
   static const roleViewReport = "roleViewReport";
   static const roleViewImport = "roleViewImport";
+  static const roleViewTask = "roleViewTask";
+  static const roleViewTarget = "roleViewTarget";
   static const roleViewUserManagement = "roleViewUserManagement";
-  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewImport,roleViewUserManagement,];
+  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewTask,roleViewImport,roleViewUserManagement,];
   ////////////--------------------------------------------------
   static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
   static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
@@ -165,17 +176,32 @@ abstract class Const {
   static const chequeRecordCollection="chequeRecord";
   ////////////----------------------------------------------------
   static const productsAllSubscription  = "productsAllSubscription";
+  ////////////----------------------------------------------------
+  static const userStatusOnline  = "userStatusOnline";
+  static const userStatusAway  = "userStatusAway";
+}
+String getUserStatusFromEnum(String type) {
+  switch (type) {
+    case Const.userStatusOnline:
+      return "موجود";
+    case Const.userStatusAway:
+      return "في الخارج";
+  }
+  return type;
 }
 
 String getInvTypeFromEnum(String type) {
   switch (type) {
-    case "sales":
+    case Const.invoiceTypeSales:
       return "بيع";
-    case "pay":
+    case Const.invoiceTypeBuy:
       return "شراء";
+    case Const.invoiceTypeAdd:
+      return "إدخال";
   }
   return type;
 }
+
 String getChequeTypefromEnum(String type) {
   switch (type) {
     case Const.chequeTypeCatch:
@@ -189,11 +215,13 @@ String getChequeTypefromEnum(String type) {
 String getBondTypeFromEnum(String type) {
   switch (type) {
     case Const.bondTypeDaily:
-      return "يومية";
+      return "سند يومية";
     case Const.bondTypeDebit:
-      return "دفع";
+      return "سند دفع";
     case Const.bondTypeCredit:
-      return "قبض";
+      return "سند قبض";
+    case Const.bondTypeStart:
+      return "قيد افتتاحي";
   }
   return "error";
 }
@@ -282,6 +310,10 @@ String getPageNameFromEnum(String type) {
       return "تقارير المبيعات";
     case Const.roleViewImport:
       return "استيراد المعلومات";
+    case Const.roleViewTarget:
+      return "التارغت";
+    case Const.roleViewTask:
+      return "التاسكات";
     case Const.roleViewUserManagement:
       return "إدارة المستخدمين";
   }

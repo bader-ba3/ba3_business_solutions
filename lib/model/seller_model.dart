@@ -24,7 +24,6 @@ class SellerModel {
 
 class SellerRecModel {
   String? selleRecInvId, selleRecAmount, selleRecUserId, selleRecInvDate;
-  List? sellerRecord = [];
   SellerRecModel({
     this.selleRecInvId,
     this.selleRecAmount,

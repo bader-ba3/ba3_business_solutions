@@ -24,7 +24,7 @@ class _AddStoreState extends State<AddStore> {
     if (widget.oldKey == null) {
       storeController.editStoreModel = StoreModel();
     } else {
-      storeController.editStoreModel = StoreModel.fromJson(storeController.storeMap[widget.oldKey]?.toFullJson());
+      storeController.editStoreModel = StoreModel.fromJson(storeController.storeMap[widget.oldKey]!.toFullJson());
       nameController.text = storeController.editStoreModel?.stName ?? "";
       codeController.text = storeController.editStoreModel?.stCode ?? "";
     }
@@ -114,11 +114,14 @@ class _AddStoreState extends State<AddStore> {
                             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                           ),
                           onPressed: () {
+                            if(nameController.text.isNotEmpty&&codeController.text.isNotEmpty) {
                             checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewStore).then((value) {
                               if(value){
                                 storeController.editStore();
                               }
-                            });
+                            }); }else{
+                            Get.snackbar("خطأ", "يرجى ملئ البيانات");
+                            }
 
 
                           },
@@ -129,9 +132,13 @@ class _AddStoreState extends State<AddStore> {
                             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                           ),
                           onPressed: () {
-                            checkPermissionForOperation(Const.roleUserWrite,Const.roleViewStore).then((value) {
+                            if(nameController.text.isNotEmpty&&codeController.text.isNotEmpty) {
+                              checkPermissionForOperation(Const.roleUserWrite,Const.roleViewStore).then((value) {
                               if(value)storeController.addNewStore();
                             });
+                            }else{
+                              Get.snackbar("خطأ", "يرجى ملئ البيانات");
+                            }
 
 
                             // storeController.clearController();

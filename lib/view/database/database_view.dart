@@ -13,17 +13,20 @@ class DataBaseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<DataBaseViewModel>(
       builder: (controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("اختر احد قواعد البيانات"),
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text("اختر احد قواعد البيانات"),
+            ),
+            body: ListView.builder(
+                itemCount: controller.databaseList.length,
+                itemBuilder: (context,index){
+              return Item(controller.databaseList[index],(){
+                      controller.setDataBase(controller.databaseList[index],context);
+              });
+            }),
           ),
-          body: ListView.builder(
-              itemCount: controller.databaseList.length,
-              itemBuilder: (context,index){
-            return Item(controller.databaseList[index],(){
-                    controller.setDataBase(controller.databaseList[index],context);
-            });
-          }),
         );
       }
     );

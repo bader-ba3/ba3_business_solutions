@@ -1,15 +1,12 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice.dart';
 import 'package:ba3_business_solutions/view/products/product_tree_view.dart';
 import 'package:ba3_business_solutions/view/products/product_view.dart';
+import 'package:ba3_business_solutions/view/products/product_view_old.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 
 class ProductType extends StatefulWidget {
   const ProductType({super.key});
@@ -34,6 +31,11 @@ class _ProductTypeState extends State<ProductType> {
               Get.to(() => AddProduct());
             }),
             Item("معاينة المواد",(){
+              checkPermissionForOperation(Const.roleUserRead , Const.roleViewProduct).then((value) {
+                if(value) Get.to(()=>AllProductOLD());
+              });
+            }),
+            Item("معاينة المواد(الشكل الجديد)",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewProduct).then((value) {
                 if(value) Get.to(()=>AllProduct());
               });

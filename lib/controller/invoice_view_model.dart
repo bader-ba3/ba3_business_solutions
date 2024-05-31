@@ -85,7 +85,6 @@ class InvoiceViewModel extends GetxController {
     //invoiceRecordSource.buildDataGridRows(records, getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat);
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
     invoiceRecordSource.updateDataGridSource();
-    print(invoiceRecordSource.accountVat);
     update();
   }
 
@@ -127,7 +126,6 @@ class InvoiceViewModel extends GetxController {
     initAllInvoice();
   }
 
-
   computeTotal(List<InvoiceRecordModel> records) {
     int quantity = 0;
     double subtotals = 0.0;
@@ -141,7 +139,6 @@ class InvoiceViewModel extends GetxController {
         update();
       }
     }
-    print(total);
   }
 
   double computeAllTotal() {
@@ -258,7 +255,7 @@ class InvoiceViewModel extends GetxController {
   //     storeViewController.saveInvInStore(record, invoiceModel.invId, invoiceModel.invType,invoiceModel.invStorehouse);
   //     bool isHasVat = patternController.patternModel[invoiceModel.patternId]!.patHasVat!;
   //     switch (invoiceModel.invType) {
-  //       case "sales":
+  //       case Const.invoiceTypeSales:
   //         {
   //           await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.originId!);
   //           await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.originId!);
@@ -272,7 +269,7 @@ class InvoiceViewModel extends GetxController {
   //           }
   //         }
   //         break;
-  //       case "pay":
+  //       case Const.invoiceTypeBuy:
   //         {
   //           await addInvoiceRecordToAccount(invoiceModel.invTotal!, invoiceModel.invPrimaryAccount!, invoiceModel.invId!);
   //           await addInvoiceRecordToAccount(-1 * invoiceModel.invTotal!, invoiceModel.invSecondaryAccount!, invoiceModel.invId!);
@@ -471,9 +468,11 @@ class InvoiceViewModel extends GetxController {
     records = [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat!);
   }
+
   initCodeList(patternId){
     nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
   }
+
   String getNextCodeInv(){
     int _ = 0;
     if(nextPrevList.isEmpty){
@@ -486,6 +485,7 @@ class InvoiceViewModel extends GetxController {
     }
     return _.toString();
   }
+
   //int old inv
   buildInvInit(bool bool, String invId) {
     if (bool) {
@@ -508,7 +508,6 @@ class InvoiceViewModel extends GetxController {
     dateController=initModel.invDate;
     // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
-    print(nextPrevList);
     buildSource(initModel.invId!);
     if (!bool) {
       update();
@@ -527,7 +526,6 @@ class InvoiceViewModel extends GetxController {
     accountController.accountList.forEach((key, value) {
       accountPickList.addIf(value.accType==Const.accountTypeDefault &&( value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
     });
-    print(accountPickList.length);
     if (accountPickList.length > 1) {
      var _= await Get.defaultDialog(
         title: "اختر احد الحسابات",
@@ -633,7 +631,6 @@ class InvoiceViewModel extends GetxController {
       invCodeList.add(value.invCode!);
       patternList.add(value.patternId!);
     });
-    print("0----------------------------${invCodeList.toList()}");
   }
 
   // viewPattern() {
