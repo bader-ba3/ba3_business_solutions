@@ -147,7 +147,7 @@ class BondRecordDataSource extends DataGridSource {
                           bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecAccount = result[index];
                           var accId = accountController.accountList.values.toList().firstWhere((e) => e.accName == result[index]).accId;
                           bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecAccount = accId;
-                          bondController.initPage();
+                          bondController.initPage(bondController.tempBondModel.bondType);
                           Get.back();
                         },
                         child: Center(child: Text(result[index],style: TextStyle(fontSize: 20),)),
@@ -194,54 +194,130 @@ class BondRecordDataSource extends DataGridSource {
 
   @override
   Widget? buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
+    FocusNode focusNodeListener = FocusNode();
     var displayText = dataGridRows[rowColumnIndex.rowIndex].getCells()[rowColumnIndex.columnIndex].value;
     displayText ??= '';
     if(displayText.toString()=="0.0")displayText="";
-    newCellValue = null;
 
+    newCellValue = null;
+    editingController.text = displayText.toString();
     final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
+
+    // Holds regular expression pattern based on the column type.
     final RegExp regExp = _getRegExp(isNumericType, column.columnName);
-    FocusNode focusNode=FocusNode();
+    FocusNode focusNode = FocusNode();
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.center,
-      child: TextFormField(
-        focusNode: focusNode,
-        autofocus: true,
-        controller: editingController..text = displayText.toString(),
-        textAlign: TextAlign.center,
-        autocorrect: false,
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
-        ),
-        //  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(regExp)],
-        keyboardType: isNumericType ? TextInputType.number : TextInputType.text,
-        onChanged: (String value) {
-          if (value.isNotEmpty) {
-            newCellValue = value;
-          } else {
-           // newCellValue = null;
+      child: KeyboardListener(
+        focusNode: focusNodeListener,
+        onKeyEvent: (_){
+          if(_.physicalKey == PhysicalKeyboardKey.enter||_.physicalKey == PhysicalKeyboardKey.numpadEnter){
+            if(!isNumericType){
+              newCellValue = editingController.text;
+              submitCella( dataGridRow,  rowColumnIndex,  column,);
+              bondController.dataGridController.endEdit();
+            } else {
+              if(double.tryParse(editingController.text)!=null){
+                newCellValue = editingController.text;
+                submitCella( dataGridRow,  rowColumnIndex,  column,);
+                bondController.dataGridController.endEdit();
+              }else{
+                Get.snackbar("error", "enter a valid number");
+                newCellValue = null;
+              }
+            }
+            focusNode.unfocus();
           }
         },
-        onFieldSubmitted: (String value) {
-          if(column.columnName == Const.rowBondDebitAmount||column.columnName == Const.rowBondCreditAmount){
-            if (double.tryParse(value) != null) {
+        child: TextField(
+          focusNode: focusNode,
+          autofocus: true,
+          controller: editingController,
+          textAlign: TextAlign.center,
+          autocorrect: false,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+          ),
+          //inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(regExp)],
+          keyboardType: isNumericType ? TextInputType.number : TextInputType.text,
+          onChanged: (String value) {
+            if (value.isNotEmpty) {
               newCellValue = value;
-              bondController.dataGridController.endEdit();
-              submitCella(dataGridRow, rowColumnIndex, column,);
             } else {
-              Get.snackbar("خطأ", "يرجى إدخال رقم صحيح");
               newCellValue = null;
             }
-          }else{
-            newCellValue = value;
-            bondController.dataGridController.endEdit();
-            submitCella(dataGridRow, rowColumnIndex, column,);
-          }
-        },
+          },
+          onSubmitted: (String value) {
+            if(!isNumericType){
+              newCellValue = value;
+              submitCella( dataGridRow,  rowColumnIndex,  column,);
+              bondController.dataGridController.endEdit();
+            } else {
+              if(double.tryParse(value)!=null){
+                newCellValue = value;
+                submitCella( dataGridRow,  rowColumnIndex,  column,);
+                bondController.dataGridController.endEdit();
+              }else{
+                Get.snackbar("error", "enter a valid number");
+                newCellValue = null;
+              }
+            }
+          },
+        ),
       ),
     );
   }
+  // @override
+  // Widget? buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
+  //   var displayText = dataGridRows[rowColumnIndex.rowIndex].getCells()[rowColumnIndex.columnIndex].value;
+  //   displayText ??= '';
+  //   if(displayText.toString()=="0.0")displayText="";
+  //   newCellValue = null;
+  //
+  //   final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
+  //   final RegExp regExp = _getRegExp(isNumericType, column.columnName);
+  //   FocusNode focusNode=FocusNode();
+  //   return Container(
+  //     padding: const EdgeInsets.all(8.0),
+  //     alignment: Alignment.center,
+  //     child: TextFormField(
+  //       focusNode: focusNode,
+  //       autofocus: true,
+  //       controller: editingController..text = displayText.toString(),
+  //       textAlign: TextAlign.center,
+  //       autocorrect: false,
+  //       decoration: const InputDecoration(
+  //         contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+  //       ),
+  //       //  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(regExp)],
+  //       keyboardType: isNumericType ? TextInputType.number : TextInputType.text,
+  //       onChanged: (String value) {
+  //         if (value.isNotEmpty) {
+  //           newCellValue = value;
+  //         } else {
+  //          // newCellValue = null;
+  //         }
+  //       },
+  //       onFieldSubmitted: (String value) {
+  //         if(column.columnName == Const.rowBondDebitAmount||column.columnName == Const.rowBondCreditAmount){
+  //           if (double.tryParse(value) != null) {
+  //             newCellValue = value;
+  //             bondController.dataGridController.endEdit();
+  //             submitCella(dataGridRow, rowColumnIndex, column,);
+  //           } else {
+  //             Get.snackbar("خطأ", "يرجى إدخال رقم صحيح");
+  //             newCellValue = null;
+  //           }
+  //         }else{
+  //           newCellValue = value;
+  //           bondController.dataGridController.endEdit();
+  //           submitCella(dataGridRow, rowColumnIndex, column,);
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
 
   RegExp _getRegExp(bool isNumericKeyBoard, String columnName) {
     // return isNumericKeyBoard ? RegExp(r"(\d+)?\.(\d+)?") : RegExp(r'.*');

@@ -26,7 +26,7 @@ class ProductRecordDataSource extends DataGridSource {
     dataGridRows = allRec
         .map<DataGridRow>((e) => DataGridRow(cells: [
       DataGridCell<String>(columnName: Const.rowProductRecProduct, value: getProductNameFromId(e.prodRecProduct)),
-      DataGridCell<String>(columnName: Const.rowProductType, value: e.prodType),
+      DataGridCell<String>(columnName: Const.rowProductType, value: getInvTypeFromEnum(e.prodType!)),
       DataGridCell<String>(columnName: Const.rowProductQuantity, value: e.prodRecQuantity),
       DataGridCell<String>(columnName: Const.rowProductDate, value: e.prodRecDate),
       DataGridCell<String>(columnName: Const.rowProductInvId, value: e.invId),

@@ -139,7 +139,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                           width: Get.width/2.5,
                           child: Row(
                             children: [
-                              const Text("من :"),
+                              const Text("الدائن"),
                               const SizedBox(
                                 width: 25,
                               ),
@@ -149,7 +149,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                                   child: customTextFieldWithIcon(
                                     primaryController,
                                     (text) async {
-                                      var a = await patternController.getComplete(text);
+                                      var a = await getAccountComplete(text);
+                                      patternController.update();
                                       if(a.isNotEmpty) {
                                         patternController.editPatternModel?.patPrimary = a;
                                         primaryController.text = a;
@@ -178,7 +179,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                         width: Get.width/2.5,
                         child: Row(
                           children: [
-                            const Text("الى :"),
+                            const Text("المدين"),
                             const SizedBox(
                               width: 25,
                             ),
@@ -186,7 +187,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                               child: customTextFieldWithIcon(
                                 secondaryController,
                                     (text) async {
-                                  var a = await patternController.getComplete(text);
+                                      var a = await getAccountComplete(text);
+                                      patternController.update();
                                   if(a.isNotEmpty) {
                                     patternController.editPatternModel?.patSecondary = a;
                                     secondaryController.text = a;
@@ -279,7 +281,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                               child: customTextFieldWithIcon(
                                 vatAccountController,
                                 (text) async {
-                                  var a = await patternController.getComplete(text);
+                                  var a = await getAccountComplete(text);
+                                  patternController.update();
                                   if(a.isNotEmpty){
                                     patternController.editPatternModel?.patVatAccount = a;
                                     vatAccountController.text = a;

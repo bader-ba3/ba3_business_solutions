@@ -10,7 +10,7 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/loading/loading_view.dart';
+import 'package:ba3_business_solutions/utils/loading_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +44,9 @@ class ImportViewModel extends GetxController {
     if (finalList.isEmpty) {
       return true;
     } else {
+      print(finalList);
       Get.defaultDialog(
-          middleText: "some account is not defined",
+          middleText: finalList.length.toString()+" account is not defined",
           cancel: Column(
             children: [
               for (var i = 0; i < finalList.length; i++) Text(finalList[i]),
@@ -60,19 +61,26 @@ class ImportViewModel extends GetxController {
     }
   }
 
-  void addBond(List<GlobalModel> bondList) {
+  Future<void> addBond(List<GlobalModel> bondList) async {
     BondViewModel bondController = Get.find<BondViewModel>();
-    showLoadingDialog(total: bondList.length , fun: (index)async{
+    GlobalViewModel globalController = Get.find<GlobalViewModel>();
+   await showLoadingDialog(total: bondList.length , fun: (index)async{
       GlobalModel element = bondList[index];
       await bondController.fastAddBondToFirebase(oldBondCode: element.bondCode, bondId: element.bondId, originId: null, total: double.parse("0.00"), record: element.bondRecord!, bondDate: element.bondDate, bondType: element.bondType);
     });
   }
 
-  void addInvoice(List<GlobalModel> invList) {
+  Future<void> addInvoice(List<GlobalModel> invList) async {
     GlobalViewModel globalController = Get.find<GlobalViewModel>();
-    for (var element in invList) {
-      globalController.addGlobalInvoice(element);
-    }
+    // for (var element in invList) {
+    //   GlobalModel _ = globalController.correctInvRecord(element);
+    //   globalController.addInvoiceToFirebase(_);
+    // }
+    await showLoadingDialog(total: invList.length , fun: (index)async{
+      GlobalModel element = invList[index];
+      GlobalModel _ = globalController.correctInvRecord(element);
+      await globalController.addInvoiceToFirebase(_);
+    });
   }
 
   void pickBondFile(separator) async {
@@ -144,7 +152,7 @@ class ImportViewModel extends GetxController {
           codeList.add(element[indexOfType].split(":")[1]);
           typeList.add(element[indexOfType].split(":")[0]);
         } else {
-          accountTemp.add(element[indexOfAccount].split("-")[1]);
+          accountTemp.add(element[indexOfAccount].split("-")[0]);
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
         }
@@ -160,8 +168,12 @@ class ImportViewModel extends GetxController {
       for (var i = 0; i < accountList.length; i++) {
         List<BondRecordModel> recordTemp = [];
         for (var j = 0; j < accountList[i].length; j++) {
+          int pad = 2;
           if (accountList[i][j] != '') {
-            recordTemp.add(BondRecordModel(j.toString().padLeft(2, '0'), double.parse(creditList[i][j]), double.parse(debitList[i][j]), getAccountIdFromText(accountList[i][j]), ''));
+            if(accountList[i].length>99){
+              pad=3;
+            }
+            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j]), double.parse(debitList[i][j]), getAccountIdFromText(accountList[i][j]), ''));
           }
         }
         // print(typeList[i].removeAllWhitespace);
@@ -219,6 +231,7 @@ class ImportViewModel extends GetxController {
   }
 
   Future<void> pickInvoiceFile(separator) async {
+    BondViewModel bondViewModel = Get.find<BondViewModel>();
     List row = [];
     List row2 = [];
     // var indexOfInvType;
@@ -267,7 +280,7 @@ class ImportViewModel extends GetxController {
         indexOfSubTotal = row.indexOf("السعر");
         indexOfQuantity = row.indexOf("الكمية");
         indexOfProductName = row.indexOf("اسم المادة");
-        indexOfStore = row.indexOf("المستودع");
+        indexOfStore = row.indexOf("اسم المستودع");
         indexOfSeller = row.indexOf("مركز الكلفة");
       });
 
@@ -282,10 +295,10 @@ class ImportViewModel extends GetxController {
         if (store == '' && !notFoundStore.contains(element[indexOfStore])) {
           notFoundStore.add(element[indexOfStore]);
         }
-        var seller = getSellerIdFromText(element[indexOfSeller]);
-        if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
-          notFoundSeller.add(element[indexOfSeller]);
-        }
+        // var seller = getSellerIdFromText(element[indexOfSeller]);
+        // if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
+        //   notFoundSeller.add(element[indexOfSeller]);
+        // }
         var primery = getAccountIdFromText(element[indexOfPrimery]);
         if (primery == '' && !notFoundAccount.contains(element[indexOfPrimery])) {
           notFoundAccount.add(element[indexOfPrimery]);
@@ -308,11 +321,12 @@ class ImportViewModel extends GetxController {
               bondType: Const.bondTypeDaily,
               //  bondCode: getNextBondCode(),
               invComment: "",
-
+              // bondCode: bondViewModel.getNextBondCodaae(),
               ///aaaaaaa
               invMobileNumber: "",
               patternId: patternModel.patId,
-              invSeller: getSellerIdFromText(element[indexOfSeller]),
+              // invSeller: getSellerIdFromText(element[indexOfSeller]),
+              invSeller: "",
               globalType: Const.globalTypeInvoice,
               invPrimaryAccount: primery,
               invSecondaryAccount: secoundry,
@@ -324,9 +338,6 @@ class ImportViewModel extends GetxController {
               // invType:  element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="مبيع"?Const.invoiceTypeSales:Const.invoiceTypeBuy,
               invType: patternModel.patType,
               invCode: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
-              readFlags: [
-                HiveDataBase.getMyReadFlag()
-              ],
               invRecords: [
                 InvoiceRecordModel(
                   prodChoosePriceMethod: Const.invoiceChoosePriceMethodeCustom,

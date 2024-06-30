@@ -5,19 +5,25 @@ import 'package:ba3_business_solutions/adapter/product_record_model_adapter.dart
 import 'package:ba3_business_solutions/adapter/store_model_adapter.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../adapter/account_model_adapter.dart';
+import '../adapter/inventory_model_adapter.dart';
 import '../model/store_model.dart';
 
 class HiveDataBase {
   static late Box<GlobalModel> globalModelBox;
   static late Box<ProductModel> productModelBox;
   static late Box<AccountModel> accountModelBox;
+  static late Box<AccountModel> mainAccountModelBox;
+  static late Box<AccountModel> statisticBox;
   static late Box<StoreModel> storeModelBox;
+  static late Box<InventoryModel> inventoryModelBox;
   static late Box<int> lastChangesIndexBox;
   static late Box<String> constBox;
+  static late Box<bool> isFree;
   // static late Box<int> timerTimeBox;
   static late Box<String> timerDateBox;
   static late Box<bool> isNewUser;
@@ -29,10 +35,16 @@ class HiveDataBase {
     Hive.registerAdapter(StoreModelAdapter());
     Hive.registerAdapter(AccountRecordAdapter());
     Hive.registerAdapter(ProductRecordModelAdapter());
+    Hive.registerAdapter(InventoryModelAdapter());
     productModelBox=await Hive.openBox<ProductModel>("AllProduct");
     accountModelBox=await Hive.openBox<AccountModel>("AllAccount");
     storeModelBox=await Hive.openBox<StoreModel>("AllStore");
     lastChangesIndexBox=await Hive.openBox<int>("lastChangesIndex");
+    inventoryModelBox=await Hive.openBox<InventoryModel>("AllInventory");
+    mainAccountModelBox=await Hive.openBox<AccountModel>("mainAccount");
+    statisticBox=await Hive.openBox<AccountModel>("statisticBox");
+    isFree=await Hive.openBox<bool>("isFree");
+
     // globalModelBox=await Hive.openBox<GlobalModel>();
     constBox=await Hive.openBox<String>("Const");
     // timerTimeBox=await Hive.openBox<int>("TimerTime");
@@ -44,6 +56,9 @@ class HiveDataBase {
     if(lastChangesIndexBox.get("lastChangesIndex")==null){
       lastChangesIndexBox.put("lastChangesIndex", 0);
     }
+    if(isFree.get("isFree")==null){
+      isFree.put("isFree", false);
+    }
   }
 
   static String getMyReadFlag(){
@@ -52,6 +67,10 @@ class HiveDataBase {
 
   static Future<void> setDataName(dataName) async {
     globalModelBox=await Hive.openBox<GlobalModel>(dataName);
+  }
+
+  static Future<void> setIsFree(bool type) async {
+    isFree.put("isFree", type);
   }
 
 }

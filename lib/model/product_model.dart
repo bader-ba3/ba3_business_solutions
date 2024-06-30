@@ -4,10 +4,10 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 
 class ProductModel {
-  String? prodId,prodName, prodCode,prodFullCode, prodCustomerPrice,prodWholePrice,prodRetailPrice,prodCostPrice,prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode,prodType,prodParentId;
-  bool? prodHasVat,prodIsParent,prodIsGroup,prodIsLocal;
-  List? prodChild=[];
-  List<ProductRecordModel>? prodRecord=[];
+  String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;
+  bool? prodHasVat, prodIsParent, prodIsGroup, prodIsLocal;
+  List? prodChild = [];
+  List<ProductRecordModel>? prodRecord = [];
   int? prodGroupPad;
 
   ProductModel({
@@ -48,24 +48,23 @@ class ProductModel {
     prodParentId = map['prodParentId'];
     prodIsParent = map['prodIsParent'];
     prodChild = map['prodChild'];
-    if(map['prodRecord']!=[] &&map['prodRecord']!=null){
-      map['prodRecord'].forEach((e){
-        if(e.runtimeType ==Map<dynamic, dynamic>){
+    if (map['prodRecord'] != [] && map['prodRecord'] != null) {
+      map['prodRecord'].forEach((e) {
+        if (e.runtimeType == Map<dynamic, dynamic>) {
           prodRecord?.add(ProductRecordModel.fromJson(e));
-        }else{
+        } else {
           prodRecord?.add(e);
         }
       });
-
-    }else{
-      prodRecord=[];
+    } else {
+      prodRecord = [];
     }
     prodIsGroup = map['prodIsGroup'];
     prodIsLocal = map['prodIsLocal'];
     prodGroupPad = map['prodGroupPad'];
   }
 
-  ProductModel generateNoVat(){
+  ProductModel generateNoVat() {
     prodHasVat = false;
     return this;
   }
@@ -128,8 +127,8 @@ class ProductModel {
       oldChanges['prodIsParent'] = prodIsParent;
     }
     if (prodChild != oldData.prodChild) {
-    newChanges['prodChild'] = oldData.prodChild;
-    oldChanges['prodChild'] = prodChild;
+      newChanges['prodChild'] = oldData.prodChild;
+      oldChanges['prodChild'] = prodChild;
     }
     if (prodIsGroup != oldData.prodIsGroup) {
       newChanges['prodIsGroup'] = oldData.prodIsGroup;
@@ -138,7 +137,8 @@ class ProductModel {
     if (prodIsLocal != oldData.prodIsLocal) {
       newChanges['prodIsLocal'] = oldData.prodIsLocal;
       oldChanges['prodIsLocal'] = prodIsLocal;
-    }if (prodGroupPad != oldData.prodGroupPad) {
+    }
+    if (prodGroupPad != oldData.prodGroupPad) {
       newChanges['prodGroupPad'] = oldData.prodGroupPad;
       oldChanges['prodGroupPad'] = prodGroupPad;
     }
@@ -152,9 +152,11 @@ class ProductModel {
   String? affectedId() {
     return prodId;
   }
+
   String? affectedKey({String? type}) {
     return "prodId";
   }
+
   toJson() {
     return {
       'prodId': prodId,
@@ -179,7 +181,7 @@ class ProductModel {
     };
   }
 
-  Map<String,dynamic> toFullJson() {
+  Map<String, dynamic> toFullJson() {
     return {
       'prodId': prodId,
       'prodName': prodName,
@@ -204,22 +206,21 @@ class ProductModel {
     };
   }
 
-   Map<String,dynamic> toAR() {
+  Map<String, dynamic> toAR() {
     return {
       // 'الرمز التسليلي': prodId,
       'رمز المادة': prodFullCode,
       'اسم المادة': prodName,
       // 'prodCode': prodCode,
-    'اسم الاب': getProductNameFromIdIsolate(prodParentId),
+      'اسم الاب': getProductNameFromIdIsolate(prodParentId),
       'سعر المستهلك': prodCustomerPrice,
       'سعر الجملة': prodWholePrice,
       'سعر المبيع': prodRetailPrice,
       'سعر الكلفة': prodCostPrice,
       'اقل سعر مسموح': prodMinPrice,
-      // 'يحوي ضريبة': prodHasVat,
       'الباركود': prodBarcode,
       // 'prodGroupCode': prodGroupCode,
-     'النوع': getProductTypeFromEnum(prodType??""),
+      'النوع': getProductTypeFromEnum(prodType ?? ""),
 
       // 'prodIsParent': prodIsParent,
       // 'prodChild': prodChild,
@@ -227,6 +228,16 @@ class ProductModel {
       // 'prodIsGroup': prodIsGroup,
       // 'prodIsLocal': prodIsLocal,
       // 'prodGroupPad': prodGroupPad,
+    };
+  }
+
+  Map<String, dynamic> toTree() {
+    return {
+      'id': int.parse(prodId!.split("prod")[1]),
+      'value': prodFullCode.toString()  +  "      " + prodName.toString()  ,
+      'parentId': int.parse((prodParentId?.split("prod")[1]) != null
+          ? (prodParentId?.split("prod")[1])!
+          : "1" ),
     };
   }
 }

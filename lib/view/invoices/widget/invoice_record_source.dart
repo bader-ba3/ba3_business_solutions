@@ -204,11 +204,12 @@ class InvoiceRecordSource extends DataGridSource {
       } else {
         try {
           Expression exp = Parser().parse(newCellValue);
-          var finalExp = exp.evaluate(EvaluationType.REAL, ContextModel());
+          var finalExp = exp.evaluate(EvaluationType.REAL, ContextModel()).toString();
           records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(finalExp) * vat);
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvTotal, value: double.parse(finalExp));
           records[dataRowIndex].invRecTotal = double.parse(finalExp);
         } catch (error) {
+          print(error);
           Get.snackbar("خطأ", "يرجى كتابة رقم");
         }
       }
@@ -218,6 +219,7 @@ class InvoiceRecordSource extends DataGridSource {
       buildDataGridRows(records, accountVat);
       updateDataGridSource();
     }
+    globalController.rebuildDiscount();
     globalController.update();
   }
 
@@ -368,12 +370,14 @@ class InvoiceRecordSource extends DataGridSource {
   late List<ProductModel> selectedProducts = [];
 
   List<ProductModel> searchText(String query) {
+    query = replaceArabicNumbersWithEnglish(query);
     products = productController.productDataMap.values.toList().where((item) {
       bool prodName = item.prodName.toString().toLowerCase().contains(query.toLowerCase());
       // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
       bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
+      bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());
       //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
-      return (prodName || prodCode) && !item.prodIsGroup!;
+      return (prodName || prodCode||prodBarcode) && !item.prodIsGroup!;
     }).toList();
     return products.toList();
   }

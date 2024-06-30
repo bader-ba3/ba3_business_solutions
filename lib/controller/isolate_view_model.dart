@@ -10,6 +10,7 @@ import '../Const/const.dart';
 import '../model/Pattern_model.dart';
 import '../model/account_model.dart';
 import '../model/account_record_model.dart';
+import '../model/invoice_record_model.dart';
 import '../model/seller_model.dart';
 import '../model/store_model.dart';
 
@@ -97,3 +98,12 @@ String getProductNameFromIdIsolate(id) {
   } else {
     return "";
   }}
+ProductModel? getProductModelFromIdIsolate(id) {
+  if (id.runtimeType == InvoiceRecordModel) {
+    return Get.find<IsolateViewModel>().productDataMap[(id as InvoiceRecordModel).invRecProduct!];
+  } else if (id != null && id != " " && id != "") {
+    return Get.find<IsolateViewModel>().productDataMap[id]!;
+  } else {
+    return null;
+  }
+}

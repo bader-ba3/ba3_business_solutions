@@ -116,6 +116,7 @@ class CustomBondRecordDataSource extends DataGridSource {
     // }
 
     if (column.columnName == Const.rowBondAccount) {
+      print("object");
       List<String> result = searchText(newCellValue.toString());
       if (result.isEmpty) {
         print(bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == rows[dataRowIndex].getCells()[0].value));
@@ -144,7 +145,7 @@ class CustomBondRecordDataSource extends DataGridSource {
                         var accId = accountController.accountList.values.toList().firstWhere((e) => e.accName == result[index]).accId;
                         // bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecAccount=accId;
                         bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == rows[dataRowIndex].getCells()[0].value).bondRecAccount = accId;
-                        bondController.initPage();
+                        bondController.initPage(bondController.tempBondModel.bondType);
                         bondController.update();
                         Get.back();
                       },
@@ -189,21 +190,19 @@ class CustomBondRecordDataSource extends DataGridSource {
   // description
   @override
   Future<bool> canSubmitCell(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
-    // Return false, to retain in edit mode.
-    return true; // or super.canSubmitCell(dataGridRow, rowColumnIndex, column);
+    return true;
+ //  return super.canSubmitCell(dataGridRow, rowColumnIndex, column);
   }
 
   @override
   Widget? buildEditWidget(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
+    FocusNode focusNodeListener = FocusNode();
     var displayText = dataGridRows[rowColumnIndex.rowIndex].getCells()[rowColumnIndex.columnIndex].value;
     displayText ??= '';
     if(displayText.toString()=="0.0")displayText="";
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
 
+    newCellValue = null;
+    editingController.text = displayText.toString();
     final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
@@ -212,43 +211,62 @@ class CustomBondRecordDataSource extends DataGridSource {
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.center,
-      child: TextField(
-        autofocus: true,
-        controller: editingController..text = displayText.toString(),
-        textAlign: TextAlign.center,
-        autocorrect: false,
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
-        ),
-        //inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(regExp)],
-        keyboardType: isNumericType ? TextInputType.number : TextInputType.text,
-        onChanged: (String value) {
-          if (value.isNotEmpty) {
-            newCellValue = value;
-          } else {
-            newCellValue = null;
+      child: KeyboardListener(
+        focusNode: focusNodeListener,
+        onKeyEvent: (_){
+          if(_.physicalKey == PhysicalKeyboardKey.enter||_.physicalKey == PhysicalKeyboardKey.numpadEnter){
+            if(!isNumericType){
+              newCellValue = editingController.text;
+              onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
+              bondController.dataGridController.endEdit();
+            } else {
+              if(double.tryParse(editingController.text)!=null){
+                newCellValue = editingController.text;
+                onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
+                bondController.dataGridController.endEdit();
+              }else{
+                Get.snackbar("error", "enter a valid number");
+                newCellValue = null;
+              }
+            }
+            focusNode.unfocus();
           }
         },
-        onSubmitted: (String value) {
-          if(!isNumericType){
-            newCellValue = value;
-            onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
-            bondController.dataGridController.endEdit();
-          } else {
-            if(double.tryParse(value)!=null){
+        child: TextField(
+          focusNode: focusNode,
+          autofocus: true,
+          controller: editingController,
+          textAlign: TextAlign.center,
+          autocorrect: false,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+          ),
+          //inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(regExp)],
+          keyboardType: isNumericType ? TextInputType.number : TextInputType.text,
+          onChanged: (String value) {
+            if (value.isNotEmpty) {
+              newCellValue = value;
+            } else {
+              newCellValue = null;
+            }
+          },
+          onSubmitted: (String value) {
+            if(!isNumericType){
               newCellValue = value;
               onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
               bondController.dataGridController.endEdit();
-            }else{
-              Get.snackbar("error", "enter a valid number");
-              newCellValue = null;
+            } else {
+              if(double.tryParse(value)!=null){
+                newCellValue = value;
+                onCellSubmitFun( dataGridRow,  rowColumnIndex,  column,);
+                bondController.dataGridController.endEdit();
+              }else{
+                Get.snackbar("error", "enter a valid number");
+                newCellValue = null;
+              }
             }
-
-          }
-
-          /// Call [CellSubmit] callback to fire the canSubmitCell and
-          /// onCellSubmit to commit the new value in single place.
-        },
+          },
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../Const/const.dart';
 import '../../model/Pattern_model.dart';
 import 'all_invoices.dart';
+import 'all_pending_invoices.dart';
 import 'invoice_view.dart';
 
 class InvoiceType extends StatefulWidget {
@@ -55,6 +56,21 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.all(30.0),
                     child: Text("عرض جميع الفواتير"??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: InkWell(
+                onTap: (){
+                  checkPermissionForOperation(Const.roleUserRead , Const.roleViewInvoice).then((value) {
+                    if(value) Get.to(()=>AllPendingInvoice());
+                  });
+                },
+                child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.all(30.0),
+                    child: Text("عرض جميع الفواتير الغير مؤكدة"??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
               ),
             ),
           ],

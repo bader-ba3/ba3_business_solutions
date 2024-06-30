@@ -1,9 +1,9 @@
 import 'bond_record_model.dart';
 
 class ProductRecordModel {
-  String? invId, prodRecId, prodRecProduct, prodRecQuantity, prodRecSubTotal, prodRecTotal, prodType, prodRecSubVat,prodRecDate;
+  String? invId, prodRecId, prodRecProduct, prodRecQuantity, prodRecSubTotal, prodRecTotal, prodType, prodRecSubVat,prodRecDate,prodRecStore;
 
-  ProductRecordModel(this.invId, this.prodType, this.prodRecProduct, this.prodRecQuantity, this.prodRecId, this.prodRecTotal, this.prodRecSubTotal,this.prodRecDate,this.prodRecSubVat);
+  ProductRecordModel(this.invId, this.prodType, this.prodRecProduct, this.prodRecQuantity, this.prodRecId, this.prodRecTotal, this.prodRecSubTotal,this.prodRecDate,this.prodRecSubVat,this.prodRecStore);
 
   ProductRecordModel.fromJson(Map<dynamic, dynamic> map) {
     invId = map['invId'];
@@ -15,6 +15,7 @@ class ProductRecordModel {
     prodRecTotal = map['prodRecTotal'].toString();
     prodType = map['prodType'];
     prodRecDate = map['prodRecDate'];
+    prodRecStore = map['prodRecStore'];
   }
   @override
   int get hashCode => prodRecId.hashCode;
@@ -66,6 +67,7 @@ class ProductRecordModel {
       'prodType': prodType,
       'prodRecSubVat': prodRecSubVat,
       'prodRecDate': prodRecDate,
+      'prodRecStore': prodRecStore,
     };
   }
 
@@ -80,6 +82,7 @@ class ProductRecordModel {
       'prodType': prodType,
       'prodRecSubVat': prodRecSubVat,
       'prodRecDate': prodRecDate,
+      'prodRecStore': prodRecStore,
     };
   }
 }

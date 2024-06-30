@@ -19,9 +19,9 @@ class InvoiceRecordModel {
     invRecId = map['invRecId'];
     invRecProduct = map['invRecProduct'];
     invRecQuantity = map['invRecQuantity'];
-    invRecSubTotal = double.parse(map['invRecSubTotal'].toString());
-    invRecTotal = double.parse(map['invRecTotal'].toString());
-    invRecVat = double.parse((map['invRecVat'] ?? 0).toString());
+    invRecSubTotal = double.tryParse(map['invRecSubTotal'].toString());
+    invRecTotal = double.tryParse(map['invRecTotal'].toString());
+    invRecVat = double.tryParse((map['invRecVat'] ).toString());
     invRecIsLocal = map['invRecIsLocal'];
   }
 

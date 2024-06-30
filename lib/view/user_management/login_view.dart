@@ -25,9 +25,7 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
     Future.sync(() async {
       isNfcAvailable = (Platform.isAndroid||Platform.isIOS)&&await NfcManager.instance.isAvailable();
-      setState(() {
-
-      });
+      setState(() {});
     if(isNfcAvailable!){
       NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
         List<int> idList = tag.data["ndef"]['identifier'];

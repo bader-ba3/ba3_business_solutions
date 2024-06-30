@@ -105,7 +105,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                       columns: <GridColumn>[
                         GridColumnItem(label: "الحساب", name: Const.rowAccountName),
                         GridColumnItem(label: "النوع", name: Const.rowAccountType),
-                        GridColumnItem(label: 'المجموع', name: Const.rowAccountTotal),
+                        GridColumnItem(label: 'دائن', name: Const.rowAccountTotal),
+                        GridColumnItem(label: 'المدين', name: Const.rowAccountTotal2),
                         GridColumnItem(label: ' الحساب بعد العملية', name: Const.rowAccountBalance),
                         GridColumn(
                             visible: false,

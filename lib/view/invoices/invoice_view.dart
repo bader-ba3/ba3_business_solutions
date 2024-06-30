@@ -11,6 +11,7 @@ import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/invoice_discount_record_source.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
@@ -59,7 +60,7 @@ class _InvoiceViewState extends State<InvoiceView> {
     } else {
       widget.patternModel = invoiceController.patternController.patternModel[widget.patternId];
       invoiceController.getInit(widget.patternModel!.patId!);
-     // globalController.dateController = DateTime.now().toString().split(" ")[0];
+      // globalController.dateController = DateTime.now().toString().split(" ")[0];
     }
 
     super.initState();
@@ -71,22 +72,24 @@ class _InvoiceViewState extends State<InvoiceView> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-
         appBar: AppBar(
-          title:  Text(widget.billId == "1"?"فاتورة "+(widget.patternModel?.patName??""):"تفاصبل فاتورة "+(widget.patternModel?.patName??"")),
+          title: Text(widget.billId == "1" ? "فاتورة " + (widget.patternModel?.patName ?? "") : "تفاصبل فاتورة " + (widget.patternModel?.patName ?? "")),
           actions: [
-            IconButton(onPressed: () async {
-            var  a = await Get.to(()=>QRScannerView()) as List<ProductModel>?;
-            if(a==null){
-            }else{
-              invoiceController.addProductToInvoice(a);
-            }
-
-            }, icon: Icon(Icons.qr_code)),
-            SizedBox(width: 20,),
+            IconButton(
+                onPressed: () async {
+                  var a = await Get.to(() => QRScannerView()) as List<ProductModel>?;
+                  if (a == null) {
+                  } else {
+                    invoiceController.addProductToInvoice(a);
+                  }
+                },
+                icon: Icon(Icons.qr_code)),
+            SizedBox(
+              width: 20,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child:  Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Row(
@@ -106,7 +109,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                       ),
                     ],
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                   IconButton(
                       onPressed: () {
                         invoiceController.prevInv(widget.patternModel!.patId!, invoiceController.invCodeController.text);
@@ -131,14 +136,16 @@ class _InvoiceViewState extends State<InvoiceView> {
               //   ],
               // ),
             ),
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
           ],
         ),
         body: GetBuilder<InvoiceViewModel>(builder: (controller) {
           return ListView(
             children: [
               Container(
-                height:  250,
+                height: 250,
                 // color: Colors.white12,
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(10),
@@ -147,34 +154,45 @@ class _InvoiceViewState extends State<InvoiceView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            // const Text("من : ", style: TextStyle()),
-                            // color: globalController.initModel.invType == Const.invoiceTypeSales
-                            //     ? Colors.redAccent
-                            //     : Colors.greenAccent)),
-                            SizedBox(
-                              width: Get.width * 0.10,
-                              child: customTextFieldWithoutIcon(
-                                invoiceController.primaryAccountController,
-                                false,
-                              ),
-                            ),
-                          ],
-                        ),
                         SizedBox(
-                          width: 30,
-                        ),
-
-                        SizedBox(
-                          width: 30,
+                          width: Get.width * 0.35,
+                          child: Row(
+                            children: [
+                              const Text("الدائن : ", style: TextStyle()),
+                              // color: globalController.initModel.invType == Const.invoiceTypeSales
+                              //     ? Colors.redAccent
+                              //     : Colors.greenAccent)),
+                              if (widget.patternModel!.patType == Const.invoiceTypeSales)
+                                SizedBox(
+                                  width: Get.width * 0.10,
+                                  child: customTextFieldWithoutIcon(
+                                    invoiceController.primaryAccountController,
+                                    false,
+                                  ),
+                                )
+                              else if (widget.patternModel!.patType == Const.invoiceTypeBuy)
+                                SizedBox(
+                                  width: Get.width * 0.30,
+                                  child: customTextFieldWithIcon(invoiceController.primaryAccountController, (text) async {
+                                    invoiceController.primaryAccountController.text = await getAccountComplete(invoiceController.primaryAccountController.text);
+                                    // invoiceController.getAccountComplete();
+                                    invoiceController.changeSecAccount();
+                                  }, onIconPressed: () {
+                                    AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.primaryAccountController.text);
+                                    if (_ != null) {
+                                      Get.to(AccountDetails(modelKey: _.accId!));
+                                    }
+                                  }),
+                                ),
+                            ],
+                          ),
                         ),
                         Row(
                           children: [
                             const Text("رقم الجوال : "),
                             SizedBox(
                               width: Get.width * 0.17,
-                              child: customTextFieldWithoutIcon(invoiceController.mobileNumberController,true),
+                              child: customTextFieldWithoutIcon(invoiceController.mobileNumberController, true),
                             ),
                           ],
                         ),
@@ -186,8 +204,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                             const Text("حساب العميل : "),
                             SizedBox(
                               width: Get.width * 0.20,
-                              child: customTextFieldWithIcon(invoiceController.invCustomerAccountController, (text)async {
-                                invoiceController.invCustomerAccountController.text= await invoiceController.getAccountComplete(invoiceController.invCustomerAccountController.text);
+                              child: customTextFieldWithIcon(invoiceController.invCustomerAccountController, (text) async {
+                                invoiceController.invCustomerAccountController.text = await getAccountComplete(invoiceController.invCustomerAccountController.text);
                               }, onIconPressed: () {
                                 AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.invCustomerAccountController.text);
                                 if (_ != null) {
@@ -205,25 +223,37 @@ class _InvoiceViewState extends State<InvoiceView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            // const Text(
-                            //   "الى : ",
-                            // ),
-                            SizedBox(
-                              width: Get.width * 0.30,
-                              child: customTextFieldWithIcon(invoiceController.secondaryAccountController, (text) async {
-                                invoiceController.secondaryAccountController.text= await invoiceController.getAccountComplete(invoiceController.secondaryAccountController.text);
-                                // invoiceController.getAccountComplete();
-                                invoiceController.changeSecAccount();
-                              }, onIconPressed: () {
-                                AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
-                                if (_ != null) {
-                                  Get.to(AccountDetails(modelKey: _.accId!));
-                                }
-                              }),
-                            ),
-                          ],
+                        SizedBox(
+                          width: Get.width * 0.35,
+                          child: Row(
+                            children: [
+                              const Text(
+                                "المدين : ",
+                              ),
+                              if (widget.patternModel!.patType == Const.invoiceTypeSales)
+                                SizedBox(
+                                  width: Get.width * 0.30,
+                                  child: customTextFieldWithIcon(invoiceController.secondaryAccountController, (text) async {
+                                    invoiceController.secondaryAccountController.text = await getAccountComplete(invoiceController.secondaryAccountController.text);
+                                    // invoiceController.getAccountComplete();
+                                    invoiceController.changeSecAccount();
+                                  }, onIconPressed: () {
+                                    AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
+                                    if (_ != null) {
+                                      Get.to(AccountDetails(modelKey: _.accId!));
+                                    }
+                                  }),
+                                )
+                              else if (widget.patternModel!.patType == Const.invoiceTypeBuy)
+                                SizedBox(
+                                  width: Get.width * 0.10,
+                                  child: customTextFieldWithoutIcon(
+                                    invoiceController.secondaryAccountController,
+                                    false,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                         Row(
                           children: [
@@ -287,6 +317,7 @@ class _InvoiceViewState extends State<InvoiceView> {
               ),
               Container(
                 margin: const EdgeInsets.all(0),
+                height: 50+(invoiceController.invoiceRecordSource.records.length*50),
                 child: LayoutBuilder(
                   builder: (context, constraints) => SfDataGrid(
                     horizontalScrollPhysics: NeverScrollableScrollPhysics(),
@@ -358,7 +389,6 @@ class _InvoiceViewState extends State<InvoiceView> {
                           )),
                       GridColumn(
                           allowEditing: true,
-
                           columnName: Const.rowInvTotal,
                           label: Container(
                             decoration: const BoxDecoration(
@@ -370,12 +400,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           )),
-                      GridColumn(
-                          visible: false,
-                          allowEditing: false,
-                          columnName: Const.rowInvTotalVat,
-                          label: const Text('ID'
-                          )),
+                      GridColumn(visible: false, allowEditing: false, columnName: Const.rowInvTotalVat, label: const Text('ID')),
                       // GridColumn(
                       //     allowEditing: false,
                       //     columnName: Const.rowInvTotalVat,
@@ -425,6 +450,108 @@ class _InvoiceViewState extends State<InvoiceView> {
                     },
                   ),
                 ),
+              ),
+              SizedBox(height: 100,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("الحسميات",style: TextStyle(fontSize: 25,),),
+              ),
+              Container(
+                margin: const EdgeInsets.all(0),
+                child: SizedBox(
+                  height: 50+(invoiceController.invoiceDiscountRecordSource.records.length*50),
+                  child:  SfDataGrid(
+                    horizontalScrollPhysics: BouncingScrollPhysics(),
+                    verticalScrollPhysics: BouncingScrollPhysics(),
+                    source:invoiceController.invoiceDiscountRecordSource,
+                    // tableSummaryRows: [
+                    //   GridTableSummaryRow(color: Colors.blueGrey, showSummaryInRow: true, title: 'Total : {Total} AED', columns: [const GridSummaryColumn(name: 'Total', columnName: Const.rowInvTotal, summaryType: GridSummaryType.sum)], position: GridTableSummaryRowPosition.bottom),
+                    // ],
+                    columns: [
+                      GridColumn(
+                          allowEditing: false,
+                          width: 50,
+                          columnName: Const.rowInvDiscountId,
+                          label: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
+                              color: Colors.grey,
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'الرقم',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )),
+                      GridColumn(
+                          width: columnWidths['product']!,
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: Const.rowInvDiscountAccount,
+                          label: Container(
+                            color: Colors.grey,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'الحساب',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )),
+                      GridColumn(
+                          width: columnWidths['quantity']!,
+                          columnName: Const.rowInvDiscountTotal,
+                          label: Container(
+                            color: Colors.grey,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              "القيمة",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )),
+                      GridColumn(
+                          width: columnWidths['subTotal']!,
+                          columnName: Const.rowInvDiscountPercentage,
+                          label: Container(
+                            color: Colors.grey,
+                            alignment: Alignment.center,
+                            child: const Text(
+                             "النسبة المئوية",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )),
+                    ],
+                   // controller: invoiceController.dataGridController,
+                    columnWidthMode: ColumnWidthMode.none,
+                    allowColumnsResizing: true,
+                    onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
+                      // setState(() {
+                      //   columnWidths[details.column.columnName] =
+                      //       details.width;
+                      // });
+                      return true;
+                    },
+                    // showColumnHeaderIconOnHover: true,
+                    gridLinesVisibility: GridLinesVisibility.both,
+                    headerGridLinesVisibility: GridLinesVisibility.both,
+                    allowEditing: true,
+                    navigationMode: GridNavigationMode.cell,
+                    selectionMode: SelectionMode.singleDeselect,
+                    editingGestureType: EditingGestureType.tap,
+                    // onCellTap: (DataGridCellTapDetails details) {
+                    //   globalController.onCellTap(details);
+                    // },
+
+                    allowSwiping: false,
+                    swipeMaxOffset: Get.width / 2,
+                    startSwipeActionsBuilder: (BuildContext context, DataGridRow row, int rowIndex) {
+                      return GestureDetector(
+                          onTap: () {
+                            invoiceController.invoiceRecordSource.dataGridRows.removeAt(rowIndex);
+                            invoiceController.records.removeAt(rowIndex);
+                            invoiceController.invoiceRecordSource.updateDataGridSource();
+                          },
+                          child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
+                    },
+                  ),
+                )
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -509,14 +636,12 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   style: TextStyle(color: Colors.blueGrey, fontSize: 25),
                                 ),
                                 onPressed: () async {
-                                  checkPermissionForOperation(Const.roleUserWrite,Const.roleViewInvoice).then((value) {
-                                    if(value){
+                                  checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInvoice).then((value) {
+                                    if (value) {
                                       controller.getInit(controller.initModel.patternId!);
                                       controller.update();
                                     }
                                   });
-
-
                                 }),
                           ),
                           const SizedBox(
@@ -534,16 +659,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   ),
                                   onPressed: () async {
                                     if (invoiceController.checkInvCode()) {
-                                      Get.snackbar("فحص المطاييح", "هذا الرمز الرمز يرجى استخدام الرمز: "+invoiceController.getNextCodeInv());
+                                      Get.snackbar("فحص المطاييح", "هذا الرمز الرمز يرجى استخدام الرمز: " + invoiceController.getNextCodeInv());
                                     } else if (!invoiceController.checkSellerComplete()) {
                                       Get.snackbar("فحص المطاييح", "هذا البائع غير موجود من قبل");
                                     } else if (!invoiceController.checkStoreComplete()) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
                                     } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)) {
                                       Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
-                                    // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
-                                    //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                    }else if (invoiceController.primaryAccountController.text.isEmpty &&widget.patternModel!.patType !=Const.invoiceTypeAdd ) {
+                                      // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
+                                      //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
+                                    } else if (invoiceController.primaryAccountController.text.isEmpty && widget.patternModel!.patType != Const.invoiceTypeAdd) {
                                       Get.snackbar("خطأ تعباية", "يرجى كتابة حساب البائع");
                                     } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
                                       Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
@@ -552,11 +677,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     } else if (invoiceController.checkAllRecord()) {
                                       Get.snackbar("خطأ تعباية", "بعض المنتجات فارغة");
                                     } else {
-                                      checkPermissionForOperation(Const.roleUserWrite,Const.roleViewInvoice).then((value) async {
-                                        if(value){
+                                      checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInvoice).then((value) async {
+                                        if (value) {
                                           await invoiceController.computeTotal(invoiceController.records);
-                                         globalController.addGlobalInvoice(_updateData(invoiceController.records));
-                                          }
+                                          globalController.addGlobalInvoice(_updateData(invoiceController.records));
+                                        }
                                       });
                                     }
                                   }),
@@ -566,14 +691,53 @@ class _InvoiceViewState extends State<InvoiceView> {
                       if (controller.initModel.invId != null)
                         Column(
                           children: [
-                            ElevatedButton(
-                                child: const Text(
-                                  'عرض الأصل',
-                                  style: TextStyle(color: Colors.blueGrey, fontSize: 25),
-                                ),
-                                onPressed: () async {
-                                  seeDetails(invoiceController.initModel.bondId!);
-                                }),
+                            if (!controller.initModel.invIsPending!)
+                              ElevatedButton(
+                                  child: const Text(
+                                    'عرض الأصل',
+                                    style: TextStyle(color: Colors.blueGrey, fontSize: 25),
+                                  ),
+                                  onPressed: () async {
+                                    seeDetails(invoiceController.initModel.bondId!);
+                                  })
+                            else
+                              ElevatedButton(
+                                style: ButtonStyle(backgroundColor:WidgetStatePropertyAll( Colors.green)),
+                                  child: const Text(
+                                    'موافقة على الفاتورة',
+                                    style: TextStyle(color: Colors.white, fontSize: 25),
+                                  ),
+                                  onPressed: () async {
+                                    // if (globalController.invCodeList.contains(
+                                    //     globalController.invCodeController.text)) {
+                                    if (!invoiceController.checkSellerComplete()) {
+                                      Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
+                                    } else if (!invoiceController.checkStoreComplete()) {
+                                      Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
+                                    } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)) {
+                                      Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
+                                      // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
+                                      //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
+                                    } else if (invoiceController.primaryAccountController.text.isEmpty) {
+                                      Get.snackbar("خطأ ", "يرجى كتابة حشاب البائع");
+                                    } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
+                                      Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
+                                    } else if (invoiceController.records.length < 2) {
+                                      Get.snackbar("خطأ ", "يرجى إضافة مواد الى الفاتورة+");
+                                    } else if (invoiceController.checkAllRecord()) {
+                                      Get.snackbar("خطأ ", "بعض المنتجات فارغة");
+                                    } else if (invoiceController.checkAllRecordPrice()) {
+                                      Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
+                                    } else {
+                                      checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewInvoice).then((value) async {
+                                        if (value) {
+                                          await invoiceController.computeTotal(invoiceController.records);
+                                          invoiceController.initModel.invIsPending = false;
+                                          globalController.updateGlobalInvoice(_updateData(invoiceController.records));
+                                        }
+                                      });
+                                    }
+                                  }),
                             Spacer(),
                             ElevatedButton(
                                 child: const Text(
@@ -584,33 +748,33 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   // if (globalController.invCodeList.contains(
                                   //     globalController.invCodeController.text)) {
                                   if (!invoiceController.checkSellerComplete()) {
-                                    Get.snackbar("فحص المطاييح", "هذا البائع غير موجود من قبل");
+                                    Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
-                                    Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
+                                    Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
                                   } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)) {
-                                    Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
-                                  // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
-                                  //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
+                                    Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
+                                    // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
+                                    //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
                                   } else if (invoiceController.primaryAccountController.text.isEmpty) {
-                                    Get.snackbar("خطأ تعباية", "يرجى كتابة حشاب البائع");
+                                    Get.snackbar("خطأ ", "يرجى كتابة حشاب البائع");
                                   } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
-                                    Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
+                                    Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
                                   } else if (invoiceController.records.length < 2) {
-                                    Get.snackbar("خطأ تعباية", "يرجى إضافة مواد الى الفاتورة+");
+                                    Get.snackbar("خطأ ", "يرجى إضافة مواد الى الفاتورة+");
                                   } else if (invoiceController.checkAllRecord()) {
-                                    Get.snackbar("خطأ تعباية", "بعض المنتجات فارغة");
+                                    Get.snackbar("خطأ ", "بعض المنتجات فارغة");
+                                  } else if (invoiceController.checkAllRecordPrice()) {
+                                    Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                   } else {
-                                    checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewInvoice).then((value) async {
-                                      if(value){
-                                        print("**/*/*/*/*/");
-                                        print(controller.initModel.invId);
-                                        print("**/*/*/*/*/");
+                                    checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewInvoice).then((value) async {
+                                      if (value) {
                                         await invoiceController.computeTotal(invoiceController.records);
                                         globalController.updateGlobalInvoice(_updateData(invoiceController.records));
+                                        invoiceController.buildSource(invoiceController.initModel.invId!);
+                                        invoiceController.buildDiscountSource(invoiceController.initModel.invId!);
                                       }
                                     });
-
-                                      }
+                                  }
                                 }),
                           ],
                         ),
@@ -623,9 +787,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                           ),
                           onPressed: () async {
                             confirmDeleteWidget().then((value) {
-                              if(value){
-                                checkPermissionForOperation(Const.roleUserDelete,Const.roleViewInvoice).then((value) async {
-                                  if(value){
+                              if (value) {
+                                checkPermissionForOperation(Const.roleUserDelete, Const.roleViewInvoice).then((value) async {
+                                  if (value) {
                                     globalController.deleteGlobal(invoiceController.initModel);
                                     Get.back();
                                   }
@@ -648,27 +812,27 @@ class _InvoiceViewState extends State<InvoiceView> {
   GlobalModel _updateData(List<InvoiceRecordModel> record) {
     var bondController = Get.find<BondViewModel>();
     return GlobalModel(
-        readFlags: [HiveDataBase.getMyReadFlag()],
+      invDiscountRecord:  invoiceController.discountRecords,
+      invIsPending:  invoiceController.initModel.invIsPending,
         invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
-        bondId: invoiceController.initModel.invId==null ? generateId(RecordType.bond) : invoiceController.initModel.bondId,
+        bondId: invoiceController.initModel.invId == null ? generateId(RecordType.bond) : invoiceController.initModel.bondId,
         invRecords: record,
         patternId: widget.patternModel!.patId!,
         invType: widget.patternModel!.patType!,
         invTotal: invoiceController.total,
-        invFullCode: invoiceController.initModel.invId==null ? widget.patternModel!.patName!+": "+invoiceController.invCodeController.text:invoiceController.initModel.invFullCode,
-        invId: invoiceController.initModel.invId==null ? generateId(RecordType.invoice) : invoiceController.initModel.invId,
+        invFullCode: invoiceController.initModel.invId == null ? widget.patternModel!.patName! + ": " + invoiceController.invCodeController.text : invoiceController.initModel.invFullCode,
+        invId: invoiceController.initModel.invId == null ? generateId(RecordType.invoice) : invoiceController.initModel.invId,
         invStorehouse: getStoreIdFromText(invoiceController.storeController.text),
         invComment: invoiceController.noteController.text,
         invPrimaryAccount: getAccountIdFromText(invoiceController.primaryAccountController.text),
         invSecondaryAccount: getAccountIdFromText(invoiceController.secondaryAccountController.text),
-        invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty ?"":getAccountIdFromText(invoiceController.invCustomerAccountController.text),
-        invCode: invoiceController.initModel.invId==null ?invoiceController.invCodeController.text:invoiceController.initModel.invCode,
+        invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty ? "" : getAccountIdFromText(invoiceController.invCustomerAccountController.text),
+        invCode: invoiceController.initModel.invId == null ? invoiceController.invCodeController.text : invoiceController.initModel.invCode,
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: invoiceController.dateController,
         invMobileNumber: invoiceController.mobileNumberController.text,
         bondType: Const.bondTypeDaily,
-        bondCode: invoiceController.initModel.invId==null ? (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString() : invoiceController.initModel.bondCode,
-        globalType: Const.globalTypeInvoice
-    );
+        bondCode: invoiceController.initModel.invId == null ? (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString() : invoiceController.initModel.bondCode,
+        globalType: Const.globalTypeInvoice);
   }
 }

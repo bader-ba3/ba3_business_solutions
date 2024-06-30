@@ -59,9 +59,8 @@ class ChequeViewModel extends GetxController {
     if(allCheques.containsKey(globalModel.cheqId)){
       print("delete old cheqe");
       allCheques[globalModel.cheqId]?.cheqRecords?.forEach((element) {
-        var globalController = Get.find<GlobalViewModel>();
         if(bondController.allBondsItem.containsKey(element.cheqRecBondId)){
-          globalController.deleteDataInAll(bondController.allBondsItem[element.cheqRecBondId]!);
+          bondController.allBondsItem.remove(element.cheqRecBondId);
         }
       });
     }
@@ -72,8 +71,8 @@ class ChequeViewModel extends GetxController {
         BondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
         BondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
       ]);
-      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecPrimeryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?(-double.parse(element.cheqRecAmount!)).toString():element.cheqRecAmount );
-      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecSecoundryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?element.cheqRecAmount:(-double.parse(element.cheqRecAmount!)).toString());
+      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecPrimeryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?(-double.parse(element.cheqRecAmount!)).toString():element.cheqRecAmount,type: globalModel.cheqType ,date: globalModel.cheqDate);
+      accountController.addAccountRecord(bondId: element.cheqRecBondId,accountId: element.cheqRecSecoundryAccount,amount:globalModel.cheqType == Const.chequeTypeCatch ?element.cheqRecAmount:(-double.parse(element.cheqRecAmount!)).toString(),type: globalModel.cheqType,date: globalModel.cheqDate);
     });
     initChequeViewPage();
   }

@@ -6,6 +6,7 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
+import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -19,6 +20,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/global_model.dart';
 import '../utils/logger.dart';
+import '../view/invoices/widget/invoice_discount_record_source.dart';
 import '../view/invoices/widget/invoice_record_source.dart';
 import 'account_view_model.dart';
 
@@ -67,7 +69,9 @@ class InvoiceViewModel extends GetxController {
   double total = 0.0;
 
   late List<InvoiceRecordModel> records;
+  late List<InvoiceDiscountRecordModel> discountRecords;
   late InvoiceRecordSource invoiceRecordSource;
+  late InvoiceDiscountRecordSource invoiceDiscountRecordSource;
 
   late allInvoiceDataGridSource invoiceAllDataGridSource;
 
@@ -78,6 +82,14 @@ class InvoiceViewModel extends GetxController {
       records.add(InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault));
       invoiceRecordSource.buildDataGridRows(records, getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat);
       invoiceRecordSource.updateDataGridSource();
+    }
+  }
+
+  onDiscountCellTap(RowColumnIndex rowColumnIndex) {
+    if (rowColumnIndex.rowIndex + 1 == discountRecords.length) {
+      discountRecords.add(InvoiceDiscountRecordModel());
+      invoiceDiscountRecordSource.buildDataGridRows(discountRecords);
+      invoiceDiscountRecordSource.updateDataGridSource();
     }
   }
 
@@ -413,6 +425,26 @@ class InvoiceViewModel extends GetxController {
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
   }
 
+  buildDiscountSource(String billId) {
+    discountRecords = invoiceModel[billId]!.invDiscountRecord! + [InvoiceDiscountRecordModel()];
+    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
+  }
+
+  rebuildDiscount() {
+    double totalWithoutVat = computeWithoutVatTotal();
+    for(InvoiceDiscountRecordModel model in discountRecords){
+      if(model.discountId!=null){
+        if(model.isChooseTotal==true){
+          model.percentage = model.total! / totalWithoutVat!;
+        }else if(model.isChooseTotal==false){
+          model.total = totalWithoutVat! * model.percentage! / 100;
+        }
+      }
+    }
+    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
+    update();
+  }
+
   prevInv(String patId, invCode) {
     var inv = invoiceModel.values.where((element) => element.invCode == invCode).firstOrNull;
     if (inv == null) {
@@ -466,7 +498,9 @@ class InvoiceViewModel extends GetxController {
     }
     dateController=DateTime.now().toString().split(" ")[0];
     records = [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
+    discountRecords = [InvoiceDiscountRecordModel()];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat!);
+    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords,);
   }
 
   initCodeList(patternId){
@@ -509,6 +543,7 @@ class InvoiceViewModel extends GetxController {
     // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
     buildSource(initModel.invId!);
+    buildDiscountSource(initModel.invId!);
     if (!bool) {
       update();
     }
@@ -521,50 +556,15 @@ class InvoiceViewModel extends GetxController {
     return false;
   }
 
- Future<String> getAccountComplete(text) async {
-    accountPickList = [];
-    accountController.accountList.forEach((key, value) {
-      accountPickList.addIf(value.accType==Const.accountTypeDefault &&( value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
-    });
-    if (accountPickList.length > 1) {
-     var _= await Get.defaultDialog(
-        title: "اختر احد الحسابات",
-        content: SizedBox(
-          height: Get.height/2,
-          width:Get.height/2,
-          child: ListView.builder(
-            itemCount: accountPickList.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  // secondaryAccountController.text = accountPickList[index];
-                  //update();
-                  Get.back(result: accountPickList[index]);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.all(8),
-                  width: 500,
-                  child: Center(
-                    child: Text(
-                      accountPickList[index],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-     return _;
-    } else if (accountPickList.length == 1) {
-      return accountPickList[0];
-     // secondaryAccountController.text = accountPickList[0];
-    } else {
-      Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
-      return"";
+  bool checkAllRecordPrice() {
+    for (var element in records) {
+      if(element.invRecId!=null) {
+        return (double.parse(getProductModelFromId(element)!.prodMinPrice??"0")) > element.invRecTotal!;
+      }
     }
+    return false;
   }
+
 
   getStoreComplete() async {
     storePickList = [];
@@ -707,6 +707,16 @@ class InvoiceViewModel extends GetxController {
     }
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
     update();
+  }
+
+  double getTotal(double input) {
+    double totalWithoutVat = computeWithoutVatTotal();
+
+return totalWithoutVat * input/100;
+  }
+  double getPercentage(double input) {
+    double totalWithoutVat = computeWithoutVatTotal();
+    return input / totalWithoutVat *100;
   }
 
 

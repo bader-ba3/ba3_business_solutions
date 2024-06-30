@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-class UserManagement extends StatelessWidget {
+class UserManagement extends StatefulWidget {
   UserManagement({super.key});
 
+  @override
+  State<UserManagement> createState() => _UserManagementState();
+}
+class _UserManagementState extends State<UserManagement> {
   @override
   Widget build(BuildContext context) {
     UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();

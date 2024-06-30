@@ -6,6 +6,7 @@ import 'package:ba3_business_solutions/controller/cost_center_view_model.dart';
 import 'package:ba3_business_solutions/controller/faceController/ml_service.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/import_view_model.dart';
+import 'package:ba3_business_solutions/controller/inventory_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
@@ -23,7 +24,7 @@ import '../controller/user_management_model.dart';
 class GetBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ChangesViewModel());
+
     Get.put(ImportViewModel());
     Get.put(ProductViewModel());
     Get.put(UserManagementViewModel());
@@ -35,6 +36,7 @@ class GetBinding extends Bindings {
     Get.put(InvoiceViewModel());
     Get.put(ChequeViewModel());
     Get.put(CostCenterViewModel());
+    Get.put(InventoryViewModel());
     // Get.put(CameraService());
     // Get.put(FaceDetectorService());
     // Get.put(MLService());
@@ -43,5 +45,6 @@ class GetBinding extends Bindings {
     Get.put(CardsViewModel());
     Get.put(TargetViewModel());
     Get.lazyPut(()=>GlobalViewModel(),fenix: true);
+    Get.lazyPut(()=>ChangesViewModel(),fenix: true);
   }
 }

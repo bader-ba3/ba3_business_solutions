@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,7 +44,7 @@ class InvoiceListView extends StatelessWidget {
                   Text(invoiceList[index].invId.toString()),
                   Text("المجموع: "+invoiceList[index].invTotal.toString()),
                   Text("الوقت: "+invoiceList[index].invDate.toString()),
-                  Text("البائع: "+getSellerNameFromId(invoiceList[index].invSeller.toString())),
+                  //Text("البائع: "+getSellerNameFromId(invoiceList[index].invSeller.toString())),
                   Text("المستودع: "+getStoreNameFromId(invoiceList[index].invStorehouse.toString())),
                   Text("من: "+getAccountNameFromId(invoiceList[index].invPrimaryAccount.toString())),
                   Text("الى: "+getAccountNameFromId(invoiceList[index].invSecondaryAccount.toString())),
@@ -53,58 +54,33 @@ class InvoiceListView extends StatelessWidget {
               SizedBox(height: 15,),
               // Container(height: 2,width: double.infinity,color: Colors.grey.shade300,),
               SizedBox(height: 15,),
-              const Padding(
+               const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // Spacer(),
-                    Expanded(child: SizedBox(width: 20,)),
+                  children:[
+                    SizedBox(
+                        width: 100,
+                        child: Center(child: Text("المجموع",style: TextStyle(fontSize: 18),))),
+                    SizedBox(width: 52,),
+                    SizedBox(
+                        width: 120,
+                        child: Center(child: Text("اجمالي الضريبة",style: TextStyle(fontSize: 18),))),
+                    SizedBox(width: 52,),
+                    SizedBox(
+                        width: 100,
+                        child: Center(child: Text("السعر الإفرادي",style: TextStyle(fontSize: 18),))),
+                    SizedBox(width: 52,),
+                    SizedBox(
+                        width: 100,
+                        child: Center(child: Text("الكمية",style: TextStyle(fontSize: 18),))),
+                    SizedBox(width: 52,),
                     Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                          width: 75,
-                          child: Text("المجموع",style: TextStyle(fontSize: 20),)),
-                    ),
-                    // Expanded(child: Container(height: 30,width: 2,color:Colors.grey.shade300,)),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                          width: 50,
-                          child: Text("اجمالي الضريبة",style: TextStyle(fontSize: 20),)),
-                    ),
-                    // Container(height: 30,width: 2,color:Colors.grey.shade300,),
-                    // Expanded(child: Container(height: 30,width: 2,color:Colors.grey.shade300,)),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                          width: 50,
-                          child: Text("السعر الإفرادي",style: TextStyle(fontSize: 20),)),
-                    ),
-                    // Expanded(child: Container(height: 30,width: 2,color:Colors.grey.shade300,)),
-                    // Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                          width: 50,
-                          child: Text("الكمية",style: TextStyle(fontSize: 20),)),
-                    ),
-                    // Expanded(child: Container(height: 30,width: 2,color:Colors.grey.shade300,)),
-                    // Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                          width: 50,
-                          child: Text("المادة",style: TextStyle(fontSize: 20),)),
-                    ),
-                    // Expanded(child: Container(height: 30,width: 2,color:Colors.grey.shade300,)),
-                    // Container(height: 30,width: 2,color:Colors.grey.shade300,),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                          width: 25,
-                          child: Text("الرمز",style: TextStyle(fontSize: 20),)),
-                    ),
+                        child: Text("المادة",textDirection: TextDirection.rtl,style: TextStyle(fontSize: 18),)),
+                    SizedBox(width: 52,),
+                    SizedBox(
+                        width: 50,
+                        child: Center(child: Text("الرمز",style: TextStyle(fontSize: 18),))),
                   ],
                 ),
               ),
@@ -112,31 +88,40 @@ class InvoiceListView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                   // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                          width: 75,
-                          child: Text(e.invRecTotal!.toStringAsFixed(2))),
+                          width: 100,
+                          child: Center(child: Text(e.invRecTotal!.toStringAsFixed(2)))),
+                      SizedBox(width: 25,),
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
+                      SizedBox(width: 25,),
+                      SizedBox(
+                          width: 120,
+                          child: Center(child: Text(e.invRecVat!.toStringAsFixed(2)))),
+                      SizedBox(width: 25,),
+                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
+                      SizedBox(width: 25,),
+                      SizedBox(
+                          width: 100,
+                          child: Center(child: Text(e.invRecSubTotal!.toStringAsFixed(2)))),
+                      SizedBox(width: 25,),
+                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
+                      SizedBox(width: 25,),
+                      SizedBox(
+                          width: 100,
+                          child: Center(child: Text(e.invRecQuantity.toString()+" "))),
+                      SizedBox(width: 25,),
+                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
+                      SizedBox(width: 25,),
+                      Expanded(
+                          child: Text(getProductNameFromId(e.invRecProduct.toString()),textDirection: TextDirection.rtl,)),
+                      SizedBox(width: 25,),
+                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
+                      SizedBox(width: 25,),
                       SizedBox(
                           width: 50,
-                          child: Text(e.invRecVat!.toStringAsFixed(2))),
-                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                      SizedBox(
-                          width: 50,
-                          child: Text(e.invRecSubTotal!.toStringAsFixed(2))),
-                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                      SizedBox(
-                          width: 50,
-                          child: Text(e.invRecQuantity.toString()+" ")),
-                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                      SizedBox(
-                          width: 50,
-                          child: Text(getProductNameFromId(e.invRecProduct.toString()))),
-                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
-                      SizedBox(
-                          width: 25,
-                          child: Text(e.invRecId.toString())),
+                          child: Center(child: Text(e.invRecId.toString()))),
                     ],
                   ),
                 ),

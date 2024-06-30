@@ -24,7 +24,7 @@ class BondViewModel extends GetxController {
   RxMap<String, GlobalModel> allBondsItem = <String, GlobalModel>{}.obs;
   bool isEdit = false;
   late GlobalModel tempBondModel;
-  Map codeList={};
+  Map<String,String> codeList={};
 
   // BondViewModel() {
   //   getAllBonds();
@@ -54,7 +54,7 @@ class BondViewModel extends GetxController {
 
     if(lastBondOpened!=null){
       tempBondModel = GlobalModel.fromJson(allBondsItem[lastBondOpened]?.toFullJson());
-      initPage();
+      initPage(tempBondModel.bondType);
     }
     update();
     // if(oldBondModel!=null){
@@ -87,25 +87,41 @@ class BondViewModel extends GetxController {
     allBondsItem[globalModel.bondId!]=globalModel;
     allBondsItem[globalModel.bondId!]?.bondRecord = [];
     allBondsItem[globalModel.bondId!]?.originId = globalModel.invId;
+    // allBondsItem[globalModel.bondId!]?.bondCode = getNextBondCode(type: Const.bondTypeDaily);
+    allBondsItem[globalModel.bondId!]?.bondDate ??= globalModel.invDate;
+    allBondsItem[globalModel.bondId!]?.bondDescription =getGlobalTypeFromEnum(globalModel.patternId!)+" تم التوليد بشكل تلقائي";
+
     int bondRecId=0;
     globalModel.invRecords?.forEach((element) {
       String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
+      double totalDiscount = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.map((e) => e.percentage!,).reduce((value, element) => value+element,);
       if(globalModel.invType==Const.invoiceTypeSales){
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))), 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
+      if(totalDiscount!=0){
+        for (var model in globalModel.invDiscountRecord!) {
+          var discountDes = "الخصم المعطى "+(model.isChooseTotal! ?"بقيمة "+model.total.toString():"بنسبة "+model.percentage.toString()+"%");
+          allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!)*(model.percentage==0?1:(model.percentage!/100)), 0, model.accountId, discountDes));
+        }
+      }
       }else{
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0,element.invRecSubTotal!*element.invRecQuantity!,  allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(),  element.invRecSubTotal!*element.invRecQuantity!,0, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0,element.invRecSubTotal!*element.invRecQuantity!,  allBondsItem[globalModel.bondId!]?.invSecondaryAccount,dse ));
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(),  element.invRecSubTotal!*element.invRecQuantity!,0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount, dse));
       }
       if(element.invRecVat!=0){
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, "ضريبة "+dse));
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invVatAccount,"ضريبة "+dse));
+        if(globalModel.invType==Const.invoiceTypeSales){
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invVatAccount, "ضريبة "+dse));
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount,"ضريبة "+dse));
+      }else{
+          allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount, "ضريبة "+dse));
+          allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invVatAccount,"ضريبة "+dse));
+        }
       }
     });
 
     if(lastBondOpened!=null){
       tempBondModel = GlobalModel.fromJson(allBondsItem[lastBondOpened]?.toFullJson());
-      initPage();
+      initPage(tempBondModel.bondType);
     }
 
     update();
@@ -292,7 +308,7 @@ class BondViewModel extends GetxController {
 
   void deleteBondById(String? bondId) {
     allBondsItem.removeWhere((key, value) => key==bondId);
-    initPage();
+    initPage(tempBondModel.bondType);
     update();
   }
 
@@ -303,13 +319,12 @@ class BondViewModel extends GetxController {
       tempBondModel.bondRecord?[i].bondRecId = "0$i";
     }
     initTotal();
-    initPage();
+    initPage(tempBondModel.bondType);
     isEdit = true;
     update();
   }
 
-  void initPage() {
-    initCodeList();
+  void initPage(type) {
     initTotal();
     if (tempBondModel.bondType == Const.bondTypeDaily) {
       recordDataSource = BondRecordDataSource(recordData: tempBondModel);
@@ -364,7 +379,6 @@ class BondViewModel extends GetxController {
       tempBondModel.bondCode = oldBondCode;
     }
     tempBondModel.bondDate=bondDate;
-    tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
     var globalController = Get.find<GlobalViewModel>();
    await globalController.updateGlobalBond(tempBondModel);
 
@@ -437,20 +451,22 @@ class BondViewModel extends GetxController {
     // var globalController = Get.find<GlobalViewModel>();
     // globalController.updateGlobalBond(tempBondModel);
     allBondsItem[tempBondModel.bondId!]=tempBondModel;
-    initPage();
+    initPage(tempBondModel.bondType);
     // postOneBond(false);
   }
 
-  initCodeList(){
-    codeList.clear();
+  initCodeList(type){
+    codeList={};
     for (var element in allBondsItem.values) {
-      if(element.bondType == tempBondModel.bondType){
-        codeList[element.bondCode] = element.bondId;
+      if(element.bondType == type){
+        codeList[element.bondCode!] = element.bondId!;
       }
     }
+    codeList = Map.fromEntries(codeList.entries.toList()..sort((a, b) => int.parse(a.key).compareTo(int.parse(b.key)),));
   }
 
   prevBond() {
+    initCodeList(tempBondModel.bondType!);
     var index = codeList.values.toList().indexOf(tempBondModel.bondId!);
     if (codeList.values.toList().first == codeList.values.toList()[index]) {
     } else {
@@ -501,7 +517,9 @@ class BondViewModel extends GetxController {
       }
     }
   }
-  String getNextBondCode(){
+
+  String getNextBondCode({String? type}){
+    initCodeList(type??(tempBondModel.bondType!));
     int _ = 0;
     if(codeList.isEmpty){
       return "0";
@@ -513,10 +531,10 @@ class BondViewModel extends GetxController {
     }
     return _.toString();
   }
+
   String? checkValidate() {
     var _;
     tempBondModel.bondRecord?.forEach((element) {
-      print(element.toJson());
       if(element.bondRecAccount==''||element.bondRecAccount==null||element.bondRecId==null||(element.bondRecCreditAmount==0&&element.bondRecDebitAmount==0)){
         // print("empty");
         _= "الحقول فارغة";

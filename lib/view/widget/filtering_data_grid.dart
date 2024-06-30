@@ -259,7 +259,7 @@ class InfoDataGridSource extends DataGridSource {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    row.getCells().last.columnName == row.getCells()[index].columnName ? row.getCells()[index].value.toString() + '\n' : row.getCells()[index].value.toString() + tab,
+                    row.getCells().last.columnName == row.getCells()[index].columnName ? (row.getCells()[index].value??"").toString() + '\n' : (row.getCells()[index].value??"").toString() + tab,
                     textDirection: isArabic.hasMatch(row.getCells()[index].value.toString()) ? TextDirection.rtl : TextDirection.ltr,
                     style: TextStyle(fontSize: 12),
                     maxLines: null,

@@ -2,10 +2,12 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -14,17 +16,27 @@ import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
+import 'package:ba3_business_solutions/view/user_management/role_management/role_management_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
+import '../core/bindings.dart';
 import '../model/bond_record_model.dart';
 import '../view/home/home_view.dart';
+import '../view/main/main_screen.dart';
+import '../view/user_management/account_management_view.dart';
+import 'cards_view_model.dart';
+import 'cost_center_view_model.dart';
+import 'database_view_model.dart';
+import 'import_view_model.dart';
 import 'invoice_view_model.dart';
 
 class GlobalViewModel extends GetxController {
   Map<String, GlobalModel> allGlobalModel = {};
+  bool isDrawerOpen = true;
   ProductViewModel productController = Get.find<ProductViewModel>();
   StoreViewModel storeController = Get.find<StoreViewModel>();
   BondViewModel bondViewModel = Get.find<BondViewModel>();
@@ -34,38 +46,28 @@ class GlobalViewModel extends GetxController {
   ChequeViewModel chequeViewModel = Get.find<ChequeViewModel>();
 
   GlobalViewModel() {
+    // deleteAllLocal();
+
     initFromLocal();
   }
 
   /// forEach on all item it's [SoSlow].
   Future<void> initFromLocal() async {
+    allGlobalModel.clear();
     print("-" * 20);
     print("YOU RUN LONG TIME OPERATION");
     print("-" * 20);
-    bool needToReadNoVat = false;
 
-    bool getNoVAt(bondId) {
-      if (needToReadNoVat) {
-        productController.productDataMap = Map.fromEntries(productController.productDataMap.entries.map((e) => MapEntry(e.key, e.value.generateNoVat()))).obs;
-        return bondId.contains(Const.noVatKey);
-      } else {
-        return !bondId.contains(Const.noVatKey);
-      }
-    }
-
-    allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.where((element) => getNoVAt(element.bondId!)).map((e) => MapEntry(e.bondId!, e)).toList());
+    allGlobalModel =Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
     if(allGlobalModel.isEmpty) {
      await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
       for (var element in value.docs) {
-
       // for (var element in value.docChanges) {
         if (element.data()?['isDeleted'] != null && element.data()?['isDeleted']) {
           if (HiveDataBase.globalModelBox.keys.contains(element.id)) {
             deleteGlobal(HiveDataBase.globalModelBox.get(element.id)!);
-
           }
           // } else if (!getNoVAt(element.doc.id)) {
-          // } else if (!((element.doc.data()?['readFlags'] ?? []) as List).contains(HiveDataBase.getMyReadFlag())) {
         }else{
           allGlobalModel[element.id] = GlobalModel.fromJson(element.data());
           allGlobalModel[element.id]?.invRecords = [];
@@ -81,30 +83,52 @@ class GlobalViewModel extends GetxController {
             allGlobalModel[element.id]?.bondRecord = value.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
           });
           HiveDataBase.globalModelBox.put(allGlobalModel[element.id]?.bondId, allGlobalModel[element.id]!);
-          element.reference.update({
-            'readFlags': FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
-          });
           updateDataInAll(allGlobalModel[element.id]!);
         }
       }
     });
      if (Get.currentRoute == "/LoginView") {
-       Get.offAll(() => HomeView());
+       Get.offAll(() => MainScreen());
      }
-    }else{
+    }
+    else{
       allGlobalModel.forEach((key, value) {
         updateDataInAll(value);
       });
       if (Get.currentRoute == "/LoginView") {
-        Get.offAll(() => HomeView());
+        Get.offAll(() => MainScreen());
       }
     }
   }
 
+changeFreeType(type) async {
+    HiveDataBase.setIsFree(type);
+    Const.init(isFree: type);
+   await Get.deleteAll(force: true);
+   Get.put(UserManagementViewModel(),permanent: true);
+   Get.put(AccountViewModel(),permanent: true);
+   Get.put(StoreViewModel(),permanent: true);
+   Get.put(ProductViewModel(),permanent: true);
+   Get.put(BondViewModel(),permanent: true);
+   Get.put(PatternViewModel(),permanent: true);
+   Get.put(SellersViewModel(),permanent: true);
+   Get.put(InvoiceViewModel(),permanent: true);
+   Get.put(ChequeViewModel(),permanent: true);
+   Get.put(CostCenterViewModel(),permanent: true);
+   Get.put(IsolateViewModel(),permanent: true);
+   Get.put(DataBaseViewModel(),permanent: true);
+   Get.put(ImportViewModel(),permanent: true);
+   Get.put(CardsViewModel(),permanent: true);
+   Get.offAll(
+         () => UserManagement(),
+     binding: GetBinding(),
+   );
+}
 
   /////-Add
-  Future<void> addGlobalBond(GlobalModel globalModel) async {
-    globalModel.globalType = Const.globalTypeBond;
+  Future<void> addGlobalBond(GlobalModel globalModel) async{
+    globalModel.bondDate ??= DateTime.now().toString();
+  globalModel.globalType = Const.globalTypeBond;
     globalModel.bondId = generateId(RecordType.bond);
     allGlobalModel[globalModel.bondId!] = globalModel;
     // addGlobalToLocal(globalModel);
@@ -137,22 +161,30 @@ class GlobalViewModel extends GetxController {
 
   void addGlobalInvoice(GlobalModel globalModel) {
     GlobalModel _ = correctInvRecord(globalModel);
-    allGlobalModel[globalModel.bondId!] = globalModel;
-    updateDataInAll(globalModel);
+    UserManagementViewModel userManagementViewModel =Get.find<UserManagementViewModel>();
+    if((userManagementViewModel.allRole[getMyUserRole()]?.roles[Const.roleViewInvoice]?.contains(Const.roleUserAdmin))??false){
+      _.invIsPending = false;
+    }else{
+      _.invIsPending = true;
+    }
+    allGlobalModel[_.bondId!] = _;
+    updateDataInAll(_);
     addInvoiceToFirebase(_);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), Const.invoicesCollection);
-    showEInvoiceDialog(mobileNumber: globalModel.invMobileNumber ?? "", invId: globalModel.bondId!);
+    changesViewModel.addChangeToChanges(_.toFullJson(), Const.invoicesCollection);
+    showEInvoiceDialog(mobileNumber: _.invMobileNumber ?? "", invId: _.bondId!);
     // invoiceViewModel.updateCodeList();
     invoiceViewModel.update();
     update();
   }
+
   void addGlobalInvoiceToMemory(GlobalModel globalModel) {
     addGlobalToLocal(globalModel);
     updateDataInAll(globalModel);
     invoiceViewModel.update();
     update();
   }
+
   void addGlobalChequeToMemory(GlobalModel globalModel) {
     addGlobalToLocal(globalModel);
     updateDataInAll(globalModel);
@@ -205,6 +237,12 @@ class GlobalViewModel extends GetxController {
     update();
   }
 
+  void deleteGlobalMemory(GlobalModel globalModel) {
+    deleteGlobalFromLocal(globalModel);
+    deleteDataInAll(globalModel);
+    update();
+  }
+
   void deleteGlobalFromLocal(GlobalModel globalModel) {
     HiveDataBase.globalModelBox.delete(globalModel.bondId);
   }
@@ -216,12 +254,14 @@ class GlobalViewModel extends GetxController {
     HiveDataBase.productModelBox.deleteFromDisk();
     HiveDataBase.lastChangesIndexBox.deleteFromDisk();
     HiveDataBase.constBox.deleteFromDisk();
+    HiveDataBase.isNewUser.deleteFromDisk();
   }
 
   ////-Utils
   GlobalModel correctInvRecord(GlobalModel globalModel) {
     globalModel.invRecords?.removeWhere((element) => element.invRecId == null);
     globalModel.bondRecord?.removeWhere((element) => element.bondRecId == null);
+    globalModel.invDiscountRecord?.removeWhere((element) => element.discountId == null);
     for (var element in globalModel.invRecords ?? []) {
       if (!(element.invRecProduct?.contains("prod") ?? true)) globalModel.invRecords?[globalModel.invRecords!.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
     }
@@ -231,7 +271,7 @@ class GlobalViewModel extends GetxController {
     return globalModel;
   }
 
-  void addInvoiceToFirebase(GlobalModel globalModel) async {
+   addInvoiceToFirebase(GlobalModel globalModel) async {
     try {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).collection(Const.invoiceRecordCollection).get().then((value) {
         for (var element in value.docs) {
@@ -272,15 +312,20 @@ class GlobalViewModel extends GetxController {
 
   updateDataInAll(GlobalModel globalModel) {
     if (globalModel.globalType == Const.globalTypeInvoice) {
-      GlobalModel filteredGlobalModel = checkFreeZoneProduct(globalModel);
-        if(filteredGlobalModel.invType != Const.invoiceTypeAdd){
+      GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
+      if(filteredGlobalModel == null ){
+        return ;
+      }
+      if(!globalModel.invIsPending!){
+        if (filteredGlobalModel.invType != Const.invoiceTypeAdd) {
           bondViewModel.initGlobalInvoiceBond(filteredGlobalModel);
-          accountViewModel.initGlobalAccount(filteredGlobalModel);
           sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);
         }
+        accountViewModel.initGlobalAccount(filteredGlobalModel);
+        productController.initGlobalProduct(filteredGlobalModel);
+        storeController.initGlobalStore(filteredGlobalModel);
+      }
       invoiceViewModel.initGlobalInvoice(filteredGlobalModel);
-      productController.initGlobalProduct(filteredGlobalModel);
-      storeController.initGlobalStore(filteredGlobalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
       chequeViewModel.initGlobalCheque(globalModel);
     } else if (globalModel.globalType == Const.globalTypeBond) {
@@ -318,8 +363,8 @@ class GlobalViewModel extends GetxController {
     return noVatGlobalModel;
   }
 
-  GlobalModel checkFreeZoneProduct(GlobalModel filteredGlobalModel) {
-    if(Const.isFilterFree){
+  GlobalModel? checkFreeZoneProduct(GlobalModel filteredGlobalModel) {
+    if(HiveDataBase.isFree.get("isFree")!){
       GlobalModel _ = GlobalModel.fromJson(filteredGlobalModel.toFullJson());
       for(var i =0;i<_.invRecords!.length;i++){
         if(_.invRecords![i].invRecIsLocal!){
@@ -328,7 +373,12 @@ class GlobalViewModel extends GetxController {
           _.invRecords!.removeAt(i);
         }
       }
-      return _;
+      if(_.invRecords!.isEmpty){
+        return null;
+      }else{
+        return _;
+      }
+
     }
     else{
     return filteredGlobalModel;

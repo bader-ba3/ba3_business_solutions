@@ -14,33 +14,37 @@ class AccountRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
-  double lastBalance=0;
-  AccountRecordDataSource({required List<AccountRecordModel> accountRecordModel,required AccountModel accountModel}) {
-
+  double lastBalance = 0;
+  AccountRecordDataSource({required List<AccountRecordModel> accountRecordModel, required AccountModel accountModel}) {
     dataGridRows.clear();
     var accountController = Get.find<AccountViewModel>();
 
-    List<AccountRecordModel> allRecord =[];
+    List<AccountRecordModel> allRecord = [];
     allRecord.addAll(accountRecordModel);
     for (var element in accountModel.accChild) {
       print(element);
       allRecord.addAll(accountController.accountList[element]!.accRecord.toList());
     }
-    if(accountModel.accType==Const.accountTypeAggregateAccount){
+    if (accountModel.accType == Const.accountTypeAggregateAccount) {
       for (var element in accountModel.accAggregateList) {
         allRecord.addAll(accountController.accountList[element]!.accRecord.toList());
       }
     }
 
-    dataGridRows = allRecord
-        .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: Const.rowAccountName, value: getAccountNameFromId(e.account)),
-              DataGridCell<RecordType>(columnName: Const.rowAccountType, value: RecordType.bond),
-              DataGridCell<String>(columnName: Const.rowAccountTotal, value: e.total),
-              DataGridCell<double>(columnName: Const.rowAccountBalance, value: lastBalance+= double.parse(e.total!)),
-              DataGridCell<String>(columnName: Const.rowAccountId, value: e.id),
-            ]))
-        .toList();
+    dataGridRows = allRecord.map<DataGridRow>((e) {
+      String? _;
+      if (e.isPaidStatus == Const.paidStatusSemiUsed) {
+        _ = " متبقي " + "(" + e.paid.toString() + ")";
+      }
+      return DataGridRow(cells: [
+        DataGridCell<String>(columnName: Const.rowAccountName, value: getAccountNameFromId(e.account)),
+        DataGridCell<String>(columnName: Const.rowAccountType, value: getGlobalTypeFromEnum(e.accountRecordType!)),
+        DataGridCell<String>(columnName: Const.rowAccountTotal, value: double.parse(e.total!) > 0 ? "0" : e.total!),
+        DataGridCell<String>(columnName: Const.rowAccountTotal2, value: double.parse(e.total!) < 0 ? "0" : e.total!),
+        DataGridCell<double>(columnName: Const.rowAccountBalance, value: lastBalance += double.parse(e.total!)),
+        DataGridCell<String>(columnName: Const.rowAccountId, value: e.id),
+      ]);
+    }).toList();
   }
 
   @override
@@ -54,19 +58,10 @@ class AccountRecordDataSource extends DataGridSource {
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: dataGridCell.columnName == Const.rowAccountType
-              ? Text(
-                  dataGridCell.value == RecordType.bond
-                      ? 'سندات'
-                      : dataGridCell.value == RecordType.invoice
-                          ? "فواتير"
-                          : "غير ذالك",
-                  overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 22) )
-              :dataGridCell.columnName == Const.rowAccountBalance||dataGridCell.columnName == Const.rowAccountTotal
-          ?Text(dataGridCell.value == null ? '' : double.parse(dataGridCell.value.toString()).toStringAsFixed(2),style: TextStyle(fontSize: 22))
-          :Text(dataGridCell.value == null ? '' : dataGridCell.value.toString(),
-                  overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 22) ));
+              ? Text(dataGridCell.value, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22))
+              : dataGridCell.columnName == Const.rowAccountBalance || dataGridCell.columnName == Const.rowAccountTotal
+                  ? Text(dataGridCell.value == null ? '' : double.parse(dataGridCell.value.toString()).toStringAsFixed(2), style: TextStyle(fontSize: 22))
+                  : Text(dataGridCell.value == null ? '' : dataGridCell.value.toString(), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22)));
     }).toList());
   }
 
@@ -74,7 +69,9 @@ class AccountRecordDataSource extends DataGridSource {
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn, RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
       padding: EdgeInsets.all(15.0),
-      child: Text(summaryValue,),
+      child: Text(
+        summaryValue,
+      ),
     );
   }
 

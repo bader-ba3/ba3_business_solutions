@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
@@ -8,30 +9,38 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
 
 class ChangesViewModel extends GetxController{
   int padWidth = 8;
-
+  List allReadFlags = [];
   ChangesViewModel(){
-
+    FirebaseFirestore.instance.collection(Const.readFlagsCollection).doc("0").snapshots().listen((event) {
+      allReadFlags.clear();
+      print(event.data());
+      allReadFlags = (event.data()?['allFlags']??[]).map((e) => e.toString()).toList();
+    });
     Future.sync(() async {
       if(HiveDataBase.isNewUser.get("isNewUser")??true){
         HiveDataBase.isNewUser.put("isNewUser",false);
+        FirebaseFirestore.instance.collection(Const.readFlagsCollection).doc("0").set({
+          "allFlags":FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
+        },SetOptions(merge: true));
        await FirebaseFirestore.instance.collection(Const.changesCollection).get().then((value) {
           HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(value.docs.last.id));
         });
       }
       listenChanges();
     });
-
   }
 
   // getLastIndexChanges(){
@@ -46,7 +55,7 @@ class ChangesViewModel extends GetxController{
   listenChanges(){
     FirebaseFirestore.instance.collection(Const.settingCollection).snapshots().listen((event) {
       print("I listen to Change!!!");
-      FirebaseFirestore.instance.collection(Const.changesCollection).where("changeId",isGreaterThan:HiveDataBase.lastChangesIndexBox.get("lastChangesIndex") ).get().then((value) {
+      FirebaseFirestore.instance.collection(Const.changesCollection).where("changeId",isGreaterThan:HiveDataBase.lastChangesIndexBox.get("lastChangesIndex") ).get().then((value) async {
         print("The Number Of Changes: "+value.docs.length.toString());
         for (var element in value.docs) {
               if(element['changeType'] == Const.productsCollection){
@@ -78,10 +87,33 @@ class ChangesViewModel extends GetxController{
                 globalViewModel.addGlobalChequeToMemory(GlobalModel.fromJson(element.data()));
               }else if(element['changeType'] == "remove_"+Const.globalCollection){
                 GlobalViewModel globalViewModel =Get.find<GlobalViewModel>();
-                globalViewModel.deleteGlobal(GlobalModel.fromJson(element.data()));
+                globalViewModel.deleteGlobalMemory(GlobalModel.fromJson(element.data()));
               }else{
                 print("UNKNOWN CHANGE "*20);
               }
+              List readFlag = [];
+             await element.reference.set({
+                "allFlags":FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
+              },SetOptions(merge: true));
+              element.reference.get().then((value) {
+                if(value.data()!['allFlags']!=null &&value.data()!['allFlags']!=[] ){
+                  readFlag = value.data()!['allFlags'];
+                  //readFlag.add(HiveDataBase.getMyReadFlag());
+                  readFlag.sort((a, b) => a.compareTo(b),);
+                }else{
+                  // readFlag = [HiveDataBase.getMyReadFlag()];
+                }
+                allReadFlags.sort((a, b) => a.compareTo(b),);
+                print(allReadFlags.join(",") );
+                print(readFlag.join(",") );
+                print(allReadFlags.join(",").removeAllWhitespace == readFlag.join(",").removeAllWhitespace);
+                if(allReadFlags.join(",").removeAllWhitespace == readFlag.join(",").removeAllWhitespace){
+                  print("deleted");
+                  value.reference.delete();
+                }else{
+
+                }
+              });
 
               print( int.parse(element.data()['changeId'].toString()));
               HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(element.data()['changeId'].toString()));

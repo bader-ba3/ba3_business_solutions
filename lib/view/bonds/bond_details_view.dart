@@ -48,6 +48,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
   }
 
   void initPage() {
+    bondController.initCodeList( widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily);
     if (widget.oldId != null || widget.oldBondModel != null) {
       bondController.tempBondModel = GlobalModel.fromJson(widget.oldBondModel?.toFullJson() ?? bondController.allBondsItem[widget.oldId]!.toFullJson());
       bondController.bondModel = widget.oldBondModel ?? bondController.allBondsItem[widget.oldId]!;
@@ -57,12 +58,11 @@ class _BondDetailsViewState extends State<BondDetailsView> {
     } else {
       bondController.tempBondModel = getBondData();
       bondController.bondModel = getBondData();
-      bondController.tempBondModel.bondCode = bondController.getNextBondCode();
+      bondController.tempBondModel.bondCode = bondController.getNextBondCode(type: widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily);
       isNew = true;
     }
-    bondController.tempBondModel.readFlags= [HiveDataBase.getMyReadFlag()];
     bondController.tempBondModel.bondType = widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily;
-    bondController.initPage();
+    bondController.initPage(bondController.tempBondModel.bondType);
     newCodeController.text = bondController.tempBondModel.bondCode!;
     defualtCode = bondController.tempBondModel.bondCode!;
     // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
@@ -87,7 +87,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                           ElevatedButton(
                               onPressed: () {
                                 controller.restoreOldData();
-                                controller.initPage();
+                                controller.initPage(bondController.tempBondModel.bondType);
                                 isNew = false;
                                 controller.isEdit = false;
                                 Get.back();
@@ -177,7 +177,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             onFieldSubmitted: (_) {
                               controller.changeIndexCode(code: _);
-                              controller.initPage();
+                              controller.initPage(bondController.tempBondModel.bondType);
                             },
                             decoration: InputDecoration.collapsed(hintText: ""),
                             controller: TextEditingController(text: bondController.tempBondModel.bondCode),
@@ -221,7 +221,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                           stream: controller.allBondsItem.stream,
                           builder: (context, snapshot) {
                          return GetBuilder<BondViewModel>(builder: (controller) {
-                                controller.initPage();
+                                //controller.initPage(bondController.tempBondModel.bondType);
                                 // initPage();
                                 return SfDataGrid(
                                   horizontalScrollPhysics: NeverScrollableScrollPhysics(),
@@ -248,7 +248,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                     return GestureDetector(
                                         onTap: () {
                                           controller.deleteOneRecord(rowIndex);
-                                          controller.initPage();
+                                          controller.initPage(bondController.tempBondModel.bondType);
                                         },
                                         child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
                                   },
@@ -312,9 +312,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                               // bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
                               if(widget.initFun!=null){
                                 widget.initFun!("");
-
                               }
-
                             }
                           });}else{
                             Get.snackbar("خطأ", validate);

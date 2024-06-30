@@ -28,7 +28,6 @@ class StoreViewModel extends GetxController {
 
   StoreModel? editStoreModel;
 
-  ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
 
   StoreViewModel() {
     getAllStore();
@@ -127,12 +126,16 @@ class StoreViewModel extends GetxController {
     }
     editStoreModel?.stId = generateId(RecordType.store);
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+
     changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();
   }
 
   editStore() {
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+
     changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();
   }
@@ -156,6 +159,8 @@ class StoreViewModel extends GetxController {
   deleteStore(id) {
     StoreModel editStoreModel = storeMap[id]!;
     _storeCollectionRef.doc(editStoreModel?.stId).delete();
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+
     changesViewModel.addRemoveChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();
   }

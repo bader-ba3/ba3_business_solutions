@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
+import 'package:ba3_business_solutions/view/bonds/bond_report.dart';
 import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,6 +46,11 @@ class _BondTypeState extends State<BondType> {
             Item("عرض جميع السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
                 if(value) Get.to(()=>AllBonds());
+              });
+            }),
+            Item("عرض جميع السندات",(){
+              checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
+                if(value) Get.to(()=>BondReport());
               });
             }),
           ],

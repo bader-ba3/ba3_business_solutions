@@ -84,50 +84,7 @@ class PatternViewModel extends GetxController {
   //   return PatternModel(patName: patNameController.text, patCode: patCodeController.text, patId: generateId(RecordType.pattern), patPrimary: patPrimaryController.text, patType: patTypeController.text);
   // }
 
-  Future<String> getComplete(text) async {
-    var _ = '';
-    accountPickList = [];
-    accountController.accountList.forEach((key, value) {
-      accountPickList.addIf(value.accType==Const.accountTypeDefault&&(value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
-    });
-    // print(accountPickList.length);
-    if (accountPickList.length > 1) {
-      await Get.defaultDialog(
-        title: "Chose form dialog",
-        content: SizedBox(
-          width: 500,
-          height: 500,
-          child: ListView.builder(
-            itemCount: accountPickList.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  _ = accountPickList[index];
-                  update();
-                  Get.back();
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.all(8),
-                  width: 500,
-                  child: Center(
-                    child: Text(
-                      accountPickList[index],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    } else if (accountPickList.length == 1) {
-      _ = accountPickList[0];
-    } else {
-      Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
-    }
-    return _;
-  }
+
 
 
 

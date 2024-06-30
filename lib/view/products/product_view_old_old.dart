@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
@@ -29,9 +30,9 @@ class AllProductOLDOLD extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ListView.builder(
-                itemCount: controller.productDataMap.values.where((element) => !element.prodIsGroup!&&(Const.isFilterFree ? element.prodIsLocal!: true)).toList().length,
+                itemCount: controller.productDataMap.values.where((element) => !element.prodIsGroup!&&(HiveDataBase.isFree.get("isFree")! ? element.prodIsLocal!: true)).toList().length,
                 itemBuilder: (context, index) {
-                  ProductModel model = controller.productDataMap.values.toList().where((element) => !element.prodIsGroup!&&(Const.isFilterFree ? element.prodIsLocal!: true)).toList()[index];
+                  ProductModel model = controller.productDataMap.values.toList().where((element) => !element.prodIsGroup!&&(HiveDataBase.isFree.get("isFree")! ? element.prodIsLocal!: true)).toList()[index];
                   return _prodItemWidget(model ,controller);
                 }),
           );

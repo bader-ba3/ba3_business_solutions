@@ -44,7 +44,7 @@ dependencies:
   flutter_fancy_tree_view:
   file_picker:
   pinput:
-  fl_chart: 0.60.0
+  fl_chart: 0.68.0
   qr_code_scanner: 1.0.1
   csv:
   qr_flutter: ^4.1.0
@@ -56,13 +56,13 @@ dependencies:
   audioplayers: ^5.0.0
   audioplayers_android: ^4.0.3
   audioplayers_darwin: ^5.0.0
-  infinite_scroll_pagination:
-  rxdart:
-  desktop_window:
-  two_dimensional_scrollables:
-  single_child_two_dimensional_scroll_view:
   syncfusion_flutter_gauges:
   stop_watch_timer:
+  infinite_scroll_pagination:
+  flutter_tree_pro:
+  tab_container:
+  flutter_svg:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

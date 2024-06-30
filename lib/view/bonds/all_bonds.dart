@@ -44,7 +44,6 @@ class AllBonds extends StatelessWidget {
         init: () async {
           IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
           isolateViewModel.init();
-          print("from bonds View");
           final a = await compute<({List<GlobalModel> a,IsolateViewModel isolateViewModel}),List<DataGridRow>>((message) {
             Get.put(message.isolateViewModel);
             List<DataGridRow> dataGridRow  = message.a
@@ -58,7 +57,7 @@ class AllBonds extends StatelessWidget {
                 }else if(DateTime.tryParse(mapEntry.value.toString())!=null){
                   return DataGridCell<DateTime>(columnName: mapEntry.key, value: DateTime.parse(mapEntry.value.toString()));
                 }else{
-                  return DataGridCell<String>(columnName: mapEntry.key, value: mapEntry.value.toString());
+                  return DataGridCell<String>(columnName: mapEntry.key, value: (mapEntry.value??"-").toString());
                 }
               }).cast<DataGridCell<dynamic>>().toList()
             ])).toList();

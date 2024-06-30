@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
@@ -61,6 +62,7 @@ class UserManagementViewModel extends GetxController {
           myUserModel = UserModel.fromJson(value.docs.first.data());
           userStatus = UserManagementStatus.login;
           Get.put(GlobalViewModel(), permanent: true);
+          Get.put(ChangesViewModel(), permanent: true);
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
             userStatus = UserManagementStatus.first;
@@ -89,6 +91,7 @@ class UserManagementViewModel extends GetxController {
             myUserModel = UserModel.fromJson(value0.data()!);
             userStatus = UserManagementStatus.login;
             Get.put(GlobalViewModel(), permanent: true);
+            Get.put(ChangesViewModel(), permanent: true);
           });
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {

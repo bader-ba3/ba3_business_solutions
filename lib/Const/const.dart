@@ -1,4 +1,5 @@
 
+import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/hive.dart';
@@ -9,8 +10,9 @@ enum EnvType { debug, release }
 //      send data to logger
 abstract class Const {
   static String dataName='';
+  static bool isFreeType=false;
 
-  static init({String? oldData})async{
+  static init({String? oldData,bool? isFree})async{
     if(dataName==''){
       await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
         dataName=value.data()?['defaultDataName'];
@@ -20,6 +22,13 @@ abstract class Const {
     }
     await HiveDataBase.setDataName(dataName);
     globalCollection=dataName;
+    if(isFree!=null){
+      isFreeType = isFree;
+    }else{
+      print(HiveDataBase.isFree.get("isFreeType"));
+      isFreeType = HiveDataBase.isFree.get("isFreeType")??false;
+    }
+
   }
 
   static const EnvType env = EnvType.debug; //"debug" or "release"
@@ -34,7 +43,6 @@ abstract class Const {
   static const noVatKey = 'noVat-';
   static const minMobileTarget = 1000;
   static const minOtherTarget = 1000;
-  static const isFilterFree = false;
   ////////////--------------------------------------------------
   static const changesCollection = 'Changes';
   static const recordCollection = 'Record';
@@ -52,11 +60,14 @@ abstract class Const {
   static String usersCollection = "users";
   static String roleCollection = "Role";
   static String settingCollection = "Setting";
+  static String readFlagsCollection = "ReadFlags";
+  static String inventoryCollection = "Inventory";
   static String globalCollection="$dataName";
   static String dataCollection = "data";
   ////////////--------------------------------------------------
   static const rowAccountId = 'rowAccountId';
   static const rowAccountTotal = 'rowAccountTotal';
+  static const rowAccountTotal2 = 'rowAccountTotal2';
   static const rowAccountType = 'rowAccountType';
   static const rowAccountName = 'rowAccountName';
   static const rowAccountBalance = 'rowAccountBalance';
@@ -68,6 +79,10 @@ abstract class Const {
   static const rowInvVat = "rowInvVat";
   static const rowInvTotal = "invTotal";
   static const rowInvTotalVat = "rowInvTotalVat";
+  static const rowInvDiscountId = "rowInvDiscountId";
+  static const rowInvDiscountAccount = "rowInvDiscountAccount";
+  static const rowInvDiscountTotal = "rowInvDiscountTotal";
+  static const rowInvDiscountPercentage = "rowInvDiscountPercentage";
   ////////////--------------------------------------------------
   static const rowViewAccountId = "rowViewAccountId";
   static const rowViewAccountName = "rowViewAccountName";
@@ -150,8 +165,9 @@ abstract class Const {
   static const roleViewImport = "roleViewImport";
   static const roleViewTask = "roleViewTask";
   static const roleViewTarget = "roleViewTarget";
+  static const roleViewInventory = "roleViewInventory";
   static const roleViewUserManagement = "roleViewUserManagement";
-  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewTask,roleViewImport,roleViewUserManagement,];
+  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewInventory,roleViewTask,roleViewImport,roleViewUserManagement,];
   ////////////--------------------------------------------------
   static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
   static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
@@ -177,8 +193,43 @@ abstract class Const {
   ////////////----------------------------------------------------
   static const productsAllSubscription  = "productsAllSubscription";
   ////////////----------------------------------------------------
+  static const paidStatusFullUsed  = "paidStatusFullUse";
+  static const paidStatusNotUsed  = "paidStatusNotUsed";
+  static const paidStatusSemiUsed  = "paidStatusSemiUsed";
+  ////////////----------------------------------------------------
   static const userStatusOnline  = "userStatusOnline";
   static const userStatusAway  = "userStatusAway";
+}
+
+
+String getGlobalTypeFromEnum(String type) {
+  switch (type) {
+    case Const.globalTypeBond:
+      return "سند";
+    case Const.bondTypeCredit:
+      return "سند  قبض";
+    case Const.bondTypeDaily:
+      return "سند يومية";
+    case Const.bondTypeDebit:
+      return "سند دفع";
+    case Const.chequeTypeCatch:
+      return "شيك قبض";
+    case Const.chequeTypePay:
+      return "شيك دفع";
+  }
+  return "فاتورة "+getPatModelFromPatternId(type).patName!;
+}
+
+String getAccountPaidStatusFromEnum(String type,bool isPositive) {
+  switch (type) {
+    case Const.paidStatusFullUsed:
+      return isPositive?"مقبوض كليا":"مدفوع كليا";
+    case Const.paidStatusNotUsed:
+      return isPositive?"غير مقبوض":"غير مدفوع";
+    case Const.paidStatusSemiUsed:
+      return isPositive?"مقبوض جزئيا":"مدفوع جزئيا";
+  }
+  return type;
 }
 String getUserStatusFromEnum(String type) {
   switch (type) {
@@ -314,6 +365,8 @@ String getPageNameFromEnum(String type) {
       return "التارغت";
     case Const.roleViewTask:
       return "التاسكات";
+    case Const.roleViewInventory:
+      return "الجرد";
     case Const.roleViewUserManagement:
       return "إدارة المستخدمين";
   }

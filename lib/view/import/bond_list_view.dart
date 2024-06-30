@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -84,7 +85,15 @@ class BondListView extends StatelessWidget {
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(
                           width: 300,
-                          child: Text(e.bondRecAccount.toString()+" "+getAccountNameFromId(e.bondRecAccount))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if(getAccountNameFromId(e.bondRecAccount)=="")
+                                Text("غير موجود"+ e.bondRecAccount.toString(),style: TextStyle(color: Colors.red),),
+                              Expanded(child: Text(e.bondRecAccount.toString()+" "+getAccountNameFromId(e.bondRecAccount))),
+                            ],
+                          )),
+
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(
                           width: 50,
