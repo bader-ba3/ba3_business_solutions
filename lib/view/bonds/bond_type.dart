@@ -43,12 +43,14 @@ class _BondTypeState extends State<BondType> {
             Item("قيد افتتاحي",(){
               Get.to(() => BondDetailsView(isStart:true));
             }),
+             if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Item("عرض جميع السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
                 if(value) Get.to(()=>AllBonds());
               });
             }),
-            Item("عرض جميع السندات",(){
+             if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
+            Item("عرض تقرير السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
                 if(value) Get.to(()=>BondReport());
               });

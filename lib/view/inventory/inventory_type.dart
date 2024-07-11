@@ -73,51 +73,14 @@ class _InventoryTypeState extends State<InventoryType> {
                   ))
               :InkWell(
                 onTap: () async {
-                 await Get.to(()=>NewInventoryView());
+                  checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInventory).then((value) async {
+                      if (value) {
+                       await Get.to(()=>NewInventoryView());
                  selectedInventory = HiveDataBase.inventoryModelBox.get("0");
                  setState(() {});
-                  // Get.defaultDialog(
-                  //     title: "اختر او أنشئ",
-                  //     content: SizedBox(
-                  //       height: MediaQuery.sizeOf(context).height / 3,
-                  //       width: MediaQuery.sizeOf(context).height / 3,
-                  //       child: Column(
-                  //         children: [
-                  //           TextFormField(
-                  //             controller: inventoryName,
-                  //             textDirection: TextDirection.rtl,
-                  //             decoration: InputDecoration(
-                  //               hintText: "أنشئ جردًا جديدًا",
-                  //               hintTextDirection: TextDirection.rtl,
-                  //             ),
-                  //           ),
-                  //           Expanded(
-                  //               child: ListView.builder(
-                  //             itemCount: inventoryViewModel.allInventory.length,
-                  //             itemBuilder: (context, index) {
-                  //               InventoryModel model = inventoryViewModel.allInventory.values.toList()[index];
-                  //               return InkWell(
-                  //                   onTap: () {
-                  //                     selectedInventory = model;
-                  //                     setState(() {});
-                  //                     Get.back();
-                  //                   },
-                  //                   child: Text(model.inventoryName.toString()));
-                  //             },
-                  //           )),
-                  //           ElevatedButton(
-                  //               onPressed: () async {
-                  //                 await HiveDataBase.inventoryModelBox.put("0", InventoryModel(inventoryId: "000", inventoryDate: DateTime.now().toString().split(" ")[0], inventoryName: inventoryName.text, inventoryRecord: {}, inventoryTargetedProductList: []));
-                  //                 selectedInventory = HiveDataBase.inventoryModelBox.get("0");
-                  //                 inventoryName.clear();
-                  //                 setState(() {});
-                  //                 Get.back();
-                  //               },
-                  //               child: Text("موافق"))
-                  //         ],
-                  //       ),
-                  //     ));
-                },
+                      };
+                    });
+                    },
                 child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),

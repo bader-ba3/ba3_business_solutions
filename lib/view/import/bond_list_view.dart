@@ -21,7 +21,7 @@ class BondListView extends StatelessWidget {
         actions: [
           ElevatedButton(onPressed: (){
            if( importViewModel.checkAllAccount(bondList)){
-             importViewModel.addBond(bondList);
+            importViewModel.addBond(bondList);
            }
           }, child: Text("add"))
         ],
@@ -41,6 +41,7 @@ class BondListView extends StatelessWidget {
                   Text("الوقت: "+bondList[index].bondDate.toString()),
                   Text("نوع الفاتورة: "+getBondTypeFromEnum(bondList[index].bondType.toString())),
                   Text("الرمز: "+bondList[index].bondCode.toString()),
+                  Text("الوصف: "+bondList[index].bondDescription.toString()),
                 ],
               ),
               SizedBox(height: 15,),
@@ -51,6 +52,10 @@ class BondListView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                      SizedBox(
+                        width: 50,
+                        child: Text("الوصف",style: TextStyle(fontSize: 20),)),
+                    Container(height: 30,width: 2,color: Colors.grey.shade300,),
                     SizedBox(
                         width: 50,
                         child: Text("دائن",style: TextStyle(fontSize: 20),)),
@@ -75,6 +80,10 @@ class BondListView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      SizedBox(
+                          width: 50,
+                          child: Text(e.bondRecDescription.toString())),
+                      Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(
                           width: 50,
                           child: Text(e.bondRecCreditAmount.toString())),

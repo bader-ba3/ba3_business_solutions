@@ -96,7 +96,16 @@ class BondViewModel extends GetxController {
       String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
       double totalDiscount = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.map((e) => e.percentage!,).reduce((value, element) => value+element,);
       if(globalModel.invType==Const.invoiceTypeSales){
-        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))), 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
+        print(totalDiscount);
+        print(element.invRecSubTotal);
+        print(element.invRecQuantity!);
+        print(((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
+        print(((element.invRecSubTotal!)));
+        print((totalDiscount==0?1:(totalDiscount/100)));
+        print(element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
+        print(element.invRecSubTotal!*element.invRecQuantity!);
+        print(((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
+        allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100))), 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
       if(totalDiscount!=0){
         for (var model in globalModel.invDiscountRecord!) {
@@ -384,7 +393,7 @@ class BondViewModel extends GetxController {
 
     // postOneBond(false);
   }
-  Future<void> fastAddBondToFirebase({String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
+  Future<void> fastAddBondToFirebase({String? bondId,String? bondDes,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
     tempBondModel = GlobalModel();
     tempBondModel.bondRecord = record;
     tempBondModel.originId = originId;
@@ -395,6 +404,7 @@ class BondViewModel extends GetxController {
     }
     tempBondModel.bondTotal = total.toString();
     tempBondModel.bondType = bondType;
+    tempBondModel.bondDescription = bondDes;
     tempBondModel.bondType ??= Const.bondTypeDaily;
     tempBondModel.globalType=Const.globalTypeBond;
     var bondCode = "";

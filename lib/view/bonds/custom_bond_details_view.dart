@@ -95,49 +95,49 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
       child: GetBuilder<BondViewModel>(builder: (controller) {
         return WillPopScope(
           onWillPop: () async {
-            if (controller.isEdit) {
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text("هل تريد تجاهل التغييرات"),
-                        actions: [
-                          ElevatedButton(
-                              onPressed: () {
-                                controller.restoreOldData();
-                                bondController.initPage(bondController.tempBondModel.bondType);
-                                isNew = false;
-                                controller.isEdit = false;
-                                Get.back();
-                                Get.back();
-                              },
-                              child: Text("تجاهل")),
-                          ElevatedButton(
-                              onPressed: () {
-                                var validate = bondController.checkValidate();
-                                if (validate == null) {
-                                  var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == userAccountController.text).accId;
-                                  var total = double.parse(bondController.tempBondModel.bondTotal!);
-                                  bondController.tempBondModel.bondRecord?.add(BondRecordModel("0", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "BondRecDescription"));
-                                  if (isNew) {
-                                    globalController.addGlobalBond(bondController.tempBondModel);
-                                    isNew = false;
-                                    controller.isEdit = false;
-                                  } else {
-                                    globalController.updateGlobalBond(bondController.tempBondModel);
-                                    isNew = false;
-                                    controller.isEdit = false;
-                                  }
-                                } else {
-                                  Get.snackbar("خطأ", validate);
-                                }
-                              },
-                              child: Text("قم بالتغييرات")),
-                        ],
-                      ));
-              return false;
-            } else {
+            // if (controller.isEdit) {
+            //   showDialog(
+            //       context: context,
+            //       builder: (context) => AlertDialog(
+            //             title: Text("هل تريد تجاهل التغييرات"),
+            //             actions: [
+            //               ElevatedButton(
+            //                   onPressed: () {
+            //                     controller.restoreOldData();
+            //                     bondController.initPage(bondController.tempBondModel.bondType);
+            //                     isNew = false;
+            //                     controller.isEdit = false;
+            //                     Get.back();
+            //                     Get.back();
+            //                   },
+            //                   child: Text("تجاهل")),
+            //               ElevatedButton(
+            //                   onPressed: () {
+            //                     var validate = bondController.checkValidate();
+            //                     if (validate == null) {
+            //                       var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == userAccountController.text).accId;
+            //                       var total = double.parse(bondController.tempBondModel.bondTotal!);
+            //                       bondController.tempBondModel.bondRecord?.add(BondRecordModel("0", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "BondRecDescription"));
+            //                       if (isNew) {
+            //                         globalController.addGlobalBond(bondController.tempBondModel);
+            //                         isNew = false;
+            //                         controller.isEdit = false;
+            //                       } else {
+            //                         globalController.updateGlobalBond(bondController.tempBondModel);
+            //                         isNew = false;
+            //                         controller.isEdit = false;
+            //                       }
+            //                     } else {
+            //                       Get.snackbar("خطأ", validate);
+            //                     }
+            //                   },
+            //                   child: Text("قم بالتغييرات")),
+            //             ],
+            //           ));
+            //   return false;
+            // } else {
               return true;
-            }
+            // }
           },
           // )
           child: Scaffold(
@@ -145,7 +145,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                 centerTitle: true,
                 title: Text((bondController.bondModel.bondCode ?? "سند جديد")+" "+getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
                 leading: BackButton(),
-                actions: isNew
+                actions:  !checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)?[]:isNew
                     ? [
                         Text("الرمز التسلسلي: "),
                         SizedBox(

@@ -144,36 +144,7 @@ class _AddProductState extends State<AddProduct> {
                         item(text: "الباركود",controller:barcodeController , inputFormatters: [FilteringTextInputFormatter.digitsOnly],onChange:(_) {
                           editedProduct.prodBarcode = _;
                           isEdit = true;
-                        }),
-                        SizedBox(height: 20,),
-                        Row(
-                          children: [
-                            SizedBox(
-                                width:70,
-                                child: Text("يخضع للضريبة")),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: StatefulBuilder(builder: (context, setstate) {
-                                return Checkbox(
-                                    mouseCursor: editedProduct.prodId == null ? null : SystemMouseCursors.forbidden,
-                                    value: hasVat,
-                                    onChanged: editedProduct.prodId == null
-                                        ? (_) {
-                                      setstate(() {
-                                        hasVat = _!;
-                                        editedProduct.prodHasVat = _;
-                                        isEdit = true;
-                                      });
-                                    }
-                                        : (_) {});
-                              }),
-                            ),
-                          ],
-                        ),
+                        }),                       
                         SizedBox(height: 30,),
                         Row(
                           children: [
@@ -354,7 +325,6 @@ class _AddProductState extends State<AddProduct> {
       minPriceController.text = _.prodMinPrice??"0";
       barcodeController.text = _.prodBarcode!;
       productType=_.prodType;
-      hasVat = _.prodHasVat ?? false;
       isGroup = _.prodIsGroup ?? false;
       // editedProduct.prodParentId = _.prodParentId ;
       // editedProduct.prodIsParent=_.prodParentId==null;
@@ -369,7 +339,6 @@ class _AddProductState extends State<AddProduct> {
       editedProduct.prodIsLocal = false;
 
       editedProduct.prodType = Const.productTypeStore;
-      editedProduct.prodHasVat = true;
       editedProduct.prodIsGroup = false;
       if(widget.oldBarcode!=null){
         barcodeController.text=widget.oldBarcode!;
@@ -427,7 +396,7 @@ class _AddProductState extends State<AddProduct> {
             ),
             SizedBox(
               height: 50,
-              width: 200,
+              width: 400,
               child: TextFormField(
                 inputFormatters:inputFormatters ,
                 controller: controller,

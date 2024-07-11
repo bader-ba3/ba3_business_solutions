@@ -43,7 +43,7 @@ class InvoiceRecordSource extends DataGridSource {
          var prod = getProductModelFromId(records[i].invRecProduct.toString());
         records[i].invRecVat = !isPatternHasVat
             ? 0.0
-            : !(prod!.prodHasVat!)
+            : !(prod!.prodIsLocal!)
                 ? 0.0
                 : (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat), i))! * getVatFromName(accountVat);
         // : double.parse(((records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat)))! * (getVatFromName(accountVat))).toStringAsFixed(2));
@@ -229,10 +229,10 @@ class InvoiceRecordSource extends DataGridSource {
     records[dataRowIndex].invRecProduct = result.prodId!.toString();
     records[dataRowIndex].invRecIsLocal = result.prodIsLocal;
     records[dataRowIndex].invRecId = (dataRowIndex + 1).toString();
-    records[dataRowIndex].invRecSubTotal = (searchLastPrice(result.prodId!, vat, dataRowIndex) / (result.prodHasVat! ? (vat + 1) : 1));
+    records[dataRowIndex].invRecSubTotal = (searchLastPrice(result.prodId!, vat, dataRowIndex) / (result.prodIsLocal! ? (vat + 1) : 1));
     records[dataRowIndex].invRecVat = !isPatternHasVat
         ? 0
-        : (result.prodHasVat ?? false)
+        : (result.prodIsLocal ?? false)
             ? (searchLastPrice(result.prodId!, vat, dataRowIndex) - (searchLastPrice(result.prodId!, vat, dataRowIndex) / (vat + 1)))
             : 0;
     records[dataRowIndex].invRecQuantity = 1;
@@ -257,7 +257,7 @@ class InvoiceRecordSource extends DataGridSource {
       displayText= double.parse(displayText).toStringAsFixed(2);
     }
     return Container(
-      color:effectiveRows.indexOf(dataGridRow) % 2 == 0?Color(color!).withOpacity(0.2): Colors.transparent,
+      color:effectiveRows.indexOf(dataGridRow) % 2 == 0?Color(color!).withOpacity(0.2): Colors.grey.shade300,
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         autofocus: true,
@@ -306,7 +306,7 @@ class InvoiceRecordSource extends DataGridSource {
         return Color(color!).withOpacity(0.2);
       }
 
-      return Colors.transparent;
+      return Colors.grey.shade300;
     }
 
     return DataGridRowAdapter(

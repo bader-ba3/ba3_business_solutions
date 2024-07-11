@@ -225,7 +225,7 @@ Future<String> getSellerComplete(text) async {
 String getSellerIdFromText(text) {
   var sellerController = Get.find<SellersViewModel>();
   if (text != null && text != " " && text != "") {
-    return sellerController.allSellers.values.toList().firstWhereOrNull((element) => element.sellerName == text)?.sellerId??"";
+    return sellerController.allSellers.values.toList().firstWhereOrNull((element) => element.sellerName!.contains(text))?.sellerId??"";
   } else {
     return "";
   }

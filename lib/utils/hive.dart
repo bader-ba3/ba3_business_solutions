@@ -59,6 +59,7 @@ class HiveDataBase {
     if(isFree.get("isFree")==null){
       isFree.put("isFree", false);
     }
+   
   }
 
   static String getMyReadFlag(){
@@ -71,6 +72,16 @@ class HiveDataBase {
 
   static Future<void> setIsFree(bool type) async {
     isFree.put("isFree", type);
+  }
+static deleteAllLocal() {
+    HiveDataBase.globalModelBox.deleteFromDisk();
+    HiveDataBase.accountModelBox.deleteFromDisk();
+    HiveDataBase.storeModelBox.deleteFromDisk();
+    // HiveDataBase.productModelBox.deleteFromDisk();
+    HiveDataBase.lastChangesIndexBox.deleteFromDisk();
+    HiveDataBase.constBox.deleteFromDisk();
+    HiveDataBase.isNewUser.deleteFromDisk();
+    HiveDataBase.isFree.deleteFromDisk();
   }
 
 }

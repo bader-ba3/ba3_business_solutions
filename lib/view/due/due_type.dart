@@ -33,7 +33,7 @@ class _DueTypeState extends State<DueType> {
         body: Column(
           children: [
             Item("معاينة الاستحقاق",(){
-              checkPermissionForOperation(Const.roleUserRead , Const.roleViewPattern).then((value) {
+              checkPermissionForOperation(Const.roleUserRead , Const.roleViewDue).then((value) {
                 if(value) Get.to(()=>AllDueView());
               });
             }),

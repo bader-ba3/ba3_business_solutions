@@ -29,7 +29,7 @@ class _AllInventoryViewState extends State<AllInventoryView> {
                 ?"عرض المواد التي تم جردها"
                 :"عرض جميع المواد")),  SizedBox(width: 10,),
           ],
-          title: Text("معايية الجرد"),
+          title: Text("معاينة الجرد"),
         ),
         body: GetBuilder<ProductViewModel>(builder: (controller) {
           return Padding(

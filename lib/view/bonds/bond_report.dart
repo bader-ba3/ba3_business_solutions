@@ -33,26 +33,26 @@ class _BondReportState extends State<BondReport> {
                       SizedBox(width: 10,),
                       SizedBox(
                         width: 100,
-                        child: Text("التاريخ"),),
+                        child: Text("التاريخ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),),
                       SizedBox(
                           width: 100,
-                          child: Text("النوع")),
+                          child: Text("النوع",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),),
                       SizedBox(
                         width: 100,),
                       SizedBox(
                         width: 100,
-                        child: Text("الدائن"),),
+                        child: Text("الدائن",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),),
                       SizedBox(
                         width: 100,),
                       SizedBox(
                         width: 100,
-                        child: Text("المدين"),),
+                        child: Text("المدين",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),),
                     ],
                   ),
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: 1,
+                    itemCount: allBond.length,
                     itemBuilder: (context, index) {
                       GlobalModel model = allBond[index];
                     return Column(
@@ -94,22 +94,25 @@ class _BondReportState extends State<BondReport> {
                               ),
                               SizedBox(
                                 width: 100,
-                                child: Text("الحساب"),
+                                child: Text("الحساب",style: TextStyle(fontSize: 18),),
                               ),
                               SizedBox(
                                 width: 100,
                               ),
                               SizedBox(
                                 width: 100,
-                                child:Text( "دائن",)),
+                                child:Text( "دائن",style: TextStyle(fontSize: 18),),
+                                ),
                               SizedBox(
                                 width: 100,),
                               SizedBox(
                                   width: 100,
-                                  child:Text( "المدين",)),
+                                  child:Text( "المدين",style: TextStyle(fontSize: 18),),
+                                  ),
                               SizedBox(
                                   width: 100,
-                                  child:Text( "الوصف",)),
+                                  child:Text( "الوصف",style: TextStyle(fontSize: 18),),
+                                  ),
                             ],
                           ),
                         ),
@@ -141,11 +144,15 @@ class _BondReportState extends State<BondReport> {
                                 width: 100,
                                 child:Text( i.bondRecDebitAmount!.toStringAsFixed(2)),),
                               SizedBox(
-                                width: 200,
                                 child:Text( i.bondRecDescription.toString()),),
                             ],
                           ),
                         ),
+                      Container(
+                        height: 5,
+                        width: Get.width*0.9,
+                       decoration: BoxDecoration( color: Colors.grey.shade400,borderRadius: BorderRadius.circular(8)),
+                      )
                       ],
                     );
                   },),

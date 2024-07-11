@@ -25,7 +25,7 @@ class _AddSellerState extends State<AddSeller> {
     super.initState();
     if (widget.oldKey == null) {
       model = SellerModel();
-      int code = int.parse(sellerController.allSellers.values.last.sellerCode??"0")+1;
+      int code = sellerController.allSellers.isEmpty?0:int.parse(sellerController.allSellers.values.last.sellerCode??"0")+1;
       codeController.text = code.toString();
     } else {
       model = sellerController.allSellers[widget.oldKey]!;

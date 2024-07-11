@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/widget/target_pointer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +11,7 @@ import 'package:get/get.dart';
 
 import '../../model/target_model.dart';
 
-List<({String name, bool isDone})> a = [
-  (name: "بيع ١٠٠ كفر", isDone: true),
-  (name: "بيع ١٠٠ كفر", isDone: false),
-  (name: "بيع ١٠٠ كفر", isDone: false),
-  (name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", isDone: true),
-];
+
 
 class SellerTarget extends StatefulWidget {
   final String sellerId;
@@ -31,6 +27,7 @@ class _SellerTargetState extends State<SellerTarget> {
   final GlobalKey<TargetPointerWidgetState> mobileKey = GlobalKey<TargetPointerWidgetState>();
   late ({Map<String, int> productsMap, double mobileTotal, double otherTotal}) sellerData;
   TargetViewModel targetViewModel = Get.find<TargetViewModel>();
+
   @override
   void initState() {
     sellerData = targetViewModel.checkTask(widget.sellerId);
@@ -111,6 +108,7 @@ class _SellerTargetState extends State<SellerTarget> {
                 mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
               }
               return GetBuilder<TargetViewModel>(builder: (controller) {
+               List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskUserListId!.contains(getMyUserUserId()),).toList();
                 return Column(
                   children: [
                     Padding(
@@ -120,7 +118,7 @@ class _SellerTargetState extends State<SellerTarget> {
                         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    for (TaskModel model in controller.allTarget.values.toList())
+                    for (TaskModel model in allUserTask)
                       Builder(builder: (context) {
                         int count = sellerData.productsMap[model.taskProductId!] ?? 0;
                         bool isDone = count >= model.taskQuantity!;

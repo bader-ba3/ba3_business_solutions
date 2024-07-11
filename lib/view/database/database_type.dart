@@ -24,17 +24,20 @@ class DataBaseType extends StatefulWidget {
 
 class _DataBaseTypeState extends State<DataBaseType> {
   DataBaseViewModel dataBaseController=Get.find<DataBaseViewModel>();
-
+bool isAdmin = false;
   @override
   void initState() {
-    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value){
-    checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewUserManagement).then((value) {
-      if(value){
-      }else{
-        Get.back();
-      }
-    });
-     });
+    // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+    //   checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewDataBase).then((value) {
+    //     print(value);
+    //     if (value) {
+    //       isAdmin = true;
+    //       setState(() {
+
+    //       });
+    //     }
+    //   });
+    // });
     super.initState();
 
   }
@@ -47,7 +50,7 @@ class _DataBaseTypeState extends State<DataBaseType> {
         appBar: AppBar(
           title: Text("إدارة قواعد البيانات"),
         ),
-        body: Column(
+        body:Column(
           children: [
             Item("إضافة قاعدة بيانات",(){
               TextEditingController textController = TextEditingController();

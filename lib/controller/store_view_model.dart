@@ -28,7 +28,6 @@ class StoreViewModel extends GetxController {
 
   StoreModel? editStoreModel;
 
-
   StoreViewModel() {
     getAllStore();
   }
@@ -38,29 +37,71 @@ class StoreViewModel extends GetxController {
 
   void initGlobalStore(GlobalModel globalModel) {
     Map<String, StoreRecProductModel> allRecTotal = {};
-    bool isPay = globalModel.invType == Const.invoiceTypeBuy;
-    int correctQuantity = isPay ? 1 : -1;
-    for (int i = 0; i < globalModel.invRecords!.length; i++) {
-      if (globalModel.invRecords![i].invRecId != null) {
-        bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == Const.productTypeStore;
-        if (isStoreProduct) {
-          allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
-            storeRecProductId: globalModel.invRecords![i].invRecProduct,
-            storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
-            storeRecProductQuantity: (correctQuantity * globalModel.invRecords![i].invRecQuantity!).toString(),
-            storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
-          );
+    Map<String, StoreRecProductModel> allRecTotal2 = {};
+
+    if (globalModel.invType != Const.invoiceTypeChange) {
+      bool isPay = globalModel.invType == Const.invoiceTypeBuy;
+      int correctQuantity = isPay ? 1 : -1;
+      for (int i = 0; i < globalModel.invRecords!.length; i++) {
+        if (globalModel.invRecords![i].invRecId != null) {
+          bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == Const.productTypeStore;
+          if (isStoreProduct) {
+            allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
+              storeRecProductId: globalModel.invRecords![i].invRecProduct,
+              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
+              storeRecProductQuantity: (correctQuantity * globalModel.invRecords![i].invRecQuantity!).toString(),
+              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
+            );
+          }
         }
       }
-    }
-    // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
-    StoreRecordModel model = StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
 
-    if (storeMap[model.storeRecId]?.stRecords == null) {
-      storeMap[model.storeRecId]?.stRecords = [model];
+      // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
+      StoreRecordModel model = StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
+
+      if (storeMap[model.storeRecId]?.stRecords == null) {
+        storeMap[model.storeRecId]?.stRecords = [model];
+      } else {
+        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model.storeRecId]?.stRecords.add(model);
+      }
     } else {
-      storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
-      storeMap[model.storeRecId]?.stRecords.add(model);
+      for (int i = 0; i < globalModel.invRecords!.length; i++) {
+        if (globalModel.invRecords![i].invRecId != null) {
+          bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == Const.productTypeStore;
+          if (isStoreProduct) {
+            allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
+              storeRecProductId: globalModel.invRecords![i].invRecProduct,
+              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
+              storeRecProductQuantity: (-1 * globalModel.invRecords![i].invRecQuantity!).toString(),
+              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
+            );
+            allRecTotal2[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
+              storeRecProductId: globalModel.invRecords![i].invRecProduct,
+              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
+              storeRecProductQuantity: (1 * globalModel.invRecords![i].invRecQuantity!).toString(),
+              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
+            );
+          }
+        }
+      }
+
+      // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
+      StoreRecordModel model = StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
+      StoreRecordModel model2 = StoreRecordModel(storeRecId: globalModel.invSecStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal2);
+
+      if (storeMap[model.storeRecId]?.stRecords == null) {
+        storeMap[model.storeRecId]?.stRecords = [model];
+      } else {
+        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model.storeRecId]?.stRecords.add(model);
+      }
+      if (storeMap[model2.storeRecId]?.stRecords == null) {
+        storeMap[model2.storeRecId]?.stRecords = [model2];
+      } else {
+        storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model2.storeRecId]?.stRecords.add(model2);
+      }
     }
     if (openedStore != null) {
       initStorePage(openedStore);
@@ -71,7 +112,7 @@ class StoreViewModel extends GetxController {
     storeMap[globalModel.invStorehouse]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
   }
 
-  addStoreToMemory(Map json){
+  addStoreToMemory(Map json) {
     StoreModel storeModel = StoreModel.fromJson(json);
     storeMap[storeModel.stId!] = storeModel;
     HiveDataBase.storeModelBox.put(storeModel.stId, storeModel);
@@ -86,18 +127,19 @@ class StoreViewModel extends GetxController {
     recordViewDataSource = StoreRecordDataSource(stores: storeMap);
     update();
   }
+
   getAllStore() {
-    if(HiveDataBase.storeModelBox.isEmpty) {
+    if (HiveDataBase.storeModelBox.isEmpty) {
       FirebaseFirestore.instance.collection(Const.storeCollection).get().then((value) {
-      storeMap.clear();
-      for (var element in value.docs) {
-        HiveDataBase.storeModelBox.put(element.id,StoreModel.fromJson(element.data()) );
-        storeMap[element.id] = StoreModel.fromJson(element.data());
-      }
-      recordViewDataSource = StoreRecordDataSource(stores: storeMap);
-      update();
-    });
-    }else{
+        storeMap.clear();
+        for (var element in value.docs) {
+          HiveDataBase.storeModelBox.put(element.id, StoreModel.fromJson(element.data()));
+          storeMap[element.id] = StoreModel.fromJson(element.data());
+        }
+        recordViewDataSource = StoreRecordDataSource(stores: storeMap);
+        update();
+      });
+    } else {
       storeMap.clear();
       for (StoreModel element in HiveDataBase.storeModelBox.values.toList()) {
         storeMap[element.stId!] = element;
@@ -126,7 +168,7 @@ class StoreViewModel extends GetxController {
     }
     editStoreModel?.stId = generateId(RecordType.store);
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();
@@ -134,7 +176,7 @@ class StoreViewModel extends GetxController {
 
   editStore() {
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();
@@ -159,7 +201,7 @@ class StoreViewModel extends GetxController {
   deleteStore(id) {
     StoreModel editStoreModel = storeMap[id]!;
     _storeCollectionRef.doc(editStoreModel?.stId).delete();
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>() ;
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addRemoveChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
     update();

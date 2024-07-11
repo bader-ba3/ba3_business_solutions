@@ -65,8 +65,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           Get.back();
                         }
                       });
-    }
-  });
+                          }
+                        });
                     },
                     child: Text("حذف"))
               else

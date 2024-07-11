@@ -54,9 +54,14 @@ class AllBonds extends StatelessWidget {
                   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
                 } else if (double.tryParse(mapEntry.value.toString()) != null) {
                   return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
-                }else if(DateTime.tryParse(mapEntry.value.toString())!=null){
-                  return DataGridCell<DateTime>(columnName: mapEntry.key, value: DateTime.parse(mapEntry.value.toString()));
-                }else{
+                }
+                // else if(mapEntry.key == "bondDate"){
+                //   int day = int.parse(mapEntry.value.toString().split("-")[2]);
+                //   int month =  int.parse(mapEntry.value.toString().split("-")[1]);
+                //   int year =  int.parse(mapEntry.value.toString().split("-")[0]);
+                //   return DataGridCell<DateTime>(columnName: mapEntry.key, value: DateTime(year,month,day));
+                // }
+                else{
                   return DataGridCell<String>(columnName: mapEntry.key, value: (mapEntry.value??"-").toString());
                 }
               }).cast<DataGridCell<dynamic>>().toList()

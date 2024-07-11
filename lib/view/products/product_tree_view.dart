@@ -26,7 +26,11 @@ class ProductTreeView extends StatelessWidget {
                 onPressed: () {
                   productController.treeController?.collapseAll();
                 },
-                child: Text("-")),
+                child: Text("-")), ElevatedButton(
+                onPressed: () {
+                  productController.correct();
+                },
+                child: Text("-aaaaa")),
             SizedBox(
               width: 20,
             ),

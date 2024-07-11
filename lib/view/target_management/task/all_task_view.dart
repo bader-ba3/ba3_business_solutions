@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/target_management/task/add_task.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,6 +44,22 @@ class _AllTaskViewState extends State<AllTaskView> {
                         Text("بعدد",style: TextStyle(fontSize: 20),),
                         SizedBox(width: 5,),
                         Text(model.value.taskQuantity.toString(),style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 20,),
+                        ElevatedButton(onPressed: (){
+                          Get.defaultDialog(
+                            title: "قائمة المشاركين",
+                            content:  Container(
+                              height: Get.width/4,
+                              width: Get.width/4,
+                              child: ListView.builder(
+                                itemCount: model.value.taskUserListId!.length,
+                                itemBuilder: (context, index) {
+                                String user = model.value.taskUserListId![index];
+                                return Text(getUserModelById(user).userName.toString());
+                              },),
+                            )
+                          );
+                        }, child: Text("قائمة المشاركين"))
                       ],
                     ),
                   ),

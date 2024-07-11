@@ -78,52 +78,52 @@ class _BondDetailsViewState extends State<BondDetailsView> {
       child: GetBuilder<BondViewModel>(builder: (controller) {
         return WillPopScope(
           onWillPop: () async {
-            if (controller.isEdit) {
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text("هل تريد تجاهل التغييرات"),
-                        actions: [
-                          ElevatedButton(
-                              onPressed: () {
-                                controller.restoreOldData();
-                                controller.initPage(bondController.tempBondModel.bondType);
-                                isNew = false;
-                                controller.isEdit = false;
-                                Get.back();
-                                Get.back();
-                              },
-                              child: Text("تجاهل")),
-                          ElevatedButton(
-                              onPressed: () {
-                                var validate=bondController.checkValidate();
-                                if(validate==null) {
-                                  checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
-                                    if (value) {
-                                      if (controller.tempBondModel.bondTotal != "0") {
-                                        Get.back();
-                                        Get.snackbar("خطأ", "يجب ان يكون المدين يساوي الدائن");
-                                      } else {
-                                        globalController.updateGlobalBond(bondController.tempBondModel);
-                                        isNew = false;
-                                        controller.isEdit = false;
-                                        Get.back();
-                                      }
-                                    }
-                                  });
+            // if (controller.isEdit) {
+            //   showDialog(
+            //       context: context,
+            //       builder: (context) => AlertDialog(
+            //             title: Text("هل تريد تجاهل التغييرات"),
+            //             actions: [
+            //               ElevatedButton(
+            //                   onPressed: () {
+            //                     controller.restoreOldData();
+            //                     controller.initPage(bondController.tempBondModel.bondType);
+            //                     isNew = false;
+            //                     controller.isEdit = false;
+            //                     Get.back();
+            //                     Get.back();
+            //                   },
+            //                   child: Text("تجاهل")),
+            //               ElevatedButton(
+            //                   onPressed: () {
+            //                     var validate=bondController.checkValidate();
+            //                     if(validate==null) {
+            //                       checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewBond).then((value) {
+            //                         if (value) {
+            //                           if (controller.tempBondModel.bondTotal != "0") {
+            //                             Get.back();
+            //                             Get.snackbar("خطأ", "يجب ان يكون المدين يساوي الدائن");
+            //                           } else {
+            //                             globalController.updateGlobalBond(bondController.tempBondModel);
+            //                             isNew = false;
+            //                             controller.isEdit = false;
+            //                             Get.back();
+            //                           }
+            //                         }
+            //                       });
 
-                                }else{
-                                  Get.snackbar("خطأ", validate);
-                                }
+            //                     }else{
+            //                       Get.snackbar("خطأ", validate);
+            //                     }
 
-                              },
-                              child: Text("قم بالتغييرات")),
-                        ],
-                      ));
-              return false;
-            } else {
+            //                   },
+            //                   child: Text("قم بالتغييرات")),
+            //             ],
+            //           ));
+            //   return false;
+            // } else {
               return true;
-            }
+            // }
           },
           // )
           child: Scaffold(
@@ -131,7 +131,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                 centerTitle: true,
                 title: Text((bondController.bondModel.bondId ?? "سند جديد")+" "+  getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
                 leading: BackButton(),
-                actions: isNew
+                actions: !checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)?[]: isNew
                     ? [
                         SizedBox(
                           width: 80,

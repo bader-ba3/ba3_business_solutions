@@ -62,6 +62,9 @@ dependencies:
   flutter_tree_pro:
   tab_container:
   flutter_svg:
+  translator:
+  print_bluetooth_thermal:
+  esc_pos_utils_plus:
 
 dev_dependencies:
   flutter_test:

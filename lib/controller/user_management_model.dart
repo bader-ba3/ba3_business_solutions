@@ -9,6 +9,7 @@ import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
+import 'package:ba3_business_solutions/view/main/main_screen.dart';
 import 'package:ba3_business_solutions/view/user_management/login_view.dart';
 import 'package:ba3_business_solutions/view/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,6 +49,7 @@ class UserManagementViewModel extends GetxController {
       allRole.clear();
       for (var element in event.docs) {
         allRole[element.id] = RoleModel.fromJson(element.data());
+        WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update(),);
       }
     });
   }
@@ -59,10 +61,14 @@ class UserManagementViewModel extends GetxController {
           userStatus = UserManagementStatus.first;
           Get.offAll(() => LoginView());
         } else if (value.docs.isNotEmpty) {
+          if(userStatus != UserManagementStatus.login){
           myUserModel = UserModel.fromJson(value.docs.first.data());
           userStatus = UserManagementStatus.login;
+         
           Get.put(GlobalViewModel(), permanent: true);
           Get.put(ChangesViewModel(), permanent: true);
+           update();
+          }
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
             userStatus = UserManagementStatus.first;
@@ -92,6 +98,7 @@ class UserManagementViewModel extends GetxController {
             userStatus = UserManagementStatus.login;
             Get.put(GlobalViewModel(), permanent: true);
             Get.put(ChangesViewModel(), permanent: true);
+             update();
           });
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
@@ -202,6 +209,15 @@ bool checkPermission(role, page) {
   UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
   Map<String, List<String>>? userRole = userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[page]?.contains(role) ?? false) {
+    return true;
+  } else {
+    return false;
+  }
+}
+bool checkMainPermission(role) {
+  UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
+  Map<String, List<String>>? userRole = userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
+  if (userRole?[role]?.isNotEmpty ?? false) {
     return true;
   } else {
     return false;

@@ -5,11 +5,13 @@ import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,6 +60,7 @@ class InvoiceViewModel extends GetxController {
   TextEditingController sellerController = TextEditingController();
   TextEditingController invCodeController = TextEditingController();
   TextEditingController storeController = TextEditingController();
+  TextEditingController storeNewController = TextEditingController();
   TextEditingController billIDController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   TextEditingController bondIdController = TextEditingController();
@@ -422,7 +425,7 @@ class InvoiceViewModel extends GetxController {
 
   buildSource(String billId) {
     records = invoiceModel[billId]!.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
-    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
+    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat:secondaryAccountController.text==""?"a": getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
   }
 
   buildDiscountSource(String billId) {
@@ -480,14 +483,22 @@ class InvoiceViewModel extends GetxController {
     initModel = GlobalModel();
     initModel.patternId = patternId;
     initCodeList(patternId);
+    PatternModel patternModel = patternController.patternModel[patternId]!;
     invCodeController.text = getNextCodeInv();
-    primaryAccountController.text = getAccountNameFromId(patternController.patternModel[patternId]!.patPrimary!);
-    secondaryAccountController.text = getAccountNameFromId(patternController.patternModel[patternId]!.patSecondary!);
-    storeController.text = getStoreNameFromId(patternController.patternModel[patternId]!.patStore!);
-    var vat = accountController.accountList[patternController.patternModel[patternId]!.patSecondary!]!.accVat;
+    var vat ="a";
+    if(patternModel.patType != Const.invoiceTypeChange){
+    primaryAccountController.text = getAccountNameFromId(patternModel.patPrimary!);
+    secondaryAccountController.text = getAccountNameFromId(patternModel.patSecondary!);
+    vat = accountController.accountList[patternModel.patSecondary!]!.accVat!;
+    }else{
+      primaryAccountController.clear();
+    secondaryAccountController.clear();
+      storeNewController.text = getStoreNameFromId(patternModel.patNewStore!);
+    }
+     storeController.text = getStoreNameFromId(patternModel.patStore!);
     bondIdController.clear();
-    if(patternController.patternModel[patternId]!.patColor!=null){
-      colorInvoice=patternController.patternModel[patternId]!.patColor!;
+    if(patternModel.patColor!=null){
+      colorInvoice=patternModel.patColor!;
     }
     invCustomerAccountController.clear();
     noteController.clear();
@@ -496,7 +507,7 @@ class InvoiceViewModel extends GetxController {
     if(getMyUserSellerId()!=null){
       sellerController.text=getSellerNameFromId(getMyUserSellerId());
     }
-    dateController=DateTime.now().toString().split(" ")[0];
+    dateController=DateTime.now().toString().split(".")[0];
     records = [InvoiceRecordModel(prodChoosePriceMethod:Const.invoiceChoosePriceMethodeDefault)];
     discountRecords = [InvoiceDiscountRecordModel()];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat!);
@@ -525,15 +536,24 @@ class InvoiceViewModel extends GetxController {
     if (bool) {
       initModel = invoiceModel[invId]!;
     }
-    primaryAccountController.text = getAccountNameFromId(patternController.patternModel[initModel.patternId]!.patPrimary!);
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
-    secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
     invCustomerAccountController.text = initModel.invCustomerAccount!=null ?getAccountNameFromId(initModel.invCustomerAccount):"";
-    sellerController.text = getSellerNameFromId(initModel.invSeller);
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     if(patternController.patternModel[initModel.patternId]!.patColor!=null){
       colorInvoice=patternController.patternModel[initModel.patternId]!.patColor!;
+    }
+
+    if(patternModel.patType != Const.invoiceTypeChange&&patternModel.patType != Const.invoiceTypeAdd){
+          secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
+    primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
+        sellerController.text = getSellerNameFromId(initModel.invSeller);
+
+    }else{
+      primaryAccountController.clear();
+    secondaryAccountController.clear();
+      storeNewController.text = getStoreNameFromId(initModel.invSecStorehouse);
     }
     mobileNumberController.text = initModel.invMobileNumber??"";
     noteController.text = initModel.invComment!;
@@ -555,6 +575,28 @@ class InvoiceViewModel extends GetxController {
     }
     return false;
   }
+
+    bool checkAllDiscountRecords() {
+    for (var element in discountRecords) {
+  
+      if(( element.discountId != null && (element.accountId == null || element.percentage == null || element.total == null))){
+          return true;
+      }
+     
+    }
+    double _total =0;
+    if(discountRecords.length>1){
+      total = discountRecords.map((e)=>e.total??0).reduce((value, element) => value+element);
+    }else if (discountRecords.length == 1){
+      total =discountRecords.first.total??0;
+    }
+    if(_total>computeWithoutVatTotal()){
+     
+        return true;
+    }
+    return false;
+  }
+
 
   bool checkAllRecordPrice() {
     for (var element in records) {
@@ -618,6 +660,9 @@ class InvoiceViewModel extends GetxController {
   bool checkStoreComplete() {
     return storeViewController.storeMap.values.map((e) => e.stName?.toLowerCase()).toList().contains(storeController.text.toLowerCase());
   }
+ bool checkStoreNewComplete() {
+    return storeViewController.storeMap.values.map((e) => e.stName?.toLowerCase()).toList().contains(storeNewController.text.toLowerCase());
+  }
 
   bool checkSellerComplete() {
     return sellerViewController.allSellers.values.map((e) => e.sellerName?.toLowerCase()).toList().contains(sellerController.text.toLowerCase());
@@ -680,10 +725,10 @@ class InvoiceViewModel extends GetxController {
      newRecord[i].invRecProduct = result[i].prodId!.toString();
      newRecord[i].invRecId = (i + 1).toString();
      newRecord[i].prodChoosePriceMethod = Const.invoiceChoosePriceMethodeDefault;
-     newRecord[i].invRecSubTotal = price / (result[i].prodHasVat! ? (vat + 1) : 1);
+     newRecord[i].invRecSubTotal = price / (result[i].prodIsLocal! ? (vat + 1) : 1);
      newRecord[i].invRecVat = !isPatternHasVat
          ? 0
-         : (result[i].prodHasVat ?? false)
+         : (result[i].prodIsLocal ?? false)
         ? (price - (price / (vat + 1)))
          : 0;
      newRecord[i].invRecQuantity = 1;
@@ -699,7 +744,6 @@ class InvoiceViewModel extends GetxController {
   update();
   }
 
-
   void deleteOneRecord(int index) {
     records.removeAt(index);
     for(var i=0;i<records.length-1;i++){
@@ -714,12 +758,11 @@ class InvoiceViewModel extends GetxController {
 
 return totalWithoutVat * input/100;
   }
+  
   double getPercentage(double input) {
     double totalWithoutVat = computeWithoutVatTotal();
     return input / totalWithoutVat *100;
   }
-
-
 
 }
 

@@ -10,6 +10,7 @@ import 'package:ba3_business_solutions/controller/inventory_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
@@ -44,7 +45,8 @@ class GetBinding extends Bindings {
     Get.put(DataBaseViewModel());
     Get.put(CardsViewModel());
     Get.put(TargetViewModel());
-    Get.lazyPut(()=>GlobalViewModel(),fenix: true);
+    Get.put(PrintViewModel());
+    // Get.lazyPut(()=>GlobalViewModel(),fenix: true);
     Get.lazyPut(()=>ChangesViewModel(),fenix: true);
   }
 }

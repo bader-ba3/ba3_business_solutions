@@ -22,15 +22,12 @@ class _TimeTypeState extends State<TimeType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("المستودعات"),
+          title: Text("إدارة الوقت"),
         ),
         body: Column(
           children: [
-            Item("إضافة مستودع",(){
-              Get.to(() => AddStore());
-            }),
-            Item("معاينة الموظفين",(){
-              checkPermissionForOperation(Const.roleUserRead , Const.roleViewStore).then((value) {
+            Item("المؤقت",(){
+              checkPermissionForOperation(Const.roleUserRead , Const.roleViewTimer).then((value) {
                 if(value) Get.to(()=>AllTimeView());
               });
             }),

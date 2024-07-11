@@ -44,7 +44,7 @@ abstract class Const {
   static const minMobileTarget = 1000;
   static const minOtherTarget = 1000;
   ////////////--------------------------------------------------
-  static const changesCollection = 'Changes';
+  static String changesCollection = "$dataName"+"-"+'Changes';
   static const recordCollection = 'Record';
   static String bondsCollection = 'Bonds';
   static String accountsCollection = 'Accounts';
@@ -112,6 +112,7 @@ abstract class Const {
   static const invoiceTypeSales = "invoiceTypeSales";
   static const invoiceTypeBuy = 'invoiceTypeBuy';
   static const invoiceTypeAdd = "invoiceTypeAdd";
+  static const invoiceTypeChange = "invoiceTypeChange";
   ////////////--------------------------------------------------
   static const stCode = "stCode";
   static const stId = "stId";
@@ -167,7 +168,14 @@ abstract class Const {
   static const roleViewTarget = "roleViewTarget";
   static const roleViewInventory = "roleViewInventory";
   static const roleViewUserManagement = "roleViewUserManagement";
-  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewInventory,roleViewTask,roleViewImport,roleViewUserManagement,];
+  static const roleViewDue = "roleViewDue";
+  static const roleViewStatistics = "roleViewStatistics";
+  static const roleViewTimer="roleViewTimer";
+  static const roleViewDataBase="roleViewDataBase";
+  static const roleViewCard="roleViewCard";
+  static const roleViewHome="roleViewHome";
+  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewInventory,roleViewTask,roleViewImport
+  ,roleViewUserManagement,roleViewDue,roleViewStatistics,roleViewTimer,roleViewDataBase,roleViewCard,roleViewHome];
   ////////////--------------------------------------------------
   static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
   static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
@@ -199,10 +207,27 @@ abstract class Const {
   ////////////----------------------------------------------------
   static const userStatusOnline  = "userStatusOnline";
   static const userStatusAway  = "userStatusAway";
+  ////////////----------------------------------------------------
+  static const invPayTypeDue  = "invPayTypeDue";
+  static const invPayTypeCash  = "invPayTypeCash";
+  ////////////----------------------------------------------------
+  static const taskTypeProduct  = "taskTypeProduct";
+  static const taskTypeInventory  = "taskTypeInventory";
 }
 
 
+String getInvPayTypeFromEnum(String type) {
+  switch (type) {
+    case Const.invPayTypeCash:
+      return "نقدي";
+    case Const.invPayTypeDue:
+      return "اجل";
+  }
+  return "UNKNOWN";
+}
+
 String getGlobalTypeFromEnum(String type) {
+  
   switch (type) {
     case Const.globalTypeBond:
       return "سند";
@@ -212,12 +237,15 @@ String getGlobalTypeFromEnum(String type) {
       return "سند يومية";
     case Const.bondTypeDebit:
       return "سند دفع";
+          case Const.bondTypeStart:
+      return "قيد افتتاحي";
     case Const.chequeTypeCatch:
       return "شيك قبض";
     case Const.chequeTypePay:
       return "شيك دفع";
   }
-  return "فاتورة "+getPatModelFromPatternId(type).patName!;
+
+ return "فاتورة "+getPatModelFromPatternId(type).patName!;
 }
 
 String getAccountPaidStatusFromEnum(String type,bool isPositive) {
@@ -249,6 +277,8 @@ String getInvTypeFromEnum(String type) {
       return "شراء";
     case Const.invoiceTypeAdd:
       return "إدخال";
+          case Const.invoiceTypeChange:
+      return "مناقلة";
   }
   return type;
 }
@@ -369,6 +399,18 @@ String getPageNameFromEnum(String type) {
       return "الجرد";
     case Const.roleViewUserManagement:
       return "إدارة المستخدمين";
+      case Const.roleViewDue:
+      return "الاستحقاق";
+            case Const.roleViewStatistics:
+      return "التقارير";
+    case Const.roleViewTimer:
+      return "المؤقت";
+     case Const.roleViewDataBase:
+      return "ادارة قواعد البيانات";
+         case Const.roleViewCard:
+      return "ادارة البطاقات";
+               case Const.roleViewHome:
+      return "الصفحة الرئيسية";
   }
   return "error";
 }

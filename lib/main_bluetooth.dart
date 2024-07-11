@@ -1,6 +1,10 @@
 // import 'dart:async';
 // import 'dart:convert';
 // import 'dart:io';
+// import 'package:ba3_business_solutions/controller/product_view_model.dart';
+// import 'package:ba3_business_solutions/model/global_model.dart';
+// import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+// import 'package:ba3_business_solutions/model/product_model.dart';
 // import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 // import 'package:flutter/services.dart';
 // import 'package:flutter/material.dart';
@@ -8,29 +12,29 @@
 // import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 // import 'package:image/image.dart' as img;
 // import 'package:print_bluetooth_thermal/print_bluetooth_thermal_windows.dart';
-// import 'package:print_bluetooth_thermal_example/image.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatefulWidget {
+
+
+
+// class PrintView extends StatefulWidget {
+//   final GlobalModel globalModel;
+
+//   const PrintView({super.key,required this.globalModel});
 //   @override
-//   _MyAppState createState() => _MyAppState();
+//   _PrintViewState createState() => _PrintViewState();
 // }
-//
-// class _MyAppState extends State<MyApp> {
+
+// class _PrintViewState extends State<PrintView> {
 //   String _info = "";
 //   String _msj = '';
 //   bool connected = false;
 //   List<BluetoothInfo> items = [];
 //   List<String> _options = ["permission bluetooth granted", "bluetooth enabled", "connection status", "update info"];
-//
+
 //   String _selectSize = "2";
 //   final _txtText = TextEditingController(text: "Hello developer");
 //   bool _progress = false;
 //   String _msjprogress = "";
-//
+
 //   String optionprinttype = "58 mm";
 //   List<String> options = ["58 mm", "80 mm"];
 //   late GlobalKey aKey;
@@ -39,7 +43,7 @@
 //     super.initState();
 //     initPlatformState();
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
@@ -56,223 +60,223 @@
 //             child: Column(
 //               crossAxisAlignment: CrossAxisAlignment.start,
 //               children: [
-//                 WidgetToImage(builder: (GlobalKey<State<StatefulWidget>> key) {
-//                   aKey = key;
-//                   double width = 260;
-//                   return Container(
-//                     width: width,
-//                     color: Colors.white,
-//                     child: Column(
-//                       children: [
-//                         Center(
-//                           child: Text(
-//                             "فاتورة ضريبية",
-//                             style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
-//                           ),
-//                         ),
-//                         Image.asset("assets/logo.jpg",  width: 125,),
-//                         SizedBox(height: 5,),
-//                         Text("TRN: 10036 93114 00003",style: TextStyle(fontWeight: FontWeight.w700),),
-//                         SizedBox(height: 10,),
-//                         Container(
-//                           width: width,
-//                           child: Column(
-//                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Text(" Date: "+DateTime.now().toString().split(".")[0]),
-//                               SizedBox(height: 5,),
-//                               Text(" IN NO: INV6584897564"),
-//                               // Text(" Mobile Number: 0562064458"),
-//                               // SizedBox(height: 5,),
-//                               // Text(" Name of Seller: Badr Aldin Almasri"),
-//                               // SizedBox(height: 5,),
-//                               // Text(" des: "),
-//                             ],
-//                           ),
-//                         ),
-//                         SizedBox(
-//                           height: 20,
-//                         ),
-//                         Container(
-//                           width: width,
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               for(var i in List.generate(5, (index) => index,))
-//                                 Padding(
-//                                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-//                                   child: Column(
-//                                     crossAxisAlignment: CrossAxisAlignment.start,
-//                                     children: [
-//                                       Text("Iphone "*(i+1)*5,maxLines: 2,overflow: TextOverflow.ellipsis,),
-//                                       Text.rich(
-//                                         TextSpan(
-//                                           children: [
-//                                             TextSpan(text: '10'),
-//                                             TextSpan(text: '  '),
-//                                             TextSpan(
-//                                               text: 'X',
-//                                               style: TextStyle(fontWeight: FontWeight.bold),
-//                                             ),
-//                                             TextSpan(text: '  '),
-//                                             TextSpan(text: '140 AED'),
-//                                           ],
-//                                         ),
-//                                       ),
-//
-//                                     ],
-//                                   ),
-//                                 ),
-//                             ],
-//                           ),
-//                         ),
-//                         // Container(
-//                         //   color: Colors.grey.shade300,
-//                         //   child: Table(
-//                         //     columnWidths: {0: FlexColumnWidth(3.5)},
-//                         //     children: [
-//                         //       TableRow(children: [
-//                         //         Text(
-//                         //           "Item Name",
-//                         //           style: TextStyle(fontWeight: FontWeight.bold),
-//                         //         ),
-//                         //         Text(
-//                         //           " Q",
-//                         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
-//                         //         ),
-//                         //         Text(
-//                         //           "Unit",
-//                         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
-//                         //         ),
-//                         //         Text(
-//                         //           "VAT",
-//                         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
-//                         //         ),
-//                         //         Text(
-//                         //           "Total",
-//                         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
-//                         //         ),
-//                         //       ]),
-//                         //     ],
-//                         //   ),
-//                         // ),
-//                         // SizedBox(
-//                         //   height: 5,
-//                         // ),
-//                         // Padding(
-//                         //   padding: const EdgeInsets.symmetric(horizontal: 2.0),
-//                         //   child: Table(
-//                         //     columnWidths: {0: FlexColumnWidth(3.5)},
-//                         //     children: [
-//                         //       for(String i in List.generate(6, (index) => index.toString(),))
-//                         //         TableRow(children: [
-//                         //           Padding(
-//                         //             padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 0),
-//                         //             child: Text("Iphone aijhhjdsfkjdsflkdfjk sdfkjhdskjfhkdfh "+i.toString()),
-//                         //           ),
-//                         //           Text("10"),
-//                         //           Text("30"),
-//                         //           Text("50"),
-//                         //           Text("2000"),
-//                         //         ]),
-//                         //     ],
-//                         //   ),
-//                         // ),
-//                         Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Container(
-//                             height: 2,
-//                             color: Colors.black,
-//                           ),
-//                         ),
-//                         Padding(
-//                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-//                           child: Row(
-//                             children: [
-//                               Expanded(flex: 1, child: SizedBox()),
-//                               Expanded(
-//                                   child: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   Row(
-//                                     mainAxisAlignment: MainAxisAlignment.start,
-//                                     children: [Text("Net total"), Spacer(), Text("5")],
-//                                   ),
-//                                   SizedBox(
-//                                     height: 5,
-//                                   ),
-//                                   Row(
-//                                     mainAxisAlignment: MainAxisAlignment.start,
-//                                     children: [Text("VAT 5.0 %"), Spacer(), Text("5")],
-//                                   ),
-//                                   SizedBox(
-//                                     height: 5,
-//                                   ),
-//                                   Container(
-//                                     color: Colors.black,
-//                                     height: 2,
-//                                   ),
-//                                   SizedBox(
-//                                     height: 5,
-//                                   ),
-//                                   Row(
-//                                     mainAxisAlignment: MainAxisAlignment.start,
-//                                     children: [
-//                                       Text(
-//                                         "Total amount",
-//                                         style: TextStyle(fontWeight: FontWeight.bold),
-//                                       ),
-//                                       Spacer(),
-//                                       Text("5")
-//                                     ],
-//                                   ),
-//                                   SizedBox(
-//                                     height: 5,
-//                                   ),
-//                                   Container(
-//                                     color: Colors.grey,
-//                                     height: 1,
-//                                   ),
-//                                   SizedBox(
-//                                     height: 1,
-//                                   ),
-//                                   Container(
-//                                     color: Colors.grey,
-//                                     height: 1,
-//                                   ),
-//                                 ],
-//                               )),
-//                             ],
-//                           ),
-//                         ),
-//                         Container(
-//                           width: width,
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               SizedBox(height: 10,),
-//                               Text(
-//                                 " Mobile Number: 0568666411",
-//                                 style: TextStyle(fontSize: 14, color: Colors.black),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                         SizedBox(height: 10,),
-//                         Text(
-//                           " Thanks for visiting BA3",
-//                           style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.bold),
-//                         ),
-//                         Container(
-//                           color: Colors.white,
-//                           height: 100,
-//                         ),
-//                       ],
-//                     ),
-//                   );
-//                 }),
-//                 Text('info: $_info\n '),
+//                 // WidgetToImage(builder: (GlobalKey<State<StatefulWidget>> key) {
+//                 //   aKey = key;
+//                 //   double width = 260;
+//                 //   return Container(
+//                 //     width: width,
+//                 //     color: Colors.white,
+//                 //     child: Column(
+//                 //       children: [
+//                 //         Center(
+//                 //           child: Text(
+//                 //             "فاتورة ضريبية",
+//                 //             style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
+//                 //           ),
+//                 //         ),
+//                 //         Image.asset("assets/logo.jpg",  width: 125,),
+//                 //         SizedBox(height: 5,),
+//                 //         Text("TRN: 10036 93114 00003",style: TextStyle(fontWeight: FontWeight.w700),),
+//                 //         SizedBox(height: 10,),
+//                 //         Container(
+//                 //           width: width,
+//                 //           child: Column(
+//                 //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 //             crossAxisAlignment: CrossAxisAlignment.start,
+//                 //             children: [
+//                 //               Text(" Date: "+DateTime.now().toString().split(".")[0]),
+//                 //               SizedBox(height: 5,),
+//                 //               Text(" IN NO: INV6584897564"),
+//                 //               // Text(" Mobile Number: 0562064458"),
+//                 //               // SizedBox(height: 5,),
+//                 //               // Text(" Name of Seller: Badr Aldin Almasri"),
+//                 //               // SizedBox(height: 5,),
+//                 //               // Text(" des: "),
+//                 //             ],
+//                 //           ),
+//                 //         ),
+//                 //         SizedBox(
+//                 //           height: 20,
+//                 //         ),
+//                 //         Container(
+//                 //           width: width,
+//                 //           child: Column(
+//                 //             crossAxisAlignment: CrossAxisAlignment.start,
+//                 //             children: [
+//                 //               for(var i in List.generate(5, (index) => index,))
+//                 //                 Padding(
+//                 //                   padding: const EdgeInsets.symmetric(vertical: 4.0),
+//                 //                   child: Column(
+//                 //                     crossAxisAlignment: CrossAxisAlignment.start,
+//                 //                     children: [
+//                 //                       Text("Iphone "*(i+1)*5,maxLines: 2,overflow: TextOverflow.ellipsis,),
+//                 //                       Text.rich(
+//                 //                         TextSpan(
+//                 //                           children: [
+//                 //                             TextSpan(text: '10'),
+//                 //                             TextSpan(text: '  '),
+//                 //                             TextSpan(
+//                 //                               text: 'X',
+//                 //                               style: TextStyle(fontWeight: FontWeight.bold),
+//                 //                             ),
+//                 //                             TextSpan(text: '  '),
+//                 //                             TextSpan(text: '140 AED'),
+//                 //                           ],
+//                 //                         ),
+//                 //                       ),
+
+//                 //                     ],
+//                 //                   ),
+//                 //                 ),
+//                 //             ],
+//                 //           ),
+//                 //         ),
+//                 //         // Container(
+//                 //         //   color: Colors.grey.shade300,
+//                 //         //   child: Table(
+//                 //         //     columnWidths: {0: FlexColumnWidth(3.5)},
+//                 //         //     children: [
+//                 //         //       TableRow(children: [
+//                 //         //         Text(
+//                 //         //           "Item Name",
+//                 //         //           style: TextStyle(fontWeight: FontWeight.bold),
+//                 //         //         ),
+//                 //         //         Text(
+//                 //         //           " Q",
+//                 //         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
+//                 //         //         ),
+//                 //         //         Text(
+//                 //         //           "Unit",
+//                 //         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
+//                 //         //         ),
+//                 //         //         Text(
+//                 //         //           "VAT",
+//                 //         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
+//                 //         //         ),
+//                 //         //         Text(
+//                 //         //           "Total",
+//                 //         //           style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
+//                 //         //         ),
+//                 //         //       ]),
+//                 //         //     ],
+//                 //         //   ),
+//                 //         // ),
+//                 //         // SizedBox(
+//                 //         //   height: 5,
+//                 //         // ),
+//                 //         // Padding(
+//                 //         //   padding: const EdgeInsets.symmetric(horizontal: 2.0),
+//                 //         //   child: Table(
+//                 //         //     columnWidths: {0: FlexColumnWidth(3.5)},
+//                 //         //     children: [
+//                 //         //       for(String i in List.generate(6, (index) => index.toString(),))
+//                 //         //         TableRow(children: [
+//                 //         //           Padding(
+//                 //         //             padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 0),
+//                 //         //             child: Text("Iphone aijhhjdsfkjdsflkdfjk sdfkjhdskjfhkdfh "+i.toString()),
+//                 //         //           ),
+//                 //         //           Text("10"),
+//                 //         //           Text("30"),
+//                 //         //           Text("50"),
+//                 //         //           Text("2000"),
+//                 //         //         ]),
+//                 //         //     ],
+//                 //         //   ),
+//                 //         // ),
+//                 //         Padding(
+//                 //           padding: const EdgeInsets.all(8.0),
+//                 //           child: Container(
+//                 //             height: 2,
+//                 //             color: Colors.black,
+//                 //           ),
+//                 //         ),
+//                 //         Padding(
+//                 //           padding: const EdgeInsets.symmetric(horizontal: 10.0),
+//                 //           child: Row(
+//                 //             children: [
+//                 //               Expanded(flex: 1, child: SizedBox()),
+//                 //               Expanded(
+//                 //                   child: Column(
+//                 //                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 //                 children: [
+//                 //                   Row(
+//                 //                     mainAxisAlignment: MainAxisAlignment.start,
+//                 //                     children: [Text("Net total"), Spacer(), Text("5")],
+//                 //                   ),
+//                 //                   SizedBox(
+//                 //                     height: 5,
+//                 //                   ),
+//                 //                   Row(
+//                 //                     mainAxisAlignment: MainAxisAlignment.start,
+//                 //                     children: [Text("VAT 5.0 %"), Spacer(), Text("5")],
+//                 //                   ),
+//                 //                   SizedBox(
+//                 //                     height: 5,
+//                 //                   ),
+//                 //                   Container(
+//                 //                     color: Colors.black,
+//                 //                     height: 2,
+//                 //                   ),
+//                 //                   SizedBox(
+//                 //                     height: 5,
+//                 //                   ),
+//                 //                   Row(
+//                 //                     mainAxisAlignment: MainAxisAlignment.start,
+//                 //                     children: [
+//                 //                       Text(
+//                 //                         "Total amount",
+//                 //                         style: TextStyle(fontWeight: FontWeight.bold),
+//                 //                       ),
+//                 //                       Spacer(),
+//                 //                       Text("5")
+//                 //                     ],
+//                 //                   ),
+//                 //                   SizedBox(
+//                 //                     height: 5,
+//                 //                   ),
+//                 //                   Container(
+//                 //                     color: Colors.grey,
+//                 //                     height: 1,
+//                 //                   ),
+//                 //                   SizedBox(
+//                 //                     height: 1,
+//                 //                   ),
+//                 //                   Container(
+//                 //                     color: Colors.grey,
+//                 //                     height: 1,
+//                 //                   ),
+//                 //                 ],
+//                 //               )),
+//                 //             ],
+//                 //           ),
+//                 //         ),
+//                 //         Container(
+//                 //           width: width,
+//                 //           child: Column(
+//                 //             crossAxisAlignment: CrossAxisAlignment.start,
+//                 //             children: [
+//                 //               SizedBox(height: 10,),
+//                 //               Text(
+//                 //                 " Mobile Number: 0568666411",
+//                 //                 style: TextStyle(fontSize: 14, color: Colors.black),
+//                 //               ),
+//                 //             ],
+//                 //           ),
+//                 //         ),
+//                 //         SizedBox(height: 10,),
+//                 //         Text(
+//                 //           " Thanks for visiting BA3",
+//                 //           style: TextStyle(fontSize: 14, color: Colors.black,fontWeight: FontWeight.bold),
+//                 //         ),
+//                 //         Container(
+//                 //           color: Colors.white,
+//                 //           height: 100,
+//                 //         ),
+//                 //       ],
+//                 //     ),
+//                 //   );
+//                 // }),
+//                 // Text('info: $_info\n '),
 //                 Text(_msj),
 //                 // Row(
 //                 //   children: [
@@ -398,19 +402,9 @@
 //       ),
 //     );
 //   }
-//
-//   Future<void> printFunction() async {
-//     List<BluetoothInfo> allBluetooth = await getBluetoots();
-//     print(allBluetooth.map((e) => e.name+"   "+e.macAdress,));
-//     if(allBluetooth.map((e) => e.macAdress,).toList().contains("66:32:8D:F3:FF:7E")){
-//       await connect("66:32:8D:F3:FF:7E");
-//       await printTest();
-//       await disconnect();
-//     }else{
-//       print("Cant find the printer");
-//     }
-//   }
-//
+  
+ 
+  
 //   Future<void> initPlatformState() async {
 //     String platformVersion;
 //     int porcentbatery = 0;
@@ -422,12 +416,12 @@
 //     } on PlatformException {
 //       platformVersion = 'Failed to get platform version.';
 //     }
-//
+
 //     // If the widget was removed from the tree while the asynchronous platform
 //     // message was in flight, we want to discard the reply rather than calling
 //     // setState to update our non-existent appearance.
 //     if (!mounted) return;
-//
+
 //     final bool result = await PrintBluetoothThermal.bluetoothEnabled;
 //     print("bluetooth enabled: $result");
 //     if (result) {
@@ -435,13 +429,13 @@
 //     } else {
 //       _msj = "Bluetooth not enabled";
 //     }
-//
+
 //     setState(() {
 //       _info = platformVersion + " ($porcentbatery% battery)";
 //     });
 //   }
-//
-//
+
+  
 //   Future<List<BluetoothInfo>> getBluetoots() async {
 //     setState(() {
 //       _progress = true;
@@ -449,28 +443,28 @@
 //       items = [];
 //     });
 //     final List<BluetoothInfo> listResult = await PrintBluetoothThermal.pairedBluetooths;
-//
+
 //     /*await Future.forEach(listResult, (BluetoothInfo bluetooth) {
 //       String name = bluetooth.name;
 //       String mac = bluetooth.macAdress;
 //     });*/
-//
+
 //     setState(() {
 //       _progress = false;
 //     });
-//
+
 //     if (listResult.length == 0) {
 //       _msj = "There are no bluetoohs linked, go to settings and link the printer";
 //     } else {
 //       _msj = "Touch an item in the list to connect";
 //     }
-//
+
 //     setState(() {
 //       items = listResult;
 //     });
 //     return items;
 //   }
-//
+
 //   Future<void> connect(String mac) async {
 //     setState(() {
 //       _progress = true;
@@ -484,7 +478,7 @@
 //       _progress = false;
 //     });
 //   }
-//
+
 //   Future<void> disconnect() async {
 //     final bool status = await PrintBluetoothThermal.disconnect;
 //     setState(() {
@@ -492,13 +486,13 @@
 //     });
 //     print("status disconnect $status");
 //   }
-//
+
 //   Future<void> printTest() async {
 //     /*if (kDebugMode) {
 //       bool result = await PrintBluetoothThermalWindows.writeBytes(bytes: "Hello \n".codeUnits);
 //       return;
 //     }*/
-//
+
 //     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
 //     //print("connection status: $conexionStatus");
 //     if (conexionStatus) {
@@ -506,6 +500,8 @@
 //       if (Platform.isWindows) {
 //         //List<int> ticket = await testWindows();
 //         // result = await PrintBluetoothThermalWindows.writeBytes(bytes: ticket);
+//         List<int> ticket = await testText();
+//         result = await PrintBluetoothThermal.writeBytes(ticket);
 //       } else {
 //         // List<int> ticket = await testImage();
 //         List<int> ticket = await testText();
@@ -520,6 +516,7 @@
 //       //throw Exception("Not device connected");
 //     }
 //   }
+
 // //
 // //   Future<void> printString() async {
 // //     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
@@ -542,12 +539,12 @@
 //     final profile = await CapabilityProfile.load();
 //     final generator = Generator(optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
 //     bytes += generator.reset();
-//     Uint8List? a = await Utils.capture(aKey);
-//     bytes += generator.imageRaster(img.decodeImage(a!)!);
+//     // Uint8List? a = await Utils.capture(aKey);
+//     // bytes += generator.imageRaster(img.decodeImage(a!)!);
 //     bytes += generator.feed(2);
 //     return bytes;
 //   }
-//
+
 //   Future<List<int>> testText() async {
 //     List<int> bytes = [];
 //     // Using default profile
@@ -555,34 +552,38 @@
 //     final generator = Generator(optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
 //     //bytes += generator.setGlobalFont(PosFontType.fontA);
 //     bytes += generator.reset();
-//
+
 //     bytes += generator.text('Tax Invoice', styles: PosStyles(align: PosAlign.center),linesAfter: 1);
-//
-//
-//     final ByteData data = await rootBundle.load('assets/logo.jpg');
-//     final Uint8List bytesImg = data.buffer.asUint8List();
-//     img.Image? image = img.decodeImage(bytesImg);
+
+
+//     // final ByteData data = await rootBundle.load('assets/logo.jpg');
+//     // final Uint8List bytesImg = data.buffer.asUint8List();
+//     // img.Image? image = img.decodeImage(bytesImg);
 //    // bytes += generator.imageRaster(image!);
-//
-//
+
+
 //     bytes += generator.text("Burj AlArab Mobile Phone", styles: PosStyles(align: PosAlign.center,bold: true));
-//     bytes += generator.text("Date: "+DateTime.now().toString().split(".")[0], styles: PosStyles(align: PosAlign.left));
-//     bytes += generator.text("IN NO: INV6584897564", styles: PosStyles(align: PosAlign.left),linesAfter: 1);
-//
-//     for(var i in List.generate(5, (index) => index,)){
-//       String text ="Iphone "*(i+1)*5;
+//     bytes += generator.text("Date: "+widget.globalModel.invDate.toString(), styles: PosStyles(align: PosAlign.left));
+//     bytes += generator.text("IN NO: "+widget.globalModel.invId.toString(), styles: PosStyles(align: PosAlign.left),linesAfter: 1);
+//     double total =0;
+//     for(InvoiceRecordModel model in widget.globalModel.invRecords??[]){
+
+//       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;   
+//       String text =productModel.prodName??"";
 //       bytes += generator.text (text.length<64?text:text.substring(0,64), styles: PosStyles(align: PosAlign.left));
-//       bytes += generator.text ("000000000000000", styles: PosStyles(align: PosAlign.left));
-//       bytes += generator.text('10'+'X'+'140 AED      Total:2000', styles: PosStyles(align: PosAlign.left),linesAfter: 1);
+//       bytes += generator.text (productModel.prodBarcode??"", styles: PosStyles(align: PosAlign.left));
+//       double totalOfLine = model.invRecQuantity!* (model.invRecSubTotal!+ model.invRecVat!);
+// total = totalOfLine +total;
+//       bytes += generator.text(model.invRecQuantity.toString()+'X'+model.invRecSubTotal!.toStringAsFixed(2)+' AED      Total:'+totalOfLine.toStringAsFixed(2), styles: PosStyles(align: PosAlign.left),linesAfter: 1);
 //     }
-//
+
 //     bytes += generator.text('-'*30, styles: PosStyles(align: PosAlign.right));
-//
-//
-//
-//     bytes += generator.text('Sub: 100', styles: PosStyles(align: PosAlign.right));
-//     bytes += generator.text('VAT: 100', styles: PosStyles(align: PosAlign.right));
-//     bytes += generator.text('Total: 100', styles: PosStyles(align: PosAlign.right,bold: true));
+
+
+
+//     bytes += generator.text('Sub: '+total.toStringAsFixed(2), styles: PosStyles(align: PosAlign.right));
+//     bytes += generator.text('VAT: '+(widget.globalModel.invTotal!-total).toStringAsFixed(2), styles: PosStyles(align: PosAlign.right));
+//     bytes += generator.text('Total: '+widget.globalModel.invTotal.toString(), styles: PosStyles(align: PosAlign.right,bold: true));
 //     bytes += generator.text("UAE, Rak, Sadaf Roundabout", styles: PosStyles(align: PosAlign.center));
 //     bytes += generator.text("0568666411", styles: PosStyles(align: PosAlign.center));
 //     bytes += generator.text("Thanks For Visiting BA3", styles: PosStyles(align: PosAlign.center,bold: true));
@@ -597,9 +598,9 @@
 //     // bytes += generator.text('مرحبا', styles: PosStyles(codeTable: 'WPC1256'));
 //     //  const utf8Encoder = Utf8Encoder();
 //     //  final encodedStr = utf8Encoder.convert('مرحبا');
-//
+
 //     //  generator.textEncoded(Uint8List.fromList([
-//
+
 //     //  ]));
 //     //  bytes += generator.text('Regular: aA bB cC dD eE fF gG hH iI jJ kK lL mM nN oO pP qQ rR sS tT uU vV wW xX yY zZ');
 //     // bytes += generator.text('Special 1: ñÑ àÀ èÈ éÉ üÜ çÇ ôÔ', styles: PosStyles(codeTable: 'CP1252'));
@@ -611,7 +612,7 @@
 //     // bytes += generator.text('Align left', styles: PosStyles(align: PosAlign.left));
 //     // bytes += generator.text('Align center', styles: PosStyles(align: PosAlign.center));
 //     // bytes += generator.text('Align right', styles: PosStyles(align: PosAlign.right), linesAfter: 1);
-//
+
 //     // bytes += generator.row([
 //     //   PosColumn(
 //     //     text: 'col3',
@@ -629,9 +630,9 @@
 //     //     styles: PosStyles(align: PosAlign.center, underline: true),
 //     //   ),
 //     // ]);
-//
+
 //     //barcode
-//
+
 //     // final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
 //     // bytes += generator.barcode(Barcode.upcA(barData));
 //     //
@@ -650,12 +651,12 @@
 //     //     fontType: PosFontType.fontA,
 //     //   ),
 //     // );
-//
+
 //     bytes += generator.feed(2);
 //     //bytes += generator.cut();
 //     return bytes;
 //   }
-//
+
 // //   Future<List<int>> testWindows() async {
 // //     List<int> bytes = [];
 // //

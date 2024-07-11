@@ -550,6 +550,16 @@ String getAccountIdFromText(text) {
   }
 }
 
+AccountModel? getAccountIdFromName(text) {
+  var accountController = Get.find<AccountViewModel>();
+  if (text != null && text != " " && text != "") {
+    AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName==text);
+    return _;
+  } else {
+    print("empty");
+  
+  }
+}
 List<AccountModel> getAccountModelFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
@@ -568,7 +578,7 @@ List<AccountModel> getAccountModelFromName(text) {
 
 String getAccountNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<AccountViewModel>().accountList[id]!.accName!;
+  return Get.find<AccountViewModel>().accountList[id]!.accName!;
   } else {
     return "";
   }

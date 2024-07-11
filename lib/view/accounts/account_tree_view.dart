@@ -99,7 +99,7 @@ class AccountTreeView extends StatelessWidget {
                    onPressed: entry.hasChildren ? onTap : null,
                  ),
                  if (accountController.editItem != entry.node.id)
-                   Text(entry.node.name ?? "error")
+                   Text(entry.node.name!)
                  else
                    SizedBox(
                      width: 100,

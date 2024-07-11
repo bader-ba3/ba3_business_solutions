@@ -24,9 +24,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("الفواتير"),
-        ),
+        appBar: AppBar(title: Text("الفواتير"),),
         body: ListView(
           children: [
             for (MapEntry<String, PatternModel> i in patternController.patternModel.entries.toList())
@@ -43,6 +41,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       child: Text(i.value.patName??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
                 ),
               ),
+              if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: InkWell(

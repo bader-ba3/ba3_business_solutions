@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/model/product_record_model.dart';
 
 class ProductModel {
   String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;
-  bool? prodHasVat, prodIsParent, prodIsGroup, prodIsLocal;
+  bool? prodIsParent, prodIsGroup, prodIsLocal;
   List? prodChild = [];
   List<ProductRecordModel>? prodRecord = [];
   int? prodGroupPad;
@@ -20,7 +20,6 @@ class ProductModel {
     this.prodRetailPrice,
     this.prodCostPrice,
     this.prodMinPrice,
-    this.prodHasVat,
     this.prodBarcode,
     this.prodGroupCode,
     this.prodType,
@@ -41,7 +40,6 @@ class ProductModel {
     prodRetailPrice = map['prodRetailPrice'];
     prodCostPrice = map['prodCostPrice'];
     prodMinPrice = map['prodMinPrice'];
-    prodHasVat = map['prodHasVat'];
     prodBarcode = map['prodBarcode'];
     prodGroupCode = map['prodGroupCode'];
     prodType = map['prodType'];
@@ -64,11 +62,7 @@ class ProductModel {
     prodGroupPad = map['prodGroupPad'];
   }
 
-  ProductModel generateNoVat() {
-    prodHasVat = false;
-    return this;
-  }
-
+ 
   Map difference(ProductModel oldData) {
     assert(oldData.prodId == prodId && oldData.prodId != null && prodId != null || oldData.prodId == prodId && oldData.prodId != null && prodId != null);
     Map<String, dynamic> newChanges = {};
@@ -101,10 +95,6 @@ class ProductModel {
     if (prodMinPrice != oldData.prodMinPrice) {
       newChanges['prodMinPrice'] = oldData.prodMinPrice;
       oldChanges['prodMinPrice'] = prodMinPrice;
-    }
-    if (prodHasVat != oldData.prodHasVat) {
-      newChanges['prodHasVat'] = oldData.prodHasVat;
-      oldChanges['prodHasVat'] = prodHasVat;
     }
     if (prodBarcode != oldData.prodBarcode) {
       newChanges['prodBarcode'] = oldData.prodBarcode;
@@ -167,7 +157,6 @@ class ProductModel {
       'prodRetailPrice': prodRetailPrice,
       'prodCostPrice': prodCostPrice,
       'prodMinPrice': prodMinPrice,
-      'prodHasVat': prodHasVat,
       'prodBarcode': prodBarcode,
       'prodGroupCode': prodGroupCode,
       'prodType': prodType,
@@ -192,7 +181,6 @@ class ProductModel {
       'prodRetailPrice': prodRetailPrice,
       'prodCostPrice': prodCostPrice,
       'prodMinPrice': prodMinPrice,
-      'prodHasVat': prodHasVat,
       'prodBarcode': prodBarcode,
       'prodGroupCode': prodGroupCode,
       'prodType': prodType,

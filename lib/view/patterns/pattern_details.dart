@@ -30,6 +30,7 @@ class _PatternDetailsState extends State<PatternDetails> {
   TextEditingController vatAccountController = TextEditingController();
   TextEditingController secondaryController = TextEditingController();
   TextEditingController storeController = TextEditingController();
+  TextEditingController storeNewController = TextEditingController();
   bool hasVatController = false;
 
   @override
@@ -40,6 +41,7 @@ class _PatternDetailsState extends State<PatternDetails> {
       codeController.text  = ((int.tryParse(patternController.patternModel.values.map((e) => e.patCode).last.toString())??0)+1).toString();
       patternController.editPatternModel!.patCode =codeController.text;
       patternController.editPatternModel?.patColor = 4294198070;
+       patternController.editPatternModel?.patType = Const.invoiceTypeSales;
     } else {
       patternController.editPatternModel = PatternModel.fromJson(patternController.patternModel[widget.oldKey]?.toJson());
       nameController.text = patternController.editPatternModel?.patName ?? "";
@@ -49,9 +51,11 @@ class _PatternDetailsState extends State<PatternDetails> {
       vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount) ?? "";
       secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary) ?? "";
       storeController.text=getStoreNameFromId(patternController.editPatternModel?.patStore);
+      storeNewController.text=getStoreNameFromId(patternController.editPatternModel?.patNewStore);
       // storeController.text=getStoreNameFromId("store1702230185210544");
       hasVatController = patternController.editPatternModel?.patHasVat ?? false;
       patternController.editPatternModel?.patHasVat ??= false;
+      
     }
 
     super.initState();
@@ -129,6 +133,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                   const SizedBox(
                     height: 40,
                   ),
+                   if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -240,6 +245,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 DropdownMenuItem(value: Const.invoiceTypeAdd, child: Container(
                                     width: double.infinity,
                                     child: Text("إدخال",textDirection: TextDirection.rtl)),),
+                                     DropdownMenuItem(value: Const.invoiceTypeChange, child: Container(
+                                    width: double.infinity,
+                                    child: Text("تبديل مستودعي",textDirection: TextDirection.rtl)),),
                               ], onChanged: (_){
                                 typeController.text = _!;
                                 patternController.editPatternModel?.patType = _;
@@ -271,6 +279,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                       const SizedBox(
                         width: 25,
                       ),
+                       if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
                       SizedBox(
                         width: Get.width/3,
                         child: Row(
@@ -288,7 +297,6 @@ class _PatternDetailsState extends State<PatternDetails> {
                                     vatAccountController.text = a;
                                     setState(() {});
                                   }
-
                                 },
                                 onChanged: (_) {
                                   // patternController.editPatternModel?.patVatAccount = _;
@@ -300,17 +308,50 @@ class _PatternDetailsState extends State<PatternDetails> {
                               Icon(Icons.check)
                           ],
                         ),
+                      )else   Row(
+                      
+                        children: [
+                            const Text("المستودع الجديد:"),
+                      const SizedBox(
+                        width: 25,
                       ),
+                          SizedBox(
+                            width: Get.width * 0.3,
+                            child: customTextFieldWithIcon(
+                              storeNewController,
+                                  (text) async {
+                                var a = await patternController.getStoreComplete(text);
+                                if(a.isNotEmpty){
+                                  patternController.editPatternModel?.patNewStore = a;
+                                  storeNewController.text = a;
+                                  setState(() {});
+                                }
+                          
+                              },
+                              onChanged: (_) {
+                                // patternController.editPatternModel?.patStore = _;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    
+                       if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
                       const SizedBox(
                         width: 10,
                       ),
-                      Text("هل بخضع للضريبة"),
-                      Checkbox(
-                          value: patternController.editPatternModel?.patHasVat ?? false,
-                          onChanged: (_) {
-                            setState(() {});
-                            patternController.editPatternModel?.patHasVat = _;
-                          }),
+                      if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                      Row(
+                        children: [
+                          Text("هل بخضع للضريبة"),
+                          Checkbox(
+                              value: patternController.editPatternModel?.patHasVat ?? false,
+                              onChanged: (_) {
+                                setState(() {});
+                                patternController.editPatternModel?.patHasVat = _;
+                              }),
+                        ],
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -380,11 +421,11 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 Get.snackbar("خطأ", "يرجى كتابة الاسم");
                               }else if(patternController.editPatternModel?.patCode?.isEmpty??true){
                                 Get.snackbar("خطأ", "يرجى كتابة الرمز");
-                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd){
+                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd &&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الاساسي");
-                              }else if(patternController.editPatternModel?.patSecondary?.isEmpty??true){
+                              }else if((patternController.editPatternModel?.patSecondary?.isEmpty??true)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الثانوي");
-                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)){
+                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة حساب الضريبة");
                               }else if(patternController.editPatternModel?.patType?.isEmpty??true){
                                 Get.snackbar("خطأ", "يرجى كتابة نوع النمط");
@@ -403,17 +444,15 @@ class _PatternDetailsState extends State<PatternDetails> {
                               foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                             ),
                             onPressed: () {
-                              print(patternController.editPatternModel?.patType);
-                              print(patternController.editPatternModel?.patType!=Const.invoiceTypeAdd);
                               if(patternController.editPatternModel?.patName?.isEmpty??true){
                                 Get.snackbar("خطأ", "يرجى كتابة الاسم");
                               }else if(patternController.editPatternModel?.patCode?.isEmpty??true){
-                                Get.snackbar("خطأ", "يرجى كتابة الرمز");
-                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd){
+                    Get.snackbar("خطأ", "يرجى كتابة الرمز");
+                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd &&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الاساسي");
-                              }else if(patternController.editPatternModel?.patSecondary?.isEmpty??true){
+                              }else if((patternController.editPatternModel?.patSecondary?.isEmpty??true)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الثانوي");
-                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)){
+                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
                                 Get.snackbar("خطأ", "يرجى كتابة حساب الضريبة");
                               }else if(patternController.editPatternModel?.patType?.isEmpty??true){
                                 Get.snackbar("خطأ", "يرجى كتابة نوع النمط");

@@ -31,17 +31,17 @@ class _CardManagementTypeState extends State<CardManagementType> {
   @override
   void initState() {
     super.initState();
-    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-      checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewUserManagement).then((value) {
-        print(value);
-        if (value) {
-          isAdmin = true;
-          setState(() {
+    // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+    //   checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewCard).then((value) {
+    //     print(value);
+    //     if (value) {
+    //       isAdmin = true;
+    //       setState(() {
 
-          });
-        }
-      });
-    });
+    //       });
+    //     }
+    //   });
+    // });
 
     // userManagementViewController.initAllUser();
   }
@@ -54,9 +54,7 @@ class _CardManagementTypeState extends State<CardManagementType> {
         appBar: AppBar(
           title: Text("الإدارة"),
         ),
-        body: !isAdmin
-            ?Center(child: Text("غير مصرح لك بالدخول"),)
-            :Column(
+        body:Column(
           children: [
             Item("قراءة بطاقة",(){
               Get.to(() => ReadCardView());
