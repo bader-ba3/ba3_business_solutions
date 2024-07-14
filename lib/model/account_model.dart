@@ -87,6 +87,7 @@ class AccountModel {
   String? affectedId() {
     return accId;
   }
+
   String? affectedKey({String? type}) {
     return "accId";
   }
@@ -121,6 +122,7 @@ class AccountModel {
       'accRecord': accRecord.map((e) => e.toJson()).toList(),
     };
   }
+  
   Map<String,dynamic> toAR() {
     return {
       'رمز الحساب': accCode,

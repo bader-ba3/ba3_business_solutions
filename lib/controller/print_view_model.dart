@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
@@ -5,8 +7,12 @@ import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:get/get.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:translator/translator.dart';
 
 class PrintViewModel extends GetxController{
+
+
+
    Future<void> printFunction(GlobalModel globalModel) async {
     List<BluetoothInfo> allBluetooth = await getBluetoots();
     print(allBluetooth.map((e) => e.name+"   "+e.macAdress,));
@@ -110,6 +116,7 @@ class PrintViewModel extends GetxController{
       // }
       print("print test result:  $result");
     } else {
+      disconnect();
       print("print test conexionStatus: $conexionStatus");
       // setState(() {
        // disconnect();
@@ -154,16 +161,30 @@ class PrintViewModel extends GetxController{
     double natTotal =0;
     double vatTotal =0;
     for(InvoiceRecordModel model in globalModel.invRecords??[]){
+     
+      double modelSubTotalWithVat = model.invRecTotal! / model.invRecQuantity!;
+      double modelSubVatTotal = modelSubTotalWithVat - (modelSubTotalWithVat /1.05);
+      double modelSubTotal = modelSubTotalWithVat /1.05;
 
       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;   
       String text =await checkArabicWithTranslate(productModel.prodName!);
       bytes += generator.text (text.length<64?text:text.substring(0,64), styles: PosStyles(align: PosAlign.left));
       bytes += generator.text (productModel.prodBarcode??"", styles: PosStyles(align: PosAlign.left));
-      double totalOfLine = model.invRecQuantity!* (model.invRecSubTotal!)+(model.invRecSubTotal!)*0.05;
+      double totalOfLine = model.invRecTotal!;
       total = totalOfLine +total;
-      natTotal = model.invRecQuantity!* (model.invRecSubTotal!) +natTotal;
-      vatTotal = model.invRecQuantity!* (model.invRecSubTotal!)*0.05 +vatTotal;
-      bytes += generator.text(model.invRecQuantity.toString()+' X '+ ((model.invRecSubTotal!+((model.invRecSubTotal!))*0.05)).toStringAsFixed(2)+' -> Total:'+totalOfLine.toStringAsFixed(2), styles: PosStyles(align: PosAlign.left),linesAfter: 1);
+      // natTotal = model.invRecQuantity!* (model.invRecSubTotal!) +natTotal;
+      // vatTotal = model.invRecQuantity!* (model.invRecSubTotal!)*0.05 +vatTotal;
+       natTotal = model.invRecQuantity!* modelSubTotal +natTotal;
+      vatTotal = model.invRecQuantity!*modelSubVatTotal +vatTotal;
+      bytes += generator.text(
+        model.invRecQuantity.toString()+
+        ' X '+ 
+        modelSubTotalWithVat.toStringAsFixed(2)
+       // ((model.invRecSubTotal!+((model.invRecSubTotal!))*0.05)).toStringAsFixed(2)
+        +' -> Total:'+totalOfLine.toStringAsFixed(2)
+        
+        
+        , styles: PosStyles(align: PosAlign.left),linesAfter: 1);
     }
 
     bytes += generator.text('Total VAT: '+vatTotal.toStringAsFixed(2), styles: PosStyles(align: PosAlign.center));

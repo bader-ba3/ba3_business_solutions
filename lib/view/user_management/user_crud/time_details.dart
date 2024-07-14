@@ -26,7 +26,7 @@ class _TimeDetailsState extends State<TimeDetails> {
         body: GetBuilder<UserManagementViewModel>(
           builder: (controller) {
             UserModel userModel = controller.allUserList[widget.oldKey]!;
-           return SizedBox();
+            return SizedBox();
             // return ListView.builder(
             //   itemCount: userModel.userTimeRecord!.length,
             //   itemBuilder: (context, index) {

@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/products/product_management_view.dart';
 import 'package:ba3_business_solutions/view/products/product_tree_view.dart';
@@ -50,7 +51,7 @@ class _ProductTypeState extends State<ProductType> {
               checkPermissionForOperation(Const.roleUserAdmin , Const.roleViewProduct).then((value) {
                 if(value) Get.to(()=>ProductManagementView());
               });
-            }),
+            }), 
           ],
         ),
       ),

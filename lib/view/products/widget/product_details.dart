@@ -116,6 +116,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   GridColumnItem(label: "المادة", name: Const.rowProductRecProduct),
                                   GridColumnItem(label: "النوع", name: Const.rowProductType),
                                   GridColumnItem(label: 'الكمية', name: Const.rowProductQuantity),
+                                  GridColumnItem(label: 'الكمية', name: Const.rowProductTotal),
                                   GridColumnItem(label: 'التاريخ', name: Const.rowProductDate),
                                   // GridColumnItem(
                                   //     label: 'الرمز التسلسي للفاتورة',

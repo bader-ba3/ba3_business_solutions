@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 
 class ProductModel {
-  String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;
+  String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAverageBuyPrice,prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;
   bool? prodIsParent, prodIsGroup, prodIsLocal;
   List? prodChild = [];
   List<ProductRecordModel>? prodRecord = [];
@@ -28,6 +28,7 @@ class ProductModel {
     this.prodIsGroup,
     this.prodIsLocal,
     this.prodGroupPad,
+    this.prodAverageBuyPrice,
   });
 
   ProductModel.fromJson(Map<dynamic, dynamic> map) {
@@ -42,6 +43,7 @@ class ProductModel {
     prodMinPrice = map['prodMinPrice'];
     prodBarcode = map['prodBarcode'];
     prodGroupCode = map['prodGroupCode'];
+    prodAverageBuyPrice = map['prodAverageBuyPrice'];
     prodType = map['prodType'];
     prodParentId = map['prodParentId'];
     prodIsParent = map['prodIsParent'];
@@ -159,6 +161,7 @@ class ProductModel {
       'prodMinPrice': prodMinPrice,
       'prodBarcode': prodBarcode,
       'prodGroupCode': prodGroupCode,
+      'prodAverageBuyPrice': prodAverageBuyPrice,
       'prodType': prodType,
       'prodParentId': prodParentId,
       'prodIsParent': prodIsParent,
@@ -187,6 +190,7 @@ class ProductModel {
       'prodParentId': prodParentId,
       'prodIsParent': prodIsParent,
       'prodChild': prodChild,
+      'prodAverageBuyPrice': prodAverageBuyPrice,
       'prodRecord': prodRecord,
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,

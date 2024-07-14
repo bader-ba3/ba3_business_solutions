@@ -67,7 +67,7 @@ class ChequeViewModel extends GetxController {
     allCheques[globalModel.cheqId!]=globalModel;
     print(globalModel.toFullJson());
     globalModel.cheqRecords?.forEach((element) {
-      bondController.fastAddBondAddToModel(bondId: element.cheqRecBondId, originId: globalModel.cheqId!, total: double.parse(globalModel.cheqAllAmount!), record: [
+      bondController.fastAddBondAddToModel(bondId: element.cheqRecBondId, originId: globalModel.cheqId!, total: double.parse(globalModel.cheqAllAmount!),bondType: Const.bondTypeInvoice,  record: [
         BondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
         BondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
       ]);
@@ -105,7 +105,7 @@ class ChequeViewModel extends GetxController {
     // await FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).set(initModel!.toJson());
     var bondId = oldBondId ?? generateId(RecordType.bond);
 
-    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!),bondType: Const.bondTypeInvoice,  record: [
       BondRecordModel("00", double.parse(initModel!.cheqAllAmount!), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqPrimeryAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(initModel!.cheqAllAmount!), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqPrimeryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);
@@ -284,7 +284,7 @@ class ChequeViewModel extends GetxController {
 
     // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": Const.chequeStatusPaid});
     var bondId = oldBondId ?? generateId(RecordType.bond);
-    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!),bondType: Const.bondTypeInvoice,  record: [
       BondRecordModel("00", double.parse(initModel!.cheqAllAmount!), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqBankAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(initModel!.cheqAllAmount!), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqBankAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);
@@ -351,7 +351,7 @@ class ChequeViewModel extends GetxController {
     print("_________________________");
     // FirebaseFirestore.instance.collection(Const.chequesCollection).doc(initModel?.cheqId).update({"cheqStatus": status});
     var bondId = oldBondId ?? generateId(RecordType.bond);
-    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!), record: [
+    bondController.fastAddBondAddToModel(bondId: bondId, originId: initModel!.cheqId!, total: double.parse(initModel!.cheqAllAmount!),bondType: Const.bondTypeInvoice, record: [
       BondRecordModel("00", double.parse(amount), 0, initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqBankAccount! : initModel!.cheqSecoundryAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
       BondRecordModel("01", 0, double.parse(amount), initModel?.cheqType == Const.chequeTypeCatch ? initModel!.cheqSecoundryAccount! : initModel!.cheqBankAccount!, "تم التوليد من الشيكات", invId: initModel?.cheqId),
     ]);

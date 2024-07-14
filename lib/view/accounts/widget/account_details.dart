@@ -74,19 +74,14 @@ class _AccountDetailsState extends State<AccountDetails> {
                         controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex - 1].getCells().forEach((element) {
                           if (element.columnName == Const.rowAccountId) {
                             var value = element.value;
-                            if (bondController.allBondsItem[value]?.bondType == Const.bondTypeDaily) {
+                            String bondType = bondController.allBondsItem[value]!.bondType!;
+                           if (bondType == Const.bondTypeDaily || bondType == Const.bondTypeStart || bondType == Const.bondTypeInvoice ) {
                               Get.to(() => BondDetailsView(
                                     oldId: value,
                                     initFun:widget.initFun,
-                                    oldModelKey: widget.modelKey, isStart: false,
+                                    oldModelKey: widget.modelKey, bondType: bondType,
                                   ));
-                            } else if (bondController.allBondsItem[value]?.bondType == Const.bondTypeStart) {
-                              Get.to(() => BondDetailsView(
-                                oldId: value,
-                                initFun:widget.initFun,
-                                oldModelKey: widget.modelKey, isStart: true,
-                              ));
-                            } else {
+                            }  else {
                               Get.to(() => CustomBondDetailsView(
                                     oldId: value,
                                     oldModelKey: widget.modelKey,

@@ -94,6 +94,7 @@ abstract class Const {
   static const rowProductType = "rowProductType";
   static const rowProductQuantity = "rowProductQuantity";
   static const rowProductDate = "rowProductDate";
+  static const rowProductTotal = "rowProductTotal";
   static const rowProductInvId = "rowProductInvId";
   static const productTypeService = "productTypeService";
   static const productTypeStore = "productTypeStore";
@@ -102,6 +103,7 @@ abstract class Const {
   static const bondTypeDebit = "bondTypeDebit";
   static const bondTypeCredit = "bondTypeCredit";
   static const bondTypeStart = "bondTypeStart";
+  static const bondTypeInvoice = "bondTypeInvoice";
   ////////////--------------------------------------------------
   static const patId = "patId";
   static const patCode = "patCode";
@@ -184,6 +186,7 @@ abstract class Const {
   static const invoiceChoosePriceMethodeHigher = "invoiceChoosePriceMethodeHigher";
   static const invoiceChoosePriceMethodeLower = "invoiceChoosePriceMethodeLower";
   static const invoiceChoosePriceMethodeMinPrice = "invoiceChoosePriceMethodeMinPrice";
+  static const invoiceChoosePriceMethodeAverageBuyPrice = "invoiceChoosePriceMethodeAverageBuyPrice";
   static const invoiceChoosePriceMethodeWholePrice = "invoiceChoosePriceMethodeWholePrice";
   static const invoiceChoosePriceMethodeRetailPrice = "invoiceChoosePriceMethodeRetailPrice";
   static const invoiceChoosePriceMethodeCostPrice = "invoiceChoosePriceMethodeCostPrice";
@@ -207,12 +210,9 @@ abstract class Const {
   ////////////----------------------------------------------------
   static const userStatusOnline  = "userStatusOnline";
   static const userStatusAway  = "userStatusAway";
-  ////////////----------------------------------------------------
+    ////////////----------------------------------------------------
   static const invPayTypeDue  = "invPayTypeDue";
   static const invPayTypeCash  = "invPayTypeCash";
-  ////////////----------------------------------------------------
-  static const taskTypeProduct  = "taskTypeProduct";
-  static const taskTypeInventory  = "taskTypeInventory";
 }
 
 
@@ -237,6 +237,8 @@ String getGlobalTypeFromEnum(String type) {
       return "سند يومية";
     case Const.bondTypeDebit:
       return "سند دفع";
+          case Const.bondTypeInvoice:
+      return "سند قيد";
           case Const.bondTypeStart:
       return "قيد افتتاحي";
     case Const.chequeTypeCatch:
@@ -303,7 +305,10 @@ String getBondTypeFromEnum(String type) {
       return "سند قبض";
     case Const.bondTypeStart:
       return "قيد افتتاحي";
+    case Const.bondTypeInvoice:
+      return "سند قيد";
   }
+  print(type);
   return "error";
 }
 

@@ -41,6 +41,7 @@ class BondListView extends StatelessWidget {
                   Text("الوقت: "+bondList[index].bondDate.toString()),
                   Text("نوع الفاتورة: "+getBondTypeFromEnum(bondList[index].bondType.toString())),
                   Text("الرمز: "+bondList[index].bondCode.toString()),
+                  Text("الرمز: "+bondList[index].bondType.toString()),
                   Text("الوصف: "+bondList[index].bondDescription.toString()),
                 ],
               ),

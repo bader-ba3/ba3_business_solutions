@@ -40,25 +40,37 @@ class StoreViewModel extends GetxController {
     Map<String, StoreRecProductModel> allRecTotal2 = {};
 
     if (globalModel.invType != Const.invoiceTypeChange) {
-      bool isPay = globalModel.invType == Const.invoiceTypeBuy;
+      bool isPay = globalModel.invType == Const.invoiceTypeBuy || globalModel.invType == Const.invoiceTypeAdd;
       int correctQuantity = isPay ? 1 : -1;
-      for (int i = 0; i < globalModel.invRecords!.length; i++) {
-        if (globalModel.invRecords![i].invRecId != null) {
-          bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == Const.productTypeStore;
-          if (isStoreProduct) {
-            allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
-              storeRecProductId: globalModel.invRecords![i].invRecProduct,
-              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
-              storeRecProductQuantity: (correctQuantity * globalModel.invRecords![i].invRecQuantity!).toString(),
-              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
-            );
-          }
+      Map<String, int> allRecTotalProduct = {};
+
+    for (int i = 0; i < globalModel.invRecords!.length; i++) {
+      if (globalModel.invRecords![i].invRecId != null) {
+        if (allRecTotalProduct[globalModel.invRecords![i].invRecProduct] == null) {
+          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( globalModel.invRecords![i].invRecQuantity!);
+        } else {
+          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( globalModel.invRecords![i].invRecQuantity!) +
+          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!]!;
         }
       }
+    }
 
-      // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
+
+    allRecTotalProduct.forEach((key, value) {
+      var recCredit = value;
+      if(getProductModelFromId(key)!=null)
+      {bool isStoreProduct = getProductModelFromId(key)!.prodType == Const.productTypeStore;
+       InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
+      allRecTotal[key]
+            =(StoreRecProductModel(
+              storeRecProductId: key,
+              storeRecProductPrice: "0",
+              storeRecProductQuantity: (correctQuantity * recCredit).toString(),
+              storeRecProductTotal: "0",
+            ));}
+    });
+  
       StoreRecordModel model = StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
-
       if (storeMap[model.storeRecId]?.stRecords == null) {
         storeMap[model.storeRecId]?.stRecords = [model];
       } else {
@@ -67,7 +79,7 @@ class StoreViewModel extends GetxController {
       }
     } else {
       for (int i = 0; i < globalModel.invRecords!.length; i++) {
-        if (globalModel.invRecords![i].invRecId != null) {
+        if (globalModel.invRecords![i].invRecId != null&&getProductModelFromId(globalModel.invRecords![i].invRecProduct)!=null) {
           bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == Const.productTypeStore;
           if (isStoreProduct) {
             allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
@@ -86,7 +98,6 @@ class StoreViewModel extends GetxController {
         }
       }
 
-      // FirebaseFirestore.instance.collection(Const.storeCollection).doc(globalModel.invStorehouse).collection(Const.recordCollection).doc(globalModel.invId).set();
       StoreRecordModel model = StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
       StoreRecordModel model2 = StoreRecordModel(storeRecId: globalModel.invSecStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal2);
 
@@ -96,7 +107,8 @@ class StoreViewModel extends GetxController {
         storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
         storeMap[model.storeRecId]?.stRecords.add(model);
       }
-      if (storeMap[model2.storeRecId]?.stRecords == null) {
+
+     if (storeMap[model2.storeRecId]?.stRecords == null) {
         storeMap[model2.storeRecId]?.stRecords = [model2];
       } else {
         storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
@@ -150,6 +162,7 @@ class StoreViewModel extends GetxController {
   }
 
   Map<String, double> totalAmountPage = {};
+  Map<String, StoreRecordView> allData = {};
   initStorePage(storeId) {
     totalAmountPage.clear();
     storeMap[storeId]?.stRecords.forEach((value) {
@@ -157,6 +170,14 @@ class StoreViewModel extends GetxController {
         totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!)!;
       });
     });
+    totalAmountPage.forEach(
+      (key, value) {
+        allData[key] = StoreRecordView(
+          productId: value.toString(),
+          total: "hello",
+        );
+      },
+    );
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update());
   }
 

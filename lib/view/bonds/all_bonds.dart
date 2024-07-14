@@ -33,11 +33,9 @@ class AllBonds extends StatelessWidget {
         onCellTap: (index,id,init) {
           GlobalModel model = data[id]!;
           logger(newData: model, transfersType: TransfersType.read);
-          if (model.bondType == Const.bondTypeDaily) {
-            Get.to(() => BondDetailsView(oldId: model.bondId,isStart: false,));
-          } else if (model.bondType == Const.bondTypeStart) {
-            Get.to(() => BondDetailsView(oldId: model.bondId,isStart: true,));
-          }else {
+          if (model.bondType == Const.bondTypeDaily ||model.bondType == Const.bondTypeStart ||model.bondType == Const.bondTypeInvoice ) {
+            Get.to(() => BondDetailsView(oldId: model.bondId,bondType: model.bondType!,));
+          } else {
             Get.to(() => CustomBondDetailsView(oldId: model.bondId, isDebit: model.bondType == Const.bondTypeDebit,));
           }
         },

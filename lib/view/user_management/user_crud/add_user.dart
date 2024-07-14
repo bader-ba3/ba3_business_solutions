@@ -48,11 +48,11 @@ class _AddUserViewState extends State<AddUserView> {
           appBar: AppBar(
             title: Text(controller.initAddUserModel?.userName ?? "مستخدم جديد"),
             actions: [
-              // if(controller.initAddUserModel?.userId!=null)
-              // ElevatedButton(onPressed: (){
-              //   Get.to(()=>TimeDetails(oldKey: controller.initAddUserModel!.userId!,name:controller.initAddUserModel!.userName! ,));
-              // }, child: Text("البريك")),
-              // SizedBox(width: 20,),
+              if(controller.initAddUserModel?.userId!=null)
+              ElevatedButton(onPressed: (){
+                Get.to(()=>TimeDetails(oldKey: controller.initAddUserModel!.userId!,name:controller.initAddUserModel!.userName! ,));
+              }, child: Text("البريك")),
+              SizedBox(width: 20,),
             ],
           ),
           body: Center(

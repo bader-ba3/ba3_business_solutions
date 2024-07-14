@@ -13,6 +13,7 @@ import '../model/account_record_model.dart';
 import '../model/invoice_record_model.dart';
 import '../model/seller_model.dart';
 import '../model/store_model.dart';
+import '../model/store_record_model.dart';
 
 class IsolateViewModel extends GetxController {
   Map<String, SellerModel> allSellers = <String, SellerModel>{};
@@ -53,6 +54,26 @@ class IsolateViewModel extends GetxController {
     }
     return _;
   }
+
+
+ Map<String, double> totalAmountPage = {};
+  Map<String , StoreRecordView>allData ={};
+  initStorePage(storeId) {
+    totalAmountPage.clear();
+    storeMap[storeId]?.stRecords.forEach((value) {
+      value.storeRecProduct?.forEach((key, value) {
+        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!)!;
+       
+      });
+    });
+   totalAmountPage.forEach((key, value) {
+     allData[key] = StoreRecordView(
+        productId:key ,
+        total:value.toString(),
+     );
+   },);
+  }
+
 }
 
 String getStoreNameFromIdIsolate(id) {
@@ -94,6 +115,11 @@ double getAccountBalanceFromIdIsolate(id) {
 
 String getProductNameFromIdIsolate(id) {
   if (id != null && id != " " && id != "") {
+    if(Get.find<IsolateViewModel>().productDataMap[id] == null){
+        print("---------");
+        print(id);
+        print("---------");
+    }
     return Get.find<IsolateViewModel>().productDataMap[id]!.prodName!;
   } else {
     return "";

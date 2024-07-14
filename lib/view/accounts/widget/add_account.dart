@@ -56,6 +56,9 @@ class _AddAccountState extends State<AddAccount> {
       accVat = "GCC";
       codeController.text=accountController.getLastCode();
       accountType = Const.accountTypeList[0];
+        if(accParentId !=null){
+        accIsRoot=false;
+      }
     }
   }
 
@@ -335,6 +338,7 @@ class _AddAccountState extends State<AddAccount> {
       accountModel.accParentId = null;
     }else{
       accountModel.accParentId = accParentId;
+      
     }
   }
   late List<AccountModel> products = <AccountModel>[];

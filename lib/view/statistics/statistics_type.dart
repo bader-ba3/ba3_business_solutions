@@ -1,19 +1,11 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
-import 'package:ba3_business_solutions/view/products/product_view_old_old.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:ba3_business_solutions/view/statistics/statistics_view.dart';
-import 'package:ba3_business_solutions/view/stores/add_store.dart';
-import 'package:ba3_business_solutions/view/stores/all_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../Const/const.dart';
 import '../../controller/account_view_model.dart';
-import '../../model/Pattern_model.dart';
 import '../../model/account_model.dart';
 
 class StatisticsType extends StatefulWidget {
@@ -77,7 +69,10 @@ class _StatisticsTypeState extends State<StatisticsType> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: InkWell(
                                           onTap: () {
-                                            HiveDataBase.statisticBox.put(model.accId, model);
+                                            HiveDataBase.statisticBox.put(model.accId, {
+                                              "accName":model.accName,
+                                              "accId":model.accId,
+                                              });
                                             Get.back();
                                           },
                                           child: Padding(
@@ -96,9 +91,9 @@ class _StatisticsTypeState extends State<StatisticsType> {
               setState(() {});
             }, ),
             for(var i in HiveDataBase.statisticBox.values.toList())
-            Item("معاينة "+i.accName.toString(),(){
+            Item("معاينة "+i["accName"].toString(),(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewStore).then((value) {
-                if(value) Get.to(()=>StatisticsView(accountId: i.accId!));
+                if(value) Get.to(()=>StatisticsView(accountId: i["accId"]!));
               });
             }),
           ],

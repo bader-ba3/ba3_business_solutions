@@ -87,6 +87,7 @@ class BondViewModel extends GetxController {
     allBondsItem[globalModel.bondId!]=globalModel;
     allBondsItem[globalModel.bondId!]?.bondRecord = [];
     allBondsItem[globalModel.bondId!]?.originId = globalModel.invId;
+     allBondsItem[globalModel.bondId!]?.bondType = Const.bondTypeInvoice;
     // allBondsItem[globalModel.bondId!]?.bondCode = getNextBondCode(type: Const.bondTypeDaily);
     allBondsItem[globalModel.bondId!]?.bondDate ??= globalModel.invDate;
     allBondsItem[globalModel.bondId!]?.bondDescription =getGlobalTypeFromEnum(globalModel.patternId!)+" تم التوليد بشكل تلقائي";
@@ -96,15 +97,6 @@ class BondViewModel extends GetxController {
       String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
       double totalDiscount = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.map((e) => e.percentage!,).reduce((value, element) => value+element,);
       if(globalModel.invType==Const.invoiceTypeSales){
-        print(totalDiscount);
-        print(element.invRecSubTotal);
-        print(element.invRecQuantity!);
-        print(((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
-        print(((element.invRecSubTotal!)));
-        print((totalDiscount==0?1:(totalDiscount/100)));
-        print(element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
-        print(element.invRecSubTotal!*element.invRecQuantity!);
-        print(((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?1:(totalDiscount/100))));
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100))), 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
       if(totalDiscount!=0){
@@ -294,17 +286,12 @@ class BondViewModel extends GetxController {
     } else {
       tempBondModel = GlobalModel.fromJson(model.toFullJson());
       bondModel = GlobalModel.fromJson(model.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily) {
+      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice ) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId, isStart: false,
+              oldId: bondModel.bondId, bondType: bondModel.bondType!,
             ));
         update();
-      } else if (bondModel.bondType == Const.bondTypeStart) {
-        Get.off(() => BondDetailsView(
-          oldId: bondModel.bondId, isStart: true,
-        ));
-        update();
-      } else {
+      }  else {
         Get.off(() => CustomBondDetailsView(
               oldId: bondModel.bondId,
               isDebit: bondModel.bondType == Const.bondTypeDebit,
@@ -335,9 +322,7 @@ class BondViewModel extends GetxController {
 
   void initPage(type) {
     initTotal();
-    if (tempBondModel.bondType == Const.bondTypeDaily) {
-      recordDataSource = BondRecordDataSource(recordData: tempBondModel);
-    }  else if (tempBondModel.bondType == Const.bondTypeStart) {
+    if (tempBondModel.bondType == Const.bondTypeDaily||tempBondModel.bondType == Const.bondTypeStart||tempBondModel.bondType == Const.bondTypeInvoice) {
       recordDataSource = BondRecordDataSource(recordData: tempBondModel);
     }  else {
       customBondRecordDataSource = CustomBondRecordDataSource(recordData: tempBondModel, oldisDebit: tempBondModel.bondType == Const.bondTypeDebit);
@@ -439,15 +424,11 @@ class BondViewModel extends GetxController {
       bondModel.bondId = bondId;
     }
     tempBondModel.bondTotal = total.toString();
-    tempBondModel.bondType = bondType;
-    tempBondModel.bondType = Const.bondTypeDaily;
+    tempBondModel.bondType = bondType ??Const.bondTypeDaily;
     var bondCode = "";
     if (!isEdit) {
       // String bondId = generateId(RecordType.bond);
-      bondCode = (int.parse(allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-      while (allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
-        bondCode = (int.parse(bondCode) + 1).toString();
-      }
+     bondCode=getNextBondCode(type:tempBondModel.bondType );
       //TODO add_bondid_to_cheqoe_model_to_save_it_while_edit
       // invoiceModel.bondCode = bondCode;
     }
@@ -467,7 +448,7 @@ class BondViewModel extends GetxController {
 
   initCodeList(type){
     codeList={};
-    for (var element in allBondsItem.values) {
+    for (var element in allBondsItem.values.where((e)=>!e.bondCode!.contains("F-"))) {
       if(element.bondType == type){
         codeList[element.bondCode!] = element.bondId!;
       }
@@ -482,15 +463,10 @@ class BondViewModel extends GetxController {
     } else {
       tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index - 1]]?.toFullJson());
       bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index - 1]]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily) {
+      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice ) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId, isStart: false,
+              oldId: bondModel.bondId, bondType: bondModel.bondType!,
             ));
-        update();
-      }else if (bondModel.bondType == Const.bondTypeStart) {
-        Get.off(() => BondDetailsView(
-          oldId: bondModel.bondId, isStart: true,
-        ));
         update();
       } else {
         Get.off(() => CustomBondDetailsView(
@@ -508,15 +484,10 @@ class BondViewModel extends GetxController {
     } else {
       tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index + 1]]?.toFullJson());
       bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index + 1]]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily) {
+      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice ) {
         Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId, isStart: false,
+              oldId: bondModel.bondId, bondType: bondModel.bondType! ,
             ));
-        update();
-      }else if (bondModel.bondType == Const.bondTypeStart) {
-        Get.off(() => BondDetailsView(
-          oldId: bondModel.bondId, isStart: true,
-        ));
         update();
       } else {
         Get.off(() => CustomBondDetailsView(

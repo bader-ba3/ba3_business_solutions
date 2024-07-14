@@ -65,6 +65,7 @@ class AllSellerInvoice extends StatelessWidget {
                   Get.to(() => SellerTarget(
                     sellerId: oldKey!,
                       ));
+                     
                 },
                 child: Text("التارغيت")),
             SizedBox(
@@ -78,12 +79,10 @@ class AllSellerInvoice extends StatelessWidget {
             // String model = controller.allAccounts.keys.toList()[index];
             // AccountModel accountModel=controller.accountListMyId[model]!;
             StreamBuilder(
-                stream: FirebaseFirestore.instance.collection(Const.sellersCollection).doc(oldKey).collection(Const.recordCollection).snapshots(),
+                stream: controller.allSellers.stream,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else {
-                    return GetBuilder<SellersViewModel>(builder: (controller) {
+  
+                  return GetBuilder<SellersViewModel>(builder: (controller) {
                       if (dateRange == null) controller.initSellerPage(oldKey);
                       return SfDataGrid(
                         onCellTap: (DataGridCellTapDetails details) {
@@ -119,7 +118,7 @@ class AllSellerInvoice extends StatelessWidget {
                         columnWidthMode: ColumnWidthMode.fill,
                       );
                     });
-                  }
+                
                 }),
       ),
     );

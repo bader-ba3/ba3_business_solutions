@@ -692,13 +692,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       color: Colors.blue.shade100,
-                      width: 225,
+                  
                       height: 50,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
+                           mainAxisSize :MainAxisSize.min,
                           children: [
-                            Text("المجموع بدون الضريبة"),
+                            SizedBox(
+                              width: 150,
+                              child: Text("المجموع بدون الضريبة")),
                             SizedBox(
                               width: 20,
                             ),
@@ -712,13 +715,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       color: Colors.blue.shade100,
-                      width: 225,
                       height: 50,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
+                           mainAxisSize :MainAxisSize.min,
                           children: [
-                            Text("مجموع الضريبة"),
+                             SizedBox(
+                              width: 150,
+                              child: Text("مجموع الضريبة")),
+                          
                             SizedBox(
                               width: 20,
                             ),
@@ -732,11 +738,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       color: Colors.blue.shade200,
-                      width: 300,
                       height: 50,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
+                          mainAxisSize :MainAxisSize.min,
                           children: [
                             Text(
                               "المجموع مع الضريبة",
@@ -801,7 +807,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       Get.snackbar("فحص المطاييح", "هذا البائع غير موجود من قبل");
                                     } else if (!invoiceController.checkStoreComplete()) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                    } else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType !=Const.invoiceTypeChange) {
+                                    } else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
                                     } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
@@ -853,7 +859,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                     } else if (!invoiceController.checkStoreComplete()) {
                                       Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                    } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    }  else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
+                                      Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
+                                    }else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                       // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                       //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
@@ -892,7 +900,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
+                                      Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
+                                    } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
@@ -995,8 +1005,8 @@ class _InvoiceViewState extends State<InvoiceView> {
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
-        bondType: Const.bondTypeDaily,
-        bondCode: invoiceController.initModel.invId == null ? (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString() : invoiceController.initModel.bondCode,
+        bondType: Const.bondTypeInvoice,
+        bondCode: invoiceController.initModel.invId == null ? bondController.getNextBondCode(type: Const.bondTypeInvoice): invoiceController.initModel.bondCode,
         globalType: Const.globalTypeInvoice);
   }
 }

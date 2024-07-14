@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class BondDetailsView extends StatefulWidget {
   BondDetailsView({
     Key? key,
     this.oldBondModel,
-    required this.isStart,
+    required this.bondType,
     this.initFun,
     this.oldId,
     this.oldModelKey,
@@ -25,7 +26,7 @@ class BondDetailsView extends StatefulWidget {
   final GlobalModel? oldBondModel;
   final String? oldModelKey;
   final String? oldId;
-  final bool isStart ;
+  final String bondType ;
   final Function? initFun ;
 
   @override
@@ -48,7 +49,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
   }
 
   void initPage() {
-    bondController.initCodeList( widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily);
+    bondController.initCodeList( widget.bondType );
     if (widget.oldId != null || widget.oldBondModel != null) {
       bondController.tempBondModel = GlobalModel.fromJson(widget.oldBondModel?.toFullJson() ?? bondController.allBondsItem[widget.oldId]!.toFullJson());
       bondController.bondModel = widget.oldBondModel ?? bondController.allBondsItem[widget.oldId]!;
@@ -58,10 +59,10 @@ class _BondDetailsViewState extends State<BondDetailsView> {
     } else {
       bondController.tempBondModel = getBondData();
       bondController.bondModel = getBondData();
-      bondController.tempBondModel.bondCode = bondController.getNextBondCode(type: widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily);
+      bondController.tempBondModel.bondCode = bondController.getNextBondCode(type:  widget.bondType);
       isNew = true;
     }
-    bondController.tempBondModel.bondType = widget.isStart ? Const.bondTypeStart:Const.bondTypeDaily;
+    bondController.tempBondModel.bondType = widget.bondType;
     bondController.initPage(bondController.tempBondModel.bondType);
     newCodeController.text = bondController.tempBondModel.bondCode!;
     defualtCode = bondController.tempBondModel.bondCode!;
@@ -129,10 +130,24 @@ class _BondDetailsViewState extends State<BondDetailsView> {
           child: Scaffold(
             appBar: AppBar(
                 centerTitle: true,
-                title: Text((bondController.bondModel.bondId ?? "سند جديد")+" "+  getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
+                title: Text( getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
                 leading: BackButton(),
                 actions: !checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)?[]: isNew
                     ? [
+                        Row(
+                    children: [
+                      const Text("تاريخ السند : ", style: TextStyle()),
+                     DatePicker(
+                            initDate:  controller.tempBondModel.bondDate,
+                            onSubmit: (_) {
+                               controller.tempBondModel.bondDate = _.toString().split(".")[0];
+controller.update();
+                            },
+                          ),
+                            SizedBox(width:50),
+                    ],
+                  ),
+                
                         SizedBox(
                           width: 80,
                           child: TextFormField(
@@ -159,6 +174,19 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                         SizedBox(width: 30),
                       ]
                     : [
+                        Row(
+                    children: [
+                      const Text("تاريخ السند : ", style: TextStyle()),
+                     DatePicker(
+                            initDate:  controller.tempBondModel.bondDate,
+                            onSubmit: (_) {
+                               controller.tempBondModel.bondDate = _.toString().split(".")[0];
+controller.update();
+                            },
+                          ),
+                            SizedBox(width:50),
+                    ],
+                  ),
                         if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
                           TextButton(
                               onPressed: () {

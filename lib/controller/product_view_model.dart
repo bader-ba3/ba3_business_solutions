@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,7 +35,7 @@ class ProductViewModel extends GetxController {
   void initGlobalProduct(GlobalModel globalModel) {
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
     Map<String, List> allRecTotal = {};
-    bool isPay = globalModel.invType == Const.invoiceTypeBuy;
+    bool isPay = globalModel.invType == Const.invoiceTypeBuy||globalModel.invType == Const.invoiceTypeAdd;
     int correctQuantity = isPay ? 1 : -1;
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
@@ -47,11 +48,8 @@ class ProductViewModel extends GetxController {
     }
     allRecTotal.forEach((key, value) {
       var recCredit = value.reduce((value, element) => value + element);
-      print(key);
-      print(productDataMap[key]);
-      print(productDataMap.length);
-
-      bool isStoreProduct = productDataMap[key]!.prodType == Const.productTypeStore;
+      if(productDataMap[key]!=null){
+    bool isStoreProduct = productDataMap[key]!.prodType == Const.productTypeStore;
       InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
       // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
       if (productDataMap[key]?.prodRecord == null) {
@@ -64,14 +62,29 @@ class ProductViewModel extends GetxController {
             ?.prodRecord
             ?.add(ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse));
       }
+      }
       //WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-        update();
-      initModel();
-      initPage();
-      go(lastIndex);
+      //   update();
+      // initModel();
+      // initPage();
+      // go(lastIndex);
       // });
     });
   }
+
+double getAvreageBuy(ProductModel productModel){
+    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
+  double avg = 0;
+  int count = 0;
+for (ProductRecordModel element in productModel.prodRecord??[]) {
+   GlobalModel globalModel = invoiceViewModel.invoiceModel[element.invId!]!;
+    count = (int.parse(element.prodRecQuantity??"0"))+count;
+    if(globalModel.invType == Const.invoiceTypeBuy){
+    avg =(( double.parse(element.prodRecSubTotal??"0") *int.parse(element.prodRecQuantity??"0")) + ( (count -  int.parse(element.prodRecQuantity??"0")) * avg))/  count;
+    }
+}
+  return avg;
+} 
 
   void deleteGlobalProduct(GlobalModel globalModel) {
     globalModel.invRecords?.forEach((element) {
@@ -109,14 +122,24 @@ class ProductViewModel extends GetxController {
         productDataMap= Map.fromEntries(productDataMap.entries.where((element) => element.value.prodIsLocal??false,).toList()).obs;
       }
       //  WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+      // correct();
       update();
       initModel();
       initPage();
       go(lastIndex);
+      // for (var i =0;i< productDataMap.values.toList().length;i++){
+      //   ProductModel product =  productDataMap.values.toList()[i];
+      //   if(product.prodIsLocal == null){
+      //     product.prodIsLocal = true;
+      //      HiveDataBase.productModelBox.put(product.prodId, product);
+      //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
+      //   }
+      // }
       //  for (var i =0;i< productDataMap.values.toList().length;i++){
       //   ProductModel product =  productDataMap.values.toList()[i];
-      //   if(product.prodName!.contains("مستعمل")){
-      //     product.prodIsLocal = false;
+      //   if(product.prodCode == "L0505163"){
+      //     product.prodCode = "1";
+      //     product.prodFullCode = "L0501";
       //     HiveDataBase.productModelBox.put(product.prodId, product);
       //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
       //   }
@@ -155,37 +178,66 @@ class ProductViewModel extends GetxController {
    
   }
 
-void correct (){
+Future<void> correct () async {
+  int i =0 ;
   for (var index = 0 ;index < productDataMap.length; index ++ ) {
         ProductModel element = productDataMap.values.toList()[index];
-        if(element.prodParentId?.contains("L0")??false){
-             print(element.prodName);
-             print(element.toJson());
-            if(!element.prodIsParent!){
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
-          'prodChild': FieldValue.arrayUnion([element.prodId]),
-        });
-       productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
-        HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
-          "prodParentId":getProductIdFromFullName(element.prodParentId)
-        });
-        productDataMap[element.prodId]!.prodParentId = getProductIdFromFullName(element.prodParentId);
-        HiveDataBase.productModelBox.put(element.prodId,  productDataMap[element.prodId]!);
-      //  ProductModel prodParentId = getProductModelFromId(getProductIdFromFullName(element.prodParentId))!;
-        // if(prodParentId.prodGroupPad==null){
-        //   int pad= element.prodFullCode!.replaceAll(prodParentId.prodFullCode!, "").length;
-        //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodParentId.prodId).update({
-        //     "prodGroupPad":pad
-        //   });
+        // if(
+        //   (double.tryParse(element.prodMinPrice??"0")==null||
+        //   double.tryParse(element.prodCostPrice??"0")==null||
+        //   double.tryParse(element.prodWholePrice??"0")==null||
+        //   double.tryParse(element.prodRetailPrice??"0")==null||
+        //   double.tryParse(element.prodCustomerPrice??"0")==null
+        //   )&&(element.prodMinPrice!="" &&element.prodCostPrice!="" &&element.prodWholePrice!="" &&element.prodRetailPrice!="" &&element.prodCustomerPrice!="")){
+        //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
+        //     element.prodMinPrice = double.parse( element.prodMinPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+        //     element.prodCostPrice = double.parse( element.prodCostPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+        //     element.prodWholePrice = double.parse( element.prodWholePrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+        //     element.prodRetailPrice = double.parse( element.prodRetailPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+        //     element.prodCustomerPrice = double.parse( element.prodCustomerPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+        //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
+        //   HiveDataBase.productModelBox.put(element.prodId,  element);
+        //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
         // }
-      }
-        }
+          //      if(!element.prodName!.contains("مستعمل")&&!element.prodIsLocal!&&!element.prodName!.contains("F-")){
+          //       print(i.toString() );
+          //       i++;
+          //       print(element.prodName);
+          //      element.prodName="F-"+element.prodName!;
+          //  HiveDataBase.productModelBox.put(element.prodId , element);
+           
+          // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
+          //   }
+      //   if(element.prodParentId?.contains("F0")??false){
+      //        print(element.prodName);
+      //        print(element.toJson());
+      //       if(!element.prodIsParent!){
+      //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
+      //     'prodChild': FieldValue.arrayUnion([element.prodId]),
+      //   });
+      //  productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
+      //   HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
+      //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
+      //     "prodParentId":getProductIdFromFullName(element.prodParentId)
+      //   });
+      //   productDataMap[element.prodId]!.prodParentId = getProductIdFromFullName(element.prodParentId);
+      //   HiveDataBase.productModelBox.put(element.prodId,  productDataMap[element.prodId]!);
+      // }
+      //   }
       
       // i++;
       // print(i.toString() + " OF "+productDataMap.values.toList().length.toString() );
       
     }
+    // for (var i =0;i< productDataMap.values.toList().length;i++){
+    //     ProductModel product =  productDataMap.values.toList()[i];
+    //     if(product.prodFullCode == "L0505163"){
+    //       product.prodCode = "1";
+    //       product.prodFullCode = "L0501";
+    //       HiveDataBase.productModelBox.put(product.prodId, product);
+    //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
+    //     }
+    //   }
 }
   String getNextProductCode({String? perantId}) {
     int code = 0;
@@ -231,7 +283,6 @@ void correct (){
   }
 
   void createProduct(ProductModel editProductModel, {withLogger = false}) async {
-    print(editProductModel.prodCode);
     var fullCode = '';
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;
@@ -243,7 +294,6 @@ void correct (){
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
     }
-    print(fullCode);
     editProductModel.prodFullCode = fullCode;
     editProductModel.prodId = generateId(RecordType.product);
     editProductModel.prodIsGroup ??= false;
@@ -279,7 +329,6 @@ void correct (){
   }
 
   void updateProduct(ProductModel editProductModel, {withLogger = false}) {
-    print(editProductModel.prodCode);
     var fullCode = '';
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;
@@ -382,14 +431,17 @@ void correct (){
     // var a = (element.prodChild?.where((e) => productDataMap[e] == null).toList());
     // if(a!.isNotEmpty!){
     //   print(a);
+    //   print( element.prodIsLocal);
     //   print( element.prodName);
     //   print( element.prodChild);
-    //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(a.first).delete();
-    //   HiveDataBase.productModelBox.delete(a.first);
-    //   productDataMap[element.prodId]!.prodChild!.remove(a.first);
-    //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(productDataMap[element.prodId]!.toJson());
-    //   HiveDataBase.productModelBox.put (element.prodId, productDataMap[element.prodId]!);
+    //   //  element.prodChild?.map((e) => ).toList();
+    // //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(a.first).delete();
+    // //   HiveDataBase.productModelBox.delete(a.first);
+    // //   productDataMap[element.prodId]!.prodChild!.remove(a.first);
+    // //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(productDataMap[element.prodId]!.toJson());
+    // //   HiveDataBase.productModelBox.put (element.prodId, productDataMap[element.prodId]!);
     // }
+    element.prodChild?.removeWhere((e) => productDataMap[e] == null);
     var list = element.prodChild?.map((e) => addToModel(productDataMap[e]!)).toList();
     // if(list!.length>99){
     //   padNumber=2;
@@ -584,6 +636,8 @@ String getProductIdFromName(name) {
   }
 }
 
+
+
 List<ProductModel>? getProductModelFromName(name) {
   if (name != null && name != " " && name != "") {
     return Get.find<ProductViewModel>()
@@ -599,6 +653,9 @@ List<ProductModel>? getProductModelFromName(name) {
 String getProductNameFromId(id) {
   if (id != null && id != " " && id != "") {
     // return id;
+    if(Get.find<ProductViewModel>().productDataMap[id]==null){
+      return "";
+    }
     return Get.find<ProductViewModel>().productDataMap[id]!.prodName!;
   } else {
     return "";
@@ -609,6 +666,9 @@ ProductModel? getProductModelFromId(id) {
   if (id.runtimeType == InvoiceRecordModel) {
     return Get.find<ProductViewModel>().productDataMap[(id as InvoiceRecordModel).invRecProduct!];
   } else if (id != null && id != " " && id != "") {
+    if(Get.find<ProductViewModel>().productDataMap[id]==null){
+      return null;
+    }
     return Get.find<ProductViewModel>().productDataMap[id]!;
   } else {
     return null;

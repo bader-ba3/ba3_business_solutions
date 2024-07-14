@@ -1,3 +1,6 @@
+import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
+import 'package:ba3_business_solutions/model/product_model.dart';
+
 class StoreRecordModel {
   String? storeRecId;
   String? storeRecInvId;
@@ -66,4 +69,27 @@ class StoreRecProductModel {
       'storeRecProductTotal': storeRecProductTotal,
     };
   }
+}
+
+class StoreRecordView{
+  String?  productId , total  ;
+  StoreRecordView({this.productId, this.total});
+
+  String? affectedId() {
+    return productId;
+  }
+
+  String? affectedKey({String? type}) {
+    return "productId";
+  }
+  toAR(){
+    ProductModel productModel = getProductModelFromIdIsolate(productId)??ProductModel(prodName: "XXXXXXXXXXX");
+    return {
+       "رمز المادة":productModel.prodFullCode,
+       "المادة":productModel.prodName,
+       "الكمية":double.parse(total??"0").toInt()
+    };
+    
+  }
+
 }

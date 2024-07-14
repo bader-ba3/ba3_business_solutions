@@ -101,18 +101,28 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
   Widget build(BuildContext context) {
     return GetBuilder<SellersViewModel>(builder: (controller) {
       listStop.clear();
-      List<SellerModel> a = controller.allSellers.values.toList();
-      listData = Map.fromEntries(List.generate(a.length+1, (index){
+      List<SellerModel> allSellers= controller.allSellers.values.toList();
+      listData = Map.fromEntries(List.generate(allSellers.length+1, (index){
         if(index == 0){
           return  MapEntry(0, SellerModel(sellerName: "",sellerRecord: []));
         }else{
-         return MapEntry(index, a[index-1]);
+         return MapEntry(index,allSellers[index-1]);
         }
       }));
-      listData[a.length+1]=SellerModel(sellerName: "",sellerRecord: []);
+      listData[allSellers.length+1]=SellerModel(sellerName: "",sellerRecord: []);
       listData.forEach((key, value) {
         if(value.sellerRecord!.isNotEmpty){
-          listStop.add(FlSpot(key.toDouble(),value.sellerRecord!.map((e) => double.parse(e.selleRecAmount??"0"),).reduce((value, element) => value+element,)!));
+          List<SellerRecModel> _ = value.sellerRecord!.where((element) {
+           String date =  element.selleRecInvDate.toString().split(" ")[0];
+           String year = DateTime.now().toString().split("-")[0];
+           String month = DateTime.now().toString().split("-")[1];
+           return date.split("-")[0] == year &&date.split("-")[1] == month;
+          },).toList();
+          if(_.isNotEmpty) {
+            listStop.add(
+            FlSpot(key.toDouble(),_.map((e) => double.parse(e?.selleRecAmount??"0"),).reduce((value, element) => value+element,)!)
+          );
+          }
         }else{
           listStop.add(FlSpot(key.toDouble(),0));
         }
@@ -368,7 +378,6 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
-                            interval: 1000,
                             reservedSize: 46,
                             // getTitlesWidget: leftTitleWidgets,
                           ),

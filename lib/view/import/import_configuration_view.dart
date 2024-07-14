@@ -40,17 +40,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   'سعر التكلفة' :'prodCostPrice',
   'اقل سعر مسموح' :'prodMinPrice',
   'باركود المادة' :'prodBarcode',
-  'هل يخضع ضريبة' :'prodHasVat',
   'رمز المجموعة' :'prodParentId',
   'نوع المادة' :'prodType',
   };
 
   Map configAccount = {
     "الاسم": "accName",
-    "بيان الحساب": "accComment",
-    "النوع": "accType",
     "رمز الحساب": "accCode",
-  "نوع الضريبة" : 'accVat',
   "اسم المجموعة" : 'accParentId',
   };
 
@@ -170,13 +166,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Future<void> addProduct() async {
     List<ProductModel> finalData = [];
     for (var element in widget.productList) {
-      print(element[setting["prodName"]]);
+      //print(element[setting["prodName"]]);
       bool isGroup = !(element[setting['prodType']].removeAllWhitespace=="خدمية"||element[setting['prodType']].removeAllWhitespace=="مستودعية");
       var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
-      var parentId = "L"+element[setting["prodParentId"]];
+      var parentId = "F"+element[setting["prodParentId"]];
       var isRoot = element[setting["prodParentId"]].isBlank;
-      print("code "+code);
-      String chechIsExist = isGroup ?getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")):getProductIdFromName(element[setting["prodName"]]);
+     // print("code "+code);
+      String chechIsExist = isGroup ?getProductIdFromName("F-"+element[setting["prodName"]].replaceAll("- ", "")):getProductIdFromName("F-"+element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -187,12 +183,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       if(chechIsExist=="") {
         finalData.add(ProductModel(
         prodId: generateId(RecordType.product),
-        prodName: element[setting["prodName"]],
+        prodName: "F-"+element[setting["prodName"]],
         // prodCode: element[setting["prodCode"]],
           prodCode:  code,
         prodBarcode: element[setting["prodBarcode"]],
-        prodIsLocal: !element[setting["prodName"]].contains("مستعمل"),
-        prodFullCode: "L"+element[setting["prodCode"]],
+        // prodIsLocal: !element[setting["prodName"]].contains("مستعمل"),
+        prodIsLocal: false,
+        prodFullCode: "F"+element[setting["prodCode"]],
         // prodGroupCode: element[setting["prodGroupCode"]],
         //todo
         prodCustomerPrice : element[setting['prodCustomerPrice']],
@@ -214,97 +211,104 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
 
     print(finalData.length);
     print("--"*30);
-    // for(var i in finalData){
-    //   if(i.prodIsGroup!){
-    //   print(i.toFullJson());
-    //   }
-    // }
-    // print("--"*30);
-    //  for(var i in finalData){
-    //   if(getProductIdFromFullName(i.prodFullCode!)!=""){
-    //  print(i.prodName!+"|  -  |"+i.prodFullCode!+"    "+getProductNameFromId(getProductIdFromFullName(i.prodFullCode!)));
-    // //  await FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(i.prodFullCode!)).delete();
-    // //   HiveDataBase.productModelBox.delete(getProductIdFromFullName(i.prodFullCode!));
-    // //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(i.prodId).set(i.toJson());
-    // //   HiveDataBase.productModelBox.put(i.prodId, i);
-    //   }
-    // }
-    
     for(var i in finalData){
-      print(i.prodName!+"|  -  |"+i.prodFullCode!);
-    
+      if(i.prodIsGroup!){
+      print(i.toFullJson());
+      }
     }
+    print("--"*30);
+//  for(var i in finalData){
+ 
+//       print(i.prodName!+"|  -  |"+i.prodFullCode!+"|  -  |"+i.prodId!+"|  |"+getProductIdFromFullName(i.prodParentId).toString());    
+//     }
+
+    /// FIX DUPLICATE ON PRODACT FULL CODE
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  for(var a in finalData){
+    //   if(getProductIdFromFullName(a.prodFullCode!)!=""){
+    //    ProductModel _ = getProductModelFromId(getProductIdFromFullName(a.prodFullCode!))!;
+    //  print(a.prodName!+"|  -  |"+a.prodFullCode!+"    "+_.prodName!);
+    //   _.prodName  = a.prodName;
+    //   print(a.prodName!+"|  -  |"+a.prodFullCode!+"    "+_.prodName!);
+    //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(_.prodId).set(_.toJson());
+    //   HiveDataBase.productModelBox.put(_.prodId, _);
+    //   }
+    // }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
 
 
 
 
-    ProductViewModel productViewModel = Get.find<ProductViewModel>();
+    // ProductViewModel productViewModel = Get.find<ProductViewModel>();
     for (var element in finalData) {
      i++;
      print(i.toString() + " OF "+finalData.length.toString() );
      await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
      HiveDataBase.productModelBox.put(element.prodId, element);
     }
-    i = 0;
-    for (var index = 0 ;index < finalData.length; index ++ ) {
-      ProductModel element = finalData[index];
-      i++;
-      print(i.toString() + " OF "+finalData.length.toString() );
-      if(!element.prodIsParent!){
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
-          'prodChild': FieldValue.arrayUnion([element.prodId]),
-        });
-       productViewModel.productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
-        HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productViewModel.productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
-          "prodParentId":getProductIdFromFullName(element.prodParentId)
-        });
-        finalData[index].prodParentId = getProductIdFromFullName(element.prodParentId);
-        HiveDataBase.productModelBox.put(index, finalData[index]);
-       ProductModel prodParentId = getProductModelFromId(getProductIdFromFullName(element.prodParentId))!;
-        // if(prodParentId.prodGroupPad==null){
-        //   int pad= element.prodFullCode!.replaceAll(prodParentId.prodFullCode!, "").length;
-        //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodParentId.prodId).update({
-        //     "prodGroupPad":pad
-        //   });
-        // }
-      }
-    }
+    // i = 0;
+    // for (var index = 0 ;index < finalData.length; index ++ ) {
+    //   ProductModel element = finalData[index];
+    //   i++;
+    //   print(i.toString() + " OF "+finalData.length.toString() );
+    //   if(!element.prodIsParent!){
+    //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
+    //       'prodChild': FieldValue.arrayUnion([element.prodId]),
+    //     });
+    //    productViewModel.productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
+    //     HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productViewModel.productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
+    //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
+    //       "prodParentId":getProductIdFromFullName(element.prodParentId)
+    //     });
+    //     finalData[index].prodParentId = getProductIdFromFullName(element.prodParentId);
+    //     HiveDataBase.productModelBox.put(index, finalData[index]);
+    //    ProductModel prodParentId = getProductModelFromId(getProductIdFromFullName(element.prodParentId))!;
+    //     // if(prodParentId.prodGroupPad==null){
+    //     //   int pad= element.prodFullCode!.replaceAll(prodParentId.prodFullCode!, "").length;
+    //     //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(prodParentId.prodId).update({
+    //     //     "prodGroupPad":pad
+    //     //   });
+    //     // }
+    //   }
+    // }
   }
 
   Future<void> addAccount() async {
     AccountViewModel accountViewModel = Get.find<AccountViewModel>();
     List<AccountModel> finalData = [];
     for (var element in widget.productList) {
-      if(getAccountIdFromName(element[setting["accName"]])==null) {
+      bool accIsParent = element[setting['accParentId']].isEmpty;
         finalData.add(AccountModel(
         accId: generateId(RecordType.account),
-        accName: element[setting["accName"]],
-        accCode: element[setting["accCode"]],
+        accName: "F-"+(element[setting["accName"]]).replaceAll("-",""),
+        accCode: "F-"+element[setting["accCode"]].replaceAll("-",""),
         accComment: '',
         // accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
         accType: Const.accountTypeDefault,
         accVat : 'GCC',
-        accParentId : element[setting['accParentId']].isEmpty?null:element[setting['accParentId']],
-        accIsParent : element[setting['accParentId']].isEmpty,
+        accParentId : accIsParent?null:"F-"+element[setting['accParentId']],
+         accIsParent: accIsParent,
       ));
-      }
     }
     int i =0;
     print(finalData.length);
 
 
   for (var element in finalData) {
-       print("|"+element.accName!+"|");
+       print("|"+element.accName!+"|" + element.accCode.toString());
     }
-    // for (var element in finalData) {
-    //   i++;
-    //   print(i.toString());
-    //   // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
-    //   // await accountViewModel.addNewAccount(element, withLogger: false);
-    //   await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
-
-    // }
+    for (var element in finalData) {
+      i++;
+      print(i.toString());
+      // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+      // await accountViewModel.addNewAccount(element, withLogger: false);
+       print(element.accId);
+      element.accId = generateId(RecordType.account);
+      print(element.accId);
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+      HiveDataBase.accountModelBox.put(element.accId, element);
+    }
     // i=0;
     // for (var element in finalData) {
     //   i++;

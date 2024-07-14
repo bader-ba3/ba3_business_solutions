@@ -30,6 +30,16 @@ class LineChartWidget2 extends StatelessWidget {
             top: const BorderSide(color: Colors.transparent),
           ),
         ),
+         extraLinesData: ExtraLinesData(
+                  horizontalLines: [
+                    HorizontalLine(
+                      y: 0,
+                      color: Colors.black,
+                      strokeWidth: 3,
+                      dashArray: [20, 10],
+                    ),
+                  ],
+                ),
         lineBarsData: [LineChartBarData(
             isCurved: true,
             color: Colors.green,
@@ -42,7 +52,7 @@ class LineChartWidget2 extends StatelessWidget {
         minX: 0,
         maxX: isDay?30:12,
         // maxY: 400,
-        minY: 0,
+      //  minY: 0,
       ) ,
       duration: const Duration(milliseconds: 250),
     );
@@ -82,7 +92,7 @@ class LineChartWidget2 extends StatelessWidget {
           ), textAlign: TextAlign.center);
         },
         showTitles: true,
-        interval: 100,
+       // interval: 10000,
         reservedSize: 50,
       ),
     ),

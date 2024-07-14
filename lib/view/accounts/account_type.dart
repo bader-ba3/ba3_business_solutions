@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/accounts/acconts_view_old.dart';
@@ -50,6 +51,10 @@ class _AccountTypeState extends State<AccountType> {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
+            //   Item("correct", () {
+            //   AccountViewModel accountViewModel = Get.find<AccountViewModel>();
+            //   accountViewModel.correct();
+            // }),
 
           ],
         ),

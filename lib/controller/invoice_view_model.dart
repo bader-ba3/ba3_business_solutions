@@ -132,7 +132,8 @@ class InvoiceViewModel extends GetxController {
     initModel=GlobalModel.fromJson(globalModel.toFullJson());
     /// todo : edit this.
     //nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => e.invId!));
-    initAllInvoice();
+
+    //initAllInvoice();
     update();
   }
 
@@ -523,7 +524,7 @@ class InvoiceViewModel extends GetxController {
     if(nextPrevList.isEmpty){
       return "0";
     }else{
-      _=int.parse(nextPrevList.keys.last);
+      _=int.parse(nextPrevList.keys.where((e)=>!e.contains("F-")).last);
       while(nextPrevList.containsKey(_.toString())){
         _++;
       }
@@ -802,4 +803,9 @@ void showEInvoiceDialog({required String mobileNumber,required String invId}) {
       }, child: Text("موافق"))
     ]
   );
+}
+
+getInvoicePatternFromInvId(id){
+  GlobalModel globalModel = Get.find<InvoiceViewModel>().invoiceModel[id]!;
+  return getPatModelFromPatternId(globalModel!.patternId).patName! + " : "+globalModel!.invCode!;
 }

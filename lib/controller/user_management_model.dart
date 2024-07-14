@@ -56,7 +56,7 @@ class UserManagementViewModel extends GetxController {
 
   void checkUserStatus() async {
     if (userPin != null) {
-      FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) {
+      FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) async {
         if (userPin == null) {
           userStatus = UserManagementStatus.first;
           Get.offAll(() => LoginView());
@@ -64,7 +64,6 @@ class UserManagementViewModel extends GetxController {
           if(userStatus != UserManagementStatus.login){
           myUserModel = UserModel.fromJson(value.docs.first.data());
           userStatus = UserManagementStatus.login;
-         
           Get.put(GlobalViewModel(), permanent: true);
           Get.put(ChangesViewModel(), permanent: true);
            update();

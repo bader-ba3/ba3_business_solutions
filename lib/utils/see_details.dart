@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_details_view.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
@@ -17,7 +18,7 @@ void seeDetails(String id) {
         ));
   } else if (id.contains("bon")) {
     Get.to(() => BondDetailsView(
-          oldId: id, isStart: false,
+          oldId: id, bondType: Const.bondTypeInvoice,
         ));
   } else {
     assert(false);

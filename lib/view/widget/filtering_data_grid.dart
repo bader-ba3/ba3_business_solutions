@@ -159,7 +159,7 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                           ...(widget.globalType != null ? constructor.toAR(type: widget.globalType).entries : constructor.toAR().entries)
                               .map((e) => GridColumn(
                                   // width: double.nan,
-                                  columnWidthMode: ColumnWidthMode.auto,
+                                  columnWidthMode: ColumnWidthMode.fill,
                                   columnName: e.key.toString(),
                                   label: Column(
                                     children: [
@@ -167,18 +167,13 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                                         height: 20,
                                       ),
                                       Expanded(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
+                                        child:  Text(
                                               e.key.toString() == (widget.globalType != null ? constructor.toAR(type: widget.globalType).entries : constructor.toAR().entries).last.key ? e.key.toString() + '\n' : e.key.toString() + tab,
                                               textDirection: isArabic.hasMatch(e.toString()) ? TextDirection.rtl : TextDirection.ltr,
                                               style: TextStyle(fontSize: 14),
+                                              overflow: TextOverflow.ellipsis,
                                               maxLines: null,
                                             ),
-                                          ],
-                                        ),
                                       ),
                                     ],
                                   )))

@@ -32,7 +32,7 @@ class _BondTypeState extends State<BondType> {
         body: Column(
           children: [
             Item("سند يومية",(){
-              Get.to(() => BondDetailsView(isStart: false,));
+              Get.to(() => BondDetailsView(bondType: Const.bondTypeDaily,));
             }),
             Item("سند دفع",(){
               Get.to(() => CustomBondDetailsView(isDebit: true));
@@ -41,7 +41,7 @@ class _BondTypeState extends State<BondType> {
               Get.to(() => CustomBondDetailsView(isDebit: false));
             }),
             Item("قيد افتتاحي",(){
-              Get.to(() => BondDetailsView(isStart:true));
+              Get.to(() => BondDetailsView(bondType: Const.bondTypeStart,));
             }),
              if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Item("عرض جميع السندات",(){

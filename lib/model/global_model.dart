@@ -13,6 +13,7 @@ import 'invoice_record_model.dart';
 
 class GlobalModel {
   String?
+      originAmenId,
       bondId,
       bondDescription,
       bondTotal,
@@ -63,6 +64,7 @@ class GlobalModel {
     return {
       if (invId != null) 'invId': invId,
       if (bondId != null) 'bondId': bondId,
+      if (originAmenId != null) 'originAmenId': originAmenId,
       if (bondDescription != null) 'bondDescription': bondDescription,
       if (bondTotal != null) 'bondTotal': bondTotal,
       if (bondDate != null) 'bondDate': bondDate,
@@ -111,6 +113,7 @@ class GlobalModel {
   Map<String, dynamic> toFullJson() {
     return {
       if (invId != null) 'invId': invId,
+      if (originAmenId != null) 'originAmenId': originAmenId,
       if (bondId != null) 'bondId': bondId,
       if (bondDescription != null) 'bondDescription': bondDescription,
       if (bondTotal != null) 'bondTotal': bondTotal,
@@ -168,6 +171,7 @@ class GlobalModel {
     List<InvoiceDiscountRecordModel>? invDiscountRecord = json['invDiscountRecord']==null ?[]:json['invDiscountRecord']?.map<InvoiceDiscountRecordModel>((dynamic e) => InvoiceDiscountRecordModel.fromJson(e)).toList();
     return GlobalModel(
       bondId: json['bondId'],
+      originAmenId: json['originAmenId'],
       bondDescription: json['bondDescription'],
       bondTotal: json['bondTotal'],
       bondDate: json['bondDate'],
@@ -359,6 +363,7 @@ class GlobalModel {
 
   GlobalModel({
     this.bondId,
+    this.originAmenId,
     this.bondDescription,
     this.bondTotal,
     this.bondDate,

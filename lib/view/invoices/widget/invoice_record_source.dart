@@ -36,20 +36,24 @@ class InvoiceRecordSource extends DataGridSource {
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
     color=patternController.patternModel[globalController.initModel.patternId]!.patColor;
     this.isPatternHasVat = isPatternHasVat;
+            print(records.map((e)=>e.toJson()));
+
     for (var i = 0; i < records.length; i++) {
       if (records[i].invRecSubTotal != null) {
          //searchText().first;
-        print(records[i].invRecProduct.toString());
          var prod = getProductModelFromId(records[i].invRecProduct.toString());
         records[i].invRecVat = !isPatternHasVat
             ? 0.0
             : !(prod!.prodIsLocal!)
                 ? 0.0
-                : (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat), i))! * getVatFromName(accountVat);
+                :records[i].invRecSubTotal == 0.0 
+                ? 0.0
+                :  (records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat), i))! * getVatFromName(accountVat);
         // : double.parse(((records[i].invRecSubTotal != 0.0 ? records[i].invRecSubTotal : searchLastPrice(prod.prodId!, getVatFromName(accountVat)))! * (getVatFromName(accountVat))).toStringAsFixed(2));
         records[i].invRecTotal = (records[i].invRecSubTotal ?? 0) * (records[i].invRecQuantity ?? 0);
       }
     }
+    print(records.map((e)=>e.toJson()));
     dataGridRows = records
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowInvId, value: dataGridRow.invRecId),
@@ -167,7 +171,7 @@ class InvoiceRecordSource extends DataGridSource {
         List<ProductModel> result = searchText(product_name!.value);
         if (double.tryParse(newCellValue) != null) {
           if(double.tryParse(newCellValue)!>=double.parse(result.first.prodMinPrice??"0")/1.05) {
-            records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(newCellValue) * vat);
+            records[dataRowIndex].invRecVat = !isPatternHasVat ? 0  : (double.parse(newCellValue) * vat);
             dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvSubTotal, value: double.parse(newCellValue));
             records[dataRowIndex].invRecSubTotal = double.parse(newCellValue);
           }else{
@@ -178,7 +182,10 @@ class InvoiceRecordSource extends DataGridSource {
             Expression exp = Parser().parse(newCellValue);
             var finalExp = exp.evaluate(EvaluationType.REAL, ContextModel()).toString();
             if(double.tryParse(finalExp)!>=double.parse(result.first.prodMinPrice!)/1.05) {
-            records[dataRowIndex].invRecVat = !isPatternHasVat ? 0 : (double.parse(finalExp) * vat);
+              print(finalExp);
+              print(result.first.prodMinPrice!);
+              print(double.parse(result.first.prodMinPrice!)/1.05);
+            records[dataRowIndex].invRecVat = !isPatternHasVat ? 0  : (double.parse(finalExp) /1.05 -double.parse(finalExp));
             dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<double>(columnName: Const.rowInvSubTotal, value: double.parse(finalExp));
             records[dataRowIndex].invRecSubTotal = double.parse(finalExp);
           }else{
@@ -406,6 +413,9 @@ class InvoiceRecordSource extends DataGridSource {
     if (type == Const.invoiceChoosePriceMethodeMinPrice) {
       price = double.parse(product.prodMinPrice??"0");
     }
+     if (type == Const.invoiceChoosePriceMethodeAverageBuyPrice) {
+      price = productController.getAvreageBuy(product);
+    }
     if (type == Const.invoiceChoosePriceMethodeCostPrice) {
       price = double.parse(product.prodCostPrice??"0");
     } else if (type == Const.invoiceChoosePriceMethodeLastPrice) {
@@ -515,6 +525,7 @@ class InvoiceRecordSource extends DataGridSource {
         showContextMenuItem(index, productModel, isPatternHasVat, 'اخر سعر', Const.invoiceChoosePriceMethodeLastPrice),
         showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الاعلى', Const.invoiceChoosePriceMethodeHigher),
         showContextMenuItem(index, productModel, isPatternHasVat, 'سعر الاقل', Const.invoiceChoosePriceMethodeLower),
+        showContextMenuItem(index, productModel, isPatternHasVat, 'متوسط شراء', Const.invoiceChoosePriceMethodeAverageBuyPrice),
         PopupMenuItem(
           height:2,
           enabled: false,

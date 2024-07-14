@@ -31,8 +31,9 @@ class _StatisticsViewState extends State<StatisticsView> {
           allMonth.clear();
           controller.accountList[widget.accountId]!.accRecord.toList().forEach(
             (element) {
-              String year = element.date!.split("-")![0];
-              String month = element.date!.split("-")![1];
+              String date = element.date!.split(" ")[0];
+              String year = date!.split("-")![0];
+              String month = date!.split("-")![1];
               if (!allMonth.contains(year + "-" + month)) {
                 allMonth.add(year + "-" + month);
               }
@@ -49,18 +50,15 @@ class _StatisticsViewState extends State<StatisticsView> {
                         controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                               (element) {
                             String a = element.date!.split("-")![1];
+                              double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                             if (allRec[a] == null) {
-                              allRec[a] = double.parse(element.total!).abs();
+                              allRec[a] = total;
                             } else {
-                              allRec[a] = double.parse(element.total!).abs() + allRec[a]!;
+                              allRec[a] = total + allRec[a]!;
                             }
                           },
                         );
-                        allRec = Map.fromEntries(allRec.entries.toList()
-                          ..sort(
-                                (a, b) => a.key.compareTo(b.key),
-                          ));
-                        print(allRec);
+                        allRec = Map.fromEntries(allRec.entries.toList()..sort((a, b) => a.key.compareTo(b.key),));
                         isDay = false;
                         chartKey = GlobalKey();
                         setState(() {});
@@ -72,27 +70,26 @@ class _StatisticsViewState extends State<StatisticsView> {
                         allRec.clear();
                         controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                           (element) {
-                        String year = element.date!.split("-")![0];
-                        String month = element.date!.split("-")![1];
-                        String day = element.date!.split("-")![2];
+                            String date = element.date!.split(" ")[0];
+                        String year = date.split("-")![0];
+                        String month = date!.split("-")![1];
+                        String day = date!.split("-")![2];
                         String monthNow = DateTime.now().toString().split(" ")[0]!.split("-")![1];
                         String yearNow = DateTime.now().toString().split(" ")[0]!.split("-")![0];
                         if (year == yearNow&&month == monthNow) {
+                          double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                             if (allRec[day] == null) {
-                              allRec[day] = double.parse(element.total!).abs();
+                              allRec[day] = total;
                             } else {
-                              allRec[day] = double.parse(element.total!).abs() + allRec[day]!;
-    }
+                              allRec[day] = total + allRec[day]!;
+                             }
                         }
                           },
                         );
-                        allRec = Map.fromEntries(allRec.entries.toList()
-                          ..sort(
-                            (a, b) => a.key.compareTo(b.key),
-                          ));
+                        allRec = Map.fromEntries(allRec.entries.toList()..sort((a, b) => a.key.compareTo(b.key),));
                         chartKey = GlobalKey();
                         isDay = true;
-                        print(allRec);
+                        print("object");
                         setState(() {});
                       },
                       child: Text("هذا الشهر")),
@@ -105,14 +102,16 @@ class _StatisticsViewState extends State<StatisticsView> {
                             allRec.clear();
                             controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                               (element) {
-                                String year = element.date!.split("-")![0];
-                                String month = element.date!.split("-")![1];
-                                String day = element.date!.split("-")![2];
+                                    String date = element.date!.split(" ")[0];
+                                String year = date!.split("-")![0];
+                                String month = date!.split("-")![1];
+                                String day = date!.split("-")![2];
                                 if (year == i.toString().split("-")[0]&&month == i.toString().split("-")[1]) {
+                                    double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                                   if (allRec[day] == null) {
-                                    allRec[day] = double.parse(element.total!).abs();
+                                    allRec[day] =total;
                                   } else {
-                                    allRec[day] = double.parse(element.total!).abs() + allRec[day]!;
+                                    allRec[day] =total + allRec[day]!;
                                   }
                                 }
                               },
@@ -121,7 +120,6 @@ class _StatisticsViewState extends State<StatisticsView> {
                               ..sort(
                                 (a, b) => a.key.compareTo(b.key),
                               ));
-                            print(allRec);
                             isDay = true;
                             chartKey = GlobalKey();
                             setState(() {});
@@ -136,7 +134,7 @@ class _StatisticsViewState extends State<StatisticsView> {
               Expanded(
                   child: allRec.isEmpty
                       ? Center(
-                          child: Text("no data"),
+                          child: Text("اختر احد التصنيفات"),
                         )
                       : SizedBox(
                     width: MediaQuery.sizeOf(context).width-20,

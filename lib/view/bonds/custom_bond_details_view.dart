@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -147,6 +148,19 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                 leading: BackButton(),
                 actions:  !checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)?[]:isNew
                     ? [
+                              Row(
+                    children: [
+                      const Text("تاريخ السند : ", style: TextStyle()),
+                     DatePicker(
+                            initDate:  controller.tempBondModel.bondDate,
+                            onSubmit: (_) {
+                               controller.tempBondModel.bondDate = _.toString().split(".")[0];
+controller.update();
+                            },
+                          ),
+                            SizedBox(width:50),
+                    ],
+                  ),
                         Text("الرمز التسلسلي: "),
                         SizedBox(
                           width: 80,
@@ -176,6 +190,19 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                         ),
                       ]
                     : [
+                              Row(
+                    children: [
+                      const Text("تاريخ السند : ", style: TextStyle()),
+                     DatePicker(
+                            initDate:  controller.tempBondModel.bondDate,
+                            onSubmit: (_) {
+                               controller.tempBondModel.bondDate = _.toString().split(".")[0];
+controller.update();
+                            },
+                          ),
+                            SizedBox(width:50),
+                    ],
+                  ),
                         if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
                           TextButton(
                               onPressed: () {

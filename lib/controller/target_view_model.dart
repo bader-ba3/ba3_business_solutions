@@ -52,7 +52,12 @@ class TargetViewModel extends GetxController{
     Map<String,int> productsMap= {};
    SellersViewModel sellersViewModel =  Get.find<SellersViewModel>();
    InvoiceViewModel invoiceViewModel =  Get.find<InvoiceViewModel>();
-   sellersViewModel.allSellers[sellerId]?.sellerRecord?.forEach((element) {
+   sellersViewModel.allSellers[sellerId]?.sellerRecord?.where((element) {
+           String date =  element.selleRecInvDate.toString().split(" ")[0];
+      String year = DateTime.now().toString().split("-")[0];
+           String month = DateTime.now().toString().split("-")[1];
+           return date.split("-")[0] == year &&date.split("-")[1] == month;
+   }).forEach((element) {
      // total = total + double.parse(element.selleRecAmount!);
      invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords?.forEach((e) {
       if (productsMap[e.invRecProduct!]==null){
@@ -66,7 +71,6 @@ class TargetViewModel extends GetxController{
        productsMap[e.invRecProduct!]=productsMap[e.invRecProduct!]!+e.invRecQuantity!;
      });
    });
-      print(productsMap);
    return (mobileTotal:mobileTotal,otherTotal:otherTotal,productsMap:productsMap);
   }
 

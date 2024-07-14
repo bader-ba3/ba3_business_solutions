@@ -117,7 +117,7 @@ class InvoiceListView extends StatelessWidget {
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(width: 25,),
                       Expanded(
-                          child: Text(getProductNameFromId(e.invRecProduct.toString()),textDirection: TextDirection.rtl,)),
+                          child: Text(getProductNameFromId(e.invRecProduct.toString()) + e.invRecProduct.toString(),textDirection: TextDirection.rtl,)),
                       SizedBox(width: 25,),
                       Container(height: 30,width: 2,color: Colors.grey.shade300,),
                       SizedBox(width: 25,),

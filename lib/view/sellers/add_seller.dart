@@ -27,6 +27,7 @@ class _AddSellerState extends State<AddSeller> {
       model = SellerModel();
       int code = sellerController.allSellers.isEmpty?0:int.parse(sellerController.allSellers.values.last.sellerCode??"0")+1;
       codeController.text = code.toString();
+      model.sellerCode = code.toString();
     } else {
       model = sellerController.allSellers[widget.oldKey]!;
       nameController.text = model.sellerName ?? "error";

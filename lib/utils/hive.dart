@@ -18,7 +18,7 @@ class HiveDataBase {
   static late Box<ProductModel> productModelBox;
   static late Box<AccountModel> accountModelBox;
   static late Box<AccountModel> mainAccountModelBox;
-  static late Box<AccountModel> statisticBox;
+  static late Box<Map> statisticBox;
   static late Box<StoreModel> storeModelBox;
   static late Box<InventoryModel> inventoryModelBox;
   static late Box<int> lastChangesIndexBox;
@@ -42,7 +42,7 @@ class HiveDataBase {
     lastChangesIndexBox=await Hive.openBox<int>("lastChangesIndex");
     inventoryModelBox=await Hive.openBox<InventoryModel>("AllInventory");
     mainAccountModelBox=await Hive.openBox<AccountModel>("mainAccount");
-    statisticBox=await Hive.openBox<AccountModel>("statisticBox");
+    statisticBox=await Hive.openBox<Map>("statisticBox");
     isFree=await Hive.openBox<bool>("isFree");
 
     // globalModelBox=await Hive.openBox<GlobalModel>();

@@ -37,23 +37,50 @@ class GlobalViewModel extends GetxController {
   AccountViewModel accountViewModel = Get.find<AccountViewModel>();
   SellersViewModel sellerViewModel = Get.find<SellersViewModel>();
   ChequeViewModel chequeViewModel = Get.find<ChequeViewModel>();
-
+  bool isEdit = false;
   GlobalViewModel() {
-    initFromLocal();
+  initFromLocal();
+  //  FirebaseFirestore.instance.collection("2024").where("bondDate",isGreaterThan:DateTime(2024,07,01).toString(),).count().get().then((value) {
+ 
+  //   // allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
+  //   //       List<({String? bondCode ,String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode,bondType:e.bondType),).toList();
 
-    // Future.sync(() async {
-    //   count = 0.obs;
-    //     allcountOfInvoice =100;
-    //     update();
-    //   for(var i in List.filled(100, 100)){
-    //        count.value++;
-    //         print(count.toString());
-    //   await Future.delayed(Duration(seconds: 1));
+  //   // bondList.removeWhere((element) => allbond.contains((bondCode:element.bondCode,bondType:element.bondType),));
+  //  },);
+// allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
+//       for (var i = 0; i < allGlobalModel.length; i++) {
+//         MapEntry<String, GlobalModel> value = allGlobalModel.entries.toList()[i];
+//         for (var j = 0; j < (value.value.invRecords??[]).length; j++) {
+//           print("-"*20);
+//           InvoiceRecordModel element = value.value.invRecords![j];
+//            if((element.invRecVat!=0&&element.invRecSubTotal!=0)){
+//             print(element.toJson());
+//               print("");
+//               element.invRecQuantity = 1;
+//               element.invRecSubTotal = 0;
+//               element.invRecTotal = 0;
+//               element.invRecVat = 0;
+//               //  value.value.invRecords?.removeWhere((_element) => _element.invRecId == element.invRecId,);
+//               //  value.value.invRecords?.add(element);
+//              print(element.toJson());
+//              isEdit =true ;
+//             // print(value.value.invCode.toString() + "   "+value.value.bondId.toString() );
+//             // print(element.invRecVat);
+//             // print(i.toString());
+//           }
+//             print("-"*20);
+//         }
+//         if(isEdit){
+//          //addInvoiceToFirebase(value.value);
+//          // print(value.value.invRecords!.map((e) => e.toJson(),));
+//           print("isedit: "+value.value.invCode.toString()+"   "+value.value.bondId.toString());
+//           isEdit=false;
+//         }
+//       }
+    
+    // if (Get.currentRoute == "/LoginView") {
+    //   Get.offAll(() => MainScreen());
     // }
-    // },);
-    if (Get.currentRoute == "/LoginView") {
-      Get.offAll(() => MainScreen());
-    }
   }
   RxInt count = 0.obs;
   int allcountOfInvoice = 0;
@@ -65,13 +92,15 @@ class GlobalViewModel extends GetxController {
     print("YOU RUN LONG TIME OPERATION");
     print("-" * 20);
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
+     List<({String? bondCode ,String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode,bondType:e.bondType),).toList();
     print(allGlobalModel.length);
-    if (!allGlobalModel.isEmpty) {
+    if (allGlobalModel.isEmpty) {
       await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
         print("start");
         count = 0.obs;
         allcountOfInvoice = value.docs.length;
         update();
+        print(value.docs.length);
         for (var element in value.docs) {
           await Future.sync(() async {
             count.value++;
@@ -83,7 +112,8 @@ class GlobalViewModel extends GetxController {
               }
               // } else if (!getNoVAt(element.doc.id)) {
             } else {
-              allGlobalModel[element.id] = GlobalModel.fromJson(element.data());
+                if(element.data()!['bondType'] !=Const.bondTypeInvoice)
+             { allGlobalModel[element.id] = GlobalModel.fromJson(element.data());
               allGlobalModel[element.id]?.invRecords = [];
               allGlobalModel[element.id]?.bondRecord = [];
               allGlobalModel[element.id]?.cheqRecords = [];
@@ -96,11 +126,12 @@ class GlobalViewModel extends GetxController {
                   allGlobalModel[element.id]?.cheqRecords = value.docs.map((e) => ChequeRecModel.fromJson(e.data())).toList();
                 });
               } else if (allGlobalModel[element.id]!.globalType == Const.globalTypeBond) {
-                await FirebaseFirestore.instance.collection(Const.globalCollection).doc(element.id).collection(Const.bondRecordCollection).get().then((value) {
+                 await FirebaseFirestore.instance.collection(Const.globalCollection).doc(element.id).collection(Const.bondRecordCollection).get().then((value) {
                   allGlobalModel[element.id]?.bondRecord = value.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
                 });
+             }
               }
-              HiveDataBase.globalModelBox.put(allGlobalModel[element.id]?.bondId, allGlobalModel[element.id]!);
+             HiveDataBase.globalModelBox.put(allGlobalModel[element.id]?.bondId, allGlobalModel[element.id]!);
               // updateDataInAll(allGlobalModel[element.id]!);
             }
           });
@@ -114,13 +145,15 @@ class GlobalViewModel extends GetxController {
       count = 0.obs;
       allcountOfInvoice = allGlobalModel.length;
       update();
-      allGlobalModel.forEach((key, value) async {
-        count.value++;
+     allGlobalModel.forEach((key, value) async {
+            count.value++;
         print(count.toString());
-        if (value.globalType == Const.globalTypeInvoice) {
           await updateDataInAll(value);
-        }
       });
+      // allGlobalModel.forEach((key, value) async {
+    //  for (var i = 0; i < allGlobalModel.length; i++) {
+    //GlobalModel value = allGlobalModel.values.toList()[i];
+      // });
       if (Get.currentRoute == "/LoginView") {
         Get.offAll(() => MainScreen());
       }
@@ -311,6 +344,7 @@ class GlobalViewModel extends GetxController {
     });
 
     await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toJson());
+   await HiveDataBase.globalModelBox.delete(globalModel.bondId);
     HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
   }
 
@@ -324,7 +358,7 @@ class GlobalViewModel extends GetxController {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).collection(Const.bondRecordCollection).doc(element.bondRecId).set(element.toJson());
     });
     await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toJson());
-    //   HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
+      HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
     print("end " + globalModel.bondId.toString());
     print("----------------------------------------");
   }
@@ -344,14 +378,15 @@ class GlobalViewModel extends GetxController {
   updateDataInAll(GlobalModel globalModel) async {
     if (globalModel.globalType == Const.globalTypeInvoice) {
       GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
-
       if (filteredGlobalModel == null) {
         return;
       }
       if (!globalModel.invIsPending!) {
         if (filteredGlobalModel.invType != Const.invoiceTypeAdd&&filteredGlobalModel.invType != Const.invoiceTypeChange) {
-          bondViewModel.initGlobalInvoiceBond(filteredGlobalModel);
-          sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);
+         bondViewModel.initGlobalInvoiceBond(filteredGlobalModel);
+          if(getPatModelFromPatternId(globalModel.patternId).patName=="مبيع") {
+            sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);
+          }
         }
         if (filteredGlobalModel.invType != Const.invoiceTypeChange) {
         accountViewModel.initGlobalAccount(filteredGlobalModel);
@@ -362,7 +397,7 @@ class GlobalViewModel extends GetxController {
       invoiceViewModel.initGlobalInvoice(filteredGlobalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
       chequeViewModel.initGlobalCheque(globalModel);
-    } else if (globalModel.globalType == Const.globalTypeBond) {
+    } else if (globalModel.globalType == Const.globalTypeBond) {  
       bondViewModel.initGlobalBond(globalModel);
       accountViewModel.initGlobalAccount(globalModel);
     }
@@ -386,9 +421,12 @@ class GlobalViewModel extends GetxController {
 
   GlobalModel? checkFreeZoneProduct(GlobalModel filteredGlobalModel) {
     if (HiveDataBase.isFree.get("isFree")!) {
+      if(filteredGlobalModel.invCode!.startsWith("F-")){
+        return null;
+      }
       GlobalModel _ = GlobalModel.fromJson(filteredGlobalModel.toFullJson());
       for (var i = 0; i < _.invRecords!.length; i++) {
-        if (_.invRecords![i].invRecIsLocal!) {
+        if (_.invRecords![i].invRecIsLocal??true) {
         } else {
           _.invTotal = _.invTotal! - _.invRecords![i].invRecTotal!;
           _.invRecords!.removeAt(i);

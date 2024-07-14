@@ -25,11 +25,8 @@ class _TaskManagementTypeState extends State<TaskManagementType> {
         ),
         body: Column(
           children: [
-            Item("إضافة مهام بالمواد",(){
-               Get.to(()=>AddTaskView(taskType: Const.taskTypeProduct,));
-            }),
-            Item("إضافة مهام بالجرد",(){
-              Get.to(()=>AddTaskView(taskType: Const.taskTypeInventory,));
+            Item("إضافة تاسك",(){
+               Get.to(()=>AddTaskView());
             }),
             Item("معاينة التاسكات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewTask).then((value) {
