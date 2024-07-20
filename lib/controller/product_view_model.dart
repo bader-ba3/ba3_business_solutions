@@ -182,6 +182,16 @@ Future<void> correct () async {
   int i =0 ;
   for (var index = 0 ;index < productDataMap.length; index ++ ) {
         ProductModel element = productDataMap.values.toList()[index];
+        // if(element.prodFullCode == "F003540"){
+        //   print(element.toJson());
+        //   print(productDataMap[element.prodParentId]!.toJson());
+        // //  if(element.prodName!.contains("SKINARMA IPHONE 15 PRO KIRA")){
+        // //     element.prodIsGroup = false;
+        // productDataMap[element.prodParentId]!.prodChild!.add(element.prodId);
+        //     HiveDataBase.productModelBox.put(element.prodParentId,  productDataMap[element.prodParentId]!);
+        // //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
+        // //  }
+        // }
         // if(
         //   (double.tryParse(element.prodMinPrice??"0")==null||
         //   double.tryParse(element.prodCostPrice??"0")==null||
@@ -208,10 +218,14 @@ Future<void> correct () async {
            
           // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
           //   }
-      //   if(element.prodParentId?.contains("F0")??false){
-      //        print(element.prodName);
-      //        print(element.toJson());
+      //   if(!(element.prodParentId?.contains("prod")??true)){
+      //       //  print(element.prodName);
+      //       //  print(element.toJson());
       //       if(!element.prodIsParent!){
+      //         element.prodParentId = 'L'+element.prodParentId!;
+      //         element.prodFullCode = 'L'+element.prodFullCode!;
+      //          print(element.prodName);
+      //        print(element.toJson());
       //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
       //     'prodChild': FieldValue.arrayUnion([element.prodId]),
       //   });
@@ -225,7 +239,7 @@ Future<void> correct () async {
       // }
       //   }
       
-      // i++;
+       // i++;
       // print(i.toString() + " OF "+productDataMap.values.toList().length.toString() );
       
     }
@@ -297,17 +311,25 @@ Future<void> correct () async {
     editProductModel.prodFullCode = fullCode;
     editProductModel.prodId = generateId(RecordType.product);
     editProductModel.prodIsGroup ??= false;
+        ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+
     if (editProductModel.prodParentId == null) {
       editProductModel.prodIsParent = true;
     } else {
       FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
       });
+      if( productDataMap[editProductModel.prodParentId]?.prodChild == null){
+         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
+      }
+      else {
+        productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
+      }
+     changesViewModel.addChangeToChanges( productDataMap[editProductModel.prodParentId]!.toFullJson(), Const.productsCollection);
       editProductModel.prodIsParent = false;
     }
     if (withLogger) logger(newData: editProductModel);
     await FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).set(editProductModel.toJson());
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
     Get.snackbar("فحص المطاييح", ' تم اضافة المطيح');
   }
@@ -329,6 +351,7 @@ Future<void> correct () async {
   }
 
   void updateProduct(ProductModel editProductModel, {withLogger = false}) {
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     var fullCode = '';
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;
@@ -349,10 +372,16 @@ Future<void> correct () async {
       FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
       });
+      if( productDataMap[editProductModel.prodParentId]?.prodChild == null){
+         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
+      }
+      else {
+        productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
+      }
+     changesViewModel.addChangeToChanges( productDataMap[editProductModel.prodParentId]!.toFullJson(), Const.productsCollection);
       editProductModel.prodIsParent = false;
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).update(editProductModel.toJson());
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
     update();

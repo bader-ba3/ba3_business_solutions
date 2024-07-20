@@ -14,9 +14,10 @@ abstract class Const {
 
   static init({String? oldData,bool? isFree})async{
     if(dataName==''){
-      await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
-        dataName=value.data()?['defaultDataName'];
-      });
+      // await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
+      //   dataName=value.data()?['defaultDataName'];
+      // });
+      dataName="2024";
     }else{
       dataName=oldData!;
     }
@@ -70,10 +71,12 @@ abstract class Const {
   static const rowAccountTotal2 = 'rowAccountTotal2';
   static const rowAccountType = 'rowAccountType';
   static const rowAccountName = 'rowAccountName';
+  static const rowAccountDate = 'rowAccountDate';
   static const rowAccountBalance = 'rowAccountBalance';
   ////////////--------------------------------------------------
   static const rowInvId = "invId";
   static const rowInvProduct = "invProduct";
+  static const rowInvGift = "rowInvGift";
   static const rowInvQuantity = "invQuantity";
   static const rowInvSubTotal = "invSubTotal";
   static const rowInvVat = "rowInvVat";
@@ -81,8 +84,10 @@ abstract class Const {
   static const rowInvTotalVat = "rowInvTotalVat";
   static const rowInvDiscountId = "rowInvDiscountId";
   static const rowInvDiscountAccount = "rowInvDiscountAccount";
-  static const rowInvDiscountTotal = "rowInvDiscountTotal";
-  static const rowInvDiscountPercentage = "rowInvDiscountPercentage";
+    static const rowInvDisAddedTotal = "rowInvDisAddedTotal";
+  static const rowInvDisAddedPercentage = "rowInvDisAddedPercentage";
+  static const rowInvDisDiscountTotal = "rowInvDisDiscountTotal";
+  static const rowInvDisDiscountPercentage = "rowInvDisDiscountPercentage";
   ////////////--------------------------------------------------
   static const rowViewAccountId = "rowViewAccountId";
   static const rowViewAccountName = "rowViewAccountName";

@@ -55,7 +55,7 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    importViewModel.pickBondFile(separator);
+                    importViewModel.pickBondFileFree(separator);
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }
@@ -66,12 +66,23 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    importViewModel.pickInvoiceFile(separator);
+                    importViewModel.pickInvoiceFileFree(separator);
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }
                 },
                 child: Text("فواتير"),
+              ),
+              SizedBox(height: 30,),
+              ElevatedButton(
+                onPressed: () {
+                  if(separator!=null){
+                    importViewModel.pickNewType(separator);
+                  }else{
+                    Get.snackbar("error", "plz select separator");
+                  }
+                },
+                child: Text("فواتير القيد"),
               ),
             ],
           ),

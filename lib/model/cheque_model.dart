@@ -2,17 +2,17 @@
 //
 // class ChequeModel {
 //   String?
-//       cheqId,
-//       cheqName,
-//       cheqAllAmount,
-//       cheqRemainingAmount,
-//       cheqPrimeryAccount,
-//       cheqSecoundryAccount,
-//       cheqCode,
-//       cheqDate,
-//       cheqStatus,
-//       cheqType,
-//       cheqBankAccount;
+      // cheqId,
+      // cheqName,
+      // cheqAllAmount,
+      // cheqRemainingAmount,
+      // cheqPrimeryAccount,
+      // cheqSecoundryAccount,
+      // cheqCode,
+      // cheqDate,
+      // cheqStatus,
+      // cheqType,
+      // cheqBankAccount;
 //   List<ChequeRecModel>? cheqRecords = [];
 //
 //   ChequeModel({this.cheqId, this.cheqName, this.cheqRecords, this.cheqCode, this.cheqAllAmount, this.cheqDate, this.cheqPrimeryAccount, this.cheqRemainingAmount, this.cheqSecoundryAccount, this.cheqStatus, this.cheqBankAccount, this.cheqType});

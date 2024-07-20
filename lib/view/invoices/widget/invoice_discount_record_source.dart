@@ -46,8 +46,10 @@ class InvoiceDiscountRecordSource extends DataGridSource {
           return DataGridRow(cells: [
             DataGridCell<int>(columnName: Const.rowInvDiscountId, value: dataGridRow.discountId),
             DataGridCell<String>(columnName: Const.rowInvDiscountAccount, value: getAccountNameFromId(dataGridRow.accountId)),
-            DataGridCell<double>(columnName: Const.rowInvDiscountTotal, value: dataGridRow.total),
-            DataGridCell<double>(columnName: Const.rowInvDiscountPercentage, value: dataGridRow.percentage),
+            DataGridCell<double>(columnName: Const.rowInvDisAddedTotal, value: dataGridRow.addedTotal),
+            DataGridCell<double>(columnName: Const.rowInvDisAddedPercentage, value: dataGridRow.addedPercentage),
+             DataGridCell<double>(columnName: Const.rowInvDisAddedTotal, value: dataGridRow.discountTotal),
+            DataGridCell<double>(columnName: Const.rowInvDisDiscountPercentage, value: dataGridRow.discountPercentage),
           ]);
     })
         .toList();
@@ -61,8 +63,10 @@ class InvoiceDiscountRecordSource extends DataGridSource {
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
     if(records[dataRowIndex].discountId == null){
       records[dataRowIndex].discountId = (dataRowIndex + 1);
-      records[dataRowIndex].percentage=0;
-      records[dataRowIndex].total=0;
+      records[dataRowIndex].addedPercentage=0;
+      records[dataRowIndex].addedTotal=0;
+      records[dataRowIndex].discountTotal=0;
+      records[dataRowIndex].discountPercentage=0;
     }
     if (column.columnName == Const.rowInvDiscountAccount) {
       AccountModel? _ = await getAccountCompleteID(newCellValue);
@@ -73,26 +77,40 @@ class InvoiceDiscountRecordSource extends DataGridSource {
         updateDataGridSource();
       }
     }else if(records[dataRowIndex].accountId!=null&&newCellValue!=null){
-      if(column.columnName == Const.rowInvDiscountTotal){
+      if(column.columnName == Const.rowInvDisDiscountTotal){
 
-        records[dataRowIndex].percentage =invoiceViewModel.getPercentage(double.parse(newCellValue));
-        if(records[dataRowIndex].percentage!>100){
-
-        }else{
-          records[dataRowIndex].total =double.parse(newCellValue);
-          records[dataRowIndex].isChooseTotal =true;
+        records[dataRowIndex].discountPercentage =invoiceViewModel.getPercentage(double.parse(newCellValue));
+        if(records[dataRowIndex].discountPercentage!>100){}else{
+          records[dataRowIndex].discountTotal =double.parse(newCellValue);
+          records[dataRowIndex].isChooseDiscountTotal =true;
           invoiceViewModel.onDiscountCellTap(rowColumnIndex);
           buildDataGridRows(records);
           updateDataGridSource();
         }
+      }else if(column.columnName == Const.rowInvDisDiscountPercentage){
+        if(double.parse(newCellValue)!>100){}else{
+        records[dataRowIndex].discountPercentage =double.parse(newCellValue);
+        records[dataRowIndex].isChooseDiscountTotal =false;
+        records[dataRowIndex].discountTotal =invoiceViewModel.getTotal(double.parse(newCellValue));
+        invoiceViewModel.onDiscountCellTap(rowColumnIndex);
+        buildDataGridRows(records);
+        updateDataGridSource();
+        }
+      }else  if(column.columnName == Const.rowInvDisAddedTotal){
 
-      }else if(column.columnName == Const.rowInvDiscountPercentage){
-        if(double.parse(newCellValue)!>100){
-
-        }else{
-        records[dataRowIndex].percentage =double.parse(newCellValue);
-        records[dataRowIndex].isChooseTotal =false;
-        records[dataRowIndex].total =invoiceViewModel.getTotal(double.parse(newCellValue));
+        records[dataRowIndex].addedPercentage =invoiceViewModel.getPercentage(double.parse(newCellValue));
+        if(records[dataRowIndex].addedPercentage!>100){}else{
+          records[dataRowIndex].addedTotal =double.parse(newCellValue);
+          records[dataRowIndex].isChooseAddedTotal =true;
+          invoiceViewModel.onDiscountCellTap(rowColumnIndex);
+          buildDataGridRows(records);
+          updateDataGridSource();
+        }
+      }else if(column.columnName == Const.rowInvDisAddedPercentage){
+        if(double.parse(newCellValue)!>100){}else{
+        records[dataRowIndex].addedPercentage =double.parse(newCellValue);
+        records[dataRowIndex].isChooseAddedTotal =false;
+        records[dataRowIndex].addedTotal =invoiceViewModel.getTotal(double.parse(newCellValue));
         invoiceViewModel.onDiscountCellTap(rowColumnIndex);
         buildDataGridRows(records);
         updateDataGridSource();
@@ -197,7 +215,7 @@ class InvoiceDiscountRecordSource extends DataGridSource {
                         ? dataGridCell.value.toStringAsFixed(2)
                         : dataGridCell.value.toString(),textAlign: TextAlign.center,),
               ),
-              if(dataGridCell.columnName == Const.rowInvDiscountPercentage)
+              if(dataGridCell.columnName == Const.rowInvDisDiscountPercentage ||dataGridCell.columnName == Const.rowInvDisAddedPercentage )
                 Text("%",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
               SizedBox(width: 10,),
             ],

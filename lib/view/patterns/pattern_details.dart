@@ -26,6 +26,8 @@ class _PatternDetailsState extends State<PatternDetails> {
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController primaryController = TextEditingController();
+  TextEditingController giftAccountController = TextEditingController();
+  TextEditingController secgiftAccountController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController vatAccountController = TextEditingController();
   TextEditingController secondaryController = TextEditingController();
@@ -49,6 +51,8 @@ class _PatternDetailsState extends State<PatternDetails> {
       primaryController.text = getAccountNameFromId(patternController.editPatternModel?.patPrimary) ?? "";
       typeController.text = patternController.editPatternModel?.patType ?? "";
       vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount) ?? "";
+      giftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patGiftAccount) ?? "";
+      secgiftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patSecGiftAccount) ?? "";
       secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary) ?? "";
       storeController.text=getStoreNameFromId(patternController.editPatternModel?.patStore);
       storeNewController.text=getStoreNameFromId(patternController.editPatternModel?.patNewStore);
@@ -351,6 +355,71 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 patternController.editPatternModel?.patHasVat = _;
                               }),
                         ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                    const SizedBox(
+                    height: 40,
+                  ),
+                     if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [    
+                    
+                      SizedBox(
+                        width: Get.width/3,
+                        child: Row(
+                          children: [
+                            Text("حساب الهدايا "),
+                            SizedBox(width: 25,),
+                            Expanded(
+                              child: customTextFieldWithIcon(
+                                giftAccountController,
+                                (text) async {
+                                  var a = await getAccountComplete(text);
+                                  patternController.update();
+                                  if(a.isNotEmpty){
+                                    patternController.editPatternModel?.patGiftAccount = a;
+                                    giftAccountController.text = a;
+                                    setState(() {});
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 25,),
+                            if(patternController.editPatternModel?.patGiftAccount!=null)
+                              Icon(Icons.check)
+                          ],
+                        ),
+                      ),
+                        SizedBox(
+                        width: Get.width/3,
+                        child: Row(
+                          children: [
+                            Text("حساب  المقابل الهدايا "),
+                            SizedBox(width: 25,),
+                            Expanded(
+                              child: customTextFieldWithIcon(
+                                secgiftAccountController,
+                                (text) async {
+                                  var a = await getAccountComplete(text);
+                                  patternController.update();
+                                  if(a.isNotEmpty){
+                                    patternController.editPatternModel?.patSecGiftAccount = a;
+                                    secgiftAccountController.text = a;
+                                    setState(() {});
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 25,),
+                            if(patternController.editPatternModel?.patSecGiftAccount!=null)
+                              Icon(Icons.check)
+                          ],
+                        ),
                       ),
                     ],
                   ),

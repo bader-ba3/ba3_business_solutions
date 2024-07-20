@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
@@ -13,6 +14,7 @@ import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
+import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/invoice_discount_record_source.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
@@ -49,7 +51,7 @@ class _InvoiceViewState extends State<InvoiceView> {
 
   List<String> codeInvList = [];
 
-  late Map<String, double> columnWidths = {'id': double.nan, 'product': double.nan, 'quantity': double.nan, 'subTotal': double.nan, 'total': double.nan};
+  late Map<String, double> columnWidths = {'id': double.nan, 'product': double.nan, 'quantity': double.nan, 'subTotal': double.nan, 'total': double.nan, 'gift': double.nan};
   String? selectedPayType;
   String typeBill = Const.invoiceTypeSales;
   bool isEditDate = false;
@@ -78,7 +80,7 @@ class _InvoiceViewState extends State<InvoiceView> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.billId == "1" ? "فاتورة " + (widget.patternModel?.patName ?? "") : "تفاصبل فاتورة " + (widget.patternModel?.patName ?? "")),
+          title: Text(widget.billId == "1" ? "فاتورة " + (widget.patternModel?.patName ?? "") : "تفاصيل فاتورة " + (widget.patternModel?.patName ?? "")),
           actions: [
             IconButton(
                 onPressed: () async {
@@ -447,15 +449,43 @@ class _InvoiceViewState extends State<InvoiceView> {
                           allowEditing: false,
                           width: 50,
                           columnName: Const.rowInvId,
-                          label: Container(
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
-                              color: Colors.grey,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'الرقم',
-                              overflow: TextOverflow.ellipsis,
+                          label: InkWell(
+                            onSecondaryTapDown: (_) {
+                              showMenu(
+                                context: Get.context!,
+                                position: RelativeRect.fromLTRB(
+                                  _.globalPosition.dx,
+                                  _.globalPosition.dy,
+                                  _.globalPosition.dx + 1.0,
+                                  _.globalPosition.dy + 1.0,
+                                ),
+                                items: [
+                                  PopupMenuItem(
+                                    value: "pressed",
+                                    child: Center(
+                                      child: Text(
+                                        "نسخ",
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ).then((e) {
+                                if (e == "pressed") {
+                                  controller.copyInvoice(controller.initModel);
+                                }
+                              });
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
+                                color: Colors.grey,
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'الرقم',
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           )),
                       GridColumn(
@@ -471,6 +501,17 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           )),
                       GridColumn(
+                          width: columnWidths['gift']!,
+                          columnName: Const.rowInvGift,
+                          label: Container(
+                            color: Colors.grey,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'الهدايا',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )),
+                      GridColumn(
                           width: columnWidths['quantity']!,
                           columnName: Const.rowInvQuantity,
                           label: Container(
@@ -482,7 +523,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           )),
                       GridColumn(
-                         visible: widget.patternModel!.patType != Const.invoiceTypeChange,
+                          visible: widget.patternModel!.patType != Const.invoiceTypeChange,
                           width: columnWidths['subTotal']!,
                           columnName: Const.rowInvSubTotal,
                           label: Container(
@@ -494,7 +535,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           )),
                       GridColumn(
-                         visible: widget.patternModel!.patType != Const.invoiceTypeChange,
+                          visible: widget.patternModel!.patType != Const.invoiceTypeChange,
                           allowEditing: false,
                           columnName: Const.rowInvVat,
                           label: Container(
@@ -506,7 +547,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           )),
                       GridColumn(
-                         visible: widget.patternModel!.patType != Const.invoiceTypeChange,
+                          visible: widget.patternModel!.patType != Const.invoiceTypeChange,
                           allowEditing: true,
                           columnName: Const.rowInvTotal,
                           label: Container(
@@ -575,12 +616,12 @@ class _InvoiceViewState extends State<InvoiceView> {
               ),
               if (widget.patternModel!.patType != Const.invoiceTypeChange)
                 Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "الحسميات",
+                        "الحسميات و الاضافات",
                         style: TextStyle(
                           fontSize: 25,
                         ),
@@ -625,25 +666,47 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   )),
-                              GridColumn(
+                                   GridColumn(
                                   width: columnWidths['quantity']!,
-                                  columnName: Const.rowInvDiscountTotal,
+                                  columnName: Const.rowInvDisAddedTotal,
                                   label: Container(
                                     color: Colors.grey,
                                     alignment: Alignment.center,
                                     child: const Text(
-                                      "القيمة",
+                                      "الإضافات",
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   )),
                               GridColumn(
                                   width: columnWidths['subTotal']!,
-                                  columnName: Const.rowInvDiscountPercentage,
+                                  columnName: Const.rowInvDisAddedPercentage,
                                   label: Container(
                                     color: Colors.grey,
                                     alignment: Alignment.center,
                                     child: const Text(
-                                      "النسبة المئوية",
+                                      "النسبة المئوية للاضافات",
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )),
+                              GridColumn(
+                                  width: columnWidths['quantity']!,
+                                  columnName: Const.rowInvDisDiscountTotal,
+                                  label: Container(
+                                    color: Colors.grey,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "الحسميات",
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )),
+                              GridColumn(
+                                  width: columnWidths['subTotal']!,
+                                  columnName: Const.rowInvDisDiscountPercentage,
+                                  label: Container(
+                                    color: Colors.grey,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "النسبة المئوية للحسميات",
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   )),
@@ -684,84 +747,78 @@ class _InvoiceViewState extends State<InvoiceView> {
                         )),
                   ],
                 ),
-                if(widget.patternModel!.patType != Const.invoiceTypeChange)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.blue.shade100,
-                  
-                      height: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                           mainAxisSize :MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: Text("المجموع بدون الضريبة")),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(invoiceController.computeWithoutVatTotal().toStringAsFixed(2))
-                          ],
+              if (widget.patternModel!.patType != Const.invoiceTypeChange)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.blue.shade100,
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 150, child: Text("المجموع بدون الضريبة")),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(invoiceController.computeWithoutVatTotal().toStringAsFixed(2))
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.blue.shade100,
-                      height: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                           mainAxisSize :MainAxisSize.min,
-                          children: [
-                             SizedBox(
-                              width: 150,
-                              child: Text("مجموع الضريبة")),
-                          
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(invoiceController.computeVatTotal().toStringAsFixed(2))
-                          ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.blue.shade100,
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(width: 150, child: Text("مجموع الضريبة")),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(invoiceController.computeVatTotal().toStringAsFixed(2))
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.blue.shade200,
-                      height: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisSize :MainAxisSize.min,
-                          children: [
-                            Text(
-                              "المجموع مع الضريبة",
-                              style: TextStyle(fontSize: 22),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              invoiceController.computeAllTotal().toStringAsFixed(2),
-                              style: TextStyle(fontSize: 22),
-                            )
-                          ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.blue.shade200,
+                        height: 50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "المجموع مع الضريبة",
+                                style: TextStyle(fontSize: 22),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                invoiceController.computeAllTotal().toStringAsFixed(2),
+                                style: TextStyle(fontSize: 22),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: SizedBox(
@@ -803,20 +860,22 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   onPressed: () async {
                                     if (invoiceController.checkInvCode()) {
                                       Get.snackbar("فحص المطاييح", "هذا الرمز الرمز يرجى استخدام الرمز: " + invoiceController.getNextCodeInv());
-                                    } else if (!invoiceController.checkSellerComplete()&&widget.patternModel!.patType !=Const.invoiceTypeChange) {
+                                    } else if (!invoiceController.checkSellerComplete() && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا البائع غير موجود من قبل");
                                     } else if (!invoiceController.checkStoreComplete()) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                    } else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
+                                    } else if (!invoiceController.checkStoreNewComplete() && widget.patternModel!.patType == Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
                                     } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
-                                    } else if (invoiceController.primaryAccountController.text.isEmpty && widget.patternModel!.patType != Const.invoiceTypeAdd&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    } else if (invoiceController.primaryAccountController.text.isEmpty && widget.patternModel!.patType != Const.invoiceTypeAdd && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("خطأ تعباية", "يرجى كتابة حساب البائع");
-                                    } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
                                     } else if (invoiceController.records.length < 2) {
                                       Get.snackbar("خطأ تعباية", "يرجى إضافة مواد الى الفاتورة");
+                                    } else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
+                                      Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                     } else if (invoiceController.checkAllRecord()) {
                                       Get.snackbar("خطأ تعباية", "بعض المنتجات فارغة");
                                     } else if (invoiceController.checkAllDiscountRecords()) {
@@ -843,7 +902,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     style: TextStyle(color: Colors.blueGrey, fontSize: 25),
                                   ),
                                   onPressed: () async {
-                                    seeDetails(invoiceController.initModel.bondId!);
+                                    Get.to(() => EntryBondDetailsView(
+                                          oldId: controller.initModel.entryBondId,
+                                        ));
                                   })
                             else
                               ElevatedButton(
@@ -855,17 +916,17 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   onPressed: () async {
                                     // if (globalController.invCodeList.contains(
                                     //     globalController.invCodeController.text)) {
-                                    if (!invoiceController.checkSellerComplete()&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    if (!invoiceController.checkSellerComplete() && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                     } else if (!invoiceController.checkStoreComplete()) {
                                       Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                    }  else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
+                                    } else if (!invoiceController.checkStoreNewComplete() && widget.patternModel!.patType == Const.invoiceTypeChange) {
                                       Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                    }else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                       // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                       //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                    } else if (invoiceController.primaryAccountController.text.isEmpty&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                    } else if (invoiceController.primaryAccountController.text.isEmpty && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                       Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
                                     } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
                                       Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
@@ -873,7 +934,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       Get.snackbar("خطأ ", "يرجى إضافة مواد الى الفاتورة+");
                                     } else if (invoiceController.checkAllRecord()) {
                                       Get.snackbar("خطأ ", "بعض المنتجات فارغة");
-                                    } else if (invoiceController.checkAllRecordPrice()) {
+                                    } else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
                                       Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                     } else if (invoiceController.checkAllDiscountRecords()) {
                                       Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
@@ -896,25 +957,29 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 onPressed: () async {
                                   // if (globalController.invCodeList.contains(
                                   //     globalController.invCodeController.text)) {
-                                  if (!invoiceController.checkSellerComplete()&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  if (!invoiceController.checkSellerComplete() && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkStoreNewComplete()&&widget.patternModel!.patType ==Const.invoiceTypeChange) {
-                                      Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                    } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text)&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete() && widget.patternModel!.patType == Const.invoiceTypeChange) {
+                                    Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && widget.patternModel!.patType != Const.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
-                                  } else if (invoiceController.records.where( (element) => element.invRecId != null,).isEmpty) {
+                                  } else if (invoiceController.records
+                                      .where(
+                                        (element) => element.invRecId != null,
+                                      )
+                                      .isEmpty) {
                                     Get.snackbar("خطأ ", "يرجى إضافة مواد الى الفاتورة+");
                                   } else if (invoiceController.checkAllRecord()) {
                                     Get.snackbar("خطأ ", "بعض المنتجات فارغة");
-                                  } else if (invoiceController.checkAllRecordPrice()&& widget.patternModel!.patType != Const.invoiceTypeChange) {
+                                  } else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
                                     Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                   } else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
@@ -982,19 +1047,21 @@ class _InvoiceViewState extends State<InvoiceView> {
   }
 
   GlobalModel _updateData(List<InvoiceRecordModel> record) {
-    var bondController = Get.find<BondViewModel>();
     return GlobalModel(
+        invGiftAccount:invoiceController.initModel.invGiftAccount ,
+        invSecGiftAccount: invoiceController.initModel.invSecGiftAccount ,
         invPayType: selectedPayType,
         invDiscountRecord: invoiceController.discountRecords,
         invIsPending: invoiceController.initModel.invIsPending,
         invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
-        bondId: invoiceController.initModel.invId == null ? generateId(RecordType.bond) : invoiceController.initModel.bondId,
+        entryBondId: invoiceController.initModel.invId == null ? generateId(RecordType.entryBond) : invoiceController.initModel.entryBondId,
+        entryBondCode: invoiceController.initModel.invId == null ? getNextEntryBondCode().toString() : invoiceController.initModel.entryBondCode,
         invRecords: record,
         patternId: widget.patternModel!.patId!,
         invType: widget.patternModel!.patType!,
         invTotal: invoiceController.total,
         invFullCode: invoiceController.initModel.invId == null ? widget.patternModel!.patName! + ": " + invoiceController.invCodeController.text : invoiceController.initModel.invFullCode,
-        invId: invoiceController.initModel.invId == null ? generateId(RecordType.invoice) : invoiceController.initModel.invId,
+        invId: invoiceController.initModel.invId ?? generateId(RecordType.invoice),
         invStorehouse: getStoreIdFromText(invoiceController.storeController.text),
         invSecStorehouse: getStoreIdFromText(invoiceController.storeNewController.text),
         invComment: invoiceController.noteController.text,
@@ -1005,8 +1072,6 @@ class _InvoiceViewState extends State<InvoiceView> {
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
-        bondType: Const.bondTypeInvoice,
-        bondCode: invoiceController.initModel.invId == null ? bondController.getNextBondCode(type: Const.bondTypeInvoice): invoiceController.initModel.bondCode,
         globalType: Const.globalTypeInvoice);
   }
 }

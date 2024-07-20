@@ -9,9 +9,9 @@ import '../../controller/import_view_model.dart';
 import '../../model/bond_record_model.dart';
 import '../../model/global_model.dart';
 
-class BondListView extends StatelessWidget {
+class EntryBondListView extends StatelessWidget {
   final List<GlobalModel>bondList;
-   BondListView({super.key, required this.bondList});
+   EntryBondListView({super.key, required this.bondList});
   var importViewModel = Get.find<ImportViewModel>();
 
   @override
@@ -42,7 +42,7 @@ class BondListView extends StatelessWidget {
                   Text("نوع الفاتورة: "+getBondTypeFromEnum(bondList[index].bondType.toString())),
                   Text("الرمز: "+bondList[index].bondCode.toString()),
                   Text("الرمز: "+bondList[index].bondType.toString()),
-                  Text("origin: "+bondList[index].originAmenId.toString()),
+                  Text("سند قيد: "+bondList[index].originAmenId.toString()),
                   Text("الوصف: "+bondList[index].bondDescription.toString()),
                 ],
               ),

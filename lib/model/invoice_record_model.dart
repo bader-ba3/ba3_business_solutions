@@ -1,7 +1,7 @@
 class InvoiceRecordModel {
   String? invRecId, invRecProduct,prodChoosePriceMethod;
-  int? invRecQuantity;
-  double? invRecSubTotal, invRecTotal, invRecVat;
+  int? invRecQuantity,invRecGift;
+  double? invRecSubTotal, invRecTotal, invRecVat,invRecGiftTotal;
   bool? invRecIsLocal;
 
   InvoiceRecordModel({
@@ -13,6 +13,8 @@ class InvoiceRecordModel {
     this.invRecVat,
     this.prodChoosePriceMethod,
     this.invRecIsLocal,
+    this.invRecGift,
+    this.invRecGiftTotal,
   });
 
   InvoiceRecordModel.fromJson(Map<dynamic, dynamic> map) {
@@ -23,6 +25,8 @@ class InvoiceRecordModel {
     invRecTotal = double.tryParse(map['invRecTotal'].toString());
     invRecVat = double.tryParse((map['invRecVat'] ).toString());
     invRecIsLocal = map['invRecIsLocal'];
+    invRecGift = map['invRecGift'];
+    invRecGiftTotal = map['invRecGiftTotal'];
   }
 
   toJson() {
@@ -34,6 +38,8 @@ class InvoiceRecordModel {
       'invRecTotal': invRecTotal,
       'invRecVat': invRecVat,
       'invRecIsLocal': invRecIsLocal,
+      'invRecGift': invRecGift,
+      'invRecGiftTotal': invRecGiftTotal,
     };
   }
 
@@ -75,6 +81,14 @@ class InvoiceRecordModel {
     if (invRecIsLocal != other.invRecIsLocal) {
       newChanges['invRecIsLocal'] = other.invRecIsLocal;
       oldChanges['invRecIsLocal'] = invRecIsLocal;
+    }
+     if (invRecGift != other.invRecGift) {
+      newChanges['invRecGift'] = other.invRecGift;
+      oldChanges['invRecGift'] = invRecGift;
+    }
+     if (invRecGiftTotal != other.invRecGiftTotal) {
+      newChanges['invRecGiftTotal'] = other.invRecGiftTotal;
+      oldChanges['invRecGiftTotal'] = invRecGiftTotal;
     }
 
     if (newChanges.isNotEmpty) newChanges['invRecId'] = other.invRecId;

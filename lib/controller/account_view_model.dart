@@ -42,7 +42,6 @@ class AccountViewModel extends GetxController {
       type = globalModel.patternId!;
       date = globalModel.invDate!;
 
-      double totalDiscount = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.map((e) => e.percentage!,).reduce((value, element) => value+element,);
 
       // if(totalDiscount!=0){
       //   for (var model in globalModel.invDiscountRecord!) {
@@ -54,27 +53,27 @@ class AccountViewModel extends GetxController {
       date = globalModel.cheqDate!;
     }
     Map<String, List> allRecTotal = {};
-    for (int i = 0; i < (globalModel.bondRecord ?? []).length; i++) {
-      if (allRecTotal[globalModel.bondRecord![i].bondRecAccount] == null) {
-        allRecTotal[globalModel.bondRecord![i].bondRecAccount!] = [globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!];
+    for (int i = 0; i < (globalModel.entryBondRecord ?? []).length; i++) {
+      if (allRecTotal[globalModel.entryBondRecord![i].bondRecAccount] == null) {
+        allRecTotal[globalModel.entryBondRecord![i].bondRecAccount!] = [globalModel.entryBondRecord![i].bondRecDebitAmount! - globalModel.entryBondRecord![i].bondRecCreditAmount!];
       } else {
-        allRecTotal[globalModel.bondRecord![i].bondRecAccount]!.add(globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!);
+        allRecTotal[globalModel.entryBondRecord![i].bondRecAccount]!.add(globalModel.entryBondRecord![i].bondRecDebitAmount! - globalModel.entryBondRecord![i].bondRecCreditAmount!);
       }
     }
 
     allRecTotal.forEach((key, value) {
-      accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.bondId);
+      accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.entryBondId);
       var recCredit = value.reduce((value, element) => value + element);
       if (accountList[key]?.accRecord == null) {
-        accountList[key]?.accRecord = [AccountRecordModel(globalModel.bondId, key, recCredit.toString(), 0,type,date)].obs;
+        accountList[key]?.accRecord = [AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0,type,date)].obs;
       } else {
-        accountList[key]?.accRecord.add(AccountRecordModel(globalModel.bondId, key, recCredit.toString(), 0,type,date));
+        accountList[key]?.accRecord.add(AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0,type,date));
       }
 
       // calculateBalance(key);
       // initAccountViewPage();
       // setDueAccount(key);
-      // update();
+      update();
     });
 
     if (lastAccountOpened != null) {
@@ -137,7 +136,7 @@ class AccountViewModel extends GetxController {
 
   void deleteGlobalAccount(GlobalModel globalModel) {
     globalModel.bondRecord?.forEach((element) {
-      accountList[element.bondRecAccount]?.accRecord.removeWhere((e) => e.id == globalModel.bondId);
+      accountList[element.bondRecAccount]?.accRecord.removeWhere((e) => e.id == globalModel.entryBondId);
       calculateBalance(element.bondRecAccount!);
     });
     initAccountViewPage();

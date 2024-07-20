@@ -30,14 +30,16 @@ class AccountRecordDataSource extends DataGridSource {
         allRecord.addAll(accountController.accountList[element]!.accRecord.toList());
       }
     }
-
+    allRecord.sort((a, b) => a.date!.compareTo(b.date!),);
     dataGridRows = allRecord.map<DataGridRow>((e) {
       String? _;
       if (e.isPaidStatus == Const.paidStatusSemiUsed) {
         _ = " متبقي " + "(" + e.paid.toString() + ")";
       }
+
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: Const.rowAccountName, value: getAccountNameFromId(e.account)),
+        DataGridCell<String>(columnName: Const.rowAccountName, value:e.date),
         DataGridCell<String>(columnName: Const.rowAccountType, value: getGlobalTypeFromEnum(e.accountRecordType!)),
         DataGridCell<String>(columnName: Const.rowAccountTotal, value: double.parse(e.total!) > 0 ? "0" : e.total!),
         DataGridCell<String>(columnName: Const.rowAccountTotal2, value: double.parse(e.total!) < 0 ? "0" : e.total!),

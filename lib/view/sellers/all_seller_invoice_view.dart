@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
+import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
 import 'package:ba3_business_solutions/view/sellers/seller_targets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -91,7 +92,7 @@ class AllSellerInvoice extends StatelessWidget {
                             var rowData = controller.recordViewDataSource[rowIndex];
                             String model = rowData.getCells()[0].value;
                             print('Tapped Row Data: $model');
-                            seeDetails(model);
+                            Get.to(()=>EntryBondDetailsView(oldId:model,));
                             // logger(
                             //     newData: ChequeModel(
                             //       cheqId: model,

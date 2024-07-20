@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -155,6 +156,13 @@ class _DashboardViewState extends State<DashboardView> {
         tapPosition.dy * 1.0,
       ),
       items: [
+         PopupMenuItem(
+          value: 'details',
+          child: ListTile(
+            leading: Icon(Icons.search,color: Colors.blue.shade300,),
+            title: Text('عرض الحركات'),
+          ),
+        ),
         PopupMenuItem(
           value: 'delete',
           child: ListTile(
@@ -164,7 +172,9 @@ class _DashboardViewState extends State<DashboardView> {
         ),
       ],
     ).then((value) {
-      if (value == 'delete') {
+      if (value == 'details') {
+       Get.to(()=>AccountDetails(modelKey: id));
+      }else if (value == 'delete') {
         HiveDataBase.mainAccountModelBox.delete(id);
         accountController.update();
       }

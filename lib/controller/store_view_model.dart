@@ -107,7 +107,10 @@ class StoreViewModel extends GetxController {
         storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
         storeMap[model.storeRecId]?.stRecords.add(model);
       }
-
+      // if(globalModel.invSecStorehouse==null){
+      // print(globalModel.toJson());
+      //   HiveDataBase.globalModelBox.delete(globalModel.bondId);
+      // }
      if (storeMap[model2.storeRecId]?.stRecords == null) {
         storeMap[model2.storeRecId]?.stRecords = [model2];
       } else {

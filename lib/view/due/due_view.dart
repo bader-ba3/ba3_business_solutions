@@ -23,7 +23,7 @@ class AllDueView extends StatelessWidget {
             List<GlobalModel> allBuyInv = invoiceViewModel.invoiceModel.values.where((element) => element.invType == Const.invoiceTypeBuy,).toList();
             for (var element in allBuyInv) {
               allList.add((globalModel: element,accountRecordModel: controller.accountList[element.invPrimaryAccount]!.accRecord.firstWhere(
-                    (e) => e.id == element.bondId,
+                    (e) => e.id == element.entryBondId,
               ),));
                 // allList.add((
                 //   accountRecordModel: controller.accountList[element.invSecondaryAccount]!.accRecord.firstWhere(

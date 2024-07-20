@@ -19,6 +19,7 @@ import 'Const/const.dart';
 import 'firebase_options.dart';
 import 'view/sellers/seller_targets.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -53,6 +54,8 @@ void main() async {
       return false;
     },
   );
+ 
+
   // FirebaseFirestore.instance.collection("2024").doc("bon1720282515909594").delete();
   //  HiveDataBase.globalModelBox.delete("bon1720282515909594");
   // FirebaseFirestore.instance.collection("2024").count().get().then((value) => print(value.count),);

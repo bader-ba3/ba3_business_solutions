@@ -48,17 +48,18 @@ class AllBonds extends StatelessWidget {
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: "bondId", value: order.toJson()['bondId']),
               ...order.toBondAR().entries.map((mapEntry) {
-                if (int.tryParse(mapEntry.value.toString()) != null) {
-                  return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
-                } else if (double.tryParse(mapEntry.value.toString()) != null) {
-                  return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
-                }
-                // else if(mapEntry.key == "bondDate"){
-                //   int day = int.parse(mapEntry.value.toString().split("-")[2]);
-                //   int month =  int.parse(mapEntry.value.toString().split("-")[1]);
-                //   int year =  int.parse(mapEntry.value.toString().split("-")[0]);
-                //   return DataGridCell<DateTime>(columnName: mapEntry.key, value: DateTime(year,month,day));
+                // if (int.tryParse(mapEntry.value.toString()) != null) {
+                //   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
+                // } else if (double.tryParse(mapEntry.value.toString()) != null) {
+                //   return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
                 // }
+                // else 
+                if(mapEntry.key == "bondDate"){
+                  // int day = int.parse(mapEntry.value.toString().split("-")[2]);
+                  // int month =  int.parse(mapEntry.value.toString().split("-")[1]);
+                  // int year =  int.parse(mapEntry.value.toString().split("-")[0]);
+                  return DataGridCell<DateTime>(columnName: mapEntry.key, value:DateTime.parse(mapEntry.value));
+                }
                 else{
                   return DataGridCell<String>(columnName: mapEntry.key, value: (mapEntry.value??"-").toString());
                 }

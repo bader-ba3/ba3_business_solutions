@@ -1,12 +1,10 @@
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/view/report/widget/report_data_source.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../model/invoice_record_model.dart';
@@ -24,40 +22,6 @@ class ReportGridViewState extends State<ReportGridView> {
   late ReportDataSource _DataSource;
   List _dataList = [];
   List<String> rowList = [];
-  List<String> allRowList =
-  [
-    'invTotal',
-    'invPrimaryAccount',
-    'invSecondaryAccount',
-    'invStorehouse',
-    'invComment',
-    'invCode',
-    'invFullCode',
-    'patternId',
-    'invSeller',
-    'invDate',
-    'invMobileNumber',
-    'invVatAccount',
-    'invCustomerAccount',
-    'invRecProduct',
-    'invRecQuantity',
-    'invRecSubTotal',
-    'invRecTotal',
-    'invRecVat',
-    "bondCode",
-    'prodName',
-    'prodCode',
-    'prodCustomerPrice',
-    'prodWholePrice',
-    'prodRetailPrice',
-    'prodCostPrice',
-    'prodMinPrice',
-    'prodHasVat',
-    'prodBarcode',
-    'prodGroupCode',
-    'prodType',
-    'prodParentId',
-  ];
   Map nameRowList={
   'invTotal':"إجمالي الفاتورة",
   'invPrimaryAccount':"الحساب الاساسي",
@@ -74,6 +38,7 @@ class ReportGridViewState extends State<ReportGridView> {
   'invCustomerAccount':"حساب الزبون",
   'invRecProduct':"اسم المادة",
   'invRecQuantity':"الكمية",
+  'invRecGift':"الهدايا",
   'invRecSubTotal':"السعر الإفرادي",
   'invRecTotal':"إجمالي القيمة",
   'invRecVat':"إجمالي الضريبة",
@@ -98,23 +63,21 @@ class ReportGridViewState extends State<ReportGridView> {
   void initState() {
     super.initState();
     InvoiceViewModel invoiceController = Get.find<InvoiceViewModel>();
-    // _employees = invoiceController.invoiceModel.values.toList();
     for (var element in invoiceController.invoiceModel.values) {
-      for (InvoiceRecordModel et in element.invRecords!) {
-        Map productMap = getProductModelFromId(et.invRecProduct)?.toJson();
+      for (InvoiceRecordModel et in element.invRecords??[]) {
+       if(et.invRecProduct!=null){
+       Map productMap = getProductModelFromId(et.invRecProduct)?.toJson();
         Map m = element.toJson();
         m.addAll(et.toJson());
         m.addAll(productMap);
 
         _dataList.add(m);
+       }
+      
       }
-      // _employees.addAll((element.invRecords!.map((e) => element.toJson()).toList()));
     }
-    // GlobalModel().invSeller;
-    // InvoiceRecordModel().invRecTotal;
-    rowList = ["invDate","invFullCode", "invCustomerAccount","invRecProduct","invRecQuantity","invRecSubTotal","invRecVat","invRecTotal","invStorehouse","invSeller","invSecondaryAccount"];
+    rowList = ["invDate","invFullCode", "invCustomerAccount","invRecProduct","invRecQuantity","invRecGift","invRecSubTotal","invRecVat","invRecTotal","invStorehouse","invSeller","invSecondaryAccount"];
     initPage();
-   // _DataSource = ReportDataSource(_dataList, rowList);
   }
   void initPage() {
     _DataSource = ReportDataSource(_dataList, rowList);
@@ -144,7 +107,8 @@ class ReportGridViewState extends State<ReportGridView> {
             isScrollbarAlwaysShown: true,
             verticalScrollController: scrollController,
             columns: rowList.map((e) => GridColumn(
-              width: 150,
+             // width: 150,
+             columnWidthMode: ColumnWidthMode.auto,
                     columnName: e,
                     label: Column(
                       children: [
@@ -207,12 +171,11 @@ class ReportGridViewState extends State<ReportGridView> {
                      Spacer(),
                      ElevatedButton(onPressed: (){
                        Navigator.pop(context);
-                     }, child: Text("close"))
+                     }, child: Text("إغلاق"))
                    ],),
                  ),
-                 ...allRowList.map((allRowElement)
+                 ...nameRowList.keys.toList().map((allRowElement)
                  {
-                   print(allRowElement);
                    return ListTile(
                       leading: Checkbox(
                         value: rowList.contains(allRowElement),
@@ -230,9 +193,6 @@ class ReportGridViewState extends State<ReportGridView> {
                       title: Text(nameRowList[allRowElement]),
                     );
                   }, ),
-                 // ElevatedButton(onPressed: (){
-                 //
-                 //   Navigator.pop(context);}, child: Text("تم الانتهاء")),
                  SizedBox(height: 20,),
                ],
              );

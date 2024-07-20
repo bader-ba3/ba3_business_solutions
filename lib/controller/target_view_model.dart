@@ -27,7 +27,6 @@ class TargetViewModel extends GetxController{
         TaskModel model = TaskModel.fromJson(element.data());
         allTarget[model.taskId!] = model;
       }
-      print(allTarget);
       update();
     });
   }

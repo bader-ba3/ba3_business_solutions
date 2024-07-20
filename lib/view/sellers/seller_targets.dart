@@ -86,9 +86,7 @@ class _SellerTargetState extends State<SellerTarget> {
               ],
             ),
             GetBuilder<SellersViewModel>(builder: (controller) {
-              print("SetState");
               ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) newSellerData = targetViewModel.checkTask(widget.sellerId);
-              print(newSellerData);
               if (sellerData.mobileTotal != newSellerData.mobileTotal || sellerData.otherTotal != newSellerData.otherTotal) {
                 if(newSellerData.otherTotal - sellerData.otherTotal.toInt() >0){
                   othersKey.currentState!.addValue(newSellerData.otherTotal.toInt());

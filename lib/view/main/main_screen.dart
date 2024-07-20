@@ -7,6 +7,7 @@ import 'package:ba3_business_solutions/view/bonds/bond_type.dart';
 import 'package:ba3_business_solutions/view/cheques/cheque_type.dart';
 import 'package:ba3_business_solutions/view/dashboard/dashboard_view.dart';
 import 'package:ba3_business_solutions/view/due/due_type.dart';
+import 'package:ba3_business_solutions/view/entry_bond/entry_bond_type.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_type.dart';
 import 'package:ba3_business_solutions/view/patterns/pattern_type.dart';
 import 'package:ba3_business_solutions/view/products/product_type.dart';
@@ -28,55 +29,51 @@ import '../target_management/target_management_view.dart';
 import '../timer/time_type.dart';
 import '../user_management/user_management.dart';
 
-
 class MainScreen extends StatefulWidget {
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  List<({String name, String img, Widget widget,String role})> rowData = [
-    (name: "لوحة التحكم", img: "assets/icons/menu_dashboard.svg", widget: DashboardView(),role:Const.roleViewHome ),
-    (name: "الفواتير", img: "assets/icons/menu_profile.svg", widget: InvoiceType(),role:Const.roleViewInvoice ),
-    (name: "السندات", img: "assets/icons/menu_profile.svg", widget: BondType(),role:Const.roleViewBond ),
-    (name: "الحسابات", img: "assets/icons/menu_tran.svg", widget: AccountType(),role:Const.roleViewAccount ),
-    (name: "المواد", img: "assets/icons/menu_task.svg", widget: ProductType(),role:Const.roleViewProduct ),
-    (name: "المستودعات", img: "assets/icons/menu_task.svg", widget: StoreType(),role:Const.roleViewStore ),
-    (name: "أنماط البيع", img: "assets/icons/menu_task.svg", widget: PatternType(), role:Const.roleViewPattern),
-    (name: "الشيكات", img: "assets/icons/trip.svg", widget:ChequeType(),role:Const.roleViewCheques ),
-    (name: "الاستحقاق", img: "assets/icons/garage.svg", widget: DueType(),role:Const.roleViewDue ),
-    (name: "تقرير المبيعات", img: "assets/icons/garage.svg", widget: ReportGridView(), role:Const.roleViewReport),
-    (name: "الاحصائيات", img: "assets/icons/menu_tran.svg", widget: StatisticsType(), role:Const.roleViewStatistics),
-    (name: "البائعون", img: "assets/icons/menu_setting.svg", widget: SellerType(), role:Const.roleViewSeller),
-    (name: "استيراد المعلومات", img: "assets/icons/menu_setting.svg", widget: FilePickerWidget(),role:Const.roleViewImport ),
-    (name: "الجرد", img: "assets/icons/garage.svg", widget: InventoryType(),role:Const.roleViewInventory ),
-    (name: "إدارة المستخدمين", img: "assets/icons/garage.svg", widget: UserManagementType(),role:Const.roleViewUserManagement ),
-    (name: "إدارة التارجيت", img: "assets/icons/garage.svg", widget: TargetManagementType(),role:Const.roleViewTarget ),
-    (name: "إدارة الوقت", img: "assets/icons/garage.svg", widget: TimeType(),role:Const.roleViewTimer ),
-    (name: "إدارة البطاقات", img: "assets/icons/garage.svg", widget: CardManagementType(),role:Const.roleViewCard ),
-    (name: "إدارة قواعد البيانات", img: "assets/icons/garage.svg", widget: DataBaseType(),role:Const.roleViewDataBase ),
+  List<({String name, Widget widget, String role})> rowData = [
+    (name: "لوحة التحكم", widget: DashboardView(), role: Const.roleViewHome),
+    (name: "الفواتير", widget: InvoiceType(), role: Const.roleViewInvoice),
+    (name: "السندات", widget: BondType(), role: Const.roleViewBond),
+    (name: "سندات القيد", widget: EntryBondType(), role: Const.roleViewBond),
+    (name: "الحسابات", widget: AccountType(), role: Const.roleViewAccount),
+    (name: "المواد", widget: ProductType(), role: Const.roleViewProduct),
+    (name: "المستودعات", widget: StoreType(), role: Const.roleViewStore),
+    (name: "أنماط البيع", widget: PatternType(), role: Const.roleViewPattern),
+    (name: "الشيكات", widget: ChequeType(), role: Const.roleViewCheques),
+    (name: "الاستحقاق", widget: DueType(), role: Const.roleViewDue),
+    (name: "تقرير المبيعات", widget: ReportGridView(), role: Const.roleViewReport),
+    (name: "الاحصائيات", widget: StatisticsType(), role: Const.roleViewStatistics),
+    (name: "البائعون", widget: SellerType(), role: Const.roleViewSeller),
+    (name: "استيراد المعلومات", widget: FilePickerWidget(), role: Const.roleViewImport),
+    (name: "الجرد", widget: InventoryType(), role: Const.roleViewInventory),
+    (name: "إدارة المستخدمين", widget: UserManagementType(), role: Const.roleViewUserManagement),
+    (name: "إدارة التارجيت", widget: TargetManagementType(), role: Const.roleViewTarget),
+    (name: "إدارة الوقت", widget: TimeType(), role: Const.roleViewTimer),
+    (name: "إدارة البطاقات", widget: CardManagementType(), role: Const.roleViewCard),
+    (name: "إدارة قواعد البيانات", widget: DataBaseType(), role: Const.roleViewDataBase),
   ];
- List<({String name, String img, Widget widget,String role})> allData=[];
+  List<({String name, Widget widget, String role})> allData = [];
   //  TabController? tabController;
   late PageController pageController;
-  late TabController tabController ;
-int tabIndex= 0;
+  late TabController tabController;
+  int tabIndex = 0;
   @override
   void initState() {
-    allData = rowData.where((element) => checkMainPermission(element.role),).toList();
-
-    tabController = TabController(length: allData.length, vsync: this,initialIndex: tabIndex);
+    allData = rowData.where((element) => checkMainPermission(element.role)).toList();
+    tabController = TabController(length: allData.length, vsync: this, initialIndex: tabIndex);
     pageController = PageController();
     //  allData = rowData.where((element) => checkMainPermission(element.role),).toList();
     // tabController = TabController(length: allData.length, vsync: this);
-   
-    
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-  
     return Directionality(
       textDirection: TextDirection.rtl,
       child: GetBuilder<GlobalViewModel>(builder: (controller) {
@@ -85,73 +82,69 @@ int tabIndex= 0;
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-                child: GetBuilder<UserManagementViewModel>(builder: (sellersViewModel) {
-                  allData = rowData.where((element) => checkMainPermission(element.role),).toList();
-                 tabController = TabController(length: allData.length, vsync: this,initialIndex: tabIndex);
-                //   pageController = PageController(initialPage: tabIndex);
-                //  print(tabIndex);
-                //  print(tabController.index);
-                //  GlobalKey tabKey = GlobalKey();
-                //  tabController.addListener(() {
-                //   pageController.jumpToPage(tabController.index);
-                //   setState(() {});
-                // });
-                  if(allData.isEmpty){
-                    return Center(child: Text("ليس لديك صلاحيات",style: TextStyle(color:Colors.white,fontSize: 30),),);
-                  }
-                  return StatefulBuilder(
-                    builder: (context,setstate) {
-                      return TabContainer(
-                     //  key: tabKey,
-                        textDirection: TextDirection.rtl,
-                        controller: tabController,
-                        tabEdge: TabEdge.right,
-                        tabsEnd: 1,
-                        tabsStart: 0,
-                        tabMaxLength: controller.isDrawerOpen ? 60 : 60,
-                        tabExtent: controller.isDrawerOpen ? 180 : 60,
-                        borderRadius: BorderRadius.circular(10),
-                        tabBorderRadius: BorderRadius.circular(20),
-                        childPadding: const EdgeInsets.all(0.0),
-                        selectedTextStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 15.0,
-                        ),
-                        unselectedTextStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13.0,
-                        ),
-                        colors: List.generate(allData.length, (index) => Colors.white),
-                        tabs: List.generate(
-                          allData.length,
-                              (index) {
-                            return DrawerListTile(
-                              index: index,
-                              title: allData[index].name,
-                              svgSrc: allData[index].img,
-                              press: () {
-                                print(index);
-                                tabController.index = index;
-                                tabIndex = index;
-                               pageController.jumpToPage(index);
-                                setstate(() {});
-                              },
-                            );
-                          },
-                        ),
-                        child: PageView(
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: pageController,
-                          children: List.generate(allData.length, (index) => ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: allData[index].widget,
-                          )),
-                        ),
-                      );
-                    }
+              child: GetBuilder<UserManagementViewModel>(builder: (sellersViewModel) {
+                allData = rowData
+                    .where(
+                      (element) => checkMainPermission(element.role),
+                    )
+                    .toList();
+                // tabController = TabController(length: allData.length, vsync: this, initialIndex: tabIndex);
+                if (allData.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "ليس لديك صلاحيات",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    ),
                   );
                 }
-              ),
+                return StatefulBuilder(builder: (context, setstate) {
+                  return TabContainer(
+                    textDirection: TextDirection.rtl,
+                    controller: tabController,
+                    tabEdge: TabEdge.right,
+                    tabsEnd: 1,
+                    tabsStart: 0,
+                    tabMaxLength: controller.isDrawerOpen ? 60 : 60,
+                    tabExtent: controller.isDrawerOpen ? 180 : 60,
+                    borderRadius: BorderRadius.circular(10),
+                    tabBorderRadius: BorderRadius.circular(20),
+                    childPadding: const EdgeInsets.all(0.0),
+                    selectedTextStyle: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                    ),
+                    unselectedTextStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13.0,
+                    ),
+                    colors: List.generate(allData.length, (index) => Colors.white),
+                    tabs: List.generate(
+                      allData.length,
+                      (index) {
+                        return DrawerListTile(
+                          index: index,
+                          title: allData[index].name,
+                          press: () {
+                            print(index);
+                            pageController.jumpToPage(index);
+                            tabController.index = index;
+                          },
+                        );
+                      },
+                    ),
+                    child: PageView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: pageController,
+                      children: List.generate(
+                          allData.length,
+                          (index) => ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: allData[index].widget,
+                              )),
+                    ),
+                  );
+                });
+              }),
             ),
           ),
         );
@@ -165,11 +158,10 @@ class DrawerListTile extends StatelessWidget {
     Key? key,
     required this.title,
     required this.index,
-    required this.svgSrc,
     required this.press,
   }) : super(key: key);
 
-  final String title, svgSrc;
+  final String title;
   final int index;
   final VoidCallback press;
 
@@ -179,32 +171,22 @@ class DrawerListTile extends StatelessWidget {
       return InkWell(
         onTap: press,
         child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: controller.isDrawerOpen
-              ? Center(child: Row(
-            children: [
-              SizedBox(width: 30,),
-              // SvgPicture.asset(
-              //   svgSrc,
-              //   colorFilter: ColorFilter.mode(Color(0xff00308F), BlendMode.srcIn),
-              //   height: 20,
-              // ),
-              SizedBox(width: 10,),
-        
-              Text(title, style: TextStyle(color:Colors.black),),
-            ],
-          ))
-              : Center(child: Row(
-            children: [
-              SizedBox(width: 20,),
-              // SvgPicture.asset(
-              //   svgSrc,
-              //   colorFilter: ColorFilter.mode(Color(0xff00308F), BlendMode.srcIn),
-              //   height: 20,
-              // ),
-            ],
-          ),),
-        ),
+            textDirection: TextDirection.rtl,
+            child: Center(
+                child: Row(
+              children: [
+                SizedBox(
+                  width: 30,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
+            ))),
       );
     });
   }

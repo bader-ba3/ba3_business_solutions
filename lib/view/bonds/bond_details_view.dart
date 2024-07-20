@@ -187,6 +187,14 @@ controller.update();
                             SizedBox(width:50),
                     ],
                   ),
+                   if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
+                          TextButton(
+                              onPressed: () {
+                                controller.firstBond();
+                              },
+                              child: const Text("الاول"))
+                        else
+                          const SizedBox(width: 50),
                         if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
                           TextButton(
                               onPressed: () {
@@ -204,7 +212,7 @@ controller.update();
                           child: TextFormField(
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             onFieldSubmitted: (_) {
-                              controller.changeIndexCode(code: _);
+                              controller.changeIndexCode(code: _,type: controller.tempBondModel.bondType!);
                               controller.initPage(bondController.tempBondModel.bondType);
                             },
                             decoration: InputDecoration.collapsed(hintText: ""),
@@ -217,6 +225,14 @@ controller.update();
                                 controller.nextBond();
                               },
                               child: const Text("التالي"))
+                        else
+                          const SizedBox(width: 55),
+                            if (controller.allBondsItem.values.toList().lastOrNull?.bondId != controller.bondModel.bondId)
+                          TextButton(
+                              onPressed: () {
+                                controller.lastBond();
+                              },
+                              child: const Text("الاخير"))
                         else
                           const SizedBox(width: 55),
                         const SizedBox(width: 50),
@@ -345,16 +361,12 @@ controller.update();
                           });}else{
                             Get.snackbar("خطأ", validate);
                           }
-                        } else {
-                          seeDetails(controller.bondModel.originId!);
-                        }
+                        } 
                       },
                       child: Text(
                         isNew
                             ? "إضافة"
-                            : controller.bondModel.originId == null
-                                ? "تعديل"
-                                : "ذهاب للتفاصيل",
+                            : "تعديل",
                         maxLines: 4,
                       )),
                   const SizedBox(height: 50),

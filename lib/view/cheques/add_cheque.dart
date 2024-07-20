@@ -8,6 +8,7 @@ import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
+import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -278,8 +279,8 @@ class _AddChequeState extends State<AddCheque> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    var bondId = controller.initModel?.cheqRecords?.firstWhere((e) => e.cheqRecType == Const.chequeRecTypeInit).cheqRecBondId;
-                                    seeDetails(bondId!);
+                                    var bondId = controller.initModel?.cheqRecords?.firstWhere((e) => e.cheqRecType == Const.chequeRecTypeInit).cheqRecEntryBondId;
+                                    Get.to(()=>EntryBondDetailsView(oldId:bondId!,));
                                   },
                                   child: Text("السند الاساسي")),
                               SizedBox(
@@ -310,7 +311,7 @@ class _AddChequeState extends State<AddCheque> {
                                       children: [
                                         ElevatedButton(
                                             onPressed: () {
-                                              seeDetails(record.cheqRecBondId!);
+                                              Get.to(()=>EntryBondDetailsView(oldId: record.cheqRecEntryBondId,));
                                             },
                                             child: Text("سند تسديد كل المبلغ")),
                                         ElevatedButton(
@@ -319,7 +320,7 @@ class _AddChequeState extends State<AddCheque> {
                                                 if (value) {
                                                   checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
                                                     if (value) {
-                                                      controller.updateDeleteRecord(record.cheqRecBondId!, type: Const.chequeStatusNotPaid, isPayEdit: false);
+                                                      controller.updateDeleteRecord(record.cheqRecEntryBondId!, type: Const.chequeStatusNotPaid, isPayEdit: false);
                                                     }
                                                   });
                                                 }
@@ -427,7 +428,7 @@ class _AddChequeState extends State<AddCheque> {
                                                   children: [
                                                     TextButton(
                                                       onPressed: () {
-                                                        seeDetails(record![index]!.cheqRecBondId!);
+                                                        Get.to(()=>EntryBondDetailsView(oldId:record![index]!.cheqRecEntryBondId!,));
                                                       },
                                                       child: Text("عرض"),
                                                     ),
@@ -440,7 +441,7 @@ class _AddChequeState extends State<AddCheque> {
                                                           if (value) {
                                                             checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
                                                               if (value) {
-                                                                controller.updateDeleteRecord(record![index]!.cheqRecBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
+                                                                controller.updateDeleteRecord(record![index]!.cheqRecEntryBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
                                                               }
                                                             });
                                                           }

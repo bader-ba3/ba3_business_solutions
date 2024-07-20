@@ -58,6 +58,8 @@ class PatternViewModel extends GetxController {
     _.patPrimary = getAccountIdFromText(_.patPrimary);
     _.patSecondary = getAccountIdFromText(_.patSecondary);
     _.patVatAccount = getAccountIdFromText(_.patVatAccount);
+    _.patGiftAccount = getAccountIdFromText(_.patGiftAccount);
+    _.patSecGiftAccount = getAccountIdFromText(_.patSecGiftAccount);
     _.patStore = getStoreIdFromText(_.patStore);
     _.patNewStore = getStoreIdFromText(_.patNewStore);
     _patternCollectionRef.doc(_.patId).set(_.toJson());
@@ -70,6 +72,8 @@ class PatternViewModel extends GetxController {
     if (!(_.patPrimary?.contains("acc") ?? false)) _.patPrimary = getAccountIdFromText(_.patPrimary);
     if (!(_.patVatAccount?.contains("acc") ?? false)) _.patVatAccount = getAccountIdFromText(_.patVatAccount);
     if (!(_.patSecondary?.contains("acc") ?? false)) _.patSecondary = getAccountIdFromText(_.patSecondary);
+    if (!(_.patGiftAccount?.contains("acc") ?? false)) _.patGiftAccount = getAccountIdFromText(_.patGiftAccount);
+    if (!(_.patSecGiftAccount?.contains("acc") ?? false)) _.patSecGiftAccount = getAccountIdFromText(_.patSecGiftAccount);
     if (!(_.patStore?.contains("store") ?? false)) _.patStore = getStoreIdFromText(_.patStore);
     if (!(_.patNewStore?.contains("store") ?? false)) _.patNewStore = getStoreIdFromText(_.patNewStore);
     // print(editPatternModel?.toJson());

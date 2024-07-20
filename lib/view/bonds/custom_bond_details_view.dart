@@ -2,6 +2,7 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
+import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +42,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
 
   bool isNew = false;
   var newCodeController = TextEditingController();
-  var userAccountController = TextEditingController();
+  // var controller.userAccountController = TextEditingController();
   String defualtCode = '';
   var accountController = Get.find<AccountViewModel>();
 
@@ -60,17 +61,17 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
       bondController.tempBondModel = GlobalModel.fromJson(widget.oldBondModel?.toFullJson() ?? bondController.allBondsItem[widget.oldId]!.toFullJson());
       bondController.bondModel = widget.oldBondModel ?? bondController.allBondsItem[widget.oldId]!;
       isNew = false;
-      var aa = bondController.tempBondModel.bondRecord
-          ?.where(
-            (element) => element.bondRecId == "X",
-          )
-          .first
-          .bondRecAccount;
-      // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
-      userAccountController.text = getAccountNameFromId(aa)!;
-      bondController.tempBondModel.bondRecord?.removeWhere(
-        (element) => element.bondRecId == "X",
-      );
+      // var aa = bondController.tempBondModel.bondRecord
+      //     ?.where(
+      //       (element) => element.bondRecId == "X",
+      //     )
+      //     .first
+      //     .bondRecAccount;
+      // // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
+      // bondController.userAccountController.text = getAccountNameFromId(aa)!;
+      // bondController.tempBondModel.bondRecord?.removeWhere(
+      //   (element) => element.bondRecId == "X",
+      // );
     } else {
       bondController.tempBondModel = getBondData();
       bondController.bondModel = getBondData();
@@ -116,7 +117,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
             //                   onPressed: () {
             //                     var validate = bondController.checkValidate();
             //                     if (validate == null) {
-            //                       var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == userAccountController.text).accId;
+            //                       var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == controller.userAccountController.text).accId;
             //                       var total = double.parse(bondController.tempBondModel.bondTotal!);
             //                       bondController.tempBondModel.bondRecord?.add(BondRecordModel("0", widget.isDebit ? total : 0, widget.isDebit ? 0 : total, mainAccount, "BondRecDescription"));
             //                       if (isNew) {
@@ -155,7 +156,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             initDate:  controller.tempBondModel.bondDate,
                             onSubmit: (_) {
                                controller.tempBondModel.bondDate = _.toString().split(".")[0];
-controller.update();
+                              controller.update();
                             },
                           ),
                             SizedBox(width:50),
@@ -197,24 +198,29 @@ controller.update();
                             initDate:  controller.tempBondModel.bondDate,
                             onSubmit: (_) {
                                controller.tempBondModel.bondDate = _.toString().split(".")[0];
-controller.update();
+                              controller.update();
                             },
                           ),
                             SizedBox(width:50),
                     ],
-                  ),
+                  ),   if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
+                          TextButton(
+                              onPressed: () {
+                                controller.firstBond();
+                                
+                              },
+                              child: Icon(Icons.keyboard_double_arrow_right))
+                        else
+                          SizedBox(
+                            width: 50,
+                          ),
                         if (controller.allBondsItem.values.toList().firstOrNull?.bondId != controller.bondModel.bondId)
                           TextButton(
                               onPressed: () {
-                                controller.prevBond();
-                                // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
-                                var _ =bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == "X",).bondRecAccount;
-                                userAccountController.text = getAccountNameFromId(_)!;
-                                bondController.tempBondModel.bondRecord?.removeWhere(
-                                  (element) => element.bondRecId == "X",
-                                );
+                               controller.prevBond();
+                              
                               },
-                              child: Text("السابق"))
+                              child: Icon(Icons.keyboard_arrow_right))
                         else
                           SizedBox(
                             width: 50,
@@ -232,7 +238,7 @@ controller.update();
                           child: TextFormField(
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             onFieldSubmitted: (_) {
-                              controller.changeIndexCode(code: _);
+                              controller.changeIndexCode(code: _,type: controller.tempBondModel.bondType!,);
                               bondController.initPage(bondController.tempBondModel.bondType);
                             },
                             decoration: InputDecoration.collapsed(hintText: ""),
@@ -243,13 +249,20 @@ controller.update();
                           TextButton(
                               onPressed: () {
                                 controller.nextBond();
-                                var _ =bondController.tempBondModel.bondRecord?.firstWhere((element) => element.bondRecId == "X",).bondRecAccount;
-                                userAccountController.text = getAccountNameFromId(_)!;
-                                bondController.tempBondModel.bondRecord?.removeWhere(
-                                  (element) => element.bondRecId == "X",
-                                );
+                             
                               },
-                              child: Text("التالي"))
+                              child: Icon(Icons.keyboard_arrow_left))
+                        else
+                          SizedBox(
+                            width: 55,
+                          ),
+                           if (controller.allBondsItem.values.toList().lastOrNull?.bondId != controller.bondModel.bondId)
+                          TextButton(
+                              onPressed: () {
+                                controller.lastBond();
+                               
+                              },
+                              child: Icon(Icons.keyboard_double_arrow_left))
                         else
                           SizedBox(
                             width: 55,
@@ -297,13 +310,13 @@ controller.update();
                       SizedBox(
                         width: 100,
                         child: TextFormField(
-                          controller: userAccountController,
+                          controller: controller.userAccountController,
                           onFieldSubmitted: (_) async {
                             List<String> result = searchText(_);
                             if (result.isEmpty) {
                               Get.snackbar("خطأ", "غير موجود");
                             } else if (result.length == 1) {
-                              userAccountController.text = result[0];
+                              controller.userAccountController.text = result[0];
                             } else {
                               await Get.defaultDialog(
                                   title: "اختر احد الحسابات",
@@ -315,7 +328,7 @@ controller.update();
                                         itemBuilder: (contet, index) {
                                           return InkWell(
                                             onTap: () {
-                                              userAccountController.text = result[index];
+                                              controller.userAccountController.text = result[index];
                                               Get.back();
                                             },
                                             child: Text(result[index]),
@@ -421,7 +434,7 @@ controller.update();
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        if (userAccountController.text.isEmpty) {
+                        if (controller.userAccountController.text.isEmpty) {
                           Get.snackbar("خطأ", "حقل الحساب فارغ");
                           return;
                         }
@@ -430,7 +443,7 @@ controller.update();
                           Get.snackbar("خطأ", validate);
                           return;
                         }
-                        var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == userAccountController.text).accId;
+                        var mainAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == controller.userAccountController.text).accId;
                         double total = 0;
                         bondController.tempBondModel.bondRecord?.forEach((element) {
                           if (bondController.tempBondModel.bondType == Const.bondTypeDebit) {
@@ -475,16 +488,12 @@ controller.update();
                           } else {
                             Get.snackbar("خطأ", validate2);
                           }
-                        } else {
-                          seeDetails(controller.bondModel.originId!);
                         }
                       },
                       child: Text(
                         isNew
                             ? "إضافة"
-                            : controller.bondModel.originId == null
-                                ? "تحديث"
-                                : "ذهاب للتفاصيل",
+                            : "تحديث",
                         maxLines: 4,
                       )),
                   SizedBox(
