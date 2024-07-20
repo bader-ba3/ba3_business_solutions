@@ -65,6 +65,8 @@ dependencies:
   translator:
   print_bluetooth_thermal:
   esc_pos_utils_plus:
+  flutter_window_close:
+  flutter_platform_alert:
 
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   cloud_firestore
   firebase_core
+  flutter_platform_alert
+  flutter_window_close
   smart_auth
 )
 

@@ -331,17 +331,20 @@ TextEditingController userAccountController = TextEditingController();
     if (tempBondModel.bondType == Const.bondTypeDaily||tempBondModel.bondType == Const.bondTypeStart||tempBondModel.bondType == Const.bondTypeInvoice) {
       recordDataSource = BondRecordDataSource(recordData: tempBondModel);
     }  else {
-   var aa = tempBondModel.bondRecord
-          ?.where(
-            (element) => element.bondRecId == "X",
-          )
-          .first
-          .bondRecAccount;
-      // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
-      userAccountController.text = getAccountNameFromId(aa)!;
-    tempBondModel.bondRecord?.removeWhere(
-        (element) => element.bondRecId == "X",
-      );     
+      if((tempBondModel.bondRecord!.length)>1){
+        var aa = tempBondModel.bondRecord
+            ?.where(
+              (element) => element.bondRecId == "X",
+        )
+            .first
+            .bondRecAccount;
+        // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
+        userAccountController.text = getAccountNameFromId(aa)!;
+        tempBondModel.bondRecord?.removeWhere(
+              (element) => element.bondRecId == "X",
+        );
+      }
+
       customBondRecordDataSource = CustomBondRecordDataSource(recordData: tempBondModel, oldisDebit: tempBondModel.bondType == Const.bondTypeDebit);
     }
     dataGridController = DataGridController();
@@ -400,45 +403,45 @@ TextEditingController userAccountController = TextEditingController();
 
   //   // postOneBond(false);
   // }
-  // Future<void> fastAddBondToFirebase({required String entryBondId,String? amenCode,String? bondId,String? bondDes,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
-  //   tempBondModel = GlobalModel();
-  //   tempBondModel.bondRecord = record;
-  //   tempBondModel.originId = originId;
-  //   tempBondModel.originAmenId = amenCode;
-  //    if (entryBondId == null) {
-  //     tempBondModel.entryBondId = generateId(RecordType.entryBond);
-  //   } else {
-  //     tempBondModel.entryBondId = entryBondId;
-  //   }
-  //   if (bondId == null) {
-  //     tempBondModel.bondId = generateId(RecordType.bond);
-  //   } else {
-  //     tempBondModel.bondId = bondId;
-  //   }
-  //   tempBondModel.bondTotal = total.toString();
-  //   tempBondModel.bondType = bondType;
-  //   tempBondModel.bondDescription = bondDes;
-  //   tempBondModel.bondType ??= Const.bondTypeDaily;
-  //   tempBondModel.globalType=Const.globalTypeBond;
+  Future<void> fastAddBondToFirebase({required String entryBondId,String? amenCode,String? bondId,String? bondDes,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
+    tempBondModel = GlobalModel();
+    tempBondModel.bondRecord = record;
+    tempBondModel.originId = originId;
+    tempBondModel.originAmenId = amenCode;
+     if (entryBondId == null) {
+      tempBondModel.entryBondId = generateId(RecordType.entryBond);
+    } else {
+      tempBondModel.entryBondId = entryBondId;
+    }
+    if (bondId == null) {
+      tempBondModel.bondId = generateId(RecordType.bond);
+    } else {
+      tempBondModel.bondId = bondId;
+    }
+    tempBondModel.bondTotal = total.toString();
+    tempBondModel.bondType = bondType;
+    tempBondModel.bondDescription = bondDes;
+    tempBondModel.bondType ??= Const.bondTypeDaily;
+    tempBondModel.globalType=Const.globalTypeBond;
    
-  //   if(oldBondCode==null){
-  //      var bondCode = "";
-  //   if (!isEdit) {
-  //     // String bondId = generateId(RecordType.bond);
-  //     bondCode = (int.parse(allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-  //     while (allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
-  //       bondCode = (int.parse(bondCode) + 1).toString();
-  //     }
-  //   }
-  //    tempBondModel.bondCode = bondCode;
-  //   }else{
-  //     tempBondModel.bondCode = oldBondCode;
-  //   }
-  //   tempBondModel.bondDate=bondDate;
-  //   tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
-  //   var globalController = Get.find<GlobalViewModel>();
-  //   await globalController.addBondToFirebase(tempBondModel);
-  // }
+    if(oldBondCode==null){
+       var bondCode = "";
+    if (!isEdit) {
+      // String bondId = generateId(RecordType.bond);
+      bondCode = (int.parse(allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
+      while (allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
+        bondCode = (int.parse(bondCode) + 1).toString();
+      }
+    }
+     tempBondModel.bondCode = bondCode;
+    }else{
+      tempBondModel.bondCode = oldBondCode;
+    }
+    tempBondModel.bondDate=bondDate;
+    tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
+    var globalController = Get.find<GlobalViewModel>();
+    await globalController.addBondToFirebase(tempBondModel);
+  }
   // void fastAddBondAddToModel({required String entryBondId,String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) {
   //   tempBondModel = GlobalModel();
   //   bondModel = GlobalModel();
