@@ -168,10 +168,11 @@ class InvoiceViewModel extends GetxController {
     }
     for (var record in discountRecords) {
       if ((record.discountPercentage ?? 0) > 0) {
-        total -= record.discountTotal ?? 0;
+
+        total -=total* (record.discountPercentage ?? 0);
       }
       if ((record.addedPercentage ?? 0) > 0) {
-        total += record.addedTotal ?? 0;
+        total += total*(record.addedPercentage ?? 0);
       }
     }
     return total;
@@ -181,15 +182,29 @@ class InvoiceViewModel extends GetxController {
     int quantity = 0;
     total = 0.0;
     for (var record in records) {
+
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
         total += quantity * record.invRecVat!;
       }
     }
-    return total;
-  }
+    for (var record in discountRecords) {
+      if ((record.discountPercentage ?? 0) > 0) {
+        total -=total* (record.discountPercentage ?? 0);
+      }
+      if ((record.addedPercentage ?? 0) > 0) {
+        total += total*(record.addedPercentage ?? 0);
+      }
+    }
 
+      return total;
+
+  }
+  double calculateTotalDiscount(List<double?> totalDiscount) {
+    return totalDiscount.fold(0.0, (sum, item) => sum + (item ?? 0.0));
+  }
   double computeWithoutVatTotal() {
+
     int quantity = 0;
     double subtotals = 0.0;
     total = 0.0;
@@ -208,7 +223,9 @@ class InvoiceViewModel extends GetxController {
         total += record.addedTotal ?? 0;
       }
     }
-    return total;
+
+      return total;
+
   }
 
   // List<InvoiceRecordModel> getInvoiceRecords(String billId) {

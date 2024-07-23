@@ -55,6 +55,7 @@ class ReportGridViewState extends State<ReportGridView> {
   'prodGroupCode':"رمز الاب للمادة",
   'prodType':"نوع المادة",
   'prodParentId':"اسم الاب للمادة",
+  'discountTotal':"مجموع الحسم",
   };
   late SelectionManagerBase selectionManagerBase;
   ScrollController scrollController = ScrollController();

@@ -45,6 +45,9 @@ class GlobalModel {
       invSecStorehouse,
       globalType;
   double? invTotal;
+  double? discountTotal;
+  double? addedTotal;
+  double? firstPay;
   List<BondRecordModel>? bondRecord = [];
   List<InvoiceRecordModel>? invRecords = [];
   List<InvoiceDiscountRecordModel>? invDiscountRecord = [];
@@ -61,6 +64,9 @@ class GlobalModel {
   Map<String, dynamic> toJson() {
     return {
       if (globalId != null) 'globalId': globalId,
+      if (addedTotal != null) 'addedTotal': addedTotal,
+      if (firstPay != null) 'firstPay': firstPay,
+      if (discountTotal != null) 'discountTotal': discountTotal,
       if (invId != null) 'invId': invId,
       if (bondId != null) 'bondId': bondId,
       if (originAmenId != null) 'originAmenId': originAmenId,
@@ -106,6 +112,7 @@ class GlobalModel {
       if (cheqCode != null) 'cheqCode': cheqCode,
       if (cheqDate != null) 'cheqDate': cheqDate,
       if (cheqStatus != null) 'cheqStatus': cheqStatus,
+      if (discountTotal != null) 'discountTotal': discountTotal,
       if (cheqType != null) 'cheqType': cheqType,
       if (cheqBankAccount != null) 'cheqBankAccount': cheqBankAccount,
 
@@ -117,6 +124,8 @@ class GlobalModel {
   Map<String, dynamic> toFullJson() {
     return {
       if (globalId != null) 'globalId': globalId,
+      if (addedTotal != null) 'addedTotal': addedTotal,
+      if (firstPay != null) 'firstPay': firstPay,
       if (invId != null) 'invId': invId,
       if (originAmenId != null) 'originAmenId': originAmenId,
       if (bondId != null) 'bondId': bondId,
@@ -125,6 +134,7 @@ class GlobalModel {
       if (bondDate != null) 'bondDate': bondDate,
       if (bondCode != null) 'bondCode': bondCode,
       if (bondType != null) 'bondType': bondType,
+      if (discountTotal != null) 'discountTotal': discountTotal,
       if (bondRecord != null) "bondRecord": bondRecord?.map((record) => record.toJson()).toList(),
       if (invName != null) 'invName': invName,
       if (invTotal != null) 'invTotal': invTotal,
@@ -181,6 +191,9 @@ class GlobalModel {
     return GlobalModel(
       globalId: json['globalId'],
       bondId: json['bondId'],
+      discountTotal: json['discountTotal'],
+      firstPay: json['firstPay'],
+      addedTotal: json['addedTotal'],
       originAmenId: json['originAmenId'],
       bondDescription: json['bondDescription'],
       bondTotal: json['bondTotal'],
@@ -426,6 +439,9 @@ class GlobalModel {
     this.entryBondRecord,
      this.invGiftAccount,
     this.invSecGiftAccount,
+    this.discountTotal,
+    this.firstPay,
+    this.addedTotal,
   });
 
   Map<String, dynamic> toAR({String? type}) {

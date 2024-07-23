@@ -44,7 +44,7 @@ class GlobalViewModel extends GetxController {
   GlobalViewModel()  {
    initFromLocal();
 
-//  allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
+   //  allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.bondId!, e)).toList());
 //   Future.sync(() async {
 //  for (var i = 0; i < allGlobalModel.length; i++) {
 //   print(allGlobalModel.keys.toList()[i]);
@@ -122,7 +122,8 @@ class GlobalViewModel extends GetxController {
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
      List<({String? bondCode ,String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode,bondType:e.bondType),).toList();
     print(allGlobalModel.length);
-    if (allGlobalModel.isEmpty) {
+    // if (!allGlobalModel.isEmpty) {
+    if (false) {
       await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
         print("start");
         count = 0.obs;
@@ -159,7 +160,7 @@ class GlobalViewModel extends GetxController {
                 });
              }
               }
-             HiveDataBase.globalModelBox.put(allGlobalModel[element.id]?.entryBondId, allGlobalModel[element.id]!);
+             HiveDataBase.globalModelBox.put(allGlobalModel[element.id]?.entryBondId, allGlobalModel[element.id]??GlobalModel());
               // updateDataInAll(allGlobalModel[element.id]!);
             }
           });

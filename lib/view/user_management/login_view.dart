@@ -97,6 +97,7 @@ class _LoginViewState extends State<LoginView> {
                         : Pinput(
                             length: 6,
                             onCompleted: (_) {
+
                               print(_);
                               controller.userPin = _;
                               controller.checkUserStatus();

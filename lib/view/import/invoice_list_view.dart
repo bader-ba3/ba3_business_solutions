@@ -50,7 +50,7 @@ class InvoiceListView extends StatelessWidget {
                  Text("الى: "+(invoiceList[index].invSecondaryAccount == null ?"لا يوجد":getAccountNameFromId(invoiceList[index].invSecondaryAccount.toString()))),
                   Text(invoiceList[index].invType.toString()),
                   Text("الرمز: "+invoiceList[index].invCode.toString()),
-                  Text("الرمز: "+invoiceList[index].bondCode.toString()),
+                  Text("رقم السند: "+invoiceList[index].bondCode.toString()),
                 ],
               ),
               SizedBox(height: 15,),

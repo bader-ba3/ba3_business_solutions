@@ -761,8 +761,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(width: 150, child: Text("المجموع بدون الضريبة")),
-                              SizedBox(
+                              const SizedBox(width: 150, child: Text("المجموع بدون الضريبة")),
+                              const SizedBox(
                                 width: 20,
                               ),
                               Text(invoiceController.computeWithoutVatTotal().toStringAsFixed(2))
@@ -781,8 +781,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(width: 150, child: Text("مجموع الضريبة")),
-                              SizedBox(
+                              const SizedBox(width: 150, child: Text("مجموع الضريبة")),
+                              const SizedBox(
                                 width: 20,
                               ),
                               Text(invoiceController.computeVatTotal().toStringAsFixed(2))
@@ -801,11 +801,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
+                              const Text(
                                 "المجموع مع الضريبة",
                                 style: TextStyle(fontSize: 22),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               Text(
