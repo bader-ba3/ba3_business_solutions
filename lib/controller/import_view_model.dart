@@ -789,9 +789,9 @@ class ImportViewModel extends GetxController {
   }
 
   Future<void> pickInvoiceFile(separator) async {
-    if (false)
+    if (false) {
       HiveDataBase.globalModelBox.deleteFromDisk();
-    else {
+    } else {
       BondViewModel bondViewModel = Get.find<BondViewModel>();
       List row = [];
       List row2 = [];
@@ -1412,9 +1412,7 @@ class ImportViewModel extends GetxController {
           creditTemp.clear();
         }
 
-        //  Get.to(() => EntryBondListView(
-        //     bondList: bondList,
-        //   ));
+
       }
 
       print("End" * 100);
@@ -1476,10 +1474,14 @@ class ImportViewModel extends GetxController {
                   ),
             );
             // print(globalModel.toFullJson());
-            HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
-          }
 
-          // ]tum hgh,gn
+          }
+          HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
+
+
+          Get.to(() => EntryBondListView(
+            bondList: bondList,
+          ));
 
         }
         //
