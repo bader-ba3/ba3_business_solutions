@@ -172,7 +172,7 @@ class EntryBondViewModel extends GetxController {
  initGlobalBond(GlobalModel globalModel){
   GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
   _.entryBondRecord = _.bondRecord?.map((e) => EntryBondRecordModel(e.bondRecId,e.bondRecCreditAmount,e.bondRecDebitAmount,e.bondRecAccount,e.bondRecDescription,invId: e.invId)).toList();
-   _.bondDescription = "تم التوليد من "+getBondTypeFromEnum(globalModel.bondType!)+" رقم "+globalModel.bondCode.toString();
+   _.bondDescription = "تم التوليد من ${getBondTypeFromEnum(globalModel.bondType!)} رقم ${globalModel.bondCode}";
     allEntryBonds[globalModel.entryBondId!]=_;
   }
 

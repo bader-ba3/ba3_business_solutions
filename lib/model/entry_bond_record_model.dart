@@ -7,7 +7,7 @@ class EntryBondRecordModel {
     bondRecId = json['bondRecId'];
     bondRecAccount = json['bondRecAccount'];
     bondRecDescription = json['bondRecDescription'];
-    bondRecCreditAmount = double.parse(json['bondRecCreditAmount'].toString());
+    bondRecCreditAmount =json['bondRecCreditAmount']==null? 0:double.parse(json['bondRecCreditAmount'].toString());
     bondRecDebitAmount = double.parse(json['bondRecDebitAmount'].toString());
     invId = json['invId'];
   }

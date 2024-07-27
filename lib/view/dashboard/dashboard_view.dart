@@ -1,3 +1,5 @@
+import 'package:ba3_business_solutions/controller/global_view_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +42,15 @@ class _DashboardViewState extends State<DashboardView> {
                     Row(
                       children: [
                         SizedBox(width: 20,),
-                        Text(
-                          "الحسابات الرئيسية",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: (){
+
+
+                          },
+                          child: Text(
+                            "الحسابات الرئيسية",
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         Spacer(),
                         ElevatedButton(onPressed: () async {

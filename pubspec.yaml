@@ -67,6 +67,7 @@ dependencies:
   esc_pos_utils_plus:
   flutter_window_close:
   flutter_platform_alert:
+  pluto_grid: ^7.0.2
 
 
 dev_dependencies:

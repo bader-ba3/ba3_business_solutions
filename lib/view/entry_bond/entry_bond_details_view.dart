@@ -92,8 +92,8 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                   controller.changeIndexCode(code: _);
                   controller.initPage();
                 },
-                decoration: InputDecoration.collapsed(hintText: ""),
-                controller: TextEditingController(text: entryBondController.tempBondModel.entryBondCode!),
+                decoration: const InputDecoration.collapsed(hintText: ""),
+                controller: TextEditingController(text: entryBondController.tempBondModel.entryBondCode??""),
               ),
             ),
             if (controller.allEntryBonds.values.toList().lastOrNull?.entryBondId != controller.tempBondModel.entryBondId)

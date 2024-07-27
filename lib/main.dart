@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
       scrollBehavior: AppScrollBehavior(),
       title: "Ba3 Business",
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
             // backgroundColor:Colors.grey.shade200! ,
             //  backgroundColor:Color.fromARGB(255, 255, 247, 222) ,
             backgroundColor: Colors.white,
@@ -88,8 +88,8 @@ class MyApp extends StatelessWidget {
             elevation: 0),
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(Colors.lightBlue.shade100),
-          elevation: MaterialStatePropertyAll(0),
+          backgroundColor: WidgetStatePropertyAll(Colors.lightBlue.shade100),
+          elevation: const WidgetStatePropertyAll(0),
         )),
         colorScheme: ColorScheme.fromSeed(
             primary: Colors.black,

@@ -154,7 +154,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           ElevatedButton(
               onPressed: () async {
                 if (type == RecordType.product) {
-                  await addProduct();
+                  await addProductFree();
                 } else if (type == RecordType.account) {
                   await addAccount();
                 }
@@ -365,15 +365,18 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     // ProductViewModel productViewModel = Get.find<ProductViewModel>();
     for (var element in finalData) {
       i++;
-      print(i.toString() + " OF " + finalData.length.toString());
+      print("$i OF ${finalData.length}");
+      print(element.toJson());
       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
-      ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
-      parentModel.prodChild?.add(element.prodId);
-      HiveDataBase.productModelBox.put(parentModel.prodId, parentModel!);
-      FirebaseFirestore.instance.collection(Const.productsCollection).doc(parentModel.prodId).update({
-        'prodChild': FieldValue.arrayUnion([element.prodId]),
-      });
+      if(element.prodParentId!=null) {
+        ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
+        parentModel.prodChild?.add(element.prodId);
+        HiveDataBase.productModelBox.put(parentModel.prodId, parentModel!);
+        FirebaseFirestore.instance.collection(Const.productsCollection).doc(parentModel.prodId).update({
+          'prodChild': FieldValue.arrayUnion([element.prodId]),
+        });
+      }
     }
 
     // i = 0;

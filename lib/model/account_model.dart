@@ -125,7 +125,7 @@ class AccountModel {
   
   Map<String,dynamic> toAR() {
     return {
-      'رمز الحساب': accCode,
+      'رمز الحساب': int.tryParse(accCode.toString())??0,
       'اسم الحساب': accName,
       'نوع الحساب': getAccountTypefromEnum(accType??""),
       'نوع الضريبة': accVat,

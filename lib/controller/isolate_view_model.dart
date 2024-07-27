@@ -50,7 +50,7 @@ class IsolateViewModel extends GetxController {
       }
     }
     if (allRecord.isNotEmpty) {
-      _ = allRecord.map((e) => double.parse(e.total!)).toList().reduce((value, element) => value! + element);
+      _ = allRecord.map((e) => double.parse(e.total!)).toList().reduce((value, element) => value + element);
     }
     return _;
   }
@@ -107,7 +107,7 @@ PatternModel getPatModelFromPatternIdIsolate(id){
 
 double getAccountBalanceFromIdIsolate(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<IsolateViewModel>().getBalance(id)!;
+    return Get.find<IsolateViewModel>().getBalance(id);
   } else {
     return 0;
   }

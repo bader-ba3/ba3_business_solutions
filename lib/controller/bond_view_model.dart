@@ -403,12 +403,13 @@ TextEditingController userAccountController = TextEditingController();
 
   //   // postOneBond(false);
   // }
+
   Future<void> fastAddBondToFirebase({required String entryBondId,String? amenCode,String? bondId,String? bondDes,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
     tempBondModel = GlobalModel();
     tempBondModel.bondRecord = record;
     tempBondModel.originId = originId;
     tempBondModel.originAmenId = amenCode;
-     if (entryBondId == null) {
+     if (entryBondId == "") {
       tempBondModel.entryBondId = generateId(RecordType.entryBond);
     } else {
       tempBondModel.entryBondId = entryBondId;
@@ -440,6 +441,7 @@ TextEditingController userAccountController = TextEditingController();
     tempBondModel.bondDate=bondDate;
     tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
     var globalController = Get.find<GlobalViewModel>();
+
     await globalController.addBondToFirebase(tempBondModel);
   }
   // void fastAddBondAddToModel({required String entryBondId,String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) {

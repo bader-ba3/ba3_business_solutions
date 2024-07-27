@@ -111,7 +111,17 @@ class StoreViewModel extends GetxController {
       // print(globalModel.toJson());
       //   HiveDataBase.globalModelBox.delete(globalModel.bondId);
       // }
-     if (storeMap[model2.storeRecId]?.stRecords == null) {
+      print("-----${model2.storeRecId}-------");
+      print("-----${globalModel.invId}-------");
+      print("-----${globalModel.entryBondId}-------");
+      print("-----${globalModel.entryBondCode}-------");
+      print("-----${globalModel.entryBondCode}-------");
+      print("-----${globalModel.bondCode}-------");
+      print("-----${globalModel.invFullCode}-------");
+      print("-----${globalModel.invCode}-------");
+      print("-----${globalModel.invSecStorehouse}-------");
+      print("-----${globalModel.invStorehouse}-------");
+     if (storeMap[model2.storeRecId.toString()]?.stRecords == null) {
         storeMap[model2.storeRecId]?.stRecords = [model2];
       } else {
         storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);

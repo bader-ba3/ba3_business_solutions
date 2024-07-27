@@ -32,6 +32,7 @@ class AllAccount extends StatelessWidget {
         constructor: AccountModel(),
         dataGridSource: data,
         onCellTap: (index,id,init) {
+
           AccountModel model = data[id]!;
           logger(newData: model, transfersType: TransfersType.read);
           Get.to(() => AccountDetails(
@@ -47,7 +48,7 @@ class AllAccount extends StatelessWidget {
             List<DataGridRow> dataGridRow  = message.isolateViewModel.accountList.values.toList()
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
-              ...order!.toAR().entries.map((mapEntry) {
+              ...order.toAR().entries.map((mapEntry) {
                 if (int.tryParse(mapEntry.value.toString()) != null) {
                   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
                 } else if (double.tryParse(mapEntry.value.toString()) != null) {

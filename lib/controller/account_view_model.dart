@@ -22,6 +22,7 @@ class AccountViewModel extends GetxController {
   late AccountRecordDataSource recordDataSource;
   RxMap<String, AccountModel> accountList = <String, AccountModel>{}.obs;
   late DataGridController dataGridController;
+
   // final CollectionReference _accountCollectionRef = FirebaseFirestore.instance.collection(Const.accountsCollection);
   late DataGridController dataViewGridController;
   late AccountViewDataGridSource recordViewDataSource;
@@ -32,23 +33,20 @@ class AccountViewModel extends GetxController {
     getAllAccount();
   }
 
+  List<String> aminCods = [];
+
   void initGlobalAccount(GlobalModel globalModel, {String? oldAccountKey}) async {
-    String? type ;
+    String? type;
     String? date;
-    if(globalModel.globalType == Const.globalTypeBond){
+    if (globalModel.globalType == Const.globalTypeBond) {
+      // print(globalModel.toFullJson());
       type = globalModel.bondType!;
       date = globalModel.bondDate!;
-    }else if(globalModel.globalType == Const.globalTypeInvoice){
+    } else if (globalModel.globalType == Const.globalTypeInvoice) {
+
       type = globalModel.patternId!;
       date = globalModel.invDate!;
-
-
-      // if(totalDiscount!=0){
-      //   for (var model in globalModel.invDiscountRecord!) {
-      //     accountList[model.accountId]?.accRecord.add(AccountRecordModel(globalModel.bondId, model.accountId, (recCredit*(model.percentage==0?1:(model.percentage!/100))).toString(), 0,type,date));
-      //   }
-      // }
-    }else{
+    } else {
       type = globalModel.cheqType!;
       date = globalModel.cheqDate!;
     }
@@ -61,13 +59,25 @@ class AccountViewModel extends GetxController {
       }
     }
 
+
+    for (int i = 0; i < (globalModel.bondRecord ?? []).length; i++) {
+
+      if (true) {
+        if (allRecTotal[globalModel.bondRecord![i].bondRecAccount] == null) {
+          allRecTotal[globalModel.bondRecord![i].bondRecAccount!] = [globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!];
+        } else {
+          allRecTotal[globalModel.bondRecord![i].bondRecAccount]!.add(globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!);
+        }
+      }
+    }
+
     allRecTotal.forEach((key, value) {
       accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.entryBondId);
       var recCredit = value.reduce((value, element) => value + element);
       if (accountList[key]?.accRecord == null) {
-        accountList[key]?.accRecord = [AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0,type,date)].obs;
+        accountList[key]?.accRecord = [AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0, type, date)].obs;
       } else {
-        accountList[key]?.accRecord.add(AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0,type,date));
+        accountList[key]?.accRecord.add(AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0, type, date));
       }
 
       // calculateBalance(key);
@@ -86,47 +96,46 @@ class AccountViewModel extends GetxController {
     if (accountList[accountKey]!.accRecord.length > 1) {
       double accountBalance = getBalance(accountKey);
       if (accountBalance == 0) {
-        for (var i =0;i< accountList[accountKey]!.accRecord.length;i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =  Const.paidStatusFullUsed;
+        for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
+          accountList[accountKey]!.accRecord[i].isPaidStatus = Const.paidStatusFullUsed;
         }
-      }if (accountBalance == 0) {
-        for (var i =0;i< accountList[accountKey]!.accRecord.length;i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =  Const.paidStatusFullUsed;
+      }
+      if (accountBalance == 0) {
+        for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
+          accountList[accountKey]!.accRecord[i].isPaidStatus = Const.paidStatusFullUsed;
         }
-      }else if(accountBalance>0){
-        for (var i =0;i< accountList[accountKey]!.accRecord.length;i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =  Const.paidStatusFullUsed;
+      } else if (accountBalance > 0) {
+        for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
+          accountList[accountKey]!.accRecord[i].isPaidStatus = Const.paidStatusFullUsed;
         }
-      }else if(accountBalance<0){
+      } else if (accountBalance < 0) {
         double _ = 0;
         bool isFound = false;
-        for (var i =0;i< accountList[accountKey]!.accRecord.length;i++) {
-          AccountRecordModel element =  accountList[accountKey]!.accRecord.reversed.toList()[i];
-          element.isPaidStatus=null;
-          if(double.parse(element.total!)<0){
+        for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
+          AccountRecordModel element = accountList[accountKey]!.accRecord.reversed.toList()[i];
+          element.isPaidStatus = null;
+          if (double.parse(element.total!) < 0) {
             _ = double.parse(element.total!).abs() + _;
-
           }
-          if(double.parse(element.total!) > 0){
+          if (double.parse(element.total!) > 0) {
             element.isPaidStatus = Const.paidStatusFullUsed;
             element.paid = double.parse(element.total!);
-         }else{
-            if(accountBalance.abs() <=  _ &&!isFound){
-              if(_ - accountBalance.abs()>0){
+          } else {
+            if (accountBalance.abs() <= _ && !isFound) {
+              if (_ - accountBalance.abs() > 0) {
                 element.isPaidStatus = Const.paidStatusSemiUsed;
                 element.paid = _ - accountBalance.abs();
-              }else{
+              } else {
                 element.isPaidStatus = Const.paidStatusNotUsed;
               }
-              isFound=true;
-            }else{
-              if(isFound){
+              isFound = true;
+            } else {
+              if (isFound) {
                 element.isPaidStatus = Const.paidStatusFullUsed;
-              }else{
+              } else {
                 element.isPaidStatus = Const.paidStatusNotUsed;
                 element.paid = accountBalance;
               }
-
             }
           }
         }
@@ -182,36 +191,37 @@ class AccountViewModel extends GetxController {
     }
   }
 
-Future<void> correct() async {
-   for (var a in accountList.entries.toList()) {
-    AccountModel element = a.value;
-    // if(element.accParentId!=null&&!element.accParentId!.contains("acc")){
-    //     print(element.accName!+"|  |"+element.accParentId.toString());
-    // }
-          // if(element.accParentId!=null &&!element.accParentId!.contains("acc")){
-    //       if(element.accName!.contains("F-")&&element.accParentId!=null){
-    //         print(element.accName!+"|  |"+element.accParentId.toString());
-    //        if( getAccountIdFromText(element.accParentId!)!=""){ 
-    //         String parentId = getAccountIdFromText(element.accParentId!);
-    //         accountList[element.accId]!.accParentId = parentId;
-    //         if( accountList[parentId]?.accChild==null){
-    //             accountList[parentId]?.accChild=[element.accId];
-    //         }else{
-    //             accountList[parentId]?.accChild.add(element.accId);
-    //         }
-    //         HiveDataBase.accountModelBox.put(element.accId, accountList[element.accId]!);
-    //         HiveDataBase.accountModelBox.put(parentId, accountList[parentId]!);
-    //   await  FirebaseFirestore.instance.collection(Const.accountsCollection).doc(parentId).update({
-    //       'accChild': FieldValue.arrayUnion([element.accId]),
-    //     });
-    //   await  FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).update({
-    //       "accParentId":parentId
-    //     });}else{
-    //       print("eroor in "+element.accName.toString() + element.accParentId.toString());
-    //     }
-    //   }
+  Future<void> correct() async {
+    for (var a in accountList.entries.toList()) {
+      AccountModel element = a.value;
+      // if(element.accParentId!=null&&!element.accParentId!.contains("acc")){
+      //     print(element.accName!+"|  |"+element.accParentId.toString());
+      // }
+      // if(element.accParentId!=null &&!element.accParentId!.contains("acc")){
+      //       if(element.accName!.contains("F-")&&element.accParentId!=null){
+      //         print(element.accName!+"|  |"+element.accParentId.toString());
+      //        if( getAccountIdFromText(element.accParentId!)!=""){
+      //         String parentId = getAccountIdFromText(element.accParentId!);
+      //         accountList[element.accId]!.accParentId = parentId;
+      //         if( accountList[parentId]?.accChild==null){
+      //             accountList[parentId]?.accChild=[element.accId];
+      //         }else{
+      //             accountList[parentId]?.accChild.add(element.accId);
+      //         }
+      //         HiveDataBase.accountModelBox.put(element.accId, accountList[element.accId]!);
+      //         HiveDataBase.accountModelBox.put(parentId, accountList[parentId]!);
+      //   await  FirebaseFirestore.instance.collection(Const.accountsCollection).doc(parentId).update({
+      //       'accChild': FieldValue.arrayUnion([element.accId]),
+      //     });
+      //   await  FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).update({
+      //       "accParentId":parentId
+      //     });}else{
+      //       print("eroor in "+element.accName.toString() + element.accParentId.toString());
+      //     }
+      //   }
     }
-}
+  }
+
   addAccountToMemory(Map json) {
     AccountModel accountModel = AccountModel.fromJson(json);
     List<AccountRecordModel> oldData = [];
@@ -239,6 +249,7 @@ Future<void> correct() async {
   }
 
   String? lastAccountOpened;
+
   // void getAllAccounts({oldKey}) async {
   //   FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots().listen((value) async {
   //     // for (var element in value.docs) {
@@ -283,10 +294,10 @@ Future<void> correct() async {
       // FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accParentId).update({
       //   'accChild': FieldValue.arrayUnion([accountModel.accId]),
       // });
-     if( !accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)){
-      accountList[accountModel.accParentId!]!.accChild.add(accountModel.accId);
-     await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
-     }
+      if (!accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
+        accountList[accountModel.accParentId!]!.accChild.add(accountModel.accId);
+        await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
+      }
       accountModel.accIsParent = false;
     }
     // for (var i = 0; i < accountModel.accAggregateList.length; i++) {
@@ -297,7 +308,7 @@ Future<void> correct() async {
     accountModel.accAggregateList.assignAll(aggregateList.map((e) => e.accId));
     if (withLogger) logger(newData: accountModel);
     await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).set(accountModel.toJson());
-    
+
     await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
     accountList[accountModel.accId!] = AccountModel();
     accountList[accountModel.accId!] = accountModel;
@@ -330,7 +341,7 @@ Future<void> correct() async {
   //   update();
   // }
 
-double getBalance(userId) {
+  double getBalance(userId) {
     double _ = 0;
     List<AccountRecordModel> allRecord = [];
     AccountModel accountModel = accountList[userId]!;
@@ -349,7 +360,7 @@ double getBalance(userId) {
     return _;
   }
 
-int getCount(userId) {
+  int getCount(userId) {
     int _ = 0;
     if (accountList[userId]!.accRecord.isNotEmpty) {
       _ = accountList[userId]!.accRecord.length;
@@ -357,7 +368,8 @@ int getCount(userId) {
     return _;
   }
 
-String getLastCode() {
+  String getLastCode() {
+    return 0.toString();
     List<int> allCode = accountList.values.map((e) => int.parse(e.accCode!)).toList();
     int _ = 0;
     if (accountList.isEmpty) {
@@ -371,10 +383,9 @@ String getLastCode() {
     }
   }
 
-void calculateBalance(String modelKey) {
+  void calculateBalance(String modelKey) {
     double all = 0;
-    if (accountList[modelKey] == null) {
-    }
+    if (accountList[modelKey] == null) {}
     for (AccountRecordModel element in accountList[modelKey]!.accRecord ?? []) {
       try {
         // all += double.parse(element.total!.toString());
@@ -385,50 +396,50 @@ void calculateBalance(String modelKey) {
     }
   }
 
-computeTotal(List<AccountRecordModel> billsTotal) {
+  computeTotal(List<AccountRecordModel> billsTotal) {
     total = 0.0;
     for (int i = 0; i < billsTotal.length; i++) {
       total = total + double.parse(billsTotal[i].total!);
     }
   }
 
-buildSorce(String modelKey) {
+  buildSorce(String modelKey) {
     accountRecordDataSource = AccountRecordDataSource(accountRecordModel: accountList[modelKey]!.accRecord, accountModel: accountList[modelKey]!);
     dataGridController = DataGridController();
     computeTotal(accountList[modelKey]!.accRecord);
   }
 
-bildAry(String modelKey) {
+  bildAry(String modelKey) {
     accountRecordDataSource = AccountRecordDataSource(accountRecordModel: accountList[modelKey]!.accRecord, accountModel: accountList[modelKey]!);
     dataGridController = DataGridController();
     computeTotal(accountList[modelKey]!.accRecord);
     update();
   }
 
-clear(List<TextEditingController> controllers) {
+  clear(List<TextEditingController> controllers) {
     for (int i = 0; i < controllers.length; i++) {
       controllers[i].clear();
       update();
     }
   }
 
-Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
+  Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
     if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
     // if(accountList[editProductModel.accId]?.accParentId!=null){
     //   await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
     //     'accChild': FieldValue.arrayRemove([editProductModel.accId]),
     //   });
     // }
-        ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[editProductModel.accId]?.accParentId != null) {
       // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
       //   'accChild': FieldValue.arrayRemove([editProductModel.accId]),
       // });
-       if( accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)){
-      accountList[editProductModel.accParentId!]!.accChild.remove(editProductModel.accId);
-     await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
-     }
+      if (accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
+        accountList[editProductModel.accParentId!]!.accChild.remove(editProductModel.accId);
+        await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
+      }
     }
     if (editProductModel.accParentId == null) {
       editProductModel.accIsParent = true;
@@ -436,10 +447,10 @@ Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) 
       // FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accParentId).update({
       //   'accChild': FieldValue.arrayUnion([editProductModel.accId]),
       // });
-        if( !accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)){
-      accountList[editProductModel.accParentId!]!.accChild.add(editProductModel.accId);
-     await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
-     }
+      if (!accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
+        accountList[editProductModel.accParentId!]!.accChild.add(editProductModel.accId);
+        await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
+      }
       editProductModel.accIsParent = false;
     }
     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accId).update(editProductModel.toJson());
@@ -453,19 +464,19 @@ Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) 
     go(lastIndex);
   }
 
-Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) async {
+  Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) async {
     if (withLogger) logger(oldData: accountList[accountModel.accId]!);
-        ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[accountModel.accId]?.accParentId != null) {
       // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[accountModel.accId]?.accParentId).update({
       //   'accChild': FieldValue.arrayRemove([accountModel.accId]),
       // });
-      
-          if( accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)){
-      accountList[accountModel.accParentId!]!.accChild.remove(accountModel.accId);
-     await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
-     }
+
+      if (accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
+        accountList[accountModel.accParentId!]!.accChild.remove(accountModel.accId);
+        await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
+      }
     }
     await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).delete();
 
@@ -479,9 +490,9 @@ Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) asyn
     go(lastIndex);
   }
 
-void addAccountRecord({bondId, accountId, amount,type,date}) {
+  void addAccountRecord({bondId, accountId, amount, type, date}) {
     accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
-    accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0,type,date));
+    accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0, type, date));
     calculateBalance(accountId);
     if (lastAccountOpened != null) {
       initAccountPage(lastAccountOpened!);
@@ -489,7 +500,7 @@ void addAccountRecord({bondId, accountId, amount,type,date}) {
     update();
   }
 
-void deleteAccountRecordById(bondId, accountId) {
+  void deleteAccountRecordById(bondId, accountId) {
     accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
     calculateBalance(accountId);
     if (lastAccountOpened != null) {
@@ -507,6 +518,7 @@ void deleteAccountRecordById(bondId, accountId) {
   List<AccountTree> allCost = [];
 
   TreeController<AccountTree>? treeController;
+
   // void getAllCostCenter({String? goto}) {
   //   FirebaseFirestore.instance.collection(Const.accountsCollection).snapshots().listen((value) async {
   //     costCenterModelList.clear();
@@ -552,6 +564,7 @@ void deleteAccountRecordById(bondId, accountId) {
   }
 
   var allPer = [];
+
   void go(String? parent) {
     if (parent != null) {
       allPer.clear();
@@ -600,11 +613,10 @@ String getAccountIdFromText(text) {
 AccountModel? getAccountIdFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName==text);
+    AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == text);
     return _;
   } else {
     print("empty");
-  
   }
 }
 
@@ -626,13 +638,11 @@ List<AccountModel> getAccountModelFromName(text) {
 
 String getAccountNameFromId(id) {
   if (id != null && id != " " && id != "") {
-  return Get.find<AccountViewModel>().accountList[id]!.accName!;
+    return Get.find<AccountViewModel>().accountList[id]!.accName!;
   } else {
     return "";
   }
 }
-
-
 
 double getAccountBalanceFromId(id) {
   if (id != null && id != " " && id != "") {
@@ -656,7 +666,7 @@ Future<String> getAccountComplete(text) async {
   var _ = '';
   List accountPickList = [];
   Get.find<AccountViewModel>().accountList.forEach((key, value) {
-    accountPickList.addIf(value.accType==Const.accountTypeDefault&&(value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
+    accountPickList.addIf(value.accType == Const.accountTypeDefault && (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
   });
   // print(accountPickList.length);
   if (accountPickList.length > 1) {
@@ -696,13 +706,12 @@ Future<String> getAccountComplete(text) async {
   return _;
 }
 
-
 Future<AccountModel?> getAccountCompleteID(_text) async {
-  AccountModel? _ ;
+  AccountModel? _;
   List<AccountModel> accountPickList = [];
-  String text = _text??"";
+  String text = _text ?? "";
   Get.find<AccountViewModel>().accountList.forEach((key, value) {
-    accountPickList.addIf(value.accType==Const.accountTypeDefault&&(value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value);
+    accountPickList.addIf(value.accType == Const.accountTypeDefault && (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value);
   });
   // print(accountPickList.length);
   if (accountPickList.length > 1) {
@@ -741,4 +750,3 @@ Future<AccountModel?> getAccountCompleteID(_text) async {
   }
   return _;
 }
-
