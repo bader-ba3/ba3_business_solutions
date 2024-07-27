@@ -68,6 +68,7 @@ dependencies:
   flutter_window_close:
   flutter_platform_alert:
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

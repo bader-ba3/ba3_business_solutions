@@ -10,17 +10,16 @@ import 'package:get/get.dart';
 
 import '../Const/const.dart';
 import '../model/seller_model.dart';
-import '../model/target_model.dart';
+import '../model/task_model.dart';
 
-class TargetViewModel extends GetxController{
+class TargetViewModel extends GetxController {
+  RxMap<String, TaskModel> allTarget = <String, TaskModel>{}.obs;
 
-  RxMap<String , TaskModel> allTarget = <String , TaskModel>{}.obs;
-
-  TargetViewModel(){
+  TargetViewModel() {
     getAllTargets();
   }
 
-  getAllTargets(){
+  getAllTargets() {
     FirebaseFirestore.instance.collection(Const.tasksCollection).snapshots().listen((value) {
       allTarget.clear();
       for (var element in value.docs) {
@@ -33,54 +32,60 @@ class TargetViewModel extends GetxController{
 
   void addTask(TaskModel targetModel) {
     targetModel.taskId = generateId(RecordType.task);
-    FirebaseFirestore.instance.collection(Const.tasksCollection).doc(targetModel.taskId).set(targetModel.toJson());
+    FirebaseFirestore.instance
+        .collection(Const.tasksCollection)
+        .doc(targetModel.taskId)
+        .set(targetModel.toJson());
   }
 
   void updateTask(TaskModel targetModel) {
-    FirebaseFirestore.instance.collection(Const.tasksCollection).doc(targetModel.taskId).update(targetModel.toJson(),);
+    FirebaseFirestore.instance
+        .collection(Const.tasksCollection)
+        .doc(targetModel.taskId)
+        .update(
+          targetModel.toJson(),
+        );
   }
 
   void deleteTask(TaskModel targetModel) {
     FirebaseFirestore.instance.collection(Const.tasksCollection).doc(targetModel.taskId).delete();
   }
 
-
-  ({double mobileTotal,double otherTotal,  Map<String,int> productsMap}) checkTask(String sellerId) {
-    double mobileTotal =0 ;
-    double otherTotal =0 ;
-    Map<String,int> productsMap= {};
-   SellersViewModel sellersViewModel =  Get.find<SellersViewModel>();
-   InvoiceViewModel invoiceViewModel =  Get.find<InvoiceViewModel>();
-   sellersViewModel.allSellers[sellerId]?.sellerRecord?.where((element) {
-           String date =  element.selleRecInvDate.toString().split(" ")[0];
-      String year = DateTime.now().toString().split("-")[0];
-           String month = DateTime.now().toString().split("-")[1];
-           return date.split("-")[0] == year &&date.split("-")[1] == month;
-   }).forEach((element) {
-     // total = total + double.parse(element.selleRecAmount!);
-     invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords?.forEach((e) {
-      if (productsMap[e.invRecProduct!]==null){
-         productsMap[e.invRecProduct!]=0;
-       }
-     if(e.invRecTotal!/e.invRecQuantity!>=1000){
-       mobileTotal  =mobileTotal+  e.invRecTotal!;
-     }else{
-       otherTotal=otherTotal+ e.invRecTotal!;
-     }
-       productsMap[e.invRecProduct!]=productsMap[e.invRecProduct!]!+e.invRecQuantity!;
-     });
-   });
-   return (mobileTotal:mobileTotal,otherTotal:otherTotal,productsMap:productsMap);
+  ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) checkTask(String sellerId) {
+    double mobileTotal = 0;
+    double otherTotal = 0;
+    Map<String, int> productsMap = {};
+    SellersViewModel sellersViewModel = Get.find<SellersViewModel>();
+    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
+    sellersViewModel.allSellers[sellerId]?.sellerRecord?.forEach((element) {
+      // total = total + double.parse(element.selleRecAmount!);
+      invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords
+          ?.forEach((e) {
+        if (productsMap[e.invRecProduct!] == null) {
+          productsMap[e.invRecProduct!] = 0;
+        }
+        if (e.invRecTotal! / e.invRecQuantity! >= 1000) {
+          mobileTotal = mobileTotal + e.invRecTotal!;
+        } else {
+          otherTotal = otherTotal + e.invRecTotal!;
+        }
+        productsMap[e.invRecProduct!] = productsMap[e.invRecProduct!]! + e.invRecQuantity!;
+      });
+    });
+    return (
+      mobileTotal: mobileTotal,
+      otherTotal: otherTotal,
+      productsMap: productsMap
+    );
   }
-
 
   List accountPickList = [];
   Future<String> getComplete(text) async {
-    ProductViewModel productController  =Get.find<ProductViewModel>();
+    ProductViewModel productController = Get.find<ProductViewModel>();
     var _ = '';
     accountPickList = [];
     productController.productDataMap.forEach((key, value) {
-      accountPickList.addIf(!value.prodIsGroup!&&(value.prodCode!.toLowerCase().contains(text.toLowerCase()) ||value.prodFullCode!.toLowerCase().contains(text.toLowerCase()) || value.prodName!.toLowerCase().contains(text.toLowerCase())), value.prodName!);
+      accountPickList.addIf(!value.prodIsGroup! && (value.prodCode!.toLowerCase().contains(text.toLowerCase()) || value.prodFullCode!.toLowerCase().contains(text.toLowerCase()) || value.prodName!.toLowerCase().contains(text.toLowerCase())), value.prodName!);
     });
     // print(accountPickList.length);
     if (accountPickList.length > 1) {
@@ -120,5 +125,4 @@ class TargetViewModel extends GetxController{
     }
     return _;
   }
-
 }

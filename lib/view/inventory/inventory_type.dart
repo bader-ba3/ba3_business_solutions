@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 import '../../Const/const.dart';
 import '../../model/Pattern_model.dart';
 import '../../model/inventory_model.dart';
+import '../../utils/confirm_delete_dialog.dart';
 
 class InventoryType extends StatefulWidget {
   const InventoryType({super.key});
@@ -122,9 +123,14 @@ class _InventoryTypeState extends State<InventoryType> {
                   Item("حذف الجرد", () {
                     checkPermissionForOperation(Const.roleUserDelete, Const.roleViewInventory).then((value) {
                       if (value) {
-                        HiveDataBase.inventoryModelBox.delete("0");
-                        selectedInventory = null;
-                        setState(() {});
+                        confirmDeleteWidget().then((value) {
+                          if(value){
+                            HiveDataBase.inventoryModelBox.delete("0");
+                            selectedInventory = null;
+                            setState(() {});
+                          }
+
+                        });
                       }
                     });
                   }),

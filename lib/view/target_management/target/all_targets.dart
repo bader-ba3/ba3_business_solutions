@@ -1,3 +1,5 @@
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:ba3_business_solutions/model/seller_model.dart';
@@ -6,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
-import '../../../model/target_model.dart';
+import '../../../model/task_model.dart';
 
 class AllTargets extends StatelessWidget {
   const AllTargets({super.key});
@@ -71,7 +73,7 @@ class AllTargets extends StatelessWidget {
                                     ),
                                     Text("تارغيت الجوالات: " + sellerData.mobileTotal.toString(), style: const TextStyle(fontSize: 18)),
                                     Text("تارغيت الاكسسوارات: " + sellerData.otherTotal.toStringAsFixed(2), style: const TextStyle(fontSize: 18)),
-                                    Text("التاسكات المنفذة: " + allTask.toStringAsFixed(2) + "/"+targetViewModel.allTarget.length.toString(), style: const TextStyle(fontSize: 18)),
+                                    Text("التاسكات المنفذة: " + allTask.toInt().toString() + " من أصل "+targetViewModel.allTarget.values.where((e)=>e.taskSellerListId.contains(sellerModel.sellerId)&&e.isTaskAvailable!).length.toString(), style: const TextStyle(fontSize: 18)),
                                     Row(
                                       children: [
                                         Text("حقق التارغيت:", style: const TextStyle(fontSize: 18)),

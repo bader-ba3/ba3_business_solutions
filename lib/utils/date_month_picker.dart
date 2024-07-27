@@ -3,20 +3,21 @@ import 'package:get/get.dart';
 
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class DatePicker extends StatefulWidget {
-  final Function(DateTime) onSubmit;
+class DateMonthPicker extends StatefulWidget {
+  final Function(DateTime date ) onSubmit;
   final String? initDate;
-  const DatePicker({super.key, required this.onSubmit, this.initDate});
+  const DateMonthPicker({super.key, required this.onSubmit, this.initDate});
 
   @override
-  State<DatePicker> createState() => _DatePickerState();
+  State<DateMonthPicker> createState() => _DateMonthPickerState();
 }
 
 
-class _DatePickerState extends State<DatePicker> {
+class _DateMonthPickerState extends State<DateMonthPicker> {
+  DateTime? _date;
+
   @override
   Widget build(BuildContext context) {
-    DateTime? _date;
     return Container(
       decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all()),
       width: 150,
@@ -29,13 +30,16 @@ class _DatePickerState extends State<DatePicker> {
                   height: MediaQuery.sizeOf(context).height/1.6,
                   width: MediaQuery.sizeOf(context).height/1,
                   child: SfDateRangePicker(
-                    initialDisplayDate: DateTime.tryParse(widget.initDate ?? ""),
+                    initialDisplayDate: DateTime(int.parse(widget.initDate!.split("-")[0]) , int.parse(widget.initDate!.split("-")[1]),01),
                     enableMultiView: true,
                     backgroundColor: Colors.transparent,
+                    view: DateRangePickerView.year,
+                    monthViewSettings: DateRangePickerMonthViewSettings(),
+                    allowViewNavigation: false,
                     headerStyle: DateRangePickerHeaderStyle(backgroundColor: Colors.transparent),
                     navigationDirection: DateRangePickerNavigationDirection.vertical,
                     selectionMode: DateRangePickerSelectionMode.single,
-                    monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
+                    // monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
                     showNavigationArrow: true,
                     navigationMode: DateRangePickerNavigationMode.scroll,
                     onSelectionChanged: (dateRangePickerSelectionChangedArgs) {
@@ -45,6 +49,7 @@ class _DatePickerState extends State<DatePicker> {
                   ),
                 ),
                 actions: [
+
                   ElevatedButton(
                       onPressed: () {
                         if (_date != null) {
@@ -68,8 +73,8 @@ class _DatePickerState extends State<DatePicker> {
                 Text(widget.initDate != null
                     ? widget.initDate.toString().split(" ").first!
                     : _date == null
-                        ? "اختر يوم"
-                        : _date.toString().split(" ").first),
+                        ? "اختر شهر"
+                        : _date!.year.toString() + "-" + _date!.month.toString()),
                 Spacer(),
                 Icon(Icons.date_range)
               ],

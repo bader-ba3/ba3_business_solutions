@@ -3,12 +3,15 @@ import 'dart:math';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/widget/target_pointer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../model/target_model.dart';
+import '../../model/task_model.dart';
+
+
 
 class SellerTarget extends StatefulWidget {
   final String sellerId;
@@ -24,6 +27,7 @@ class _SellerTargetState extends State<SellerTarget> {
   final GlobalKey<TargetPointerWidgetState> mobileKey = GlobalKey<TargetPointerWidgetState>();
   late ({Map<String, int> productsMap, double mobileTotal, double otherTotal}) sellerData;
   TargetViewModel targetViewModel = Get.find<TargetViewModel>();
+
   @override
   void initState() {
     sellerData = targetViewModel.checkTask(widget.sellerId);
@@ -42,7 +46,7 @@ class _SellerTargetState extends State<SellerTarget> {
                   num = num + 10000;
                   othersKey.currentState?.addValue(num);
                 },
-                child: Text("test"))
+                child: Text("aaa"))
           ],
           title: Text(
             "لوحة الانجازات",
@@ -86,7 +90,9 @@ class _SellerTargetState extends State<SellerTarget> {
               ],
             ),
             GetBuilder<SellersViewModel>(builder: (controller) {
+              print("SetState");
               ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) newSellerData = targetViewModel.checkTask(widget.sellerId);
+              print(newSellerData);
               if (sellerData.mobileTotal != newSellerData.mobileTotal || sellerData.otherTotal != newSellerData.otherTotal) {
                 if(newSellerData.otherTotal - sellerData.otherTotal.toInt() >0){
                   othersKey.currentState!.addValue(newSellerData.otherTotal.toInt());
@@ -102,6 +108,7 @@ class _SellerTargetState extends State<SellerTarget> {
                 mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
               }
               return GetBuilder<TargetViewModel>(builder: (controller) {
+               List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId!.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
                 return Column(
                   children: [
                     Padding(
@@ -111,7 +118,7 @@ class _SellerTargetState extends State<SellerTarget> {
                         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    for (TaskModel model in controller.allTarget.values.toList())
+                    for (TaskModel model in allUserTask)
                       Builder(builder: (context) {
                         int count = sellerData.productsMap[model.taskProductId!] ?? 0;
                         bool isDone = count >= model.taskQuantity!;

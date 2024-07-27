@@ -28,7 +28,7 @@ class SellersViewModel extends GetxController {
   }
 
   void getAllSeller() {
-    FirebaseFirestore.instance.collection("Sellers").snapshots().listen((event) {
+    FirebaseFirestore.instance.collection(Const.sellersCollection).snapshots().listen((event) {
       RxMap<String, List<SellerRecModel>> oldSellerList = <String, List<SellerRecModel>>{}.obs;
       allSellers.forEach((key, value) {
         oldSellerList[key]=value.sellerRecord??[];

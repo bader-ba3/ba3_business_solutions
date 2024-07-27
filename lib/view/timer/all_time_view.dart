@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../../../Const/const.dart';
-import '../../../model/target_model.dart';
+import '../../../model/task_model.dart';
 
 class AllTimeView extends StatelessWidget {
   const AllTimeView({super.key});

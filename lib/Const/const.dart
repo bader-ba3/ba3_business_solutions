@@ -218,6 +218,10 @@ abstract class Const {
     ////////////----------------------------------------------------
   static const invPayTypeDue  = "invPayTypeDue";
   static const invPayTypeCash  = "invPayTypeCash";
+  /////////////---------------------------------------------------
+  static const taskTypeProduct = 'taskTypeProduct';
+  static const taskTypeInventory = 'taskTypeInventory';
+
 }
 
 

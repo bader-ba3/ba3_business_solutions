@@ -1,6 +1,7 @@
 class SellerModel {
   String? sellerName, sellerCode, sellerId;
   List<SellerRecModel>? sellerRecord = [];
+  Map<String , SellerTargetArchive> sellerTargetArchive= {};
   SellerModel({
     this.sellerName,
     this.sellerCode,
@@ -49,6 +50,25 @@ class SellerRecModel {
     selleRecInvDate = json['selleRecInvDate'];
   }
 }
-    //   "selleRecInvId": invId,
-    //   "selleRecAmount": amount,
-    //   "selleRecUserId": userId,
+
+class SellerTargetArchive{
+ late String mobileTarget , otherTarget  ;
+ late bool isHitTarget ;
+  Map<String , bool> tasks={};
+  SellerTargetArchive({required this.mobileTarget ,required this.otherTarget ,required this.isHitTarget ,required this.tasks , });
+
+  SellerTargetArchive.fromJson(json){
+    mobileTarget = json['mobileTarget'];
+    otherTarget = json['otherTarget'];
+    isHitTarget = json['isHitTarget'];
+    tasks= json['tasks'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mobileTarget': mobileTarget,
+      'otherTarget': otherTarget,
+      'isHitTarget': isHitTarget,
+    };
+  }
+}
