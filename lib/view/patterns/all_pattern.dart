@@ -48,10 +48,10 @@ class AllPattern extends StatelessWidget {
                             label: const Text('ID'
                             )),
                         // GridColumnItem(label: "ID", name: Const.patId),
-                        GridColumnItem(label: "الرمز", name: Const.patCode),
+                        gridColumnItem(label: "الرمز", name: Const.patCode),
                         //GridColumnItem(label: Const.patPrimary, name: Const.patPrimary),
-                        GridColumnItem(label: "الاسم", name: Const.patName),
-                        GridColumnItem(label: "النوع", name: Const.patType),
+                        gridColumnItem(label: "الاسم", name: Const.patName),
+                        gridColumnItem(label: "النوع", name: Const.patType),
                       ],
                       source: patternController.recordViewDataSource!,
                       allowEditing: false,

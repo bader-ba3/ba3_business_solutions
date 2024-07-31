@@ -1,17 +1,14 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_details_view.dart';
 import 'package:ba3_business_solutions/view/bonds/custom_bond_details_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/bond_record_model.dart';
 import '../utils/generate_id.dart';
-import '../utils/logger.dart';
 import '../view/bonds/widget/bond_record_data_source.dart';
 import '../view/bonds/widget/custom_bond_record_data_source.dart';
 
@@ -339,7 +336,7 @@ TextEditingController userAccountController = TextEditingController();
             .first
             .bondRecAccount;
         // var _ = accountController.accountList.values.toList().firstWhere((e) => e.accId == bondController.tempBondModel.bondRecord?[0].bondRecAccount).accName;
-        userAccountController.text = getAccountNameFromId(aa)!;
+        userAccountController.text = getAccountNameFromId(aa);
         tempBondModel.bondRecord?.removeWhere(
               (element) => element.bondRecId == "X",
         );

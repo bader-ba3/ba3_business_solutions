@@ -4,13 +4,11 @@ import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/task_model.dart';
 import 'package:ba3_business_solutions/view/target_management/task/select_inventory_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
 import '../../../controller/user_management_model.dart';
 import '../../../model/user_model.dart';
-import '../../invoices/widget/custom_TextField.dart';
 
 class AddInventoryTaskView extends StatefulWidget {
   final String? oldKey;
@@ -38,7 +36,7 @@ class _AddInventoryTaskViewState extends State<AddInventoryTaskView> {
       taskModel = TaskModel.fromJson(targetViewModel.allTarget[widget.oldKey]!.toJson());
       productNameController.text = getProductNameFromId(taskModel.taskProductId);
       quantityController.text = taskModel.taskQuantity.toString();
-      allUser.assignAll(taskModel.taskSellerListId??[]);
+      allUser.assignAll(taskModel.taskSellerListId);
     }
     super.initState();
   }
@@ -126,7 +124,7 @@ class _AddInventoryTaskViewState extends State<AddInventoryTaskView> {
                               Get.snackbar("خطأ", "يرجى كتابة اسم المادة");
                             } else if (taskModel.taskQuantity == null || taskModel.taskQuantity == 0) {
                               Get.snackbar("خطأ", "يرجى كتابة عدد");
-                            } else if (taskModel.taskSellerListId!.isEmpty) {
+                            } else if (taskModel.taskSellerListId.isEmpty) {
                               Get.snackbar("خطأ", "يرجى إضافة مستخدمين");
                             }  else {
                               if (taskModel.taskId != null) {

@@ -204,7 +204,7 @@ class BondRecordDataSource extends DataGridSource {
     final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
-    final RegExp regExp = _getRegExp(isNumericType, column.columnName);
+    // final RegExp regExp = _getRegExp(isNumericType, column.columnName);
     FocusNode focusNode = FocusNode();
     return Container(
       padding: const EdgeInsets.all(8.0),

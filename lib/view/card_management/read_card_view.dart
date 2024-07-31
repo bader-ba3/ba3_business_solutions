@@ -1,5 +1,4 @@
 import 'package:ba3_business_solutions/controller/cards_view_model.dart';
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/card_model.dart';
 import 'package:flutter/material.dart';

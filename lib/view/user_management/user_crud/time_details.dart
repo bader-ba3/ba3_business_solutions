@@ -1,10 +1,6 @@
-import 'package:ba3_business_solutions/model/seller_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../controller/user_management_model.dart';
-import '../../../model/user_model.dart';
-
 class TimeDetails extends StatefulWidget {
   final String oldKey;
   final String name;
@@ -25,8 +21,8 @@ class _TimeDetailsState extends State<TimeDetails> {
         ),
         body: GetBuilder<UserManagementViewModel>(
           builder: (controller) {
-            UserModel userModel = controller.allUserList[widget.oldKey]!;
-            return SizedBox();
+            // UserModel userModel = controller.allUserList[widget.oldKey]!;
+            return const SizedBox();
             // return ListView.builder(
             //   itemCount: userModel.userTimeRecord!.length,
             //   itemBuilder: (context, index) {

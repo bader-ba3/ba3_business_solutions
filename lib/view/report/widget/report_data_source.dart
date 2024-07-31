@@ -41,10 +41,11 @@ class ReportDataSource extends DataGridSource {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(dataGridCell.columnName == rowList.first
-                        ? dataGridCell.value.toString() + '\n'
+                        ? '${dataGridCell.value}\n'
                         : dataGridCell.value.toString() + tab,
+                    overflow: TextOverflow.ellipsis,
                       textDirection: isArabic.hasMatch(dataGridCell.value.toString()) ?TextDirection.rtl:TextDirection.ltr,
-                      style: TextStyle(fontSize: 12),
+                      style: const TextStyle(fontSize: 12),
                       maxLines: null,),
                   ],
                 ),

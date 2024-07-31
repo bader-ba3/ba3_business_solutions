@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/view/sellers/all_sellers_view.dart';
 import 'package:ba3_business_solutions/view/target_management/target/all_targets.dart';
 import 'package:ba3_business_solutions/view/target_management/task/task_management_type.dart';
 import 'package:flutter/material.dart';

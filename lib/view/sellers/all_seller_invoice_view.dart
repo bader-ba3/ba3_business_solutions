@@ -1,13 +1,9 @@
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
 import 'package:ba3_business_solutions/view/sellers/seller_targets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
@@ -17,7 +13,7 @@ class AllSellerInvoice extends StatelessWidget {
   final String? oldKey;
 
   AllSellerInvoice({super.key, this.oldKey});
-  List<DateTime>? dateRange;
+ late final List<DateTime>? dateRange;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +22,7 @@ class AllSellerInvoice extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("سجل مبيعات: " +(controller.allSellers[oldKey]?.sellerName??"")),
+          title: Text("سجل مبيعات: ${controller.allSellers[oldKey]?.sellerName??""}"),
           actions: [
             Text("فلتر"),
             SizedBox(

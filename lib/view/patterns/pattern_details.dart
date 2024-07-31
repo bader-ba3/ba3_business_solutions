@@ -48,12 +48,12 @@ class _PatternDetailsState extends State<PatternDetails> {
       patternController.editPatternModel = PatternModel.fromJson(patternController.patternModel[widget.oldKey]?.toJson());
       nameController.text = patternController.editPatternModel?.patName ?? "";
       codeController.text = patternController.editPatternModel?.patCode ?? "";
-      primaryController.text = getAccountNameFromId(patternController.editPatternModel?.patPrimary) ?? "";
+      primaryController.text = getAccountNameFromId(patternController.editPatternModel?.patPrimary) ;
       typeController.text = patternController.editPatternModel?.patType ?? "";
-      vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount) ?? "";
-      giftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patGiftAccount) ?? "";
-      secgiftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patSecGiftAccount) ?? "";
-      secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary) ?? "";
+      vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount) ;
+      giftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patGiftAccount) ;
+      secgiftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patSecGiftAccount) ;
+      secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary) ;
       storeController.text=getStoreNameFromId(patternController.editPatternModel?.patStore);
       storeNewController.text=getStoreNameFromId(patternController.editPatternModel?.patNewStore);
       // storeController.text=getStoreNameFromId("store1702230185210544");

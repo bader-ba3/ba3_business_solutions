@@ -564,7 +564,7 @@ class InvoiceRecordSource extends DataGridSource {
           enabled: false,
           child: ListTile(
             title: Text(
-              "الربح" + ": " + ((records[index].invRecSubTotal! + records[index].invRecVat!) - double.parse(productModel.prodCostPrice ?? "0")!).toStringAsFixed(2),
+              "الربح" + ": " + ((records[index].invRecSubTotal! + records[index].invRecVat!) - double.parse(productModel.prodCostPrice ?? "0")).toStringAsFixed(2),
               textDirection: TextDirection.rtl,
             ),
           ),
@@ -573,7 +573,7 @@ class InvoiceRecordSource extends DataGridSource {
           enabled: false,
           child: ListTile(
             title: Text(
-              "نسبة الربح" + ": " + ((records[index].invRecSubTotal! + records[index].invRecVat! - double.parse(productModel.prodCostPrice ?? "0")) / double.parse(productModel.prodCostPrice ?? "0") * 100!).toStringAsFixed(2) + "%",
+              "نسبة الربح: ${((records[index].invRecSubTotal! + records[index].invRecVat! - double.parse(productModel.prodCostPrice ?? "0")) / double.parse(productModel.prodCostPrice ?? "0") * 100).toStringAsFixed(2)}%",
               textDirection: TextDirection.rtl,
             ),
           ),

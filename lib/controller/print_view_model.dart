@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -7,7 +6,6 @@ import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:get/get.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:translator/translator.dart';
 
 class PrintViewModel extends GetxController{
 
@@ -15,7 +13,7 @@ class PrintViewModel extends GetxController{
 
    Future<void> printFunction(GlobalModel globalModel) async {
     List<BluetoothInfo> allBluetooth = await getBluetoots();
-    print(allBluetooth.map((e) => e.name+"   "+e.macAdress,));
+    print(allBluetooth.map((e) => "${e.name}   ${e.macAdress}",));
     if(allBluetooth.map((e) => e.macAdress,).toList().contains("66:32:8D:F3:FF:7E")){
        if(!connected) {
        await connect("66:32:8D:F3:FF:7E");
@@ -33,7 +31,7 @@ class PrintViewModel extends GetxController{
     }
   }
 
- String _info = "";
+ // String _info = "";
   String _msj = '';
   bool connected = false;
   List<BluetoothInfo> items = [];

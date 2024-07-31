@@ -1,19 +1,10 @@
 import 'package:ba3_business_solutions/controller/database_view_model.dart';
-import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
+
 import 'package:ba3_business_solutions/view/database/database_view.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
-import 'package:ba3_business_solutions/view/patterns/all_pattern.dart';
-import 'package:ba3_business_solutions/view/patterns/pattern_details.dart';
-import 'package:ba3_business_solutions/view/products/product_view_old_old.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 
 class DataBaseType extends StatefulWidget {
   const DataBaseType({super.key});

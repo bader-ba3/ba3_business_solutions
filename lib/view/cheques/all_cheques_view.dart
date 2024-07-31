@@ -1,12 +1,8 @@
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
@@ -22,7 +18,7 @@ class AllCheques extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("الشيكات")),
+          title: const Text("الشيكات")),
         body:
 
             // String model = controller.allAccounts.keys.toList()[index];

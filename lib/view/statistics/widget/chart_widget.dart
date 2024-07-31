@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -21,13 +20,13 @@ class _StatisticChartState extends State<StatisticChart> {
 
 
   Widget bottomTitleWidgets(int value, TitleMeta meta, double chartWidth) {
-    final style = TextStyle(
+    const style = TextStyle(
       fontWeight: FontWeight.bold,
       color: Colors.pink,
       fontFamily: 'Digital',
       fontSize: 20,
     );
-    String text;
+    // String text;
     // switch (value.toInt()) {
     //   case 0:
     //     text = '00:00';

@@ -4,15 +4,12 @@ import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
-import 'package:ba3_business_solutions/utils/see_details.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../model/bond_record_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
-import '../../utils/hive.dart';
 
 class BondDetailsView extends StatefulWidget {
   BondDetailsView({

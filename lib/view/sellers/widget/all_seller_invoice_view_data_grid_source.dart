@@ -8,7 +8,7 @@ class AllSellerInvoiceViewDataGridSource extends DataGridSource {
 
   AllSellerInvoiceViewDataGridSource({required List<SellerRecModel> sellerRecModel}) {
     dataGridRows.clear();
-    dataGridRows = (sellerRecModel ?? [])
+    dataGridRows = (sellerRecModel)
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowSellerAllInvoiceInvId, value: e.selleRecInvId),
               DataGridCell<String>(columnName: Const.rowSellerAllInvoiceAmount, value: double.parse(e.selleRecAmount??"0").toStringAsFixed(2)),

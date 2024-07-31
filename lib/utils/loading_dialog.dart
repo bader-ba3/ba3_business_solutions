@@ -33,10 +33,10 @@ class _LoadingViewState extends State<_LoadingView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(i.toString()+ "  /  "+widget.total.toString()),
-        SizedBox(height: 10,),
-        CircularProgressIndicator(),
-        SizedBox(height: 10,),
+        Text("$i  /  ${widget.total}"),
+        const SizedBox(height: 10,),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 10,),
         ElevatedButton(onPressed: (){
           isCancel=true;
         }, child: const Text("cancel"))

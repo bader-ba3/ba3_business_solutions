@@ -40,7 +40,7 @@ class AllProduct extends StatelessWidget {
             List<DataGridRow> dataGridRow  = message.isolateViewModel.productDataMap.values.where((element) => !element.prodIsGroup!).toList()
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
-              ...order!
+              ...order
                   .toAR()
                   .entries
                   .map((mapEntry) {
@@ -50,7 +50,7 @@ class AllProduct extends StatelessWidget {
             return dataGridRow;
           },(isolateViewModel:isolateViewModel));
           InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
-          infoDataGridSource!.dataGridRows =a;
+          infoDataGridSource.dataGridRows =a;
           return infoDataGridSource;
 
         },

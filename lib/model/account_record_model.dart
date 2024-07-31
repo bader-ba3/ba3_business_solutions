@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/utils/generate_id.dart';
 
 class AccountRecordModel {
   String? id, total, account,isPaidStatus,accountRecordType,date;

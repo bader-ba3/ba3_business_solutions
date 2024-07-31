@@ -1,8 +1,5 @@
-import 'package:ba3_business_solutions/controller/print_view_model.dart';
-import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +33,7 @@ class AllProductOLD extends StatelessWidget {
     );
   }
   Widget _prodItemWidget(ProductModel model,controller){
-    PrintViewModel printViewModel = Get.find<PrintViewModel>();
+    // PrintViewModel printViewModel = Get.find<PrintViewModel>();
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: InkWell(
@@ -48,14 +45,14 @@ class AllProductOLD extends StatelessWidget {
         },
         child: Row(
           children: [
-            Container(
+            SizedBox(
                 width: 150,
-                child: Text(model.prodFullCode.toString(),style: TextStyle(fontSize: 20),)),
-            SizedBox(width: 10,),
-            Expanded(child: Text(model.prodName!?? "not found",style: TextStyle(fontSize: 20),)),
-            SizedBox(width: 30,),
-            Text("النوع: "),
-            Text(model.prodIsLocal! ?"LOCAL":"FREE",style: TextStyle(fontSize: 20),),
+                child: Text(model.prodFullCode.toString(),style: const TextStyle(fontSize: 20),)),
+            const SizedBox(width: 10,),
+            Expanded(child: Text(model.prodName!,style: const TextStyle(fontSize: 20),)),
+            const SizedBox(width: 30,),
+            const Text("النوع: "),
+            Text(model.prodIsLocal! ?"LOCAL":"FREE",style: const TextStyle(fontSize: 20),),
           ],
         ),
       ),

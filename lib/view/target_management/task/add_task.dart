@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/task_model.dart';
 import 'package:ba3_business_solutions/utils/date_month_picker.dart';
-import 'package:ba3_business_solutions/view/target_management/task/select_inventory_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,8 +11,6 @@ import 'package:get/get.dart';
 import '../../../Const/const.dart';
 import '../../../controller/user_management_model.dart';
 import '../../../model/seller_model.dart';
-import '../../../model/user_model.dart';
-import '../../../utils/date_picker.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
 class AddTaskView extends StatefulWidget {
@@ -38,13 +35,13 @@ class _AddTaskViewState extends State<AddTaskView> {
   void initState() {
     if (widget.oldKey == null) {
       taskModel = TaskModel(taskType: Const.taskTypeProduct);
-      taskDate = DateTime.now().year.toString() + "-"+ DateTime.now().month.toString();
+      taskDate = "${DateTime.now().year}-${DateTime.now().month}";
       allUser.clear();
     } else {
       taskModel = TaskModel.fromJson(targetViewModel.allTarget[widget.oldKey]!.toJson());
       productNameController.text = getProductNameFromId(taskModel.taskProductId);
       quantityController.text = taskModel.taskQuantity.toString();
-      allUser.assignAll(taskModel.taskSellerListId??[]);
+      allUser.assignAll(taskModel.taskSellerListId);
       taskDate = taskModel.taskDate;
     }
     super.initState();
@@ -213,7 +210,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                                   Get.snackbar("خطأ", "يرجى كتابة اسم المادة");
                                 } else if (taskModel.taskQuantity == null || taskModel.taskQuantity == 0) {
                                   Get.snackbar("خطأ", "يرجى كتابة عدد");
-                                } else if ((allUser??[]).isEmpty) {
+                                } else if ((allUser).isEmpty) {
                                   Get.snackbar("خطأ", "يرجى إضافة مستخدمين");
                                 }  else {
                                   taskModel.taskSellerListId = allUser;

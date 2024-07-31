@@ -67,12 +67,14 @@ class ReportGridViewState extends State<ReportGridView> {
     for (var element in invoiceController.invoiceModel.values) {
       for (InvoiceRecordModel et in element.invRecords ?? []) {
         if (et.invRecProduct != null) {
-          Map productMap = getProductModelFromId(et.invRecProduct)?.toJson();
-          Map m = element.toJson();
-          m.addAll(et.toJson());
-          m.addAll(productMap);
+          if( getProductModelFromId(et.invRecProduct)!=null) {
+            Map productMap = getProductModelFromId(et.invRecProduct)?.toJson();
+            Map m = element.toJson();
+            m.addAll(et.toJson());
+            m.addAll(productMap);
 
-          _dataList.add(m);
+            _dataList.add(m);
+          }
         }
       }
     }

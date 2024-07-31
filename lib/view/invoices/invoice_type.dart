@@ -1,6 +1,5 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +53,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     width: double.infinity,
                     decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.all(30.0),
-                    child: Text("عرض جميع الفواتير"??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+                    child: const Text("عرض جميع الفواتير",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
               ),
             ),
             Padding(
@@ -69,7 +68,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     width: double.infinity,
                     decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.all(30.0),
-                    child: Text("عرض جميع الفواتير الغير مؤكدة"??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+                    child: const Text("عرض جميع الفواتير الغير مؤكدة",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
               ),
             ),
           ],

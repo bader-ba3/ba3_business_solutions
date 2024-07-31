@@ -2,22 +2,19 @@ import 'dart:ui';
 
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/core/bindings.dart';
-import 'package:ba3_business_solutions/view/timer/timer_view.dart';
-import 'package:ba3_business_solutions/view/widget/filtering_data_grid.dart';
+
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/home/home_view.dart';
+
 import 'package:ba3_business_solutions/view/user_management/account_management_view.dart';
-import 'package:ba3_business_solutions/view/inventory/new_inventory_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:translator/translator.dart';
+
 import 'Const/const.dart';
 import 'firebase_options.dart';
-import 'view/sellers/seller_targets.dart';
+
 
 
 void main() async {
@@ -60,7 +57,7 @@ void main() async {
   //  HiveDataBase.globalModelBox.delete("bon1720282515909594");
   // FirebaseFirestore.instance.collection("2024").count().get().then((value) => print(value.count),);
   // HiveDataBase.globalModelBox.deleteFromDisk();
-   runApp(MyApp());
+   runApp(const MyApp());
  
 }
 

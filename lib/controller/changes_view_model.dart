@@ -1,21 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
-
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';

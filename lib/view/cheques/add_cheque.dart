@@ -3,10 +3,8 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
 import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
-import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:flutter/material.dart';
@@ -210,7 +208,7 @@ class _AddChequeState extends State<AddCheque> {
                               Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
                             } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
                               Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
-                            } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)) {
+                            } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text, Const.accountTypeDefault)) {
                               Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
                             } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
                               Get.snackbar("خطأ", "يرجى كتابة المعلومات");
@@ -233,7 +231,7 @@ class _AddChequeState extends State<AddCheque> {
                                   onPressed: () {
                                     List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
                                     if (payment_list!.isNotEmpty) {
-                                      if ((payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                      if ((payment_list.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ) > double.parse(controller.initModel!.cheqAllAmount!)) {
                                         Get.snackbar("خطأ", "الدفعات اكبر من القيمة الجديدة");
                                       }
                                     } else if (double.tryParse(controller.initModel?.cheqAllAmount ?? "a") == null) {
@@ -244,7 +242,7 @@ class _AddChequeState extends State<AddCheque> {
                                       Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
                                     } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
                                       Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
-                                    } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text!, Const.accountTypeDefault)) {
+                                    } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text, Const.accountTypeDefault)) {
                                       Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
                                     } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
                                       Get.snackbar("خطأ", "يرجى كتابة المعلومات");
@@ -356,7 +354,7 @@ class _AddChequeState extends State<AddCheque> {
                                               ElevatedButton(
                                                   onPressed: () {
                                                     List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
-                                                    if (payment_list!.isNotEmpty && (payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                                    if (payment_list!.isNotEmpty && (payment_list.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
                                                     } else {
                                                       checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
                                                         if (value) {
@@ -379,7 +377,7 @@ class _AddChequeState extends State<AddCheque> {
                                   if (record!.isNotEmpty) {
                                     return Row(
                                       children: [
-                                        if (record?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) != double.parse(controller.initModel!.cheqAllAmount!))
+                                        if (record.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) != double.parse(controller.initModel!.cheqAllAmount!))
                                           ElevatedButton(
                                               onPressed: () {
                                                 var con = TextEditingController();
@@ -397,7 +395,7 @@ class _AddChequeState extends State<AddCheque> {
                                                           onPressed: () {
                                                             List<ChequeRecModel?>? payment_list = controller.initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
 
-                                                            if (payment_list!.isNotEmpty && (payment_list?.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ?? 0) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
+                                                            if (payment_list!.isNotEmpty && (payment_list.map((e) => double.parse(e!.cheqRecAmount!)).toList().reduce((value, element) => value + element) ) + double.parse(con.text) > double.parse(controller.initModel!.cheqAllAmount!)) {
                                                             } else {
                                                               checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
                                                                 if (value) {
@@ -417,7 +415,7 @@ class _AddChequeState extends State<AddCheque> {
                                               },
                                               child: Text("دفع قسم من المبلغ")),
                                         ...List<Widget>.generate(
-                                            record!.length,
+                                            record.length,
                                                 (index) => SizedBox(
                                               height: 70,
                                               width: 150,
@@ -428,7 +426,7 @@ class _AddChequeState extends State<AddCheque> {
                                                   children: [
                                                     TextButton(
                                                       onPressed: () {
-                                                        Get.to(()=>EntryBondDetailsView(oldId:record![index]!.cheqRecEntryBondId!,));
+                                                        Get.to(()=>EntryBondDetailsView(oldId:record[index]!.cheqRecEntryBondId!,));
                                                       },
                                                       child: Text("عرض"),
                                                     ),
@@ -441,7 +439,7 @@ class _AddChequeState extends State<AddCheque> {
                                                           if (value) {
                                                             checkPermissionForOperation(Const.roleUserDelete, Const.roleViewCheques).then((value) {
                                                               if (value) {
-                                                                controller.updateDeleteRecord(record![index]!.cheqRecEntryBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
+                                                                controller.updateDeleteRecord(record[index]!.cheqRecEntryBondId!, type: record.length == 1 ? Const.chequeStatusNotPaid : Const.chequeStatusNotAllPaid, isPayEdit: false);
                                                               }
                                                             });
                                                           }

@@ -1,6 +1,5 @@
 
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/hive.dart';
 
@@ -26,7 +25,7 @@ abstract class Const {
     if(isFree!=null){
       isFreeType = isFree;
     }else{
-      print(HiveDataBase.isFree.get("isFreeType"));
+
       isFreeType = HiveDataBase.isFree.get("isFreeType")??false;
     }
 
@@ -45,7 +44,7 @@ abstract class Const {
   static const minMobileTarget = 1000;
   static const minOtherTarget = 1000;
   ////////////--------------------------------------------------
-  static String changesCollection = "$dataName"+"-"+'Changes';
+  static String changesCollection = dataName+"-"+'Changes';
   static const recordCollection = 'Record';
   static String bondsCollection = 'Bonds';
   static String accountsCollection = 'Accounts';
@@ -63,7 +62,7 @@ abstract class Const {
   static String settingCollection = "Setting";
   static String readFlagsCollection = "ReadFlags";
   static String inventoryCollection = "Inventory";
-  static String globalCollection="$dataName";
+  static String globalCollection=dataName;
   static String dataCollection = "data";
   ////////////--------------------------------------------------
   static const rowAccountId = 'rowAccountId';

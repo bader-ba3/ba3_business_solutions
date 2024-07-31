@@ -39,11 +39,11 @@ class _PreviewViewState extends State<PreviewView> {
                         productList: data,
                       ));
                 },
-                child: Text("next"))
+                child: const Text("next"))
           ],
         ),
         body: widget.productList.isEmpty
-            ? Center(
+            ?  const Center(
                 child: Text("no data"),
               )
             : SfDataGrid(
@@ -88,7 +88,7 @@ GridColumn GridColumnItem({required label, name}) {
       allowEditing: true,
       columnName: name,
       label: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           alignment: Alignment.center,
           child: Text(
             label.toString(),

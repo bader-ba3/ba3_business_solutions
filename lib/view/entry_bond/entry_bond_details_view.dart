@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
-import 'package:ba3_business_solutions/utils/see_details.dart';
 import 'package:ba3_business_solutions/view/bonds/custom_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
@@ -42,7 +41,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
 
   void initPage() {
     entryBondController.initCodeList();
-    entryBondController.tempBondModel = GlobalModel.fromJson(entryBondController.allEntryBonds[widget.oldId]!.toFullJson());
+    entryBondController.tempBondModel = GlobalModel.fromJson(entryBondController.allEntryBonds[widget.oldId]?.toFullJson());
     entryBondController.initPage();
   }
 

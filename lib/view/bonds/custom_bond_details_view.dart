@@ -2,8 +2,6 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
-import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -15,10 +13,9 @@ import '../../model/account_model.dart';
 
 import '../../model/bond_record_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
-import '../../utils/see_details.dart';
 
 class CustomBondDetailsView extends StatefulWidget {
-  CustomBondDetailsView({
+  const CustomBondDetailsView({
     Key? key,
     this.oldBondModel,
     this.oldId,

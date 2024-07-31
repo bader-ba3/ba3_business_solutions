@@ -71,7 +71,7 @@ class _DateMonthPickerState extends State<DateMonthPicker> {
             child: Row(
               children: [
                 Text(widget.initDate != null
-                    ? widget.initDate.toString().split(" ").first!
+                    ? widget.initDate.toString().split(" ").first
                     : _date == null
                         ? "اختر شهر"
                         : _date!.year.toString() + "-" + _date!.month.toString()),

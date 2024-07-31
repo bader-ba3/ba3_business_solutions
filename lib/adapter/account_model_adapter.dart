@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:hive/hive.dart';
 
 import '../model/account_model.dart';

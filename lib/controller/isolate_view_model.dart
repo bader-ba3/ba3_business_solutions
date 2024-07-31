@@ -42,7 +42,7 @@ class IsolateViewModel extends GetxController {
     AccountModel accountModel = accountList[userId]!;
     allRecord.addAll(accountList[userId]!.accRecord);
     for (var element in accountModel.accChild) {
-      allRecord.addAll(accountList[element]?.accRecord!.toList()??[]);
+      allRecord.addAll(accountList[element]?.accRecord.toList()??[]);
     }
     if (accountModel.accType == Const.accountTypeAggregateAccount) {
       for (var element in accountModel.accAggregateList) {
@@ -62,7 +62,7 @@ class IsolateViewModel extends GetxController {
     totalAmountPage.clear();
     storeMap[storeId]?.stRecords.forEach((value) {
       value.storeRecProduct?.forEach((key, value) {
-        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!)!;
+        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!);
        
       });
     });

@@ -1,8 +1,8 @@
-import 'dart:math';
+
 
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/model/bond_record_model.dart';
+
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
@@ -127,8 +127,6 @@ class EntryBondViewModel extends GetxController {
          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!).abs(), 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount,dse ));
         allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, dse));
         } if((element.invRecGift??0)>0){
-          print(element.invRecGift);
-          print(element.invRecGiftTotal);
           String giftDse="هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0,element.invRecGiftTotal!,  allEntryBonds[globalModel.entryBondId!]?.invGiftAccount,giftDse ));
         allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),  element.invRecGiftTotal!, 0,allEntryBonds[globalModel.entryBondId!]?.invSecGiftAccount, giftDse));
@@ -136,11 +134,11 @@ class EntryBondViewModel extends GetxController {
       if(totalDiscount>0||totalAdded>0){
         for (var model in globalModel.invDiscountRecord!) {
           if(model.discountTotal!=0){
-          var discountDes = "الخصم المعطى "+(model.isChooseDiscountTotal! ?"بقيمة "+model.discountTotal.toString():"بنسبة "+(model.isChooseDiscountTotal! ?model.discountTotal!:model.discountPercentage!).toString()+"%");
+          var discountDes = "الخصم المعطى ${model.isChooseDiscountTotal! ?"بقيمة ${model.discountTotal}":"بنسبة ${model.isChooseDiscountTotal! ?model.discountTotal!:model.discountPercentage!}%"}";
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),0,model.isChooseDiscountTotal! ?model.discountTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.discountPercentage==0?1:(model.discountPercentage!/100)),model.accountId, discountDes));
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),  model.isChooseDiscountTotal! ?model.discountTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.discountPercentage==0?1:(model.discountPercentage!/100)), 0,allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
           }else{
-          var discountDes = "الإضافة المعطى "+(model.isChooseAddedTotal! ?"بقيمة "+model.addedTotal.toString():"بنسبة "+(model.isChooseAddedTotal! ?model.addedTotal!:model.addedPercentage!).toString()+"%");
+          var discountDes = "الإضافة المعطى ${model.isChooseAddedTotal! ?"بقيمة ${model.addedTotal}":"بنسبة ${model.isChooseAddedTotal! ?model.addedTotal!:model.addedPercentage!}%"}";
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),model.isChooseAddedTotal! ?model.addedTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.addedPercentage==0?1:(model.addedPercentage!/100)),0,model.accountId, discountDes));
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0,  model.isChooseAddedTotal! ?model.addedTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.addedPercentage==0?1:(model.addedPercentage!/100)),allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
           }

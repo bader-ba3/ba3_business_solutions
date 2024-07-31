@@ -2,21 +2,17 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Const/const.dart';
 import '../../controller/import_view_model.dart';
-import '../../model/bond_record_model.dart';
 import '../../model/global_model.dart';
 import '../../model/invoice_record_model.dart';
 
 class InvoiceListView extends StatelessWidget {
   final List<GlobalModel>invoiceList;
    InvoiceListView({super.key, required this.invoiceList});
-  var importViewModel = Get.find<ImportViewModel>();
+ final ImportViewModel importViewModel = Get.find<ImportViewModel>();
 
   @override
   Widget build(BuildContext context) {

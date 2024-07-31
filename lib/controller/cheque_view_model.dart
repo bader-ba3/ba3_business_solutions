@@ -1,14 +1,10 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
-import 'package:ba3_business_solutions/model/bond_record_model.dart';
-import 'package:ba3_business_solutions/model/cheque_model.dart';
 import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/cheques/widget/all_cheques_view_data_grid_source.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -333,7 +329,7 @@ class ChequeViewModel extends GetxController {
   }
 
   void payAmount(amount, {String? oldEntryBondId, required bool ispayEdit}) {
-    var status;
+    String status;
     print("_________________________");
     List<ChequeRecModel?>? payment_list = initModel?.cheqRecords?.cast<ChequeRecModel?>().where((element) => element?.cheqRecType == Const.chequeRecTypePartPayment).toList();
     if (payment_list != null && payment_list.isNotEmpty) {

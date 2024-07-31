@@ -1,8 +1,6 @@
-import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -12,7 +10,7 @@ import '../../model/account_tree.dart';
 
 class AccountTreeView extends StatelessWidget {
    AccountTreeView({super.key});
-  var accountController = Get.find<AccountViewModel>();
+  final AccountViewModel accountController = Get.find<AccountViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,30 +18,30 @@ class AccountTreeView extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("شجرة الحسابات"),
+          title: const Text("شجرة الحسابات"),
           actions: [
             ElevatedButton(
                 onPressed: () {
                   accountController.treeController?.collapseAll();
                 },
-                child: Text("-")),
-            SizedBox(
+                child: const Text("-")),
+            const SizedBox(
               width: 20,
             ),
             ElevatedButton(
                 onPressed: () {
                   accountController.treeController?.expandAll();
                 },
-                child: Text("+")),
-            SizedBox(
+                child: const Text("+")),
+            const SizedBox(
               width: 20,
             ),
             ElevatedButton(
                 onPressed: () {
-                Get.to(()=>AddAccount());
+                Get.to(()=>const AddAccount());
                 },
-                child: Text("اضافة حساب")),
-            SizedBox(
+                child: const Text("اضافة حساب")),
+            const SizedBox(
               width: 20,
             ),
           ],
@@ -102,7 +100,7 @@ class AccountTreeView extends StatelessWidget {
                    Row(
                      children: [
                        Text(entry.node.name!),
-                       SizedBox(width: 10,),
+                       const SizedBox(width: 10,),
                        Text(getAccountModelFromId(entry.node.id)!.accCode.toString()),
                      ],
                    )

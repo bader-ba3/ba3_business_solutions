@@ -1,5 +1,4 @@
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
 import 'package:flutter/foundation.dart';
@@ -17,7 +16,7 @@ class CustomAllProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProductViewModel productViewModel = Get.find<ProductViewModel>();
+    // ProductViewModel productViewModel = Get.find<ProductViewModel>();
     // RxMap<String, ProductModel> data = Map.fromEntries(productViewModel.productDataMap.entries.where((element) => !element.value.prodIsGroup!).toList()).obs;
     // RxMap<String, ProductModel> data = productViewModel.productDataMap;
     return Scaffold(
@@ -41,7 +40,7 @@ class CustomAllProduct extends StatelessWidget {
             List<DataGridRow> dataGridRow  = message.data.values.where((element) => !element.prodIsGroup!).toList()
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
-              ...order!
+              ...order
                   .toAR()
                   .entries
                   .map((mapEntry) {
@@ -51,7 +50,7 @@ class CustomAllProduct extends StatelessWidget {
             return dataGridRow;
           },(data:data,isolateViewModel:isolateViewModel));
           InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
-          infoDataGridSource!.dataGridRows =a;
+          infoDataGridSource.dataGridRows =a;
           return infoDataGridSource;
 
         },

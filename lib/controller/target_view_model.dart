@@ -1,15 +1,12 @@
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
-import '../model/seller_model.dart';
 import '../model/task_model.dart';
 
 class TargetViewModel extends GetxController {
@@ -58,6 +55,7 @@ class TargetViewModel extends GetxController {
     SellersViewModel sellersViewModel = Get.find<SellersViewModel>();
     InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
     sellersViewModel.allSellers[sellerId]?.sellerRecord?.forEach((element) {
+
       // total = total + double.parse(element.selleRecAmount!);
       invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords
           ?.forEach((e) {

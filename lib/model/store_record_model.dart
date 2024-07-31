@@ -12,11 +12,9 @@ class StoreRecordModel {
     Map<dynamic, dynamic> storeRecProductJson = json['storeRecProduct'];
     Map<String, StoreRecProductModel> storeRecProductMap={};
 
-    if (storeRecProductJson != null) {
-      storeRecProductMap = storeRecProductJson.map((key, value) {
-        return MapEntry(key, StoreRecProductModel.fromJson(value));
-      });
-    }
+    storeRecProductMap = storeRecProductJson.map((key, value) {
+      return MapEntry(key, StoreRecProductModel.fromJson(value));
+    });
 
     return StoreRecordModel(
       storeRecId: json['storeRecId'],

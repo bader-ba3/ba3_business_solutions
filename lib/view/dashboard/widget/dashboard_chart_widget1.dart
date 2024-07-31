@@ -120,7 +120,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
           },).toList();
           if(_.isNotEmpty) {
             listStop.add(
-            FlSpot(key.toDouble(),_.map((e) => double.parse(e?.selleRecAmount??"0"),).reduce((value, element) => value+element,)!)
+            FlSpot(key.toDouble(),_.map((e) => double.parse(e.selleRecAmount??"0"),).reduce((value, element) => value+element,))
           );
           }
         }else{

@@ -1,17 +1,11 @@
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/seller_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
-import 'package:ba3_business_solutions/view/sellers/seller_targets.dart';
 import 'package:ba3_business_solutions/view/timer/timer_view.dart';
-import 'package:ba3_business_solutions/view/user_management/user_crud/add_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../../../Const/const.dart';
-import '../../../model/task_model.dart';
 
 class AllTimeView extends StatelessWidget {
   const AllTimeView({super.key});
@@ -22,7 +16,7 @@ class AllTimeView extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("معاينة التارغتات"),
+          title: const Text("معاينة التارغتات"),
         ),
         body: GetBuilder<UserManagementViewModel>(builder: (controller) {
           return controller.allUserList.isEmpty

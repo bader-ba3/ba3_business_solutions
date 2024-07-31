@@ -5,7 +5,6 @@ import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/main_bluetooth.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -13,9 +12,7 @@ import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/invoice_discount_record_source.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
@@ -24,19 +21,17 @@ import 'package:ba3_business_solutions/view/stores/add_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import '../../controller/bond_view_model.dart';
 import '../../controller/invoice_view_model.dart';
 import '../../controller/pattern_model_view.dart';
 import '../../controller/user_management_model.dart';
 import '../../model/invoice_record_model.dart';
 import '../../utils/generate_id.dart';
-import '../../utils/see_details.dart';
 
 class InvoiceView extends StatefulWidget {
-  InvoiceView({Key? key, required this.billId, required this.patternId}) : super(key: key);
-  String billId;
-  String patternId;
-  PatternModel? patternModel;
+   InvoiceView({Key? key, required this.billId, required this.patternId}) : super(key: key);
+ final String billId;
+  final String patternId;
+  late final PatternModel? patternModel;
 
   @override
   State<InvoiceView> createState() => _InvoiceViewState();

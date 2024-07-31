@@ -10,14 +10,11 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/cheque_rec_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../Const/const.dart';
 import '../core/bindings.dart';
 import '../model/bond_record_model.dart';
@@ -122,10 +119,10 @@ class GlobalViewModel extends GetxController {
     print("YOU RUN LONG TIME OPERATION");
     print("-" * 20);
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
-    List<({String? bondCode, String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode, bondType:e.bondType),).toList();
+    // List<({String? bondCode, String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode, bondType:e.bondType),).toList();
     print(allGlobalModel.length);
     // if (!allGlobalModel.isEmpty) {
-    if (false) {
+/*    if (false) {
       await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
         print("start");
         count = 0.obs;
@@ -137,13 +134,13 @@ class GlobalViewModel extends GetxController {
             count.value++;
             print(count.toString());
             // for (var element in value.docChanges) {
-            if (element.data()?['isDeleted'] != null && element.data()?['isDeleted']) {
+            if (element.data()['isDeleted'] != null && element.data()['isDeleted']) {
               if (HiveDataBase.globalModelBox.keys.contains(element.id)) {
                 deleteGlobal(HiveDataBase.globalModelBox.get(element.id)!);
               }
               // } else if (!getNoVAt(element.doc.id)) {
             } else {
-              if (element.data()!['bondType'] != Const.bondTypeInvoice) {
+              if (element.data()['bondType'] != Const.bondTypeInvoice) {
                 allGlobalModel[element.id] = GlobalModel.fromJson(element.data());
                 allGlobalModel[element.id]?.invRecords = [];
                 allGlobalModel[element.id]?.bondRecord = [];
@@ -172,7 +169,7 @@ class GlobalViewModel extends GetxController {
         Get.offAll(() => MainScreen());
       }
     }
-    else {
+    else */{
       print("start");
 
       count = 0.obs;
@@ -182,7 +179,7 @@ class GlobalViewModel extends GetxController {
       allGlobalModel.forEach((key, value) async {
         // print(value.toJson());
         count.value++;
-        print(count.toString());
+        // print(count.toString());
         await updateDataInAll(value);
       });
       if (Get.currentRoute == "/LoginView") {
@@ -418,11 +415,11 @@ class GlobalViewModel extends GetxController {
   }
 
   updateDataInAll(GlobalModel globalModel) async {
-
+    print("-----${globalModel.globalType}-----");
     if (globalModel.globalType == Const.globalTypeInvoice) {
       GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
-      if (filteredGlobalModel == null) {
 
+      if (filteredGlobalModel == null) {
         return;
       }
       if (!globalModel.invIsPending!) {
@@ -440,8 +437,9 @@ class GlobalViewModel extends GetxController {
       }
       invoiceViewModel.initGlobalInvoice(filteredGlobalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
+      print("globalModel.globalType == Const.globalTypeCheque");
         entryBondViewModel.initGlobalChequeBond(globalModel);
-      chequeViewModel.initGlobalCheque(globalModel);
+      // chequeViewModel.initGlobalCheque(globalModel);
     } else if (globalModel.globalType == Const.globalTypeBond) {  
       bondViewModel.initGlobalBond(globalModel);
 

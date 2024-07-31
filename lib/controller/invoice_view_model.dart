@@ -6,22 +6,16 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
-import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
-import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/global_model.dart';
-import '../utils/logger.dart';
 import '../view/invoices/widget/invoice_discount_record_source.dart';
 import '../view/invoices/widget/invoice_record_source.dart';
 import 'account_view_model.dart';
@@ -471,15 +465,15 @@ class InvoiceViewModel extends GetxController {
       if (model.discountId != null) {
         if ((model.discountTotal ?? 0) > 0) {
           if (model.isChooseDiscountTotal == true) {
-            model.discountPercentage = model.discountTotal! / totalWithoutVat!;
+            model.discountPercentage = model.discountTotal! / totalWithoutVat;
           } else if (model.isChooseDiscountTotal == false) {
-            model.discountTotal = totalWithoutVat! * model.discountPercentage! / 100;
+            model.discountTotal = totalWithoutVat * model.discountPercentage! / 100;
           }
         } else if ((model.addedTotal ?? 0) > 0) {
           if (model.isChooseAddedTotal == true) {
-            model.addedPercentage = model.addedTotal! / totalWithoutVat!;
+            model.addedPercentage = model.addedTotal! / totalWithoutVat;
           } else if (model.isChooseAddedTotal == false) {
-            model.addedTotal = totalWithoutVat! * model.addedPercentage! / 100;
+            model.addedTotal = totalWithoutVat * model.addedPercentage! / 100;
           }
         }
       }
@@ -552,7 +546,7 @@ class InvoiceViewModel extends GetxController {
     dateController = DateTime.now().toString().split(".")[0];
     records = [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
     discountRecords = [InvoiceDiscountRecordModel()];
-    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat!);
+    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat);
     invoiceDiscountRecordSource = InvoiceDiscountRecordSource(
       records: discountRecords,
     );
@@ -872,5 +866,5 @@ void showEIknvoiceDialog({required String mobileNumber, required String invId}) 
 
 getInvoicePatternFromInvId(id) {
   GlobalModel globalModel = Get.find<InvoiceViewModel>().invoiceModel[id]!;
-  return getPatModelFromPatternId(globalModel!.patternId).patName! + " : " + globalModel!.invCode!;
+  return "${getPatModelFromPatternId(globalModel.patternId).patName!} : ${globalModel.invCode!}";
 }

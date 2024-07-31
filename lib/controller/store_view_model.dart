@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/store_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
@@ -59,8 +58,9 @@ class StoreViewModel extends GetxController {
     allRecTotalProduct.forEach((key, value) {
       var recCredit = value;
       if(getProductModelFromId(key)!=null)
-      {bool isStoreProduct = getProductModelFromId(key)!.prodType == Const.productTypeStore;
-       InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
+      {
+        // bool isStoreProduct = getProductModelFromId(key)!.prodType == Const.productTypeStore;
+       // InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
       allRecTotal[key]
             =(StoreRecProductModel(
               storeRecProductId: key,
@@ -121,7 +121,10 @@ class StoreViewModel extends GetxController {
       print("-----${globalModel.invCode}-------");
       print("-----${globalModel.invSecStorehouse}-------");
       print("-----${globalModel.invStorehouse}-------");
+      //todo:عدلتا لانو كان عم يطلع null
+      model2.storeRecId ??= globalModel.invStorehouse;
      if (storeMap[model2.storeRecId.toString()]?.stRecords == null) {
+
         storeMap[model2.storeRecId]?.stRecords = [model2];
       } else {
         storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
@@ -180,7 +183,7 @@ class StoreViewModel extends GetxController {
     totalAmountPage.clear();
     storeMap[storeId]?.stRecords.forEach((value) {
       value.storeRecProduct?.forEach((key, value) {
-        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!)!;
+        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!);
       });
     });
     totalAmountPage.forEach(
@@ -234,10 +237,10 @@ class StoreViewModel extends GetxController {
 
   deleteStore(id) {
     StoreModel editStoreModel = storeMap[id]!;
-    _storeCollectionRef.doc(editStoreModel?.stId).delete();
+    _storeCollectionRef.doc(editStoreModel.stId).delete();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
-    changesViewModel.addRemoveChangeToChanges(editStoreModel!.toFullJson(), Const.storeCollection);
+    changesViewModel.addRemoveChangeToChanges(editStoreModel.toFullJson(), Const.storeCollection);
     update();
   }
 

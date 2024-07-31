@@ -1,17 +1,12 @@
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/accounts/acconts_view_old.dart';
 import 'package:ba3_business_solutions/view/accounts/account_tree_view.dart';
 import 'package:ba3_business_solutions/view/accounts/account_view.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 import 'account_view_old.dart';
 
 class AccountType extends StatefulWidget {
@@ -29,24 +24,24 @@ class _AccountTypeState extends State<AccountType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("الحسابات"),
+          title: const Text("الحسابات"),
         ),
         body: Column(
           children: [
-            Item("إنشاء حساب", () {
-              Get.to(() => AddAccount());
+            item("إنشاء حساب", () {
+              Get.to(() => const AddAccount());
             }),
-            Item("معاينة الحسابات", () {
+            item("معاينة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-                if (value) Get.to(() => AllAccountOLD());
+                if (value) Get.to(() => const AllAccountOLD());
               });
             }),
-            Item("معاينة الحسابات", () {
+            item("معاينة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-                if (value) Get.to(() => AllAccount());
+                if (value) Get.to(() => const AllAccount());
               });
             }),
-            Item("شجرة الحسابات", () {
+            item("شجرة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
@@ -62,7 +57,7 @@ class _AccountTypeState extends State<AccountType> {
     );
   }
 
-  Widget Item(text, onTap) {
+  Widget item(text, onTap) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: InkWell(
@@ -73,7 +68,7 @@ class _AccountTypeState extends State<AccountType> {
             padding: const EdgeInsets.all(30.0),
             child: Text(
               text,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textDirection: TextDirection.rtl,
             )),
       ),

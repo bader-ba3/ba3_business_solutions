@@ -81,6 +81,6 @@ class _DateRangePickerState extends State<DateRangePicker> {
   }
 
   String gettext() {
-    return date![0].toString().split(" ").first! + "  -->  " + date![1].toString().split(" ").first;
+    return "${date![0].toString().split(" ").first}  -->  ${date![1].toString().split(" ").first}";
   }
 }

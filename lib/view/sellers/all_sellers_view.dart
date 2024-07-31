@@ -1,6 +1,4 @@
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/model/seller_model.dart';
-import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +13,7 @@ class AllSellers extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("جميع البائعون"),
+          title: const Text("جميع البائعون"),
         ),
         body: GetBuilder<SellersViewModel>(builder: (controller) {
           return controller.allSellers.isEmpty

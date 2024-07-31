@@ -1,10 +1,7 @@
 import 'package:ba3_business_solutions/controller/database_view_model.dart';
-import 'package:ba3_business_solutions/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Const/const.dart';
-import '../../core/bindings.dart';
 
 class DataBaseView extends StatelessWidget {
   const DataBaseView({super.key});

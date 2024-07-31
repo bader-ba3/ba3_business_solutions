@@ -1,5 +1,4 @@
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/view/stores/add_store.dart';
 import 'package:ba3_business_solutions/view/stores/store_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,11 +51,11 @@ class AllStore extends StatelessWidget {
                           columnName: "stId",
                           label: const Text('ID'
                           )),
-                      GridColumnItem(
+                      gridColumnItem(
                         label: "الرمز",
                         name: Const.stCode,
                       ),
-                      GridColumnItem(label: "الاسم", name: Const.stName),
+                      gridColumnItem(label: "الاسم", name: Const.stName),
                     ],
                     source: storeController.recordViewDataSource!,
                     allowEditing: false,

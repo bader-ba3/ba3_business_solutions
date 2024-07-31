@@ -2,14 +2,10 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
-import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../widget/sliver_list_widget.dart';
-import '../../controller/product_view_model.dart';
-import '../../model/product_model.dart';
 
 class AllAccountOLD extends StatelessWidget {
   const AllAccountOLD({super.key});

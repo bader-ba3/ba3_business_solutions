@@ -1,6 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/accounts/account_type.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_type.dart';
@@ -11,10 +10,8 @@ import 'package:ba3_business_solutions/view/entry_bond/entry_bond_type.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_type.dart';
 import 'package:ba3_business_solutions/view/patterns/pattern_type.dart';
 import 'package:ba3_business_solutions/view/products/product_type.dart';
-import 'package:ba3_business_solutions/view/report/report_view.dart';
 import 'package:ba3_business_solutions/view/stores/store_type.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -36,26 +33,26 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   List<({String name, Widget widget, String role})> rowData = [
-    (name: "لوحة التحكم", widget: DashboardView(), role: Const.roleViewHome),
-    (name: "الفواتير", widget: InvoiceType(), role: Const.roleViewInvoice),
-    (name: "السندات", widget: BondType(), role: Const.roleViewBond),
-    (name: "سندات القيد", widget: EntryBondType(), role: Const.roleViewBond),
-    (name: "الحسابات", widget: AccountType(), role: Const.roleViewAccount),
-    (name: "المواد", widget: ProductType(), role: Const.roleViewProduct),
-    (name: "المستودعات", widget: StoreType(), role: Const.roleViewStore),
-    (name: "أنماط البيع", widget: PatternType(), role: Const.roleViewPattern),
-    (name: "الشيكات", widget: ChequeType(), role: Const.roleViewCheques),
-    (name: "الاستحقاق", widget: DueType(), role: Const.roleViewDue),
-    (name: "تقرير المبيعات", widget: ReportGridView(), role: Const.roleViewReport),
-    (name: "الاحصائيات", widget: StatisticsType(), role: Const.roleViewStatistics),
-    (name: "البائعون", widget: SellerType(), role: Const.roleViewSeller),
+    (name: "لوحة التحكم", widget: const DashboardView(), role: Const.roleViewHome),
+    (name: "الفواتير", widget: const InvoiceType(), role: Const.roleViewInvoice),
+    (name: "السندات", widget: const BondType(), role: Const.roleViewBond),
+    (name: "سندات القيد", widget: const EntryBondType(), role: Const.roleViewBond),
+    (name: "الحسابات", widget: const AccountType(), role: Const.roleViewAccount),
+    (name: "المواد", widget: const ProductType(), role: Const.roleViewProduct),
+    (name: "المستودعات", widget: const StoreType(), role: Const.roleViewStore),
+    (name: "أنماط البيع", widget: const PatternType(), role: Const.roleViewPattern),
+    (name: "الشيكات", widget: const ChequeType(), role: Const.roleViewCheques),
+    (name: "الاستحقاق", widget: const DueType(), role: Const.roleViewDue),
+    (name: "تقرير المبيعات", widget: const ReportGridView(), role: Const.roleViewReport),
+    (name: "الاحصائيات", widget: const StatisticsType(), role: Const.roleViewStatistics),
+    (name: "البائعون", widget: const SellerType(), role: Const.roleViewSeller),
     (name: "استيراد المعلومات", widget: FilePickerWidget(), role: Const.roleViewImport),
-    (name: "الجرد", widget: InventoryType(), role: Const.roleViewInventory),
-    (name: "إدارة المستخدمين", widget: UserManagementType(), role: Const.roleViewUserManagement),
-    (name: "إدارة التارجيت", widget: TargetManagementType(), role: Const.roleViewTarget),
-    (name: "إدارة الوقت", widget: TimeType(), role: Const.roleViewTimer),
-    (name: "إدارة البطاقات", widget: CardManagementType(), role: Const.roleViewCard),
-    (name: "إدارة قواعد البيانات", widget: DataBaseType(), role: Const.roleViewDataBase),
+    (name: "الجرد", widget: const InventoryType(), role: Const.roleViewInventory),
+    (name: "إدارة المستخدمين", widget: const UserManagementType(), role: Const.roleViewUserManagement),
+    (name: "إدارة التارجيت", widget: const TargetManagementType(), role: Const.roleViewTarget),
+    (name: "إدارة الوقت", widget: const TimeType(), role: Const.roleViewTimer),
+    (name: "إدارة البطاقات", widget: const CardManagementType(), role: Const.roleViewCard),
+    (name: "إدارة قواعد البيانات", widget: const DataBaseType(), role: Const.roleViewDataBase),
   ];
   List<({String name, Widget widget, String role})> allData = [];
   //  TabController? tabController;
@@ -132,15 +129,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         );
                       },
                     ),
-                    child: PageView(
-                      physics: NeverScrollableScrollPhysics(),
-                      controller: pageController,
-                      children: List.generate(
-                          allData.length,
-                          (index) => ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: allData[index].widget,
-                              )),
+                    child: SizedBox(
+                      width: Get.width,
+                      height: Get.height,
+                      child: PageView(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: pageController,
+                        children: List.generate(
+                            allData.length,
+                            (index) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: allData[index].widget,
+                                )),
+                      ),
                     ),
                   );
                 });

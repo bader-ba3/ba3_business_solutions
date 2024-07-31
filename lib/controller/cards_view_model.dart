@@ -1,15 +1,7 @@
-import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/model/seller_model.dart';
-import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_view_data_grid_source.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'dart:math';
 import '../model/card_model.dart';
-import '../model/global_model.dart';
-import 'user_management_model.dart';
 
 class CardsViewModel extends GetxController {
   Map<String, CardModel> allCards = {};

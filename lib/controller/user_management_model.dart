@@ -1,26 +1,21 @@
 import 'dart:io';
-import 'dart:typed_data';
+
 
 import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/main/main_screen.dart';
 import 'package:ba3_business_solutions/view/user_management/login_view.dart';
-import 'package:ba3_business_solutions/view/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 import '../model/card_model.dart';
-import '../model/global_model.dart';
 import 'cards_view_model.dart';
 
 enum UserManagementStatus {
@@ -59,7 +54,7 @@ class UserManagementViewModel extends GetxController {
       FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) async {
         if (userPin == null) {
           userStatus = UserManagementStatus.first;
-          Get.offAll(() => LoginView());
+          Get.offAll(() => const LoginView());
         } else if (value.docs.isNotEmpty) {
           if(userStatus != UserManagementStatus.login){
           myUserModel = UserModel.fromJson(value.docs.first.data());
@@ -71,7 +66,7 @@ class UserManagementViewModel extends GetxController {
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
             userStatus = UserManagementStatus.first;
-            Get.offAll(() => LoginView());
+            Get.offAll(() => const LoginView());
           } else {
             Get.snackbar("error", "not matched");
           }
@@ -86,11 +81,11 @@ class UserManagementViewModel extends GetxController {
       FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).snapshots().listen((value) {
         if (cardNumber == null) {
           userStatus = UserManagementStatus.first;
-          Get.offAll(() => LoginView());
+          Get.offAll(() => const LoginView());
         } else if (value.docs.first.data()["isDisabled"]) {
           Get.snackbar("خطأ", "تم إلغاء تفعيل البطاقة");
           userStatus = UserManagementStatus.first;
-          Get.offAll(() => LoginView());
+          Get.offAll(() => const LoginView());
         } else if (value.docs.isNotEmpty) {
           FirebaseFirestore.instance.collection(Const.usersCollection).doc(value.docs.first.data()["userId"]).get().then((value0) {
             myUserModel = UserModel.fromJson(value0.data()!);
@@ -102,7 +97,7 @@ class UserManagementViewModel extends GetxController {
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
             userStatus = UserManagementStatus.first;
-            Get.offAll(() => LoginView());
+            Get.offAll(() => const LoginView());
           } else {
             Get.snackbar("error", "not matched");
           }
@@ -116,7 +111,7 @@ class UserManagementViewModel extends GetxController {
     } else {
       WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
         userStatus = UserManagementStatus.first;
-        Get.offAll(() => LoginView());
+        Get.offAll(() => const LoginView());
       });
     }
   }
@@ -237,7 +232,7 @@ Future<bool> checkPermissionForOperation(role, page) async {
     bool isNfcAvailable = (Platform.isAndroid || Platform.isIOS) && await NfcManager.instance.isAvailable();
     var a = await Get.defaultDialog(
         barrierDismissible: false,
-        title: "احتاج الاذن" + "\n" + "ل " + getRoleNameFromEnum(role.toString()) + "\n" + "في " + getPageNameFromEnum(page.toString()),
+        title: "احتاج الاذن\nل ${getRoleNameFromEnum(role.toString())}\nفي ${getPageNameFromEnum(page.toString())}",
         content: StatefulBuilder(builder: (context, setstate) {
           if (!init && isNfcAvailable) {
             init = true;
@@ -295,21 +290,21 @@ Future<bool> checkPermissionForOperation(role, page) async {
                         }
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                   ],
                 ),
               Text(
                 error,
-                style: TextStyle(fontSize: 22, color: Colors.red),
+                style: const TextStyle(fontSize: 22, color: Colors.red),
               ),
               if (error != "")
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
               if (isNfcAvailable)
-                Column(
+                const Column(
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(
@@ -325,7 +320,7 @@ Future<bool> checkPermissionForOperation(role, page) async {
               onPressed: () {
                 Get.back(result: false);
               },
-              child: Text("cancel"))
+              child: const Text("cancel"))
         ]);
 
     print("a:" + a.toString());

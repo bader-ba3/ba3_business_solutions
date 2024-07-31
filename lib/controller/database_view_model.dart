@@ -5,22 +5,18 @@ import 'package:ba3_business_solutions/controller/import_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/model/Pattern_model.dart';
-import 'package:ba3_business_solutions/view/patterns/widget/pattern_source_code.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/bindings.dart';
-import '../main.dart';
-import '../utils/generate_id.dart';
+
 import '../view/user_management/account_management_view.dart';
 import 'account_view_model.dart';
 import 'cheque_view_model.dart';
 import 'cost_center_view_model.dart';
-import 'faceController/camera.service.dart';
-import 'faceController/face_detector_service.dart';
-import 'faceController/ml_service.dart';
+
 import 'invoice_view_model.dart';
 import 'product_view_model.dart';
 import 'sellers_view_model.dart';

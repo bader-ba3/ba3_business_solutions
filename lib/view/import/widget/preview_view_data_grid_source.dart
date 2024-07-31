@@ -30,7 +30,7 @@ class PreViewViewDataGridSource extends DataGridSource {
     //       DataGridCell<bool>(columnName: Const.rowImportHasVat, value: e.prodHasVat),
     //     ]))
     // .toList();
-    dataGridRows = (productList ?? [])
+    dataGridRows = (productList)
         .map<DataGridRow>((e) => DataGridRow(
                 cells: List.generate(
               rows.length,
@@ -83,7 +83,7 @@ class PreViewViewDataGridSource extends DataGridSource {
     final bool isNumericType = column.columnName == Const.rowBondId || column.columnName == Const.rowBondCreditAmount || column.columnName == Const.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
-    final RegExp regExp = _getRegExp(isNumericType, column.columnName);
+    // final RegExp regExp = _getRegExp(isNumericType, column.columnName);
 
     return Container(
       padding: const EdgeInsets.all(8.0),

@@ -3,7 +3,6 @@ import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

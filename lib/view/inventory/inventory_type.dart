@@ -1,24 +1,15 @@
 import 'package:ba3_business_solutions/controller/inventory_view_model.dart';
-import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
 import 'package:ba3_business_solutions/view/inventory/add_inventory_view.dart';
 import 'package:ba3_business_solutions/view/inventory/all_inventory_view.dart';
-import 'package:ba3_business_solutions/view/inventory/delete_inventory_view.dart';
 import 'package:ba3_business_solutions/view/inventory/new_inventory_view.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
-import 'package:ba3_business_solutions/view/patterns/all_pattern.dart';
-import 'package:ba3_business_solutions/view/patterns/pattern_details.dart';
-import 'package:ba3_business_solutions/view/products/product_view_old_old.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 import '../../model/inventory_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
 
@@ -154,11 +145,11 @@ class _InventoryTypeState extends State<InventoryType> {
                           child: InkWell(
                               onTap: (){
                                 Get.back();
-                                Get.to(() => AllInventoryView(inventoryModel: inv!));
+                                Get.to(() => AllInventoryView(inventoryModel: inv));
                               },
                               child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(inv.inventoryName!+"         "+"قام به: "+getUserNameById(inv.inventoryUserId),textDirection: TextDirection.rtl,),
+                            child: Text("${inv.inventoryName!}         قام به: "+getUserNameById(inv.inventoryUserId),textDirection: TextDirection.rtl,),
                           )),
                         );
                       },),

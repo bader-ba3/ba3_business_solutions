@@ -10,7 +10,7 @@ import '../../model/global_model.dart';
 
 class AllDueView extends StatelessWidget {
   AllDueView({super.key});
-  List<({AccountRecordModel accountRecordModel, GlobalModel globalModel})> allList = [];
+ final List<({AccountRecordModel accountRecordModel, GlobalModel globalModel})> allList = [];
   @override
   Widget build(BuildContext context) {
     return Directionality(

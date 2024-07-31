@@ -3,7 +3,6 @@ import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
@@ -178,81 +177,81 @@ for (ProductRecordModel element in productModel.prodRecord??[]) {
    
   }
 
-Future<void> correct () async {
-  int i =0 ;
-  for (var index = 0 ;index < productDataMap.length; index ++ ) {
-        ProductModel element = productDataMap.values.toList()[index];
-        // if(element.prodFullCode == "F003540"){
-        //   print(element.toJson());
-        //   print(productDataMap[element.prodParentId]!.toJson());
-        // //  if(element.prodName!.contains("SKINARMA IPHONE 15 PRO KIRA")){
-        // //     element.prodIsGroup = false;
-        // productDataMap[element.prodParentId]!.prodChild!.add(element.prodId);
-        //     HiveDataBase.productModelBox.put(element.prodParentId,  productDataMap[element.prodParentId]!);
-        // //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-        // //  }
-        // }
-        // if(
-        //   (double.tryParse(element.prodMinPrice??"0")==null||
-        //   double.tryParse(element.prodCostPrice??"0")==null||
-        //   double.tryParse(element.prodWholePrice??"0")==null||
-        //   double.tryParse(element.prodRetailPrice??"0")==null||
-        //   double.tryParse(element.prodCustomerPrice??"0")==null
-        //   )&&(element.prodMinPrice!="" &&element.prodCostPrice!="" &&element.prodWholePrice!="" &&element.prodRetailPrice!="" &&element.prodCustomerPrice!="")){
-        //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
-        //     element.prodMinPrice = double.parse( element.prodMinPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-        //     element.prodCostPrice = double.parse( element.prodCostPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-        //     element.prodWholePrice = double.parse( element.prodWholePrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-        //     element.prodRetailPrice = double.parse( element.prodRetailPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-        //     element.prodCustomerPrice = double.parse( element.prodCustomerPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-        //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
-        //   HiveDataBase.productModelBox.put(element.prodId,  element);
-        //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-        // }
-          //      if(!element.prodName!.contains("مستعمل")&&!element.prodIsLocal!&&!element.prodName!.contains("F-")){
-          //       print(i.toString() );
-          //       i++;
-          //       print(element.prodName);
-          //      element.prodName="F-"+element.prodName!;
-          //  HiveDataBase.productModelBox.put(element.prodId , element);
-           
-          // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-          //   }
-      //   if(!(element.prodParentId?.contains("prod")??true)){
-      //       //  print(element.prodName);
-      //       //  print(element.toJson());
-      //       if(!element.prodIsParent!){
-      //         element.prodParentId = 'L'+element.prodParentId!;
-      //         element.prodFullCode = 'L'+element.prodFullCode!;
-      //          print(element.prodName);
-      //        print(element.toJson());
-      //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
-      //     'prodChild': FieldValue.arrayUnion([element.prodId]),
-      //   });
-      //  productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
-      //   HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
-      //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
-      //     "prodParentId":getProductIdFromFullName(element.prodParentId)
-      //   });
-      //   productDataMap[element.prodId]!.prodParentId = getProductIdFromFullName(element.prodParentId);
-      //   HiveDataBase.productModelBox.put(element.prodId,  productDataMap[element.prodId]!);
-      // }
-      //   }
-      
-       // i++;
-      // print(i.toString() + " OF "+productDataMap.values.toList().length.toString() );
-      
-    }
-    // for (var i =0;i< productDataMap.values.toList().length;i++){
-    //     ProductModel product =  productDataMap.values.toList()[i];
-    //     if(product.prodFullCode == "L0505163"){
-    //       product.prodCode = "1";
-    //       product.prodFullCode = "L0501";
-    //       HiveDataBase.productModelBox.put(product.prodId, product);
-    //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
-    //     }
-    //   }
-}
+// Future<void> correct () async {
+//   int i =0 ;
+//   for (var index = 0 ;index < productDataMap.length; index ++ ) {
+//         ProductModel element = productDataMap.values.toList()[index];
+//         // if(element.prodFullCode == "F003540"){
+//         //   print(element.toJson());
+//         //   print(productDataMap[element.prodParentId]!.toJson());
+//         // //  if(element.prodName!.contains("SKINARMA IPHONE 15 PRO KIRA")){
+//         // //     element.prodIsGroup = false;
+//         // productDataMap[element.prodParentId]!.prodChild!.add(element.prodId);
+//         //     HiveDataBase.productModelBox.put(element.prodParentId,  productDataMap[element.prodParentId]!);
+//         // //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
+//         // //  }
+//         // }
+//         // if(
+//         //   (double.tryParse(element.prodMinPrice??"0")==null||
+//         //   double.tryParse(element.prodCostPrice??"0")==null||
+//         //   double.tryParse(element.prodWholePrice??"0")==null||
+//         //   double.tryParse(element.prodRetailPrice??"0")==null||
+//         //   double.tryParse(element.prodCustomerPrice??"0")==null
+//         //   )&&(element.prodMinPrice!="" &&element.prodCostPrice!="" &&element.prodWholePrice!="" &&element.prodRetailPrice!="" &&element.prodCustomerPrice!="")){
+//         //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
+//         //     element.prodMinPrice = double.parse( element.prodMinPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+//         //     element.prodCostPrice = double.parse( element.prodCostPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+//         //     element.prodWholePrice = double.parse( element.prodWholePrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+//         //     element.prodRetailPrice = double.parse( element.prodRetailPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+//         //     element.prodCustomerPrice = double.parse( element.prodCustomerPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
+//         //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
+//         //   HiveDataBase.productModelBox.put(element.prodId,  element);
+//         //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
+//         // }
+//           //      if(!element.prodName!.contains("مستعمل")&&!element.prodIsLocal!&&!element.prodName!.contains("F-")){
+//           //       print(i.toString() );
+//           //       i++;
+//           //       print(element.prodName);
+//           //      element.prodName="F-"+element.prodName!;
+//           //  HiveDataBase.productModelBox.put(element.prodId , element);
+//
+//           // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
+//           //   }
+//       //   if(!(element.prodParentId?.contains("prod")??true)){
+//       //       //  print(element.prodName);
+//       //       //  print(element.toJson());
+//       //       if(!element.prodIsParent!){
+//       //         element.prodParentId = 'L'+element.prodParentId!;
+//       //         element.prodFullCode = 'L'+element.prodFullCode!;
+//       //          print(element.prodName);
+//       //        print(element.toJson());
+//       //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
+//       //     'prodChild': FieldValue.arrayUnion([element.prodId]),
+//       //   });
+//       //  productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
+//       //   HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
+//       //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
+//       //     "prodParentId":getProductIdFromFullName(element.prodParentId)
+//       //   });
+//       //   productDataMap[element.prodId]!.prodParentId = getProductIdFromFullName(element.prodParentId);
+//       //   HiveDataBase.productModelBox.put(element.prodId,  productDataMap[element.prodId]!);
+//       // }
+//       //   }
+//
+//        // i++;
+//       // print(i.toString() + " OF "+productDataMap.values.toList().length.toString() );
+//
+//     }
+//     // for (var i =0;i< productDataMap.values.toList().length;i++){
+//     //     ProductModel product =  productDataMap.values.toList()[i];
+//     //     if(product.prodFullCode == "L0505163"){
+//     //       product.prodCode = "1";
+//     //       product.prodFullCode = "L0501";
+//     //       HiveDataBase.productModelBox.put(product.prodId, product);
+//     //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
+//     //     }
+//     //   }
+// }
   String getNextProductCode({String? perantId}) {
     int code = 0;
     if (productDataMap.isEmpty) {
@@ -603,7 +602,7 @@ Future<void> correct () async {
                         dropDownList[element.toString()] = _!;
                         Iterable<ProductModel> a = productDataMap.values.toList().where((element) => element.prodParentId == _ && element.prodIsGroup!);
                         if (a.isNotEmpty) {
-                          allParent[_!] = a.toList().map((e) => e.prodId!).toList();
+                          allParent[_] = a.toList().map((e) => e.prodId!).toList();
                         }
                         setstate(() {});
                       }),

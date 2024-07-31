@@ -1,8 +1,6 @@
-import 'package:ba3_business_solutions/model/product_model.dart';
+
 import 'package:ba3_business_solutions/model/product_record_model.dart';
-import 'package:ba3_business_solutions/model/product_record_model.dart';
-import 'package:ba3_business_solutions/model/product_record_model.dart';
-import 'package:ba3_business_solutions/model/product_record_model.dart';
+
 import 'package:hive/hive.dart';
 
 

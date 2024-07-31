@@ -1,23 +1,16 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 
 class UserManagement extends StatefulWidget {
-  UserManagement({super.key});
+  const UserManagement({super.key});
 
   @override
   State<UserManagement> createState() => _UserManagementState();
 }
 class _UserManagementState extends State<UserManagement> {
    var _alertShowing = false;
-  var _index = 0;
   @override
   void initState() {
     FlutterWindowClose.setWindowShouldCloseHandler(() async {

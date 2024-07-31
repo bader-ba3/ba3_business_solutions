@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
@@ -134,7 +133,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                                           value: setting[config.values.toList()[index]],
                                           items: widget.rows
                                               .map((e) => DropdownMenuItem(
-                                                    value: widget.rows.indexOf(e!),
+                                                    value: widget.rows.indexOf(e),
                                                     child: Text(e.toString()),
                                                   ))
                                               .toList(),
@@ -195,7 +194,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
       var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
       var parentId = "F" + element[setting["prodParentId"]];
-      var isRoot = element[setting["prodParentId"]].isBlank;
+      // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
       String chechIsExist = isGroup ? getProductIdFromName("F-" + element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName("F-" + element[setting["prodName"]]);
       // print("parentId "+parentId);
@@ -300,7 +299,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
       var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
       var parentId = element[setting["prodParentId"]];
-      var isRoot = element[setting["prodParentId"]].isBlank;
+      // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
       String chechIsExist = isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
       // print("parentId "+parentId);
@@ -372,7 +371,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       if(element.prodParentId!=null) {
         ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
         parentModel.prodChild?.add(element.prodId);
-        HiveDataBase.productModelBox.put(parentModel.prodId, parentModel!);
+        HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
         FirebaseFirestore.instance.collection(Const.productsCollection).doc(parentModel.prodId).update({
           'prodChild': FieldValue.arrayUnion([element.prodId]),
         });
@@ -407,14 +406,14 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   }
 
   Future<void> addAccount() async {
-    AccountViewModel accountViewModel = Get.find<AccountViewModel>();
+    // AccountViewModel accountViewModel = Get.find<AccountViewModel>();
     List<AccountModel> finalData = [];
     for (var element in widget.productList) {
       bool accIsParent = element[setting['accParentId']].isEmpty;
       finalData.add(AccountModel(
         accId: generateId(RecordType.account),
-        accName: "F-" + (element[setting["accName"]]).replaceAll("-", ""),
-        accCode: "F-" + element[setting["accCode"]].replaceAll("-", ""),
+        accName: "F-${(element[setting["accName"]]).replaceAll("-", "")}",
+        accCode: "F-${element[setting["accCode"]].replaceAll("-", "")}",
         accComment: '',
         // accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
         accType: Const.accountTypeDefault,

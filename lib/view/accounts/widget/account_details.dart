@@ -1,20 +1,14 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
 import 'package:ba3_business_solutions/utils/confirm_delete_dialog.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
-import 'package:ba3_business_solutions/view/bonds/widget/bond_record_data_source.dart';
 import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
 import '../../../controller/account_view_model.dart';
-import '../../bonds/bond_details_view.dart';
-import '../../bonds/custom_bond_details_view.dart';
 
 class AccountDetails extends StatefulWidget {
   final String modelKey;

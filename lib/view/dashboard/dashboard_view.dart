@@ -1,12 +1,7 @@
-import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-
 import '../../controller/account_view_model.dart';
 import '../../model/account_model.dart';
 import '../../utils/hive.dart';

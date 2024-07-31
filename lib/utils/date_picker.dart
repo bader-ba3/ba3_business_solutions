@@ -66,7 +66,7 @@ class _DatePickerState extends State<DatePicker> {
             child: Row(
               children: [
                 Text(widget.initDate != null
-                    ? widget.initDate.toString().split(" ").first!
+                    ? widget.initDate.toString().split(" ").first
                     : _date == null
                         ? "اختر يوم"
                         : _date.toString().split(" ").first),

@@ -95,16 +95,16 @@ class _AllTaskViewState extends State<AllTaskView> {
                                     height: Get.width / 4,
                                     width: Get.width / 4,
                                     child: ListView.builder(
-                                      itemCount: model.value.taskSellerListId!.length,
+                                      itemCount: model.value.taskSellerListId.length,
                                       itemBuilder: (context, index) {
-                                        String seller = model.value.taskSellerListId![index];
+                                        String seller = model.value.taskSellerListId[index];
                                         return Text(getSellerNameFromId(seller).toString());
                                       },
                                     ),
                                   ));
                             },
-                            child: Text("قائمة المشاركين")),
-                        SizedBox(
+                            child: const Text("قائمة المشاركين")),
+                        const SizedBox(
                           width: 10,
                         ),
                         IconButton(

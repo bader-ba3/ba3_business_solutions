@@ -1,11 +1,8 @@
-import 'dart:math';
 
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/widget/target_pointer_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -48,7 +45,7 @@ class _SellerTargetState extends State<SellerTarget> {
                 },
                 child: Text("aaa"))
           ],
-          title: Text(
+          title: const Text(
             "لوحة الانجازات",
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
@@ -59,11 +56,11 @@ class _SellerTargetState extends State<SellerTarget> {
               children: [
                 Column(
                   children: [
-                    Text(
+                    const Text(
                       "تارغيت الجوالات ",
                       style: TextStyle(fontSize: 22),
                     ),
-                    Container(
+                    SizedBox(
                         width: MediaQuery.sizeOf(context).width / 2,
                         height: 500,
                         child: TargetPointerWidget(
@@ -108,11 +105,11 @@ class _SellerTargetState extends State<SellerTarget> {
                 mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
               }
               return GetBuilder<TargetViewModel>(builder: (controller) {
-               List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId!.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
+               List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
                 return Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
                       child: Text(
                         "المهام",
                         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),

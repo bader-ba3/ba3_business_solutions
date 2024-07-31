@@ -1,8 +1,6 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/product_record_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,9 +10,7 @@ import '../../../Const/const.dart';
 import '../../../controller/invoice_view_model.dart';
 import '../../../controller/product_view_model.dart';
 import '../../../model/invoice_discount_record_model.dart';
-import '../../../model/invoice_record_model.dart';
 import '../../../model/product_model.dart';
-import 'package:math_expressions/math_expressions.dart';
 
 class InvoiceDiscountRecordSource extends DataGridSource {
   dynamic newCellValue;
@@ -59,7 +55,7 @@ class InvoiceDiscountRecordSource extends DataGridSource {
 
   @override
   Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
-    final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
+    // final dynamic oldValue = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value ?? '';
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
     if(records[dataRowIndex].discountId == null){
       records[dataRowIndex].discountId = (dataRowIndex + 1);
@@ -88,7 +84,7 @@ class InvoiceDiscountRecordSource extends DataGridSource {
           updateDataGridSource();
         }
       }else if(column.columnName == Const.rowInvDisDiscountPercentage){
-        if(double.parse(newCellValue)!>100){}else{
+        if(double.parse(newCellValue)>100){}else{
         records[dataRowIndex].discountPercentage =double.parse(newCellValue);
         records[dataRowIndex].isChooseDiscountTotal =false;
         records[dataRowIndex].discountTotal =invoiceViewModel.getTotal(double.parse(newCellValue));
@@ -107,7 +103,7 @@ class InvoiceDiscountRecordSource extends DataGridSource {
           updateDataGridSource();
         }
       }else if(column.columnName == Const.rowInvDisAddedPercentage){
-        if(double.parse(newCellValue)!>100){}else{
+        if(double.parse(newCellValue)>100){}else{
         records[dataRowIndex].addedPercentage =double.parse(newCellValue);
         records[dataRowIndex].isChooseAddedTotal =false;
         records[dataRowIndex].addedTotal =invoiceViewModel.getTotal(double.parse(newCellValue));

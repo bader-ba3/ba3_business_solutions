@@ -1,13 +1,10 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_report.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 import 'all_bonds.dart';
 import 'bond_details_view.dart';
 import 'custom_bond_details_view.dart';
@@ -27,9 +24,11 @@ class _BondTypeState extends State<BondType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("السندات"),
+          title: const Text("السندات"),
         ),
-        body: Column(
+        body: ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
           children: [
             Item("سند يومية",(){
               Get.to(() => BondDetailsView(bondType: Const.bondTypeDaily,));

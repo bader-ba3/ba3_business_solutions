@@ -1,8 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
-import 'package:get/get.dart';
 
 class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat,accParentId;

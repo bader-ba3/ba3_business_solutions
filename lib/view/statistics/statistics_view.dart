@@ -1,6 +1,5 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/view/statistics/widget/chart_widget.dart';
+
 import 'package:ba3_business_solutions/view/statistics/widget/chart_widget2.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +31,10 @@ class _StatisticsViewState extends State<StatisticsView> {
           controller.accountList[widget.accountId]!.accRecord.toList().forEach(
             (element) {
               String date = element.date!.split(" ")[0];
-              String year = date!.split("-")![0];
-              String month = date!.split("-")![1];
-              if (!allMonth.contains(year + "-" + month)) {
-                allMonth.add(year + "-" + month);
+              String year = date.split("-")[0];
+              String month = date.split("-")[1];
+              if (!allMonth.contains("$year-$month")) {
+                allMonth.add("$year-$month");
               }
             },
           );
@@ -49,7 +48,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         allRec.clear();
                         controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                               (element) {
-                            String a = element.date!.split("-")![1];
+                            String a = element.date!.split("-")[1];
                               double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                             if (allRec[a] == null) {
                               allRec[a] = total;
@@ -71,11 +70,11 @@ class _StatisticsViewState extends State<StatisticsView> {
                         controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                           (element) {
                             String date = element.date!.split(" ")[0];
-                        String year = date.split("-")![0];
-                        String month = date!.split("-")![1];
-                        String day = date!.split("-")![2];
-                        String monthNow = DateTime.now().toString().split(" ")[0]!.split("-")![1];
-                        String yearNow = DateTime.now().toString().split(" ")[0]!.split("-")![0];
+                        String year = date.split("-")[0];
+                        String month = date.split("-")[1];
+                        String day = date.split("-")[2];
+                        String monthNow = DateTime.now().toString().split(" ")[0].split("-")[1];
+                        String yearNow = DateTime.now().toString().split(" ")[0].split("-")[0];
                         if (year == yearNow&&month == monthNow) {
                           double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                             if (allRec[day] == null) {
@@ -103,9 +102,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                             controller.accountList[widget.accountId]!.accRecord.toList().forEach(
                               (element) {
                                     String date = element.date!.split(" ")[0];
-                                String year = date!.split("-")![0];
-                                String month = date!.split("-")![1];
-                                String day = date!.split("-")![2];
+                                String year = date.split("-")[0];
+                                String month = date.split("-")[1];
+                                String day = date.split("-")[2];
                                 if (year == i.toString().split("-")[0]&&month == i.toString().split("-")[1]) {
                                     double total = element.total == "NaN"?0:double.tryParse(element.total!)!.roundToDouble();
                                   if (allRec[day] == null) {

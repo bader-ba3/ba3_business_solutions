@@ -1,12 +1,10 @@
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/utils/logger.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Const/const.dart';
 import '../../model/product_model.dart';
 
 class AllProductOLDOLD extends StatelessWidget {

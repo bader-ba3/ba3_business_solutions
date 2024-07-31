@@ -1,13 +1,11 @@
-import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/view/user_management/user_crud/add_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/user_management_model.dart';
-import '../role_management/role_management_view.dart';
 
 class AllUserView extends StatefulWidget {
-  AllUserView({super.key});
+  const AllUserView({super.key});
 
   @override
   State<AllUserView> createState() => _AllUserViewState();

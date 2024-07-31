@@ -1,15 +1,11 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/view/bonds/all_bonds_old.dart';
-import 'package:ba3_business_solutions/view/bonds/bond_report.dart';
-import 'package:ba3_business_solutions/view/invoices/all_Invoice_old.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import '../../model/Pattern_model.dart';
 import 'all_entry_bonds.dart';
-import 'entry_bond_details_view.dart';
 
 class EntryBondType extends StatefulWidget {
   const EntryBondType({super.key});

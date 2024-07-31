@@ -1,9 +1,7 @@
-import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -12,7 +10,7 @@ import '../../model/product_tree.dart';
 
 class ProductTreeView extends StatelessWidget {
   ProductTreeView({super.key});
-  var productController = Get.find<ProductViewModel>();
+ final ProductViewModel productController = Get.find<ProductViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,7 @@ class ProductTreeView extends StatelessWidget {
                 },
                 child: Text("-")), ElevatedButton(
                 onPressed: () {
-                  productController.correct();
+                  // productController.correct();
                 },
                 child: Text("-aaaaa")),
             SizedBox(

@@ -113,7 +113,7 @@ class _SliverListWidgetState<T> extends State<SliverListWidget<T>> {
                 slivers: [
                   PagedSliverList<int, T>(
                     pagingController: _pagingController,
-                    builderDelegate: PagedChildBuilderDelegate<T>(itemBuilder: widget.childBuilder!),
+                    builderDelegate: PagedChildBuilderDelegate<T>(itemBuilder: widget.childBuilder),
                   ),
                 ],
               ),

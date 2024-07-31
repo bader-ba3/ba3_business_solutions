@@ -9,12 +9,10 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
-import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/loading_dialog.dart';
-import 'package:ba3_business_solutions/view/import/entry_bond_list_view.dart';
-import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +57,7 @@ class ImportViewModel extends GetxController {
                   onPressed: () {
                     Get.back();
                   },
-                  child: Text("ok"))
+                  child: const Text("ok"))
             ],
           ));
       return false;
@@ -71,7 +69,7 @@ class ImportViewModel extends GetxController {
   Future<void> addBond(List<GlobalModel> bondList) async {
     addedBond = 0;
     BondViewModel bondController = Get.find<BondViewModel>();
-    GlobalViewModel globalController = Get.find<GlobalViewModel>();
+    // GlobalViewModel globalController = Get.find<GlobalViewModel>();
     print(bondList.length);
     await showLoadingDialog(
         total: bondList.length,
@@ -148,8 +146,7 @@ class ImportViewModel extends GetxController {
       row = file[0].split(separator);
       row2 = file[2].split(separator);
       file.removeAt(0);
-      // print(row);
-      // print(row.length);
+
       if (row.length == 1) {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
@@ -368,7 +365,7 @@ class ImportViewModel extends GetxController {
       List<List<String>> debitList = [];
       List<List<String>> smallDesList = [];
       List<String> dateList = [];
-      List<String> codeList = [];
+      // List<String> codeList = [];
       List<String> typeList = [];
       List<String> totalList = [];
       List<String> desList = [];
@@ -515,9 +512,9 @@ class ImportViewModel extends GetxController {
   }
 
   Future<void> pickInvoiceFileFree(separator) async {
-    BondViewModel bondViewModel = Get.find<BondViewModel>();
+    // BondViewModel bondViewModel = Get.find<BondViewModel>();
     List row = [];
-    List row2 = [];
+    // List row2 = [];
     // var indexOfInvType;
     // var indexOfPrimery;
     var indexOfSecoundry;
@@ -536,7 +533,7 @@ class ImportViewModel extends GetxController {
     var indexOfSeller;
     var indexOfPayType;
     var indexOfGift;
-    List<GlobalModel> bondList = [];
+    // List<GlobalModel> bondList = [];
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
     var result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -751,24 +748,24 @@ class ImportViewModel extends GetxController {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  if (notFoundAccount.isNotEmpty) Center(child: Text("الحسابات")),
+                  if (notFoundAccount.isNotEmpty) const Center(child: Text("الحسابات")),
                   for (var e in notFoundAccount) Text(e),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundStore.isNotEmpty) Center(child: Text("المستودعات")),
+                  if (notFoundStore.isNotEmpty) const Center(child: Text("المستودعات")),
                   for (var e in notFoundStore) Text(e),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundSeller.isNotEmpty) Center(child: Text("البائعون")),
+                  if (notFoundSeller.isNotEmpty) const Center(child: Text("البائعون")),
                   for (var e in notFoundSeller) Text(e),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundProduct.isNotEmpty) Center(child: Text("المواد")),
+                  if (notFoundProduct.isNotEmpty) const Center(child: Text("المواد")),
                   for (var e in notFoundProduct) Text(e),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                 ],
@@ -781,7 +778,7 @@ class ImportViewModel extends GetxController {
 
       int bondCode = 10565;
       for (var i = 0; i < invMap.length; i++) {
-        invMap.entries.toList()[i]!.value.bondCode = "G-" + bondCode.toString();
+        invMap.entries.toList()[i].value.bondCode = "G-$bondCode";
         bondCode++;
       }
       Get.to(() => InvoiceListView(
@@ -823,9 +820,9 @@ class ImportViewModel extends GetxController {
         if (false) {
           HiveDataBase.globalModelBox.deleteFromDisk();
         } else {
-          BondViewModel bondViewModel = Get.find<BondViewModel>();
+          // BondViewModel bondViewModel = Get.find<BondViewModel>();
           List row = [];
-          List row2 = [];
+          // List row2 = [];
           // var indexOfInvType;
           // var indexOfPrimery;
           var indexOfSecoundry;
@@ -846,7 +843,6 @@ class ImportViewModel extends GetxController {
           var indexOfGift;
 
           List nunProd = [];
-          List<GlobalModel> bondList = [];
           debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
           var result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
@@ -1073,24 +1069,24 @@ class ImportViewModel extends GetxController {
                       child: ListView(
                         shrinkWrap: true,
                         children: [
-                          if (notFoundAccount.isNotEmpty) Center(child: Text("الحسابات")),
+                          if (notFoundAccount.isNotEmpty) const Center(child: Text("الحسابات")),
                           for (var e in notFoundAccount) Text(e),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
-                          if (notFoundStore.isNotEmpty) Center(child: Text("المستودعات")),
+                          if (notFoundStore.isNotEmpty) const Center(child: Text("المستودعات")),
                           for (var e in notFoundStore) Text(e),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
-                          if (notFoundSeller.isNotEmpty) Center(child: Text("البائعون")),
+                          if (notFoundSeller.isNotEmpty) const Center(child: Text("البائعون")),
                           for (var e in notFoundSeller) Text(e),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
-                          if (notFoundProduct.isNotEmpty) Center(child: Text("المواد")),
+                          if (notFoundProduct.isNotEmpty) const Center(child: Text("المواد")),
                           for (var e in notFoundProduct) Text(e),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                         ],
@@ -1106,7 +1102,7 @@ class ImportViewModel extends GetxController {
 
             int bondCode = 0;
             for (var i = 0; i < invMap.length; i++) {
-              invMap.entries.toList()[i]!.value.bondCode = bondCode.toString();
+              invMap.entries.toList()[i].value.bondCode = bondCode.toString();
               bondCode++;
             }
 
@@ -1352,7 +1348,6 @@ class ImportViewModel extends GetxController {
   }
 
   pickNewType(separator) async {
-    int finsh = 0;
     List row = [];
     List row2 = [];
     var indexOfDate;
@@ -1364,7 +1359,7 @@ class ImportViewModel extends GetxController {
     var indexOfDebit;
     var indexOfTotal;
     var indexOfSmallDes;
-    List<GlobalModel> bondList = [];
+    // List<GlobalModel> bondList = [];
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
     var result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
