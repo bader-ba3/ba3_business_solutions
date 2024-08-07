@@ -14,7 +14,7 @@ import 'user_management_model.dart';
 
 class SellersViewModel extends GetxController {
   late DataGridController dataViewGridController;
-  late AllSellerInvoiceViewDataGridSource recordViewDataSource;
+  late AllSellerInvoiceViewDataGridSource recordViewDataSource=AllSellerInvoiceViewDataGridSource(sellerRecModel: []);
   RxMap<String, SellerModel> allSellers = <String, SellerModel>{}.obs;
 
   SellersViewModel() {

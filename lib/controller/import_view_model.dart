@@ -12,6 +12,7 @@ import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/loading_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -132,7 +133,7 @@ class ImportViewModel extends GetxController {
     // int codeBond = 2453;
     // int codeBond = 2250;
     // int codeBond = 2251;
-    int codeBond = 2573;
+    int codeBond = 2600;
     List<GlobalModel> bondList = [];
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
     var result = await FilePicker.platform.pickFiles(
@@ -282,7 +283,7 @@ class ImportViewModel extends GetxController {
       correctDebitAndCredit(bondList);
       print(bondList.length);
 
-      bondList.removeWhere((element) {
+      /*bondList.removeWhere((element) {
         //  {
         //    if(allbond.where((e) => e.bondCode==element.bondCode&& e.bondType== element.bondType&& e.bondDate== element.bondDate,).firstOrNull?.toFullJson()!=null) {
         //     print(element.toJson());
@@ -298,7 +299,7 @@ class ImportViewModel extends GetxController {
         return allbond.contains(
           (bondCode: element.bondCode, bondType: element.bondType, bondDate: element.bondDate),
         );
-      });
+      });*/
       print(bondList.length);
 
       // Get.to(() => ProductListView(
@@ -433,7 +434,6 @@ class ImportViewModel extends GetxController {
             print(accountList[i][j]);
             print(name);
             if (name == "") {
-
               // print(codeList[i]);
             }
             print("---------");
@@ -468,9 +468,9 @@ class ImportViewModel extends GetxController {
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
       }
-
+      print(bondList.length);
       correctDebitAndCredit(bondList);
-
+      print(bondList.length);
       bondList.removeWhere((element) => allbond.contains(
             (bondCode: element.bondCode, bondType: element.bondType),
           ));
@@ -602,7 +602,6 @@ class ImportViewModel extends GetxController {
 
         List _ = element[indexOfInvCode].toString().replaceAll(" ", "").split(":");
         if (_[0] == "إخ.م" || _[0] == "إد.م") {
-
           if (allChanges[_[1]] == null) {
             allChanges[_[1]] = _[0] == "إخ.م" ? (strart: store, end: null) : (end: store, strart: null);
             continue;
@@ -611,13 +610,9 @@ class ImportViewModel extends GetxController {
           }
           patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patType == Const.invoiceTypeChange));
         } else {
-
-          if(element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="تا")
-            {
-              patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName! == "ت ادخال"));
-
-            }
-          else {
+          if (element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "") == "تا") {
+            patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName! == "ت ادخال"));
+          } else {
             patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName?.replaceAll(" ", "") == element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")));
           }
         }
@@ -776,7 +771,7 @@ class ImportViewModel extends GetxController {
 
       // invMap.removeWhere((key, value) => allInvoice.contains((invCode:value.invCode,invType:value.invType)),);
 
-      int bondCode = 10565;
+      int bondCode = 20565;
       for (var i = 0; i < invMap.length; i++) {
         invMap.entries.toList()[i].value.bondCode = "G-$bondCode";
         bondCode++;
@@ -976,6 +971,8 @@ class ImportViewModel extends GetxController {
                 if (getProductModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
                   nunProd.add(element[indexOfProductName]);
                   print(element[indexOfProductName]);
+                  Get.snackbar("error", "plz check if the file separeted ");
+                  return;
                 }
                 // var invId = generateId(RecordType.invoice);
                 else {
@@ -1347,6 +1344,34 @@ class ImportViewModel extends GetxController {
     }
   }
 
+  syncLocalAndFireBase() async {
+    print("object");
+    Map<String, GlobalModel> local = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
+    local.forEach(
+      (key, value) async {
+        await FirebaseFirestore.instance.collection("2024").doc(key).set(value.toJson(), SetOptions(merge: true));
+        print("key $key-------------------------${value.toJson()}");
+      },
+    );
+
+    /*   await  FirebaseFirestore.instance.collection("2024").get().then(
+          (value) {
+        for (var firebaseRecord in value.docs) {
+          if (local[firebaseRecord.id] != null) {
+            FirebaseFirestore.instance.collection("2024").doc(firebaseRecord.id).set(local[firebaseRecord.id]!.toJson(), SetOptions(merge: true));
+          } else {
+            FirebaseFirestore.instance.collection("2024").doc(firebaseRecord.id).delete();
+          }
+          print(local[firebaseRecord.id]?.toJson());
+          print("-"*30);
+          print(firebaseRecord.data());
+
+          return;
+        }
+      },
+    );*/
+  }
+
   pickNewType(separator) async {
     List row = [];
     List row2 = [];
@@ -1522,7 +1547,6 @@ class ImportViewModel extends GetxController {
               ),
             );
           }
-
           HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
         }
       }

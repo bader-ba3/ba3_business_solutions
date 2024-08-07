@@ -181,8 +181,9 @@ class AccountViewModel extends GetxController {
       });
     } else {
       for (var element in HiveDataBase.accountModelBox.values) {
-        accountList[element.accId!] = element;
-        accountList[element.accId!]!.accRecord.clear();
+          accountList[element.accId!] = element;
+          accountList[element.accId!]!.accRecord.clear();
+
       }
       initModel();
       initPage();
@@ -251,6 +252,8 @@ class AccountViewModel extends GetxController {
   ///----------------------------
 
   addNewAccount(AccountModel accountModel, {bool withLogger = false}) async {
+
+
     if (accountList.values.toList().map((e) => e.accCode).toList().contains(accountModel.accCode)) {
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
@@ -261,9 +264,9 @@ class AccountViewModel extends GetxController {
     if (accountModel.accParentId == null) {
       accountModel.accIsParent = true;
     } else {
-      // FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accParentId).update({
-      //   'accChild': FieldValue.arrayUnion([accountModel.accId]),
-      // });
+      FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accParentId).update({
+        'accChild': FieldValue.arrayUnion([accountModel.accId]),
+      });
       if (!accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
         accountList[accountModel.accParentId!]!.accChild.add(accountModel.accId);
         await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
@@ -339,7 +342,7 @@ class AccountViewModel extends GetxController {
   }
 
   String getLastCode() {
-    List<int> allCode = accountList.values.map((e) => int.parse(e.accCode!)).toList();
+    List<int> allCode = accountList.values.where((element) => (!element.accCode!.contains("F")),).map((e) => int.parse(e.accCode!)).toList();
     int _ = 0;
     if (accountList.isEmpty) {
       return "0";
@@ -394,17 +397,17 @@ class AccountViewModel extends GetxController {
 
   Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
     if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
-    // if(accountList[editProductModel.accId]?.accParentId!=null){
-    //   await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
-    //     'accChild': FieldValue.arrayRemove([editProductModel.accId]),
-    //   });
-    // }
+    if(accountList[editProductModel.accId]?.accParentId!=null){
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
+        'accChild': FieldValue.arrayRemove([editProductModel.accId]),
+      });
+    }
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[editProductModel.accId]?.accParentId != null) {
-      // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
-      //   'accChild': FieldValue.arrayRemove([editProductModel.accId]),
-      // });
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
+        'accChild': FieldValue.arrayRemove([editProductModel.accId]),
+      });
       if (accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
         accountList[editProductModel.accParentId!]!.accChild.remove(editProductModel.accId);
         await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
@@ -413,9 +416,9 @@ class AccountViewModel extends GetxController {
     if (editProductModel.accParentId == null) {
       editProductModel.accIsParent = true;
     } else {
-      // FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accParentId).update({
-      //   'accChild': FieldValue.arrayUnion([editProductModel.accId]),
-      // });
+      FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accParentId).update({
+        'accChild': FieldValue.arrayUnion([editProductModel.accId]),
+      });
       if (!accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
         accountList[editProductModel.accParentId!]!.accChild.add(editProductModel.accId);
         await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
@@ -438,9 +441,9 @@ class AccountViewModel extends GetxController {
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[accountModel.accId]?.accParentId != null) {
-      // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[accountModel.accId]?.accParentId).update({
-      //   'accChild': FieldValue.arrayRemove([accountModel.accId]),
-      // });
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[accountModel.accId]?.accParentId).update({
+        'accChild': FieldValue.arrayRemove([accountModel.accId]),
+      });
 
       if (accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
         accountList[accountModel.accParentId!]!.accChild.remove(accountModel.accId);

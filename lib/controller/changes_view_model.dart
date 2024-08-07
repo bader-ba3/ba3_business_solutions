@@ -27,7 +27,7 @@ class ChangesViewModel extends GetxController{
           "allFlags":FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
         },SetOptions(merge: true));
        await FirebaseFirestore.instance.collection(Const.changesCollection).get().then((value) {
-          HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(value.docs.last.id));
+          HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(value.docs.lastOrNull?.id??"1"));
         });
       }
       listenChanges();

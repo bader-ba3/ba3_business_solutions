@@ -14,20 +14,20 @@ class _UserManagementState extends State<UserManagement> {
   @override
   void initState() {
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
-      print("aaa");
+
       if (_alertShowing) return false;
         _alertShowing = true;
         bool a= false;
        bool?_ = await Get.defaultDialog(
-        content: Text('Do you really want to quit?'),
+        content: const Text('Do you really want to quit?'),
         confirm: ElevatedButton(onPressed: (){
            Get.back(result: true);
             _alertShowing = false;
-        }, child: Text("YES")),
+        }, child: const Text("YES")),
         cancel: ElevatedButton(onPressed: (){
            Get.back(result: false);
            _alertShowing = false;
-        }, child: Text("NO")),
+        }, child: const Text("NO")),
       );
       if(_!=null){
         a = _;
@@ -43,7 +43,7 @@ class _UserManagementState extends State<UserManagement> {
   Widget build(BuildContext context) {
     UserManagementViewModel userManagementViewController = Get.find<UserManagementViewModel>();
     userManagementViewController.checkUserStatus();
-    return Scaffold(
+    return const Scaffold(
         body: Center(
       child: Text("يتم تسجيل الدخول"),
     ));

@@ -19,7 +19,7 @@ class BondListView extends StatelessWidget {
         actions: [
           ElevatedButton(onPressed: (){
             for (var element in bondList) {
-              print(element.toFullJson());
+              // print(element.toFullJson());
             }
            if( importViewModel.checkAllAccount(bondList)){
             importViewModel.addBond(bondList);

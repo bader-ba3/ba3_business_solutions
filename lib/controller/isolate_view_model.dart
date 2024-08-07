@@ -120,7 +120,7 @@ String getProductNameFromIdIsolate(id) {
         print(id);
         print("---------");
     }
-    return Get.find<IsolateViewModel>().productDataMap[id]!.prodName!;
+    return Get.find<IsolateViewModel>().productDataMap[id]?.prodName! ??'';
   } else {
     return "";
   }}

@@ -154,7 +154,7 @@ class _InvoiceViewState extends State<InvoiceView> {
             children: [
               if (widget.patternModel!.patType != Const.invoiceTypeChange)
                 Container(
-                  height: 250,
+                  // height: 250,
                   // color: Colors.white12,
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(10),
@@ -229,12 +229,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                       const SizedBox(
                         height: 40,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                        spacing: 10,
+                        alignment: WrapAlignment.spaceBetween,
+                        runSpacing: 10,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
                             width: Get.width * 0.35,
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Text(
                                   "المدين : ",
@@ -265,6 +269,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ),
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
+
                             children: [
                               const Text(
                                 "البائع : ",
@@ -287,6 +293,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                             ],
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
+
                             children: [
                               const Text(
                                 "نوع الفاتورة" + ": ",
@@ -307,19 +315,21 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     },
                                     items: [Const.invPayTypeCash, Const.invPayTypeDue]
                                         .map((e) => DropdownMenuItem(
+                                              value: e,
                                               child: Container(
                                                   width: double.infinity,
                                                   child: Text(
                                                     getInvPayTypeFromEnum(e),
                                                     textDirection: TextDirection.rtl,
                                                   )),
-                                              value: e,
                                             ))
                                         .toList(),
                                   )),
                             ],
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
+
                             children: [
                               const Text("المستودع : "),
                               SizedBox(

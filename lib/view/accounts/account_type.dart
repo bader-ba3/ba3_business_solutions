@@ -46,10 +46,6 @@ class _AccountTypeState extends State<AccountType> {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
-            //   Item("correct", () {
-            //   AccountViewModel accountViewModel = Get.find<AccountViewModel>();
-            //   accountViewModel.correct();
-            // }),
 
           ],
         ),

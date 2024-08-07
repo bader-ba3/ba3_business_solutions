@@ -21,7 +21,7 @@ class NewInventoryView extends StatefulWidget {
 
 class _NewInventoryViewState extends State<NewInventoryView> {
   List<Map<String, dynamic>> treeListData = [];
-  TextEditingController nameController = TextEditingController(text: "جرد بتاريخ "+DateTime.now().toString().split(" ")[0]
+  TextEditingController nameController = TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}"
   );
   List allData  =[];
 
@@ -44,7 +44,7 @@ class _NewInventoryViewState extends State<NewInventoryView> {
 
      List<ProductModel> dataList = isolateViewModel.productDataMap.values.toList();
      dataList.add(a);
-
+print("--s---"*30);
      List<Map<String, dynamic>> treeListData = [];
      List<Map<String, dynamic>> initialTreeData = [];
 
@@ -58,7 +58,10 @@ class _NewInventoryViewState extends State<NewInventoryView> {
     a:HiveDataBase.inventoryModelBox.get("0")?.inventoryTargetedProductList??[],
     isolateViewModel:isolateViewModel)).then((value) {
 
+      value.treeListData.removeWhere((element) => element.isEmpty,);
+
       treeListData=value.treeListData ;
+
       print(treeListData.length);
       setState(() { });
     });
@@ -108,12 +111,13 @@ class _NewInventoryViewState extends State<NewInventoryView> {
                   ? FlutterTreePro(
                 isExpanded: false,
                 listData: treeListData,
-                config: Config(
+                config:   Config(
                   parentId: 'parentId',
                   dataType: DataType.DataList,
                   label: 'value',
                 ),
                 onChecked: (List<Map<String, dynamic>> checkedList) {
+                  print(checkedList.length);
                   allData.clear();
                   if(checkedList == [])return;
                   addChild(checkedList);

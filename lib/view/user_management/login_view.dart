@@ -35,7 +35,7 @@ class _LoginViewState extends State<LoginView> {
           String id = '';
           for (var e in idList) {
             if (id == '') {
-              id = "${e.toRadixString(16).padLeft(2, "0")}";
+              id = e.toRadixString(16).padLeft(2, "0");
             } else {
               id = "$id:${e.toRadixString(16).padLeft(2, "0")}";
             }
@@ -60,7 +60,7 @@ class _LoginViewState extends State<LoginView> {
         // SizedBox(
         //   height: 20,
         // ),
-        Center(
+        const Center(
             child: Text(
           "Ba3 Business Solutions",
           style: TextStyle(
@@ -73,18 +73,18 @@ class _LoginViewState extends State<LoginView> {
         // ),
         Center(
             child: Text(
-          "تسجيل الدخول الى " + Const.dataName,
-          style: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
+          "تسجيل الدخول الى ${Const.dataName}",
+          style: const TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
         )),
 
         Column(
           children: [
-            Center(
+            const Center(
                 child: Text(
               "ادخل الرقم السري الخاص بك",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             )),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             SizedBox(
@@ -92,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
               child: GetBuilder<UserManagementViewModel>(builder: (controller) {
                 return controller.userStatus != UserManagementStatus.login
                     ? isNfcAvailable ?? false
-                        ? Text("يرجى تقريب بطاقة الدخول")
+                        ? const Text("يرجى تقريب بطاقة الدخول")
                         : Pinput(
                             length: 6,
                             onCompleted: (_) {
@@ -104,14 +104,14 @@ class _LoginViewState extends State<LoginView> {
                             defaultPinTheme: PinTheme(
                               width: 56,
                               height: 56,
-                              textStyle: TextStyle(
+                              textStyle: const TextStyle(
                                   fontSize: 20,
                                   color: Color.fromRGBO(30, 60, 87, 1),
                                   fontWeight: FontWeight.w600),
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(200, 238, 253, 1),
+                                color: const Color.fromRGBO(200, 238, 253, 1),
                                 border: Border.all(
-                                    color: Color.fromRGBO(140, 140, 140, 1)),
+                                    color: const Color.fromRGBO(140, 140, 140, 1)),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ))
@@ -142,13 +142,11 @@ class _LoginViewState extends State<LoginView> {
                   GlobalViewModel globalModel = Get.find<GlobalViewModel>();
                   return Obx(
                     () {
-                      return Text(globalModel.count.toString() +
-                          " / " +
-                          globalModel.allcountOfInvoice.toString());
+                      return Text("${globalModel.count} / ${globalModel.allcountOfInvoice}");
                     },
                   );
                 }
-                return SizedBox();
+                return const SizedBox();
               },
             )
           ],

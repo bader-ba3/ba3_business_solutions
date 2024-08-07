@@ -77,7 +77,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
+      body: ListView(
+        shrinkWrap: true,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -97,59 +98,57 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                     }
                     setState(() {});
                   }),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
-              Text("النوع"),
+              const Text("النوع"),
             ],
           ),
           if (type == null)
-            Expanded(child: SizedBox())
+            const Expanded(child: SizedBox())
           else
-            Expanded(
-              child: SizedBox(
-                  width: double.infinity,
-                  child: Wrap(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    // mainAxisSize: MainAxisSize.max,
-                    children: List.generate(
-                        config.keys.toList().length,
-                        (index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                height: 120,
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(config.keys.toList()[index]),
-                                    Text("| |"),
-                                    Text(" V"),
-                                    SizedBox(
-                                      height: 30,
-                                      width: 300,
-                                      child: DropdownButton<int>(
-                                          value: setting[config.values.toList()[index]],
-                                          items: widget.rows
-                                              .map((e) => DropdownMenuItem(
-                                                    value: widget.rows.indexOf(e),
-                                                    child: Text(e.toString()),
-                                                  ))
-                                              .toList(),
-                                          onChanged: (_) {
-                                            // print(widget.rows.indexOf(_!));
-                                            setting[config.values.toList()[index]] = _;
-                                            print(setting);
-                                            setState(() {});
-                                          }),
-                                    )
-                                  ],
-                                ),
+            SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // mainAxisSize: MainAxisSize.max,
+                  children: List.generate(
+                      config.keys.toList().length,
+                      (index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              height: 120,
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(config.keys.toList()[index]),
+                                  const Text("| |"),
+                                  const Text(" V"),
+                                  SizedBox(
+                                    height: 30,
+                                    width: 300,
+                                    child: DropdownButton<int>(
+                                        value: setting[config.values.toList()[index]],
+                                        items: widget.rows
+                                            .map((e) => DropdownMenuItem(
+                                                  value: widget.rows.indexOf(e),
+                                                  child: Text(e.toString()),
+                                                ))
+                                            .toList(),
+                                        onChanged: (_) {
+                                          // print(widget.rows.indexOf(_!));
+                                          setting[config.values.toList()[index]] = _;
+                                          print(setting);
+                                          setState(() {});
+                                        }),
+                                  )
+                                ],
                               ),
-                            )),
-                  )),
-            ),
+                            ),
+                          )),
+                )),
           ElevatedButton(
               onPressed: () async {
                 if (type == RecordType.product) {
@@ -162,12 +161,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 }
                 // Get.offAll(() => HomeView());
               },
-              child: Text("ending")),
-          SizedBox(
+              child: const Text("ending")),
+          const SizedBox(
             height: 70,
           ),
-          Text("مثال"),
-          SizedBox(
+          const Text("مثال"),
+          const SizedBox(
             height: 70,
           ),
           SizedBox(
@@ -262,7 +261,9 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     for (var element in finalData) {
       i++;
       print(i.toString() + " OF " + finalData.length.toString());
-      await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
+
+      ///FireBse Todo
+      // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
     }
     // i = 0;
@@ -368,7 +369,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       print(element.toJson());
       await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
-      if(element.prodParentId!=null) {
+      print(element.prodParentId);
+      if(element.prodParentId!=null&&element.prodParentId!='') {
         ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
         parentModel.prodChild?.add(element.prodId);
         HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
@@ -472,9 +474,10 @@ Future<void> addCheque() async {
         //  String globalBondId = generateId(RecordType.bond);
         await Future.delayed(const Duration(milliseconds: 100));
        String cheqType =element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace?Const.chequeTypePay:Const.chequeTypePay; 
-       String cheqStatus =element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace?Const.chequeStatusPaid:Const.chequeStatusNotPaid; 
+       String cheqStatus =element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace?Const.chequeStatusPaid:Const.chequeStatusNotPaid;
+       print(element[setting["cheqPrimeryAccount"]]);
        String cheqPrimeryAccount=getAccountIdFromName(element[setting["cheqPrimeryAccount"]])!.accId!;
-       String cheqSecoundryAccount=getAccountIdFromName(element[setting["cheqSecoundryAccount"]].toString().split("-")[1])!.accId!;
+       String cheqSecoundryAccount=getAccountIdFromName(element[setting["cheqSecoundryAccount"]].toString())!.accId!;
        String cheqBankAccount=getAccountIdFromText("المصرف");
        double cheqAllAmount=double.parse(element[setting["cheqAllAmount"]].replaceAll(",", ""));
        int _year = int.parse(element[setting["cheqDate"]].toString().split("-")[2]);
@@ -487,9 +490,9 @@ Future<void> addCheque() async {
         cheqBankAccount:cheqBankAccount,
         cheqCode:cheqCode.toString(),
         cheqDate:cheqDate.toString(),
-        bondId: globalBondId,
+        entryBondId: globalBondId,
         cheqId: cheqId,
-        cheqName:element[setting["cheqType"]] + "رقم الورقة "+element[setting["cheqNum"]],
+        cheqName:"${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}",
         cheqPrimeryAccount:cheqPrimeryAccount,
         cheqSecoundryAccount:cheqSecoundryAccount,
         cheqRecords:[
@@ -523,7 +526,7 @@ Future<void> addCheque() async {
      for (var element in finalData) {
         print(element.toFullJson());
 
-      HiveDataBase.globalModelBox.put(element.bondId, element);
+      HiveDataBase.globalModelBox.put(element.entryBondId, element);
     }
     
   }

@@ -1,8 +1,8 @@
-
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../Const/const.dart';
@@ -11,8 +11,8 @@ import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
 
 class GlobalModel {
-  String? 
-      globalId,
+  String?
+  globalId,
       originAmenId,
       bondId,
       bondDescription,
@@ -172,7 +172,7 @@ class GlobalModel {
       if (entryBondId != null) 'entryBondId': entryBondId,
       if (entryBondCode != null) 'entryBondCode': entryBondCode,
       if (entryBondRecord != null) "entryBondRecord": entryBondRecord?.map((record) => record.toJson()).toList(),
-       if (invGiftAccount != null) "invGiftAccount": invGiftAccount,
+      if (invGiftAccount != null) "invGiftAccount": invGiftAccount,
       if (invSecGiftAccount != null) "invSecGiftAccount": invSecGiftAccount,
     };
   }
@@ -181,8 +181,15 @@ class GlobalModel {
     if (json == null) {
       return GlobalModel();
     }
+
+/*    List<InvoiceRecordModel> invRecordList = [];
+    FirebaseFirestore.instance.collection("2024").doc(json["entryBondId"]).collection("invoiceRecord").get().then((value) {
+      for (var e in value.docs) {
+        invRecordList.add(InvoiceRecordModel.fromJson(e.data()));
+      }
+    },);*/
     List<BondRecordModel>? bondRecordList = json['bondRecord'] == null ? [] : json['bondRecord']?.map<BondRecordModel>((dynamic e) => BondRecordModel.fromJson(e)).toList();
-    List<InvoiceRecordModel>? invRecordList = json['invRecords'] == null ? [] : json['invRecords']?.map<InvoiceRecordModel>((dynamic e) => InvoiceRecordModel.fromJson(e)).toList();
+    List<InvoiceRecordModel>?  invRecordList = json['invRecords'] == null ? [] : json['invRecords']?.map<InvoiceRecordModel>((dynamic e) => InvoiceRecordModel.fromJson(e)).toList();
     List<ChequeRecModel>? cheqRecord = json['cheqRecords'] == null ? [] : json['cheqRecords']?.map<ChequeRecModel>((dynamic e) => ChequeRecModel.fromJson(e)).toList();
     List<EntryBondRecordModel>? entryBondRecord = json['entryBondRecord'] == null ? [] : json['entryBondRecord']?.map<EntryBondRecordModel>((dynamic e) => EntryBondRecordModel.fromJson(e)).toList();
     List<InvoiceDiscountRecordModel>? invDiscountRecord = json['invDiscountRecord'] == null ? [] : json['invDiscountRecord']?.map<InvoiceDiscountRecordModel>((dynamic e) => InvoiceDiscountRecordModel.fromJson(e)).toList();
@@ -237,11 +244,12 @@ class GlobalModel {
       cheqRecords: cheqRecord,
       entryBondId: json['entryBondId'],
       entryBondCode: json['entryBondCode'],
-         invGiftAccount: json['invGiftAccount'],
+      invGiftAccount: json['invGiftAccount'],
       invSecGiftAccount: json['invSecGiftAccount'],
       entryBondRecord: entryBondRecord,
     );
   }
+
   // Map difference(GlobalModel oldData) {
   //   Map<String, Map<String, dynamic>> finalMap = {
   //     "oldData": {"bondRecord": [], "invRecords": []},
@@ -431,11 +439,11 @@ class GlobalModel {
     this.cheqStatus,
     this.cheqType,
     this.cheqBankAccount,
-    this.cheqRecords,   
+    this.cheqRecords,
     this.entryBondId,
     this.entryBondCode,
     this.entryBondRecord,
-     this.invGiftAccount,
+    this.invGiftAccount,
     this.invSecGiftAccount,
     this.discountTotal,
     this.firstPay,

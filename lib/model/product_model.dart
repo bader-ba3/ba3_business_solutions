@@ -223,12 +223,19 @@ class ProductModel {
   }
 
   Map<String, dynamic> toTree() {
-    return {
+    print(prodId);
+    print(prodParentId);
+if(prodParentId?.startsWith("prod")??false) {
+  return {
       'id': int.parse(prodId!.split("prod")[1]),
-      'value': prodFullCode.toString()  +  "      " + prodName.toString()  ,
-      'parentId': int.parse((prodParentId?.split("prod")[1]) != null
+      'value': "$prodFullCode      $prodName"  ,
+      'parentId': int.parse((prodParentId!.split("prod")[1])/* != null
           ? (prodParentId?.split("prod")[1])!
-          : "1" ),
+          : "1"*/ ),
     };
+}
+else {
+  return {};
+}
   }
 }

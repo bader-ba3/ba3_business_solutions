@@ -40,12 +40,14 @@ class _SelectTaskInventoryState extends State<SelectTaskInventory> {
     isolateViewModel.init();
 
     compute<({List<dynamic> a ,IsolateViewModel isolateViewModel}),({List<Map<String, dynamic>> initialTreeData , List<Map<String, dynamic>> treeListData })>((message) {
-
+// print(message)
       IsolateViewModel isolateViewModel = Get.put(message.isolateViewModel);
 
       ProductModel a = ProductModel(prodName: "ALL DATA",prodId: 'prod1',prodParentId: "prod0",prodFullCode: "0");
 
      List<ProductModel> dataList = isolateViewModel.productDataMap.values.toList();
+
+
      dataList.add(a);
 
      List<Map<String, dynamic>> treeListData = [];
@@ -95,13 +97,13 @@ class _SelectTaskInventoryState extends State<SelectTaskInventory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("المواد المراد جردها",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-              SizedBox(height: 10,),
+              const Text("المواد المراد جردها",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+              const SizedBox(height: 10,),
               Expanded(child: treeListData.isNotEmpty
                   ? FlutterTreePro(
                 isExpanded: false,
                 listData: treeListData,
-                config: Config(
+                config: const Config(
                   parentId: 'parentId',
                   dataType: DataType.DataList,
                   label: 'value',

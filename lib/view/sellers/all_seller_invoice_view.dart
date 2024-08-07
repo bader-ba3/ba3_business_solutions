@@ -12,8 +12,8 @@ import '../../utils/date_range_picker.dart';
 class AllSellerInvoice extends StatelessWidget {
   final String? oldKey;
 
-  AllSellerInvoice({super.key, this.oldKey});
- late final List<DateTime>? dateRange;
+   AllSellerInvoice({super.key, this.oldKey});
+   List<DateTime>? dateRange=[];
 
   @override
   Widget build(BuildContext context) {

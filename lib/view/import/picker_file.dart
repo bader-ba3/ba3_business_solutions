@@ -52,8 +52,9 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    importViewModel.pickBondFile(separator);
-                    // importViewModel.pickBondFileFree(separator);
+                    print("free");
+                    // importViewModel.pickBondFile(separator);
+                    importViewModel.pickBondFileFree(separator);
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }
@@ -64,8 +65,9 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    // importViewModel.pickInvoiceFileFree(separator);
-                    importViewModel.pickInvoiceFile(separator);
+                    print("free");
+                    importViewModel.pickInvoiceFileFree(separator);
+                    // importViewModel.pickInvoiceFile(separator);
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }
@@ -82,6 +84,15 @@ class FilePickerWidget extends StatelessWidget {
                   }
                 },
                 child: Text("سندات القيد"),
+              ),
+              SizedBox(height: 30,),
+              ElevatedButton(
+                onPressed: () {
+
+                    importViewModel.syncLocalAndFireBase();
+
+                },
+                child: const Text("مزامنة"),
               ),
             ],
           ),

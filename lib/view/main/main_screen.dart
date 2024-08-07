@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     .toList();
                 // tabController = TabController(length: allData.length, vsync: this, initialIndex: tabIndex);
                 if (allData.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       "ليس لديك صلاحيات",
                       style: TextStyle(color: Colors.white, fontSize: 30),
@@ -110,7 +110,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       color: Colors.black,
                       fontSize: 15.0,
                     ),
-                    unselectedTextStyle: TextStyle(
+                    unselectedTextStyle: const TextStyle(
                       color: Colors.black,
                       fontSize: 13.0,
                     ),
@@ -133,7 +133,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       width: Get.width,
                       height: Get.height,
                       child: PageView(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         controller: pageController,
                         children: List.generate(
                             allData.length,
@@ -176,15 +176,15 @@ class DrawerListTile extends StatelessWidget {
             child: Center(
                 child: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 30,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
               ],
             ))),

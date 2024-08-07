@@ -125,7 +125,7 @@ class InvoiceViewModel extends GetxController {
     /// todo : edit this.
     //nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => e.invId!));
 
-    //initAllInvoice();
+    // initAllInvoice();
     update();
   }
 

@@ -74,14 +74,9 @@ class MyApp extends StatelessWidget {
       title: "Ba3 Business",
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-            // backgroundColor:Colors.grey.shade200! ,
-            //  backgroundColor:Color.fromARGB(255, 255, 247, 222) ,
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
-            // surfaceTintColor: Colors.grey.shade200! ,
-            //   surfaceTintColor: Color.fromARGB(255, 255, 247, 221) ,
             surfaceTintColor: Colors.white,
-            // color: Color.fromARGB(255, 255, 248, 228),
             elevation: 0),
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
@@ -91,12 +86,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             primary: Colors.black,
             seedColor: Colors.black,
-            // background: Colors.grey.shade200!
-            // background: Color.fromARGB(255, 255, 247, 221)
             background: Colors.white),
         useMaterial3: true,
       ),
-      home: UserManagement(),
+      home: const UserManagement(),
     );
   }
 }

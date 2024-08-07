@@ -1,5 +1,3 @@
-
-
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 
@@ -43,7 +41,7 @@ class EntryBondViewModel extends GetxController {
     double debit = 0;
     double credit = 0;
     tempBondModel.entryBondRecord?.forEach((element) {
-      debit = debit + (element.bondRecDebitAmount?? 0);
+      debit = debit + (element.bondRecDebitAmount ?? 0);
       credit = credit + (element.bondRecCreditAmount ?? 0);
     });
     tempBondModel.bondTotal = (debit - credit).toStringAsFixed(2);
@@ -106,60 +104,83 @@ class EntryBondViewModel extends GetxController {
     }
   }
 
-    initGlobalInvoiceBond(GlobalModel globalModel) async {
-    allEntryBonds[globalModel.entryBondId!]=globalModel;
+  initGlobalInvoiceBond(GlobalModel globalModel) async {
+    allEntryBonds[globalModel.entryBondId!] = globalModel;
     allEntryBonds[globalModel.entryBondId!]?.entryBondRecord = [];
     allEntryBonds[globalModel.entryBondId!]?.originId = globalModel.invId;
-     allEntryBonds[globalModel.entryBondId!]?.bondType = Const.bondTypeInvoice;
+    allEntryBonds[globalModel.entryBondId!]?.bondType = Const.bondTypeInvoice;
     allEntryBonds[globalModel.entryBondId!]?.bondDate ??= globalModel.invDate;
-    allEntryBonds[globalModel.entryBondId!]?.bondDescription =getGlobalTypeFromEnum(globalModel.patternId!)+" تم التوليد بشكل تلقائي";
-    int bondRecId=0;
+    allEntryBonds[globalModel.entryBondId!]?.bondDescription = "${getGlobalTypeFromEnum(globalModel.patternId!)} تم التوليد بشكل تلقائي";
+    int bondRecId = 0;
     globalModel.invRecords?.forEach((element) {
-      String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
-      List<InvoiceDiscountRecordModel> discountList = (globalModel.invDiscountRecord!).isEmpty?[]:(globalModel.invDiscountRecord!).where((e)=>e.discountId!=null&&(e.discountTotal??0)>0).toList();
-      List<InvoiceDiscountRecordModel> addedList = (globalModel.invDiscountRecord!).isEmpty?[]:(globalModel.invDiscountRecord!).where((e)=>e.discountId!=null&&(e.addedTotal??0)>0).toList();
-      double totalDiscount =discountList.isEmpty?0: discountList.map((e) => e.isChooseDiscountTotal! ?e.discountTotal!:e.discountPercentage!,).reduce((value, element) => value+element,);
-      double totalAdded =addedList.isEmpty?0: addedList.map((e) => e.isChooseAddedTotal! ?e.addedTotal!:e.addedPercentage!,).reduce((value, element) => value+element,);
-      
-      if(globalModel.invType==Const.invoiceTypeSales){
-       if((element.invRecQuantity??0)>0){
-        //  allEntryBonds[globalModel.bondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100)))+((element.invRecSubTotal!*(element.invRecGift??0))*(totalAdded==0?0:(totalAdded/100)))).abs(), 0, allEntryBonds[globalModel.bondId!]?.invPrimaryAccount,dse ));
-         allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!).abs(), 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount,dse ));
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, dse));
-        } if((element.invRecGift??0)>0){
-          String giftDse="هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0,element.invRecGiftTotal!,  allEntryBonds[globalModel.entryBondId!]?.invGiftAccount,giftDse ));
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),  element.invRecGiftTotal!, 0,allEntryBonds[globalModel.entryBondId!]?.invSecGiftAccount, giftDse));
+      String dse = "${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
+      List<InvoiceDiscountRecordModel> discountList = (globalModel.invDiscountRecord!).isEmpty ? [] : (globalModel.invDiscountRecord!).where((e) => e.discountId != null && (e.discountTotal ?? 0) > 0).toList();
+      List<InvoiceDiscountRecordModel> addedList = (globalModel.invDiscountRecord!).isEmpty ? [] : (globalModel.invDiscountRecord!).where((e) => e.discountId != null && (e.addedTotal ?? 0) > 0).toList();
+      double totalDiscount = discountList.isEmpty
+          ? 0
+          : discountList
+              .map(
+                (e) => e.isChooseDiscountTotal! ? e.discountTotal! : e.discountPercentage!,
+              )
+              .reduce(
+                (value, element) => value + element,
+              );
+      double totalAdded = addedList.isEmpty
+          ? 0
+          : addedList
+              .map(
+                (e) => e.isChooseAddedTotal! ? e.addedTotal! : e.addedPercentage!,
+              )
+              .reduce(
+                (value, element) => value + element,
+              );
+
+      if (globalModel.invType == Const.invoiceTypeSales) {
+        if ((element.invRecQuantity ?? 0) > 0) {
+          //  allEntryBonds[globalModel.bondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100)))+((element.invRecSubTotal!*(element.invRecGift??0))*(totalAdded==0?0:(totalAdded/100)))).abs(), 0, allEntryBonds[globalModel.bondId!]?.invPrimaryAccount,dse ));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal! * element.invRecQuantity!).abs(), 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, dse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal! * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, dse));
         }
-      if(totalDiscount>0||totalAdded>0){
-        for (var model in globalModel.invDiscountRecord!) {
-          if(model.discountTotal!=0){
-          var discountDes = "الخصم المعطى ${model.isChooseDiscountTotal! ?"بقيمة ${model.discountTotal}":"بنسبة ${model.isChooseDiscountTotal! ?model.discountTotal!:model.discountPercentage!}%"}";
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),0,model.isChooseDiscountTotal! ?model.discountTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.discountPercentage==0?1:(model.discountPercentage!/100)),model.accountId, discountDes));
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),  model.isChooseDiscountTotal! ?model.discountTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.discountPercentage==0?1:(model.discountPercentage!/100)), 0,allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
-          }else{
-          var discountDes = "الإضافة المعطى ${model.isChooseAddedTotal! ?"بقيمة ${model.addedTotal}":"بنسبة ${model.isChooseAddedTotal! ?model.addedTotal!:model.addedPercentage!}%"}";
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),model.isChooseAddedTotal! ?model.addedTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.addedPercentage==0?1:(model.addedPercentage!/100)),0,model.accountId, discountDes));
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0,  model.isChooseAddedTotal! ?model.addedTotal:(element.invRecSubTotal!*element.invRecQuantity!)*(model.addedPercentage==0?1:(model.addedPercentage!/100)),allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
+        if ((element.invRecGift ?? 0) > 0) {
+          String giftDse = "هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecGiftTotal!, allEntryBonds[globalModel.entryBondId!]?.invGiftAccount, giftDse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecGiftTotal!, 0, allEntryBonds[globalModel.entryBondId!]?.invSecGiftAccount, giftDse));
+        }
+        if (totalDiscount > 0 || totalAdded > 0) {
+          for (var model in globalModel.invDiscountRecord!) {
+            if (model.discountTotal != 0) {
+              var discountDes = "الخصم المعطى ${model.isChooseDiscountTotal! ? "بقيمة ${model.discountTotal}" : "بنسبة ${model.isChooseDiscountTotal! ? model.discountTotal! : model.discountPercentage!}%"}";
+              allEntryBonds[globalModel.entryBondId!]
+                  ?.entryBondRecord
+                  ?.add(EntryBondRecordModel((bondRecId++).toString(), 0, model.isChooseDiscountTotal! ? model.discountTotal : (element.invRecSubTotal! * element.invRecQuantity!) * (model.discountPercentage == 0 ? 1 : (model.discountPercentage! / 100)), model.accountId, discountDes));
+              allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),
+                  model.isChooseDiscountTotal! ? model.discountTotal : (element.invRecSubTotal! * element.invRecQuantity!) * (model.discountPercentage == 0 ? 1 : (model.discountPercentage! / 100)), 0, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
+            } else {
+              var discountDes = "الإضافة المعطى ${model.isChooseAddedTotal! ? "بقيمة ${model.addedTotal}" : "بنسبة ${model.isChooseAddedTotal! ? model.addedTotal! : model.addedPercentage!}%"}";
+              allEntryBonds[globalModel.entryBondId!]
+                  ?.entryBondRecord
+                  ?.add(EntryBondRecordModel((bondRecId++).toString(), model.isChooseAddedTotal! ? model.addedTotal : (element.invRecSubTotal! * element.invRecQuantity!) * (model.addedPercentage == 0 ? 1 : (model.addedPercentage! / 100)), 0, model.accountId, discountDes));
+              allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel(
+                  (bondRecId++).toString(), 0, model.isChooseAddedTotal! ? model.addedTotal : (element.invRecSubTotal! * element.invRecQuantity!) * (model.addedPercentage == 0 ? 1 : (model.addedPercentage! / 100)), allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, discountDes));
+            }
           }
         }
+      } else {
+        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal! * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, dse));
+        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecSubTotal! * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, dse));
       }
-      }else{
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0,element.invRecSubTotal!*element.invRecQuantity!,  allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount,dse ));
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(),  element.invRecSubTotal!*element.invRecQuantity!,0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, dse));
-      }
-      if(element.invRecVat!=0&&element.invRecQuantity!=0){
-        if(globalModel.invType==Const.invoiceTypeSales){
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة "+dse));
-        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount,"ضريبة "+dse));
-      }else{
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, "ضريبة "+dse));
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invVatAccount,"ضريبة "+dse));
+      if (element.invRecVat != 0 && element.invRecQuantity != 0) {
+        if (globalModel.invType == Const.invoiceTypeSales) {
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat ?? 1) * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة " + dse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat ?? 1) * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, "ضريبة " + dse));
+        } else {
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat! * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, "ضريبة " + dse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat! * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة " + dse));
         }
       }
     });
 
-    if(lastEntryBondOpened!=null){
+    if (lastEntryBondOpened != null) {
       tempBondModel = GlobalModel.fromJson(allEntryBonds[lastEntryBondOpened]?.toFullJson());
       initPage();
     }
@@ -167,24 +188,25 @@ class EntryBondViewModel extends GetxController {
     update();
   }
 
- initGlobalBond(GlobalModel globalModel){
-  GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
-  _.entryBondRecord = _.bondRecord?.map((e) => EntryBondRecordModel(e.bondRecId,e.bondRecCreditAmount,e.bondRecDebitAmount,e.bondRecAccount,e.bondRecDescription,invId: e.invId)).toList();
-   _.bondDescription = "تم التوليد من ${getBondTypeFromEnum(globalModel.bondType!)} رقم ${globalModel.bondCode}";
-    allEntryBonds[globalModel.entryBondId!]=_;
+  initGlobalBond(GlobalModel globalModel) {
+    GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
+    _.entryBondRecord = _.bondRecord?.map((e) => EntryBondRecordModel(e.bondRecId, e.bondRecCreditAmount, e.bondRecDebitAmount, e.bondRecAccount, e.bondRecDescription, invId: e.invId)).toList();
+    _.bondDescription = "تم التوليد من ${getBondTypeFromEnum(globalModel.bondType!)} رقم ${globalModel.bondCode}";
+    allEntryBonds[globalModel.entryBondId!] = _;
   }
 
-  initGlobalChequeBond(GlobalModel globalModel){
-     globalModel.cheqRecords?.forEach((element) {
-      fastAddBondAddToModel(globalModel: globalModel,  record: [
+  initGlobalChequeBond(GlobalModel globalModel) {
+    globalModel.cheqRecords?.forEach((element) {
+      fastAddBondAddToModel(globalModel: globalModel, record: [
         EntryBondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
         EntryBondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
       ]);
     });
   }
-    void fastAddBondAddToModel({required GlobalModel globalModel, required List<EntryBondRecordModel> record}) {
+
+  void fastAddBondAddToModel({required GlobalModel globalModel, required List<EntryBondRecordModel> record}) {
     tempBondModel = GlobalModel();
-    tempBondModel.globalType=Const.globalTypeCheque;
+    tempBondModel.globalType = Const.globalTypeCheque;
     tempBondModel.entryBondRecord = record;
     tempBondModel.originId = globalModel.originId;
     tempBondModel.cheqId = globalModel.cheqId;
@@ -197,23 +219,23 @@ class EntryBondViewModel extends GetxController {
     tempBondModel.bondType = Const.bondTypeInvoice;
     // var bondCode = "";
     // tempBondModel.bondDate=bondDate;
-    tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
-    tempBondModel.bondDescription = "تم التوليد من "+getChequeTypefromEnum(globalModel.cheqType.toString())+" رقم "+globalModel.cheqCode.toString();
-    allEntryBonds[tempBondModel.entryBondId!]=tempBondModel;
+    tempBondModel.bondDate ??= DateTime.now().toString().split(" ")[0];
+    tempBondModel.bondDescription = "تم التوليد من " + getChequeTypefromEnum(globalModel.cheqType.toString()) + " رقم " + globalModel.cheqCode.toString();
+    allEntryBonds[tempBondModel.entryBondId!] = tempBondModel;
   }
 
   void deleteBondById(String? bondId) {
-    allEntryBonds.removeWhere((key, value) => key==bondId);
+    allEntryBonds.removeWhere((key, value) => key == bondId);
     initPage();
     update();
   }
 }
 
-int getNextEntryBondCode(){
+int getNextEntryBondCode() {
   int _ = 0;
- EntryBondViewModel entryBondViewModel=  Get.find<EntryBondViewModel>();
-  if(entryBondViewModel.allEntryBonds.isNotEmpty){
-   _= int.parse(entryBondViewModel.allEntryBonds.values.last.entryBondCode??"0")+1;
+  EntryBondViewModel entryBondViewModel = Get.find<EntryBondViewModel>();
+  if (entryBondViewModel.allEntryBonds.isNotEmpty) {
+    _ = int.parse(entryBondViewModel.allEntryBonds.values.last.entryBondCode ?? "0") + 1;
   }
   return _;
 }
