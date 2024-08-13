@@ -56,7 +56,8 @@ class _AddUserViewState extends State<AddUserView> {
             ],
           ),
           body: Center(
-            child: Column(
+            child: ListView(
+              shrinkWrap: true,
             //  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("اسم الحساب"),

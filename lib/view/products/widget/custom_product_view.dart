@@ -41,7 +41,7 @@ class CustomAllProduct extends StatelessWidget {
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey()!, value: order.affectedId()),
               ...order
-                  .toAR()
+                  .toMap()
                   .entries
                   .map((mapEntry) {
                 return DataGridCell<String>(columnName: mapEntry.key, value: mapEntry.value.toString());

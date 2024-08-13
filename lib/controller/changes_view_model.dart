@@ -49,11 +49,14 @@ class ChangesViewModel extends GetxController{
       FirebaseFirestore.instance.collection(Const.changesCollection).where("changeId",isGreaterThan:HiveDataBase.lastChangesIndexBox.get("lastChangesIndex") ).get().then((value) async {
         print("The Number Of Changes: "+value.docs.length.toString());
         for (var element in value.docs) {
-              if(element['changeType'] == Const.productsCollection){
+          print(element['changeType']);
+          if(element['changeType'] == Const.productsCollection){
                 ProductViewModel productViewModel =Get.find<ProductViewModel>();
                 productViewModel.addProductToMemory(element.data());
               }else if(element['changeType'] == "remove_"+Const.productsCollection){
                 ProductViewModel productViewModel =Get.find<ProductViewModel>();
+                //enter this function
+                print("enter a delete function");
                 productViewModel.removeProductFromMemory(element.data());
               }else if(element['changeType'] == Const.accountsCollection){
                 AccountViewModel accountViewModel =Get.find<AccountViewModel>();

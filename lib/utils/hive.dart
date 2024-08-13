@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:ba3_business_solutions/adapter/account_record_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/global_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/product_model_adapter.dart';
@@ -7,7 +10,9 @@ import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
+import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../adapter/account_model_adapter.dart';
 import '../adapter/inventory_model_adapter.dart';
@@ -28,7 +33,16 @@ class HiveDataBase {
   static late Box<String> timerDateBox;
   static late Box<bool> isNewUser;
   static Future<void> init() async {
-    await Hive.initFlutter();
+    // final directory = await getApplicationDocumentsDirectory();
+    // final directory = await getExternalStorageDirectory();
+
+    // print(directory?.path);
+    // if(Platform.isAndroid) {
+      // await Hive.initFlutter("/storage/emulated/0/Android/data/com.ba3business.ba3_business_solutions/files");
+    // } else{
+      await Hive.initFlutter();
+
+    // }
     Hive.registerAdapter(GlobalModelAdapter());
     Hive.registerAdapter(ProductModelAdapter());
     Hive.registerAdapter(AccountModelAdapter());
@@ -51,7 +65,7 @@ class HiveDataBase {
     timerDateBox=await Hive.openBox<String>("TimerDate");
     isNewUser=await Hive.openBox<bool>("IsNewUser");
     if(constBox.get("myReadFlag")==null){
-      constBox.put("myReadFlag", "readFlag"+DateTime.now().microsecondsSinceEpoch.toString());
+      constBox.put("myReadFlag", "readFlag${DateTime.now().microsecondsSinceEpoch}");
     }
     if(lastChangesIndexBox.get("lastChangesIndex")==null){
       lastChangesIndexBox.put("lastChangesIndex", 0);

@@ -36,7 +36,8 @@ class ChequeViewModel extends GetxController {
   }
 
   void getAllCheques() async {
-    FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots().listen((value) async {
+ /*   FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots().listen((value) async {
+      print("Listen from fire base Get all cheques");
       allCheques.clear();
       for (var element in value.docs) {
         element.reference.collection(Const.recordCollection).snapshots().listen((value0) async {
@@ -50,7 +51,7 @@ class ChequeViewModel extends GetxController {
         });
       }
       update();
-    });
+    });*/
   }
   ///checked
   void initGlobalCheque(GlobalModel globalModel) {

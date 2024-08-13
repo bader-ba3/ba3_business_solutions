@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/Widgets/Pluto_View_Model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
@@ -10,6 +11,7 @@ import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart'
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,6 +21,7 @@ import '../model/global_model.dart';
 import '../view/invoices/widget/invoice_discount_record_source.dart';
 import '../view/invoices/widget/invoice_record_source.dart';
 import 'account_view_model.dart';
+import 'isolate_view_model.dart';
 
 class InvoiceViewModel extends GetxController {
   var accountController = Get.find<AccountViewModel>();
@@ -70,6 +73,23 @@ class InvoiceViewModel extends GetxController {
   late allInvoiceDataGridSource invoiceAllDataGridSource;
 
   Map<String, String> nextPrevList = {};
+
+
+  List<GlobalModel> allInvoiceForPluto=[];
+/// we don't need this
+  getDataForPluto() async{
+    IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
+    isolateViewModel.init();
+    print("from invoice View");
+    final a = await compute<({List<GlobalModel> invoiceModel,IsolateViewModel isolateViewModel}),List<GlobalModel>>((message) {
+      Get.put(message.isolateViewModel);
+      return  message.invoiceModel;
+    },(invoiceModel: invoiceModel.values.toList(),isolateViewModel:isolateViewModel));
+    allInvoiceForPluto=a;
+  // Get.find<PlutoViewModel>().  update();
+    update();
+    // return a;
+  }
 
   onCellTap(RowColumnIndex rowColumnIndex) {
     if (rowColumnIndex.rowIndex + 1 == records.length) {

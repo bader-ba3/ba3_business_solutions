@@ -170,9 +170,9 @@ class EntryBondViewModel extends GetxController {
         allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecSubTotal! * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, dse));
       }
       if (element.invRecVat != 0 && element.invRecQuantity != 0) {
-        if (globalModel.invType == Const.invoiceTypeSales) {
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat ?? 1) * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة " + dse));
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat ?? 1) * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, "ضريبة " + dse));
+        if (globalModel.invType == Const.invoiceTypeSales) {///(element.invRecQuantity??1) cheek this
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat ?? 1) *  (element.invRecQuantity??1), 0, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة " + dse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat ?? 1) *(element.invRecQuantity??1), allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, "ضريبة " + dse));
         } else {
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat! * element.invRecQuantity!, 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, "ضريبة " + dse));
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat! * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invVatAccount, "ضريبة " + dse));

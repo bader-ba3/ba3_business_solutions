@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
@@ -58,9 +57,9 @@ class GlobalViewModel extends GetxController {
     print("-" * 20);
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
     // List<({String? bondCode ,String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode,bondType:e.bondType),).toList();
- /*   if (allGlobalModel.isEmpty) {
+    if (allGlobalModel.isEmpty) {
       await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
-        print("start");
+        print("start Firebase");
         count = 0.obs;
         allcountOfInvoice = value.docs.length;
         update();
@@ -103,7 +102,7 @@ class GlobalViewModel extends GetxController {
       });
 
     }
-    else {*/
+    else {
       print("start");
       count = 0.obs;
       allcountOfInvoice = allGlobalModel.length;
@@ -117,7 +116,7 @@ class GlobalViewModel extends GetxController {
       if (Get.currentRoute == "/LoginView") {
         Get.offAll(() => MainScreen());
       }
-    // }
+    }
   }
 
 
@@ -298,7 +297,7 @@ class GlobalViewModel extends GetxController {
   }
 
   addInvoiceToFirebase(GlobalModel globalModel) async {
-/*    try {
+   /* try {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.invoiceRecordCollection).get().then((value) {
         for (var element in value.docs) {
           element.reference.delete();
@@ -312,21 +311,21 @@ class GlobalViewModel extends GetxController {
     await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());
     // await HiveDataBase.globalModelBox.delete(globalModel.entryBondId);
     await Future.delayed(const Duration(milliseconds: 100));*/
-
+    await Future.delayed(const Duration(milliseconds: 50));
     await HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
     print("end ${globalModel.entryBondId}  ${globalModel.invId}");
   }
 
   Future addBondToFirebase(GlobalModel globalModel) async {
- /*   await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).get().then((value) async {
+/*    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).get().then((value) async {
       for (var element in value.docs) {
         await element.reference.delete();
       }
-    });
+    });*/
     globalModel.bondRecord?.forEach((element) async {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).doc(element.bondRecId).set(element.toJson());
     });
-    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());*/
+    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());
     await Future.delayed(const Duration(milliseconds: 50));
     await HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
     Get.find<ImportViewModel>().addedBond++;

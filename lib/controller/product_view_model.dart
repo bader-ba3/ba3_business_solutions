@@ -99,6 +99,7 @@ for (ProductRecordModel element in productModel.prodRecord??[]) {
 
   void getAllProduct() async {
     if (HiveDataBase.productModelBox.values.isEmpty) {
+      print("THE PRODUCT IS READ FROM FIREBASE");
       FirebaseFirestore.instance.collection(Const.productsCollection).get().then((value) async {
         productDataMap.clear();
         for (var element in value.docs) {

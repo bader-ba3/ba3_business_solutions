@@ -19,12 +19,8 @@ class _DashboardViewState extends State<DashboardView> {
     return ListView(
       children: [
         SizedBox(
-          width: MediaQuery
-              .sizeOf(context)
-              .width / 4,
-          height: MediaQuery
-              .sizeOf(context)
-              .width / 4,
+          width: Get.width / 4,
+          height: Get.width / 4,
           child: GetBuilder<AccountViewModel>(builder: (accountController) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -33,35 +29,32 @@ class _DashboardViewState extends State<DashboardView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       children: [
-                        SizedBox(width: 20,),
+                        const SizedBox(
+                          width: 20,
+                        ),
                         GestureDetector(
-                          onTap: (){
-
-
-                          },
-                          child: Text(
+                          onTap: () {},
+                          child: const Text(
                             "الحسابات الرئيسية",
                             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Spacer(),
-                        ElevatedButton(onPressed: () async {
-                          TextEditingController nameController = TextEditingController();
-                          List<AccountModel> accountList = [];
-                          await   Get.defaultDialog(
-                              title: "اكتب اسم الحساب",
-                              content: StatefulBuilder(
-                                  builder: (context, setstate) {
+                        const Spacer(),
+                        ElevatedButton(
+                            onPressed: () async {
+                              TextEditingController nameController = TextEditingController();
+                              List<AccountModel> accountList = [];
+                              await Get.defaultDialog(
+                                  title: "اكتب اسم الحساب",
+                                  content: StatefulBuilder(builder: (context, setstate) {
                                     return SizedBox(
-                                      height: MediaQuery
-                                          .sizeOf(context)
-                                          .width / 4,
-                                      width: MediaQuery
-                                          .sizeOf(context)
-                                          .width / 4,
+                                      height: MediaQuery.sizeOf(context).width / 4,
+                                      width: MediaQuery.sizeOf(context).width / 4,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -70,8 +63,8 @@ class _DashboardViewState extends State<DashboardView> {
                                               height: 40,
                                               child: TextFormField(
                                                 textDirection: TextDirection.rtl,
-                                                decoration: InputDecoration(hintText: "اكتب اسم الحساب او رقمه",hintTextDirection: TextDirection.rtl),
-                                                onChanged: (_){
+                                                decoration: InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
+                                                onChanged: (_) {
                                                   accountList = getAccountModelFromName(_);
                                                   print(accountList);
                                                   setstate(() {});
@@ -79,66 +72,86 @@ class _DashboardViewState extends State<DashboardView> {
                                                 controller: nameController,
                                               ),
                                             ),
-                                            SizedBox(height: 10,),
-                                            Expanded(child: accountList.isEmpty
-                                                ? Center(child: Text("لا يوجد نتائج"),)
-                                                : ListView.builder(
-                                              itemCount: accountList.length,
-                                              itemBuilder: (context, index) {
-                                                AccountModel model = accountList[index];
-                                                return Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        HiveDataBase.mainAccountModelBox.put(model.accId, model);
-                                                        Get.back();
-                                                      },
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Text(model.accName.toString() + "   " + model.accCode.toString(),textDirection: TextDirection.rtl,),
-                                                      )),
-                                                );
-                                              },))
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Expanded(
+                                                child: accountList.isEmpty
+                                                    ? const Center(
+                                                        child: Text("لا يوجد نتائج"),
+                                                      )
+                                                    : ListView.builder(
+                                                        itemCount: accountList.length,
+                                                        itemBuilder: (context, index) {
+                                                          AccountModel model = accountList[index];
+                                                          return Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: InkWell(
+                                                                onTap: () {
+                                                                  HiveDataBase.mainAccountModelBox.put(model.accId, model);
+                                                                  Get.back();
+                                                                },
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  child: Text(
+                                                                    model.accName.toString() + "   " + model.accCode.toString(),
+                                                                    textDirection: TextDirection.rtl,
+                                                                  ),
+                                                                )),
+                                                          );
+                                                        },
+                                                      ))
                                           ],
                                         ),
                                       ),
                                     );
-                                  }
-                              )
-                          );
-                          accountController.update();
-                        }, child: Text("إضافة حساب ")),
-                        SizedBox(width: 20,),
+                                  }));
+                              accountController.update();
+                            },
+                            child: Text("إضافة حساب ")),
+                        SizedBox(
+                          width: 20,
+                        ),
                       ],
                     ),
-                    Expanded(child:
-                    ListView.builder(
-                      itemCount: HiveDataBase.mainAccountModelBox.values
-                          .toList()
-                          .length,
+                    Expanded(
+                        child: ListView.builder(
+                      itemCount: HiveDataBase.mainAccountModelBox.values.toList().length,
                       itemBuilder: (context, index) {
                         AccountModel model = HiveDataBase.mainAccountModelBox.values.toList()[index];
                         return Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: GestureDetector(
                             onSecondaryTapDown: (details) {
-                              showContextMenu(context, details.globalPosition,model.accId!,accountController);
+                              showContextMenu(context, details.globalPosition, model.accId!, accountController);
                             },
                             onLongPressStart: (details) {
-                              showContextMenu(context, details.globalPosition,model.accId!,accountController);
+                              showContextMenu(context, details.globalPosition, model.accId!, accountController);
                             },
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Spacer(),
-                                Text(model.accName.toString(), style: TextStyle(fontSize: 22),),
-                                Spacer(flex: 2,),
-                                Text(accountController.getBalance(model.accId).toStringAsFixed(2), style: TextStyle(fontSize: 22),),
-                                Spacer(),
+                                SizedBox(
+                                    width: Get.width / 4,
+                                    child: Text(
+                                      model.accName.toString(),
+                                      style: const TextStyle(fontSize: 22),
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                SizedBox(
+                                  width: Get.width / 4,
+                                  child: Text(
+                                    accountController.getBalance(model.accId).toStringAsFixed(2),
+                                    style: const TextStyle(fontSize: 22),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         );
-                      },)),
+                      },
+                    )),
                   ],
                 ),
               ),
@@ -149,7 +162,8 @@ class _DashboardViewState extends State<DashboardView> {
       ],
     );
   }
-  void showContextMenu(BuildContext parentContext, Offset tapPosition,String id,AccountViewModel accountController) {
+
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, String id, AccountViewModel accountController) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
@@ -159,29 +173,34 @@ class _DashboardViewState extends State<DashboardView> {
         tapPosition.dy * 1.0,
       ),
       items: [
-         PopupMenuItem(
+        PopupMenuItem(
           value: 'details',
           child: ListTile(
-            leading: Icon(Icons.search,color: Colors.blue.shade300,),
+            leading: Icon(
+              Icons.search,
+              color: Colors.blue.shade300,
+            ),
             title: Text('عرض الحركات'),
           ),
         ),
         PopupMenuItem(
           value: 'delete',
           child: ListTile(
-            leading: Icon(Icons.remove_circle_outline,color: Colors.red.shade700,),
+            leading: Icon(
+              Icons.remove_circle_outline,
+              color: Colors.red.shade700,
+            ),
             title: Text('حذف'),
           ),
         ),
       ],
     ).then((value) {
       if (value == 'details') {
-       Get.to(()=>AccountDetails(modelKey: id));
-      }else if (value == 'delete') {
+        Get.to(() => AccountDetails(modelKey: id));
+      } else if (value == 'delete') {
         HiveDataBase.mainAccountModelBox.delete(id);
         accountController.update();
       }
     });
   }
-
 }

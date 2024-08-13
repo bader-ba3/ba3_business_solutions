@@ -103,11 +103,11 @@ abstract class Const {
   static const productTypeService = "productTypeService";
   static const productTypeStore = "productTypeStore";
   ////////////--------------------------------------------------
-  static const bondTypeDaily = "bondTypeDaily";
-  static const bondTypeDebit = "bondTypeDebit";
-  static const bondTypeCredit = "bondTypeCredit";
-  static const bondTypeStart = "bondTypeStart";
-  static const bondTypeInvoice = "bondTypeInvoice";
+  static const bondTypeDaily = /*"سند يومية";*/"bondTypeDaily";
+  static const bondTypeDebit = /*"سند قبض";*/"bondTypeDebit";
+  static const bondTypeCredit = /*"سند دفع";*/"bondTypeCredit";
+  static const bondTypeStart = /*"قيد افتتاحي";*/"bondTypeStart";
+  static const bondTypeInvoice = /*"سند قيد";*/"bondTypeInvoice";
   ////////////--------------------------------------------------
   static const patId = "patId";
   static const patCode = "patCode";

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Widgets/new_Pluto.dart';
 import '../../model/global_model.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
@@ -18,10 +19,37 @@ class AllPendingInvoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
-    RxMap<String, GlobalModel>data = invoiceViewModel.invoiceModel;
-    return Scaffold(
-      body: FilteringDataGrid<GlobalModel>(
+    return GetBuilder<InvoiceViewModel>(builder: (controller) {
+      return controller.invoiceModel.values
+              .where(
+                (e) => e.invIsPending!,
+              )
+              .isEmpty
+          ? Scaffold(
+              appBar: AppBar(),
+              body: Center(
+                child: Text("لا يوجد فواتيير غير مأكدة"),
+              ),
+            )
+          : CustomPlutoGrid(
+              title: "جميع الفواتير",
+              onLoaded: (e) {},
+              onSelected: (p0) {
+                Get.to(() => InvoiceView(
+                      billId: p0.row?.cells["الرقم التسلسلي"]?.value,
+                      patternId: "",
+                    ));
+              },
+              modelList: controller.invoiceModel.values
+                  .where(
+                    (e) => e.invIsPending!,
+                  )
+                  .toList(),
+            );
+    });
+  }
+}
+/* FilteringDataGrid<GlobalModel>(
         title: "كل الفواتير الغير مؤكدة",
         constructor: GlobalModel(),
         dataGridSource: data,
@@ -42,7 +70,7 @@ class AllPendingInvoice extends StatelessWidget {
             List<DataGridRow> dataGridRow  = message.a
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey(), value: order.affectedId()),
-              ...order!.toAR().entries.map((mapEntry) {
+              ...order!.toMap().entries.map((mapEntry) {
                 if (int.tryParse(mapEntry.value.toString()) != null) {
                   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
                 } else if (double.tryParse(mapEntry.value.toString()) != null) {
@@ -60,7 +88,4 @@ class AllPendingInvoice extends StatelessWidget {
           infoDataGridSource.dataGridRows =a;
           return infoDataGridSource;
         },
-      ),
-    );
-  }
-}
+      ),*/

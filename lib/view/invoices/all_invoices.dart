@@ -1,16 +1,9 @@
-import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
-
-import 'package:flutter/foundation.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-
-import '../../model/global_model.dart';
-import '../../utils/logger.dart';
-import '../widget/filtering_data_grid.dart';
+import '../../Widgets/new_Pluto.dart';
 import 'invoice_view.dart';
 
 class AllInvoice extends StatelessWidget {
@@ -18,10 +11,27 @@ class AllInvoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
-    RxMap<String, GlobalModel>data = invoiceViewModel.invoiceModel;
-    return Scaffold(
-      body: FilteringDataGrid<GlobalModel>(
+    return GetBuilder<InvoiceViewModel>(
+      builder: (controller) {
+        return  CustomPlutoGrid(
+          title: "جميع الفواتير",
+          onLoaded: (e){
+          },
+          onSelected: (p0) {
+            Get.to(() => InvoiceView(
+              billId:p0.row?.cells["الرقم التسلسلي"]?.value,
+              patternId: "",
+            ));
+          },
+          modelList: controller.invoiceModel.values.toList(),
+
+        );
+      }
+    );
+  }
+}
+
+/* FilteringDataGrid<GlobalModel>(
         title: "الفواتير",
         constructor: GlobalModel(),
         dataGridSource: data,
@@ -38,24 +48,21 @@ class AllInvoice extends StatelessWidget {
           IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
           isolateViewModel.init();
           print("from invoice View");
-          final a = await compute<({List<dynamic> a,IsolateViewModel isolateViewModel}),List<DataGridRow>>((message) {
+          final a = await compute<({List<dynamic> invoiceModel,IsolateViewModel isolateViewModel}),List<DataGridRow>>((message) {
             Get.put(message.isolateViewModel);
-            List<DataGridRow> dataGridRow  = message.a
+            List<DataGridRow> dataGridRow  = message.invoiceModel
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: order.affectedKey(), value: order.affectedId()),
-              ...order!.toAR().entries.map((mapEntry) {
+              ...order!.toMap().entries.map((mapEntry) {
 
                   return DataGridCell<String>(columnName: mapEntry.key, value: mapEntry.value.toString());
 
               }).cast<DataGridCell<dynamic>>().toList()
             ])).toList();
             return dataGridRow;
-          },(a: data.values.toList(),isolateViewModel:isolateViewModel));
+          },(invoiceModel: data.values.toList(),isolateViewModel:isolateViewModel));
           InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
           infoDataGridSource.dataGridRows =a;
           return infoDataGridSource;
         },
-      ),
-    );
-  }
-}
+      )*/

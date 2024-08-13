@@ -367,16 +367,16 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       i++;
       print("$i OF ${finalData.length}");
       print(element.toJson());
-      await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
+      // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
       print(element.prodParentId);
       if(element.prodParentId!=null&&element.prodParentId!='') {
         ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
         parentModel.prodChild?.add(element.prodId);
         HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
-        FirebaseFirestore.instance.collection(Const.productsCollection).doc(parentModel.prodId).update({
-          'prodChild': FieldValue.arrayUnion([element.prodId]),
-        });
+        // FirebaseFirestore.instance.collection(Const.productsCollection).doc(parentModel.prodId).update({
+        //   'prodChild': FieldValue.arrayUnion([element.prodId]),
+        // });
       }
     }
 

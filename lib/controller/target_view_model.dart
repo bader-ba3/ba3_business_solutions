@@ -1,6 +1,9 @@
+
+
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,7 @@ import 'package:get/get.dart';
 
 import '../Const/const.dart';
 import '../model/task_model.dart';
+import '../utils/hive.dart';
 
 class TargetViewModel extends GetxController {
   RxMap<String, TaskModel> allTarget = <String, TaskModel>{}.obs;
@@ -29,17 +33,11 @@ class TargetViewModel extends GetxController {
 
   void addTask(TaskModel targetModel) {
     targetModel.taskId = generateId(RecordType.task);
-    FirebaseFirestore.instance
-        .collection(Const.tasksCollection)
-        .doc(targetModel.taskId)
-        .set(targetModel.toJson());
+    FirebaseFirestore.instance.collection(Const.tasksCollection).doc(targetModel.taskId).set(targetModel.toJson());
   }
 
   void updateTask(TaskModel targetModel) {
-    FirebaseFirestore.instance
-        .collection(Const.tasksCollection)
-        .doc(targetModel.taskId)
-        .update(
+    FirebaseFirestore.instance.collection(Const.tasksCollection).doc(targetModel.taskId).update(
           targetModel.toJson(),
         );
   }
@@ -49,35 +47,74 @@ class TargetViewModel extends GetxController {
   }
 
   ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) checkTask(String sellerId) {
-    double mobileTotal = 0;
+/*    double mobileTotal = 0;
     double otherTotal = 0;
     Map<String, int> productsMap = {};
     SellersViewModel sellersViewModel = Get.find<SellersViewModel>();
-    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
-    sellersViewModel.allSellers[sellerId]?.sellerRecord?.forEach((element) {
+    InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();*/
+    Map<String, int> productsMap = {};
+    List<double> accessoryList = [];
+    List<double> mobileList = [];
+    List<List<InvoiceRecordModel>?> total = HiveDataBase.globalModelBox.values
+        .where(
+      ///get invoice just for one seller and on month
+          (element) => element.invSeller == sellerId && element.invDate!.split("-")[1].split("-")[0] == "08" ,
+        )
+        .map(
+          (e) => e.invRecords,
+        )
+        .toList();
+    // print(total.map((e) => e!.map((e) => e.invRecTotal!,).reduce((value, element) => value+element,),).reduce((value, element) => value+element,));
+    if (total.isNotEmpty) {
+      for (var records in total) {
+       for(InvoiceRecordModel oneRecord in records??[]){
 
-      // total = total + double.parse(element.selleRecAmount!);
-      invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords
-          ?.forEach((e) {
-        if (productsMap[e.invRecProduct!] == null) {
-          productsMap[e.invRecProduct!] = 0;
+         if(oneRecord.invRecGift==0) {
+            if (oneRecord.invRecTotal! / oneRecord.invRecQuantity! <= 1000) {
+              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecTotal!.toInt();
+              accessoryList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
+            } else {
+              productsMap[oneRecord.invRecProduct!] =  oneRecord.invRecTotal!.toInt();
+
+              // print(oneRecord.toJson());
+              mobileList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
+            }
+          }
         }
-        if (e.invRecTotal! / e.invRecQuantity! >= 1000) {
-          mobileTotal = mobileTotal + e.invRecTotal!;
-        } else {
-          otherTotal = otherTotal + e.invRecTotal!;
-        }
-        productsMap[e.invRecProduct!] = productsMap[e.invRecProduct!]! + e.invRecQuantity!;
-      });
-    });
-    return (
-      mobileTotal: mobileTotal,
-      otherTotal: otherTotal,
-      productsMap: productsMap
-    );
+
+      }
+
+      // print(total.map((e) => e?.map((e) => e.invRecTotal!/e.invRecQuantity!,).toList(),).toList());
+
+      // print(total.reduce((value, element) => (value??0) +(element??0),));
+    }
+
+    // print(total.length);
+
+    // sellersViewModel.allSellers[sellerId]?.sellerRecord?.forEach((element) {
+    //   if (element.selleRecInvDate!.split("-")[1].split("-")[0] == "06" /*DateTime.now().month.toString().padLeft(2,"0")*/) {
+    //     invoiceViewModel.invoiceModel[element.selleRecInvId]?.invRecords?.forEach((e) {
+    //       if (productsMap[e.invRecProduct!] == null) {
+    //         productsMap[e.invRecProduct!] = 0;
+    //       }
+    //       if (e.invRecTotal! / e.invRecQuantity! >= 1000) {
+    //         mobileTotal = mobileTotal + e.invRecTotal!;
+    //       } else {
+    //         otherTotal = otherTotal + e.invRecTotal!;
+    //       }
+    //       productsMap[e.invRecProduct!] = productsMap[e.invRecProduct!]! + e.invRecQuantity!;
+    //     });
+    //   }
+    // });
+    if(mobileList.isNotEmpty)
+      print(mobileList.reduce((value, element) => element+value,));
+    if(accessoryList.isNotEmpty)
+      print(accessoryList.reduce((value, element) => element+value,));
+    return (mobileTotal:mobileList.isNotEmpty? mobileList.reduce((value, element) => element+value,):0, otherTotal:accessoryList.isNotEmpty? accessoryList.reduce((value, element) => element+value,):0, productsMap: productsMap);
   }
 
   List accountPickList = [];
+
   Future<String> getComplete(text) async {
     ProductViewModel productController = Get.find<ProductViewModel>();
     var _ = '';

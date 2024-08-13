@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../model/global_model.dart';
-import '../../utils/logger.dart';
-import '../widget/filtering_data_grid.dart';
+import '../../Widgets/new_Pluto.dart';
+
 import 'bond_details_view.dart';
 import 'custom_bond_details_view.dart';
 
@@ -17,10 +16,31 @@ class AllBonds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BondViewModel bondViewModel = Get.find<BondViewModel>();
-    RxMap<String, GlobalModel>data = bondViewModel.allBondsItem;
-    return Scaffold(
-      body: FilteringDataGrid<GlobalModel>(
+    return GetBuilder<BondViewModel>(builder: (controller) {
+      return CustomPlutoGrid(
+        title: "جميع الفواتير",
+        onLoaded: (e) {},
+        onSelected: (p0) {
+
+          if (p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeStart) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice)) {
+            Get.to(() => BondDetailsView(
+                  oldId: p0.row?.cells["bondId"]?.value,
+                  bondType: p0.row?.cells["bondType"]?.value,
+                ));
+          } else {
+            Get.to(() => CustomBondDetailsView(
+                  oldId: p0.row?.cells["bondId"]?.value,
+                  isDebit: p0.row?.cells["bondType"]?.value == Const.bondTypeDebit,
+                ));
+          }
+        },
+        modelList: controller.allBondsItem.values.toList(),
+      );
+    });
+  }
+}
+/*  return Scaffold(
+      body: */ /*FilteringDataGrid<GlobalModel>(
         title: "السندات",
         constructor: GlobalModel(),
         dataGridSource: data,
@@ -48,7 +68,7 @@ class AllBonds extends StatelessWidget {
                 // } else if (double.tryParse(mapEntry.value.toString()) != null) {
                 //   return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
                 // }
-                // else 
+                // else
                 if(mapEntry.key == "bondDate"){
                   // int day = int.parse(mapEntry.value.toString().split("-")[2]);
                   // int month =  int.parse(mapEntry.value.toString().split("-")[1]);
@@ -66,7 +86,5 @@ class AllBonds extends StatelessWidget {
           infoDataGridSource.dataGridRows =a;
           return infoDataGridSource;
         },
-      ),
-    );
-  }
-}
+      ),*/ /*
+    );*/

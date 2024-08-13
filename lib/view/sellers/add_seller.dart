@@ -28,9 +28,9 @@ class _AddSellerState extends State<AddSeller> {
       codeController.text = code.toString();
       model.sellerCode = code.toString();
     } else {
-      model = sellerController.allSellers[widget.oldKey]!;
-      nameController.text = model.sellerName ?? "error";
-      codeController.text = model.sellerCode ?? "error";
+      model = sellerController.allSellers[widget.oldKey]??SellerModel();
+      nameController.text = model.sellerName ?? "";
+      codeController.text = model.sellerCode ?? "";
     }
   }
 

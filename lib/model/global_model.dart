@@ -6,6 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../Const/const.dart';
+import '../controller/account_view_model.dart';
+import '../controller/pattern_model_view.dart';
+import '../controller/sellers_view_model.dart';
+import '../controller/store_view_model.dart';
 import 'bond_record_model.dart';
 import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
@@ -450,25 +454,27 @@ class GlobalModel {
     this.addedTotal,
   });
 
-  Map<String, dynamic> toAR({String? type}) {
+  Map<String, dynamic> toMap({String? type}) {
     if (invId != null || type == Const.globalTypeInvoice) {
       return {
+        "الرقم التسلسلي": invId,
         "الرمز": invCode,
-        "النمط": getPatModelFromPatternIdIsolate(patternId).patName,
+        "النمط": getPatModelFromPatternId(patternId).patName,//Isolate
         "التاريخ": invDate,
         "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? ""),
         'المجموع الكلي': (invTotal ?? 0).toStringAsFixed(2),
-        'المستودع': getStoreNameFromIdIsolate(invStorehouse),
-        'الحساب الاول': getAccountNameFromIdIsolate(invPrimaryAccount),
-        'الحساب الثاني': getAccountNameFromIdIsolate(invSecondaryAccount),
+        'المستودع': getStoreNameFromId(invStorehouse),//Isolate
+        'الحساب الاول': getAccountNameFromId(invPrimaryAccount),//Isolate
+        'الحساب الثاني': getAccountNameFromId(invSecondaryAccount),//Isolate
         "رقم جوال العميل": invMobileNumber,
-        "حساب العميل": getAccountNameFromIdIsolate(invCustomerAccount),
+        "حساب العميل": getAccountNameFromId(invCustomerAccount),//Isolate
         'النوع': getInvTypeFromEnum(invType ?? ""),
-        "حساب البائع": getSellerNameFromIdIsolate(invSeller),
+        "حساب البائع": getSellerNameFromId(invSeller),//Isolate
         'وصف': invComment,
       };
     } else if (bondId != null || type == Const.globalTypeBond) {
       return {
+        'bondId': bondId,
         'bondCode': bondCode,
         'AmenCode': originAmenId,
         'bondType': getBondTypeFromEnum(bondType ?? ""),

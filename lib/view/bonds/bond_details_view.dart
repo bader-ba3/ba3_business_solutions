@@ -127,7 +127,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
           child: Scaffold(
             appBar: AppBar(
                 centerTitle: true,
-                title: Text( getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())),
+                title: Text( (bondController.tempBondModel.bondType.toString())),
                 leading: BackButton(),
                 actions: !checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)?[]: isNew
                     ? [

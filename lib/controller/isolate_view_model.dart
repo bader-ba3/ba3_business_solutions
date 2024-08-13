@@ -16,6 +16,7 @@ import '../model/store_model.dart';
 import '../model/store_record_model.dart';
 
 class IsolateViewModel extends GetxController {
+
   Map<String, SellerModel> allSellers = <String, SellerModel>{};
   Map<String, StoreModel> storeMap = <String, StoreModel>{};
   Map<String, AccountModel> accountList = <String, AccountModel>{};

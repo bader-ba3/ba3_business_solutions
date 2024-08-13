@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 
 class ProductModel {
   String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAverageBuyPrice,prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;
@@ -197,7 +198,7 @@ class ProductModel {
     };
   }
 
-  Map<String, dynamic> toAR() {
+  Map<String, dynamic> toMap() {
     return {
       // 'الرمز التسليلي': prodId,
       'رمز المادة': prodFullCode,
@@ -223,19 +224,21 @@ class ProductModel {
   }
 
   Map<String, dynamic> toTree() {
-    print(prodId);
-    print(prodParentId);
-if(prodParentId?.startsWith("prod")??false) {
+    if(prodParentId == null && prodName.toString()!="CASH ADVANCEE 1000AED"&& prodName.toString()!="FREE"&& prodName.toString()!="ALL"){
+      print(prodName.toString()+ "   "+prodFullCode.toString()+ "    "+prodCode.toString());
+      print(prodId);
+
+    }
+
   return {
       'id': int.parse(prodId!.split("prod")[1]),
       'value': "$prodFullCode      $prodName"  ,
-      'parentId': int.parse((prodParentId!.split("prod")[1])/* != null
-          ? (prodParentId?.split("prod")[1])!
-          : "1"*/ ),
+  'parentId':prodParentId!=null&&prodParentId!.startsWith("prod") ?int.parse((prodParentId!.split("prod")[1])):"1"
+      // 'parentId': int.parse((prodParentId!.split("prod")[1])/* != null
+      //     ? (prodParentId?.split("prod")[1])!
+      //     : "1"*/ ),
     };
-}
-else {
-  return {};
-}
+
+
   }
 }

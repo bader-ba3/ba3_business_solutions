@@ -61,7 +61,7 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                 title: Text(title),
                 actions: [
                   Text("عدد العناصر المتأثرة: ${infoDataGridSource!.effectiveRows.isEmpty ? infoDataGridSource!.dataGridRows.length.toString() : infoDataGridSource!.effectiveRows.length.toString()}"),
-                  SizedBox(
+                  const SizedBox(
                     width: 25,
                   ),
                   ElevatedButton(
@@ -72,8 +72,8 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                       onPressed: () {
                         exportData(infoDataGridSource!);
                       },
-                      child: Text("نسخ الجدول")),
-                  SizedBox(
+                      child: const Text("نسخ الجدول")),
+                  const SizedBox(
                     width: 50,
                   ),
                 ],
@@ -153,7 +153,7 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                                   ),
                                 ],
                               )),
-                          ...(widget.globalType != null ? constructor.toAR(type: widget.globalType).entries : constructor.toAR().entries)
+                          ...(widget.globalType != null ? constructor.toMap(type: widget.globalType).entries : constructor.toMap().entries)
                               .map((e) => GridColumn(
                                   // width: double.nan,
                                   columnWidthMode: ColumnWidthMode.fill,
@@ -165,7 +165,7 @@ class _FilteringDataGridState<T> extends State<FilteringDataGrid<T>> {
                                       ),
                                       Expanded(
                                         child:  Text(
-                                              e.key.toString() == (widget.globalType != null ? constructor.toAR(type: widget.globalType).entries : constructor.toAR().entries).last.key ? e.key.toString() + '\n' : e.key.toString() + tab,
+                                              e.key.toString() == (widget.globalType != null ? constructor.toMap(type: widget.globalType).entries : constructor.toMap().entries).last.key ? e.key.toString() + '\n' : e.key.toString() + tab,
                                               textDirection: isArabic.hasMatch(e.toString()) ? TextDirection.rtl : TextDirection.ltr,
                                               style: TextStyle(fontSize: 14),
                                               overflow: TextOverflow.ellipsis,

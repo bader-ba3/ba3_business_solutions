@@ -37,7 +37,7 @@ class _AllInventoryViewState extends State<AllInventoryView> {
             child: ListView.builder(
               itemCount: isAll ? widget.inventoryModel.inventoryTargetedProductList.length:widget.inventoryModel.inventoryRecord.length,
               itemBuilder: (context, index) {
-                ProductModel productModel = getProductModelFromId(isAll ? widget.inventoryModel.inventoryTargetedProductList[index]:widget.inventoryModel.inventoryRecord.keys.toList()[index])!;
+                ProductModel productModel = getProductModelFromId(isAll ? widget.inventoryModel.inventoryTargetedProductList[index]:widget.inventoryModel.inventoryRecord.keys.toList()[index])??ProductModel(prodId: "prod1723066749939566");
                 int count = controller.getCountOfProduct(productModel);
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),

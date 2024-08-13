@@ -121,7 +121,7 @@ class AccountModel {
     };
   }
   
-  Map<String,dynamic> toAR() {
+  Map<String,dynamic> toMap() {
     return {
       'رمز الحساب': int.tryParse(accCode.toString())??0,
       'اسم الحساب': accName,

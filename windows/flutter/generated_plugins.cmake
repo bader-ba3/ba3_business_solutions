@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  bitsdojo_window_windows
   cloud_firestore
   firebase_core
   flutter_platform_alert

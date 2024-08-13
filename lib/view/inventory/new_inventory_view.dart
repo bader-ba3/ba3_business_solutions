@@ -6,13 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tree_pro/flutter_tree.dart';
 import 'package:get/get.dart';
+import '../../controller/product_view_model.dart';
 import '../../model/inventory_model.dart';
 import '../../model/product_model.dart';
 import '../../utils/hive.dart';
 
 
 class NewInventoryView extends StatefulWidget {
-  NewInventoryView({Key? key}) : super(key: key);
+  const NewInventoryView({Key? key}) : super(key: key);
 
 
   @override
@@ -44,7 +45,6 @@ class _NewInventoryViewState extends State<NewInventoryView> {
 
      List<ProductModel> dataList = isolateViewModel.productDataMap.values.toList();
      dataList.add(a);
-print("--s---"*30);
      List<Map<String, dynamic>> treeListData = [];
      List<Map<String, dynamic>> initialTreeData = [];
 
@@ -58,15 +58,14 @@ print("--s---"*30);
     a:HiveDataBase.inventoryModelBox.get("0")?.inventoryTargetedProductList??[],
     isolateViewModel:isolateViewModel)).then((value) {
 
-      value.treeListData.removeWhere((element) => element.isEmpty,);
 
       treeListData=value.treeListData ;
 
-      print(treeListData.length);
+
       setState(() { });
+      print(treeListData.length.toString()+"-------");
+
     });
-
-
   }
 
   @override
@@ -107,9 +106,9 @@ print("--s---"*30);
               SizedBox(height: 5,),
               Text("المواد المراد جردها",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
               SizedBox(height: 10,),
-              Expanded(child: treeListData.isNotEmpty
+              Expanded(child: treeListData.length>1
                   ? FlutterTreePro(
-                isExpanded: false,
+                isExpanded: true,
                 listData: treeListData,
                 config:   Config(
                   parentId: 'parentId',

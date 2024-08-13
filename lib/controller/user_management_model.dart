@@ -40,7 +40,7 @@ class UserManagementViewModel extends GetxController {
   UserModel? initAddUserModel;
 
   void getAllRole() {
-    FirebaseFirestore.instance.collection(Const.roleCollection).snapshots().listen((event) {
+    FirebaseFirestore.instance.collection(Const.roleCollection).get().then((event) {
       allRole.clear();
       for (var element in event.docs) {
         allRole[element.id] = RoleModel.fromJson(element.data());
@@ -51,7 +51,7 @@ class UserManagementViewModel extends GetxController {
 
   void checkUserStatus() async {
     if (userPin != null) {
-      FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).snapshots().listen((value) async {
+      FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).get().then((value) async {
         if (userPin == null) {
           userStatus = UserManagementStatus.first;
           Get.offAll(() => const LoginView());
@@ -78,7 +78,7 @@ class UserManagementViewModel extends GetxController {
         update();
       });
     } else if (cardNumber != null) {
-      FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).snapshots().listen((value) {
+      FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).get().then((value) {
         if (cardNumber == null) {
           userStatus = UserManagementStatus.first;
           Get.offAll(() => const LoginView());
@@ -117,7 +117,7 @@ class UserManagementViewModel extends GetxController {
   }
 
   void initAllUser() {
-    FirebaseFirestore.instance.collection(Const.usersCollection).snapshots().listen((event) {
+    FirebaseFirestore.instance.collection(Const.usersCollection).get().then((event) {
       allUserList.clear();
       for (var element in event.docs) {
         allUserList[element.id] = UserModel.fromJson(element.data());

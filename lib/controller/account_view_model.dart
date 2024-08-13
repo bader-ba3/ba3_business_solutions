@@ -164,6 +164,8 @@ class AccountViewModel extends GetxController {
   getAllAccount() {
     accountList.clear();
     if (HiveDataBase.accountModelBox.isEmpty) {
+      print("THE ACCOUNT IS READ FROM FIREBASE");
+
       FirebaseFirestore.instance.collection(Const.accountsCollection).get().then((value) {
         RxMap<String, List<AccountRecordModel>> oldAccountList = <String, List<AccountRecordModel>>{}.obs;
         accountList.forEach((key, value) {

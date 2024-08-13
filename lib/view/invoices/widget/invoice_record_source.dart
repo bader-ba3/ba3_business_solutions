@@ -35,9 +35,8 @@ class InvoiceRecordSource extends DataGridSource {
   void buildDataGridRows(List<InvoiceRecordModel> records, accountVat) {
     this.accountVat = accountVat;
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
-    color = patternController.patternModel[globalController.initModel.patternId]!.patColor;
+    // color = patternController.patternModel[globalController.initModel.patternId]!.patColor;
     this.isPatternHasVat = isPatternHasVat;
-    print(records.map((e) => e.toJson()));
 
     for (var i = 0; i < records.length; i++) {
       if (records[i].invRecSubTotal != null) {
@@ -101,22 +100,32 @@ class InvoiceRecordSource extends DataGridSource {
         Get.snackbar("خطأ", "غير موجود");
       } else if (result.length == 1) {
         var prod = result[0];
-        choose_product(prod, vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
+        chooseProduct(prod, vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
       } else {
         Get.defaultDialog(
             title: "اختر احد المواد",
             content: SizedBox(
-              height: Get.height / 2,
-              width: Get.height / 2,
-              child: ListView.builder(
+              height: Get.height / 1.5,
+              width: Get.width / 1.5,
+              child: ListView.separated(
                   itemCount: result.length,
+                  separatorBuilder: (context, index) =>   Divider(color: Colors.blue.withOpacity(0.5),),
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        choose_product(result[index], vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
+                        chooseProduct(result[index], vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
                         Get.back();
                       },
-                      child: Text(result[index].prodName!),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text("${index}_ ",style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w700,color: Colors.blue),),
+                            Text(result[index].prodName!,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w700),),
+
+                          ],
+                        ),
+                      ),
                     );
                   }),
             ),
@@ -257,7 +266,7 @@ class InvoiceRecordSource extends DataGridSource {
     globalController.update();
   }
 
-  void choose_product(ProductModel result, double vat, int dataRowIndex, RowColumnIndex rowColumnIndex, bool isPatternHasVat) {
+  void chooseProduct(ProductModel result, double vat, int dataRowIndex, RowColumnIndex rowColumnIndex, bool isPatternHasVat) {
     // print(searchLastPrice(result.prodId!, vat, dataRowIndex));
     dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<String>(columnName: Const.rowInvProduct, value: result.toString());
     records[dataRowIndex].invRecProduct = result.prodId!.toString();
@@ -291,9 +300,10 @@ class InvoiceRecordSource extends DataGridSource {
       displayText = double.parse(displayText).toStringAsFixed(2);
     }
     return Container(
-      color: effectiveRows.indexOf(dataGridRow) % 2 == 0 ? Color(color!).withOpacity(0.2) : Colors.grey.shade300,
+      color: effectiveRows.indexOf(dataGridRow) % 2 == 0 ? Colors.blue.shade200:Colors.white,
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        style: TextStyle(color: Colors.red.shade500),
         autofocus: true,
         controller: editingController..text = displayText,
         decoration: const InputDecoration(
@@ -327,8 +337,8 @@ class InvoiceRecordSource extends DataGridSource {
   @override
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn, RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
-      padding: EdgeInsets.all(15.0),
-      child: Text(summaryValue, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      padding: const EdgeInsets.all(15.0),
+      child: Text(summaryValue, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
     );
   }
 
@@ -337,10 +347,10 @@ class InvoiceRecordSource extends DataGridSource {
     Color getRowBackgroundColor() {
       final int index = effectiveRows.indexOf(row);
       if (index % 2 == 0) {
-        return Color(color!).withOpacity(0.2);
+        return Colors.white;
       }
 
-      return Colors.grey.shade300;
+      return Colors.blue.shade300;
     }
 
     return DataGridRowAdapter(
@@ -375,7 +385,7 @@ class InvoiceRecordSource extends DataGridSource {
               ? ""
               : dataGridCell.value.runtimeType == double
                   ? dataGridCell.value.toStringAsFixed(2)
-                  : dataGridCell.value.toString()),
+                  : dataGridCell.value.toString(),style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
         ),
       );
     }).toList());

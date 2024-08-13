@@ -17,58 +17,92 @@ class InvoiceType extends StatefulWidget {
 }
 
 class _InvoiceTypeState extends State<InvoiceType> {
-  PatternViewModel patternController=Get.find<PatternViewModel>();
+  PatternViewModel patternController = Get.find<PatternViewModel>();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(title: Text("الفواتير"),),
+        appBar: AppBar(
+          title: const Text("الفواتير"),
+        ),
         body: ListView(
           children: [
-            for (MapEntry<String, PatternModel> i in patternController.patternModel.entries.toList())
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Wrap(
+                spacing: 15.0,
+                runSpacing: 15.0,
+                children: patternController.patternModel.entries.toList().map((MapEntry<String, PatternModel> i) {
+                  return InkWell(
+                    onTap: () {
+                      Get.to(() => InvoiceView(billId: '1', patternId: i.key));
+                    },
+                    child: Container(
+                      width: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey.withOpacity(0.2),
+                        border: Border.all(
+                          color: Color(i.value.patColor!).withOpacity(0.5),
+                          width: 1.0,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(30.0),
+                      child: Center(
+                        child: Text(
+                          i.value.patName ?? "error",
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
-                  onTap: (){
-                    Get.to(()=>InvoiceView(billId: '1', patternId: i.key));
+                  onTap: () {
+                    checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
+                      if (value) Get.to(() => const AllInvoice());
+                    });
                   },
                   child: Container(
-                    width: double.infinity,
-                      decoration: BoxDecoration(color: Color(i.value.patColor!).withOpacity(0.2),borderRadius: BorderRadius.circular(20)),
+                      width: double.infinity,
+                      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
                       padding: const EdgeInsets.all(30.0),
-                      child: Text(i.value.patName??"error",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+                      child: const Center(
+                        child: Text(
+                          "عرض جميع الفواتير",
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      )),
                 ),
               ),
-              if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: InkWell(
-                onTap: (){
-                  checkPermissionForOperation(Const.roleUserRead , Const.roleViewInvoice).then((value) {
-                    if(value) Get.to(()=>AllInvoice());
+                onTap: () {
+                  checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
+                    if (value) Get.to(() => AllPendingInvoice());
                   });
                 },
                 child: Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.all(30.0),
-                    child: const Text("عرض جميع الفواتير",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: InkWell(
-                onTap: (){
-                  checkPermissionForOperation(Const.roleUserRead , Const.roleViewInvoice).then((value) {
-                    if(value) Get.to(()=>AllPendingInvoice());
-                  });
-                },
-                child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
-                    padding: const EdgeInsets.all(30.0),
-                    child: const Text("عرض جميع الفواتير الغير مؤكدة",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+                    child: const Center(
+                      child: Text(
+                        "عرض جميع الفواتير الغير مؤكدة",
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        textDirection: TextDirection.rtl,
+                      ),
+                    )),
               ),
             ),
           ],

@@ -24,10 +24,12 @@ class _SellerTargetState extends State<SellerTarget> {
   final GlobalKey<TargetPointerWidgetState> mobileKey = GlobalKey<TargetPointerWidgetState>();
   late ({Map<String, int> productsMap, double mobileTotal, double otherTotal}) sellerData;
   TargetViewModel targetViewModel = Get.find<TargetViewModel>();
-
+ // late ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) newSellerData;
   @override
   void initState() {
     sellerData = targetViewModel.checkTask(widget.sellerId);
+   // newSellerData = targetViewModel.checkTask(widget.sellerId);
+
     super.initState();
   }
 
@@ -87,21 +89,20 @@ class _SellerTargetState extends State<SellerTarget> {
               ],
             ),
             GetBuilder<SellersViewModel>(builder: (controller) {
-              print("SetState");
-              ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) newSellerData = targetViewModel.checkTask(widget.sellerId);
-              print(newSellerData);
-              if (sellerData.mobileTotal != newSellerData.mobileTotal || sellerData.otherTotal != newSellerData.otherTotal) {
-                if(newSellerData.otherTotal - sellerData.otherTotal.toInt() >0){
-                  othersKey.currentState!.addValue(newSellerData.otherTotal.toInt());
+              // print("SetState");
+              // print(newSellerData);
+              if (sellerData.mobileTotal != sellerData.mobileTotal || sellerData.otherTotal != sellerData.otherTotal) {
+                if(sellerData.otherTotal - sellerData.otherTotal.toInt() >0){
+                  othersKey.currentState!.addValue(sellerData.otherTotal.toInt());
                 }else{
-                  othersKey.currentState!.removeValue(newSellerData.otherTotal.toInt());
+                  othersKey.currentState!.removeValue(sellerData.otherTotal.toInt());
                 }
-                if(newSellerData.mobileTotal - sellerData.mobileTotal.toInt() >0){
-                  mobileKey.currentState!.addValue(newSellerData.mobileTotal.toInt());
+                if(sellerData.mobileTotal - sellerData.mobileTotal.toInt() >0){
+                  mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
                 }else{
-                  mobileKey.currentState!.removeValue(newSellerData.mobileTotal.toInt());
+                  mobileKey.currentState!.removeValue(sellerData.mobileTotal.toInt());
                 }
-                sellerData = newSellerData;
+                // sellerData = sellerData;
                 mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
               }
               return GetBuilder<TargetViewModel>(builder: (controller) {
@@ -128,7 +129,7 @@ class _SellerTargetState extends State<SellerTarget> {
                                 width: 5,
                               ),
                               Text(
-                                "بيع" + "  " + model.taskQuantity.toString() + "  " + "من" + "  " + getProductNameFromId(model.taskProductId) + "  " + "لقد بعت" + "  " + count.toString(),
+                                "بيع  ${model.taskQuantity}  من  ${getProductNameFromId(model.taskProductId)}  لقد بعت  $count",
                                 style: TextStyle(fontSize: 20, color: isDone ? Colors.green : Colors.red),
                               ),
                             ],

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
@@ -11,6 +13,7 @@ import 'package:ba3_business_solutions/view/invoices/invoice_type.dart';
 import 'package:ba3_business_solutions/view/patterns/pattern_type.dart';
 import 'package:ba3_business_solutions/view/products/product_type.dart';
 import 'package:ba3_business_solutions/view/stores/store_type.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tab_container/tab_container.dart';
@@ -27,6 +30,8 @@ import '../timer/time_type.dart';
 import '../user_management/user_management.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -55,101 +60,145 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     (name: "إدارة قواعد البيانات", widget: const DataBaseType(), role: Const.roleViewDataBase),
   ];
   List<({String name, Widget widget, String role})> allData = [];
-  //  TabController? tabController;
   late PageController pageController;
   late TabController tabController;
   int tabIndex = 0;
+
   @override
   void initState() {
+    // TODO: implement initState
+
+    super.initState();
     allData = rowData.where((element) => checkMainPermission(element.role)).toList();
     tabController = TabController(length: allData.length, vsync: this, initialIndex: tabIndex);
     pageController = PageController();
-    //  allData = rowData.where((element) => checkMainPermission(element.role),).toList();
-    // tabController = TabController(length: allData.length, vsync: this);
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<GlobalViewModel>(builder: (controller) {
-        return Scaffold(
-          backgroundColor: Colors.teal.shade100,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GetBuilder<UserManagementViewModel>(builder: (sellersViewModel) {
-                allData = rowData
-                    .where(
-                      (element) => checkMainPermission(element.role),
-                    )
-                    .toList();
-                // tabController = TabController(length: allData.length, vsync: this, initialIndex: tabIndex);
-                if (allData.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "ليس لديك صلاحيات",
-                      style: TextStyle(color: Colors.white, fontSize: 30),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: WindowBorder(
+          color: Colors.blue,
+          width: 1,
+          child: Row(
+            children: [
+              Container(
+                  width: 250,
+                  color: Colors.blue,
+                  child: Column(
+                    children: [
+                      WindowTitleBarBox(child: MoveWindow()),
+                      Expanded(
+                        child: TabContainer(
+                          textDirection: TextDirection.rtl,
+                          controller: tabController,
+                          tabEdge: TabEdge.right,
+                          tabsEnd: 1,
+                          tabsStart: 0,
+                          tabMaxLength: 60,
+                          tabExtent: 250,
+                          borderRadius: BorderRadius.circular(0),
+                          tabBorderRadius: BorderRadius.circular(20),
+                          childPadding: const EdgeInsets.all(0.0),
+                          selectedTextStyle: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15.0,
+                          ),
+                          unselectedTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.0,
+                          ),
+                          colors: List.generate(rowData.length, (index) => Colors.white),
+                          tabs: List.generate(
+                            rowData.length,
+                            (index) {
+                              return DrawerListTile(
+                                index: index,
+                                title: rowData[index].name,
+                                press: () {
+                                  tabController.animateTo(index);
+                                 tabIndex=index;
+                                 setState(() {
+
+                                 });
+         
+                                },
+                              );
+                            },
+                          ),
+                          children: List.generate(
+                            rowData.length,
+                            (index) => const SizedBox(
+                              width: 1,
+                            ), // Placeholder widgets to match the tabs length
+                          ), // Provide an empty list to avoid the assertion error
+                        ),
+                      )
+                    ],
+                  )),
+              Expanded(
+                child: Column(children: [
+                  WindowTitleBarBox(
+                    child: Row(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(child: MoveWindow()),
+                        const WindowButtons(),
+                      ],
                     ),
-                  );
-                }
-                return StatefulBuilder(builder: (context, setstate) {
-                  return TabContainer(
-                    textDirection: TextDirection.rtl,
-                    controller: tabController,
-                    tabEdge: TabEdge.right,
-                    tabsEnd: 1,
-                    tabsStart: 0,
-                    tabMaxLength: controller.isDrawerOpen ? 60 : 60,
-                    tabExtent: controller.isDrawerOpen ? 180 : 60,
-                    borderRadius: BorderRadius.circular(10),
-                    tabBorderRadius: BorderRadius.circular(20),
-                    childPadding: const EdgeInsets.all(0.0),
-                    selectedTextStyle: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                    ),
-                    unselectedTextStyle: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 13.0,
-                    ),
-                    colors: List.generate(allData.length, (index) => Colors.white),
-                    tabs: List.generate(
-                      allData.length,
-                      (index) {
-                        return DrawerListTile(
-                          index: index,
-                          title: allData[index].name,
-                          press: () {
-                            print(index);
-                            pageController.jumpToPage(index);
-                            tabController.index = index;
-                          },
-                        );
-                      },
-                    ),
-                    child: SizedBox(
-                      width: Get.width,
-                      height: Get.height,
-                      child: PageView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: pageController,
-                        children: List.generate(
-                            allData.length,
-                            (index) => ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: allData[index].widget,
-                                )),
-                      ),
-                    ),
-                  );
-                });
-              }),
-            ),
+                  ),
+                  Expanded(child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: allData[tabIndex].widget,
+                  ))
+                ]),
+              )
+            ],
           ),
-        );
-      }),
+        ),
+      ),
+    );
+  }
+}
+
+final buttonColors = WindowButtonColors(iconNormal: const Color(0xFF805306), mouseOver: const Color(0xFFF6A00C), mouseDown: const Color(0xFF805306), iconMouseOver: const Color(0xFF805306), iconMouseDown: const Color(0xFFFFD500));
+
+final closeButtonColors = WindowButtonColors(mouseOver: const Color(0xFFD32F2F), mouseDown: const Color(0xFFB71C1C), iconNormal: const Color(0xFF805306), iconMouseOver: Colors.white);
+
+class WindowButtons extends StatefulWidget {
+  const WindowButtons({super.key});
+
+  @override
+  State<WindowButtons> createState() => _WindowButtonsState();
+}
+
+class _WindowButtonsState extends State<WindowButtons> {
+  void maximizeOrRestore() {
+    setState(() {
+      appWindow.maximizeOrRestore();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        MinimizeWindowButton(colors: buttonColors),
+        appWindow.isMaximized
+            ? RestoreWindowButton(
+                colors: buttonColors,
+                onPressed: maximizeOrRestore,
+              )
+            : MaximizeWindowButton(
+                colors: buttonColors,
+                onPressed: maximizeOrRestore,
+              ),
+        CloseWindowButton(colors: closeButtonColors),
+      ],
     );
   }
 }
@@ -175,19 +224,17 @@ class DrawerListTile extends StatelessWidget {
             textDirection: TextDirection.rtl,
             child: Center(
                 child: Row(
-              children: [
-                const SizedBox(
-                  width: 30,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ],
-            ))),
+                  children: [
+                    const SizedBox(
+                      width: 40,
+                    ),
+
+                    Text(
+                      title,
+                      style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ))),
       );
     });
   }
