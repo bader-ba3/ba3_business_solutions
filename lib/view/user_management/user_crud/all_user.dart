@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/user_management_model.dart';
+import '../../widget/CustomWindowTitleBar.dart';
 
 class AllUserView extends StatefulWidget {
   const AllUserView({super.key});
@@ -34,19 +35,23 @@ class _AllUserViewState extends State<AllUserView> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: GetBuilder<UserManagementViewModel>(
-        builder: (controller) {
-          return  Scaffold(
+    return Column(
+      children: [
+        const CustomWindowTitleBar(),
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: GetBuilder<UserManagementViewModel>(
+              builder: (controller) {
+                return Scaffold(
                   appBar: AppBar(
-                    title: Text("إدارة المستخدمين"),
+                    title: const Text("إدارة المستخدمين"),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
-                            Get.to(() => AddUserView());
+                            Get.to(() => const AddUserView());
                           },
-                          child: Text("إضافة مستخدم")),
+                          child: const Text("إضافة مستخدم")),
                     ],
                   ),
                   body: Padding(
@@ -66,7 +71,7 @@ class _AllUserViewState extends State<AllUserView> {
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.5), borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                                 height: 140,
                                 width: 140,
                                 child: Column(
@@ -86,8 +91,11 @@ class _AllUserViewState extends State<AllUserView> {
                     ),
                   ),
                 );
-        },
-      ),
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

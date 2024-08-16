@@ -39,6 +39,7 @@ class AllStore extends StatelessWidget {
                     onCellTap: (details) {
                       if (details.rowColumnIndex.rowIndex != 0) {
                         var stId = (storeController.recordViewDataSource?.dataGridRows[details.rowColumnIndex.rowIndex - 1].getCells().firstWhere((element) => element.columnName == Const.stId).value);
+
                         Get.to(()=>StoreDetails(
                           oldKey: stId,
                         ));

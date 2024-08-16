@@ -48,9 +48,9 @@ class _TaskManagementTypeState extends State<TaskManagementType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
-            child: Text(text,style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+            child: Center(child: Text(text,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,))),
       ),
     );
   }

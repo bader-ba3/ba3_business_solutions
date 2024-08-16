@@ -72,9 +72,15 @@ class _AddTaskViewState extends State<AddTaskView> {
                                       height: 25,
                                     ),
                                     for(SellerModel i in controller.allSellers.values.toList())
-                                      Row(
+                                     ...[ Row(
                                         children: [
-                                          Checkbox(value: allUser.contains(i.sellerId), onChanged: (_){
+                                          const SizedBox(width: 15,),
+                                          Checkbox(value: allUser.contains(i.sellerId),
+                                              fillColor: WidgetStatePropertyAll(Colors.blue.shade800),
+                                              checkColor: Colors.white,
+
+                                              onChanged: (_){
+
                                             if (allUser.contains(i.sellerId)) {
                                               allUser.remove(i.sellerId!);
                                             } else {
@@ -86,10 +92,14 @@ class _AddTaskViewState extends State<AddTaskView> {
                                             }
                                             setstate((){});
                                           }),
-                                          SizedBox(width: 10,),
-                                          Text(i.sellerName.toString())
+                                          const SizedBox(width: 10,),
+                                          Text(i.sellerName.toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)
+
                                         ],
-                                      )
+                                      ),
+                                       const Divider()
+                                     ]
+
                                   ],
                                 );
                               }
@@ -146,7 +156,10 @@ class _AddTaskViewState extends State<AddTaskView> {
                                       child: TextFormField(
                                           textAlign: TextAlign.center,
                                           decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            filled: true,
                                             border: OutlineInputBorder(
+
                                               borderSide: const BorderSide(
                                                 color: Colors.black,
                                                 width: 2.0,
@@ -178,17 +191,17 @@ class _AddTaskViewState extends State<AddTaskView> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 50,),
+                        const SizedBox(height: 50,),
                         Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("التاريخ:"),
-                              SizedBox(width: 10,),
+                              const Text("التاريخ:"),
+                              const SizedBox(width: 10,),
                               DateMonthPicker(
                                 initDate: taskDate,
                                 onSubmit: (date) {
-                                taskDate = date.year.toString() + "-"+date.month.toString();
+                                taskDate = "${date.year}-${date.month}";
                                 setState(() {});
                               },
                               ),
@@ -200,9 +213,6 @@ class _AddTaskViewState extends State<AddTaskView> {
                         ),
                         Center(
                           child: ElevatedButton(
-                              style: ButtonStyle(
-                                foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                              ),
                               onPressed: () {
                                 if (taskDate == null) {
                                   Get.snackbar("خطأ", "يرجى كتابة تاريخ");

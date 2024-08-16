@@ -40,26 +40,25 @@ class _PatternDetailsState extends State<PatternDetails> {
     if (widget.oldKey == null) {
       patternController.editPatternModel = PatternModel();
       patternController.editPatternModel?.patHasVat ??= false;
-      codeController.text  = ((int.tryParse(patternController.patternModel.values.map((e) => e.patCode).last.toString())??0)+1).toString();
-      patternController.editPatternModel!.patCode =codeController.text;
+      codeController.text = ((int.tryParse(patternController.patternModel.values.map((e) => e.patCode).last.toString()) ?? 0) + 1).toString();
+      patternController.editPatternModel!.patCode = codeController.text;
       patternController.editPatternModel?.patColor = 4294198070;
-       patternController.editPatternModel?.patType = Const.invoiceTypeSales;
+      patternController.editPatternModel?.patType = Const.invoiceTypeSales;
     } else {
       patternController.editPatternModel = PatternModel.fromJson(patternController.patternModel[widget.oldKey]?.toJson());
       nameController.text = patternController.editPatternModel?.patName ?? "";
       codeController.text = patternController.editPatternModel?.patCode ?? "";
-      primaryController.text = getAccountNameFromId(patternController.editPatternModel?.patPrimary) ;
+      primaryController.text = getAccountNameFromId(patternController.editPatternModel?.patPrimary);
       typeController.text = patternController.editPatternModel?.patType ?? "";
-      vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount) ;
-      giftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patGiftAccount) ;
-      secgiftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patSecGiftAccount) ;
-      secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary) ;
-      storeController.text=getStoreNameFromId(patternController.editPatternModel?.patStore);
-      storeNewController.text=getStoreNameFromId(patternController.editPatternModel?.patNewStore);
+      vatAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patVatAccount);
+      giftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patGiftAccount);
+      secgiftAccountController.text = getAccountNameFromId(patternController.editPatternModel?.patSecGiftAccount);
+      secondaryController.text = getAccountNameFromId(patternController.editPatternModel?.patSecondary);
+      storeController.text = getStoreNameFromId(patternController.editPatternModel?.patStore);
+      storeNewController.text = getStoreNameFromId(patternController.editPatternModel?.patNewStore);
       // storeController.text=getStoreNameFromId("store1702230185210544");
       hasVatController = patternController.editPatternModel?.patHasVat ?? false;
       patternController.editPatternModel?.patHasVat ??= false;
-      
     }
 
     super.initState();
@@ -71,11 +70,7 @@ class _PatternDetailsState extends State<PatternDetails> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-              patternController.editPatternModel!.patId!=null
-              ? patternController.editPatternModel!.patName!
-              : "إنشاء نمط"
-          ),
+          title: Text(patternController.editPatternModel!.patId != null ? patternController.editPatternModel!.patName! : "إنشاء نمط"),
         ),
         body: GetBuilder<PatternViewModel>(
           builder: (patternController) {
@@ -83,11 +78,9 @@ class _PatternDetailsState extends State<PatternDetails> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: ListView(
                 children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     SizedBox(
-                      width: Get.width/2.5,
+                      width: Get.width / 2.5,
                       child: Row(
                         children: [
                           const Text("الاسم :"),
@@ -110,7 +103,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                       width: 25,
                     ),
                     SizedBox(
-                      width: Get.width/2.5,
+                      width: Get.width / 2.5,
                       child: Row(
                         children: [
                           const Text("الرمز :"),
@@ -122,9 +115,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                               codeController,
                               true,
                               keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                               onChanged: (_) {
                                 patternController.editPatternModel?.patCode = _;
                               },
@@ -137,89 +128,85 @@ class _PatternDetailsState extends State<PatternDetails> {
                   const SizedBox(
                     height: 40,
                   ),
-                   if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-
-                      IgnorePointer(
-                        ignoring: typeController.text == Const.invoiceTypeAdd,
-                        child: SizedBox(
-                          width: Get.width/2.5,
+                  if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IgnorePointer(
+                          ignoring: typeController.text == Const.invoiceTypeAdd,
+                          child: SizedBox(
+                            width: Get.width / 2.5,
+                            child: Row(
+                              children: [
+                                const Text("الدائن"),
+                                const SizedBox(
+                                  width: 25,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    foregroundDecoration: typeController.text == Const.invoiceTypeAdd ? BoxDecoration(color: Colors.grey.withOpacity(0.5)) : null,
+                                    child: customTextFieldWithIcon(
+                                      primaryController,
+                                      (text) async {
+                                        var a = await getAccountComplete(text);
+                                        patternController.update();
+                                        if (a.isNotEmpty) {
+                                          patternController.editPatternModel?.patPrimary = a;
+                                          primaryController.text = a;
+                                          setState(() {});
+                                        }
+                                      },
+                                      onChanged: (_) {
+                                        // patternController.editPatternModel?.patPrimary = _;
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 25,
+                                ),
+                                if (patternController.editPatternModel?.patPrimary != null) Icon(Icons.check),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 25,
+                        ),
+                        SizedBox(
+                          width: Get.width / 2.5,
                           child: Row(
                             children: [
-                              const Text("الدائن"),
+                              const Text("المدين"),
                               const SizedBox(
                                 width: 25,
                               ),
                               Expanded(
-                                child: Container(
-                                  foregroundDecoration:typeController.text == Const.invoiceTypeAdd? BoxDecoration(color: Colors.grey.withOpacity(0.5)):null,
-                                  child: customTextFieldWithIcon(
-                                    primaryController,
-                                    (text) async {
-                                      var a = await getAccountComplete(text);
-                                      patternController.update();
-                                      if(a.isNotEmpty) {
-                                        patternController.editPatternModel?.patPrimary = a;
-                                        primaryController.text = a;
-                                        setState(() {});
-                                      }
-                                    },
-                                    onChanged: (_) {
-                                      // patternController.editPatternModel?.patPrimary = _;
-                                    },
-                                  ),
+                                child: customTextFieldWithIcon(
+                                  secondaryController,
+                                  (text) async {
+                                    var a = await getAccountComplete(text);
+                                    patternController.update();
+                                    if (a.isNotEmpty) {
+                                      patternController.editPatternModel?.patSecondary = a;
+                                      secondaryController.text = a;
+                                      setState(() {});
+                                    }
+                                  },
+                                  onChanged: (_) {
+                                    // patternController.editPatternModel?.patPrimary = _;
+                                  },
                                 ),
                               ),
                               const SizedBox(
                                 width: 25,
                               ),
-                              if(patternController.editPatternModel?.patPrimary!=null)
-                                Icon(Icons.check),
+                              if (patternController.editPatternModel?.patSecondary != null) Icon(Icons.check),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 25,
-                      ),
-                      SizedBox(
-                        width: Get.width/2.5,
-                        child: Row(
-                          children: [
-                            const Text("المدين"),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Expanded(
-                              child: customTextFieldWithIcon(
-                                secondaryController,
-                                    (text) async {
-                                      var a = await getAccountComplete(text);
-                                      patternController.update();
-                                  if(a.isNotEmpty) {
-                                    patternController.editPatternModel?.patSecondary = a;
-                                    secondaryController.text = a;
-                                    setState(() {});
-                                  }
-                                },
-                                onChanged: (_) {
-                                  // patternController.editPatternModel?.patPrimary = _;
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            if(patternController.editPatternModel?.patSecondary!=null)
-                              Icon(Icons.check),
-
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   const SizedBox(
                     height: 40,
                   ),
@@ -227,40 +214,53 @@ class _PatternDetailsState extends State<PatternDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: Get.width/3,
+                        width: Get.width / 3,
                         child: Row(
                           children: [
                             const Text("النوع :"),
                             const SizedBox(
                               width: 25,
                             ),
-                            SizedBox(
-                              width: Get.width/4,
+                            Container(
+                              width: Get.width / 4,
+                              color: Colors.white,
                               child: DropdownButton(
-                                isExpanded: true,
-                                  value: typeController.text.isEmpty?Const.invoiceTypeSales:typeController.text,
+                                  dropdownColor: Colors.white,
+                                  focusColor: Colors.white,
+                                  isExpanded: true,
+                                  value: typeController.text.isEmpty ? Const.invoiceTypeSales : typeController.text,
                                   items: [
-                                DropdownMenuItem(value: Const.invoiceTypeSales, child: Container(
-                                    width: double.infinity,
-                                    child: Text("مبيع",textDirection: TextDirection.rtl,)),),
-                                DropdownMenuItem(value: Const.invoiceTypeBuy, child: Container(
-                                    width: double.infinity,
-                                    child: Text("شراء",textDirection: TextDirection.rtl)),),
-                                DropdownMenuItem(value: Const.invoiceTypeAdd, child: Container(
-                                    width: double.infinity,
-                                    child: Text("إدخال",textDirection: TextDirection.rtl)),),
-                                     DropdownMenuItem(value: Const.invoiceTypeChange, child: Container(
-                                    width: double.infinity,
-                                    child: Text("تبديل مستودعي",textDirection: TextDirection.rtl)),),
-                              ], onChanged: (_){
-                                typeController.text = _!;
-                                patternController.editPatternModel?.patType = _;
-                                if(typeController.text == Const.invoiceTypeAdd){
-                                  patternController.editPatternModel?.patPrimary = null;
-                                  primaryController.clear();
-                                }
-                                setState(() {});
-                              }),
+                                    DropdownMenuItem(
+                                      value: Const.invoiceTypeSales,
+                                      child: Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "مبيع",
+                                            textDirection: TextDirection.rtl,
+                                          )),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: Const.invoiceTypeBuy,
+                                      child: Container(width: double.infinity, child: Text("شراء", textDirection: TextDirection.rtl)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: Const.invoiceTypeAdd,
+                                      child: Container(width: double.infinity, child: Text("إدخال", textDirection: TextDirection.rtl)),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: Const.invoiceTypeChange,
+                                      child: Container(width: double.infinity, child: Text("تبديل مستودعي", textDirection: TextDirection.rtl)),
+                                    ),
+                                  ],
+                                  onChanged: (_) {
+                                    typeController.text = _!;
+                                    patternController.editPatternModel?.patType = _;
+                                    if (typeController.text == Const.invoiceTypeAdd) {
+                                      patternController.editPatternModel?.patPrimary = null;
+                                      primaryController.clear();
+                                    }
+                                    setState(() {});
+                                  }),
                             ),
                             // DropdownMenu(
                             //   requestFocusOnTap: false,
@@ -283,146 +283,153 @@ class _PatternDetailsState extends State<PatternDetails> {
                       const SizedBox(
                         width: 25,
                       ),
-                       if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                      SizedBox(
-                        width: Get.width/3,
-                        child: Row(
+                      if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                        SizedBox(
+                          width: Get.width / 3,
+                          child: Row(
+                            children: [
+                              Text("حساب الضريبة "),
+                              SizedBox(
+                                width: 25,
+                              ),
+                              Expanded(
+                                child: customTextFieldWithIcon(
+                                  vatAccountController,
+                                  (text) async {
+                                    var a = await getAccountComplete(text);
+                                    patternController.update();
+                                    if (a.isNotEmpty) {
+                                      patternController.editPatternModel?.patVatAccount = a;
+                                      vatAccountController.text = a;
+                                      setState(() {});
+                                    }
+                                  },
+                                  onChanged: (_) {
+                                    // patternController.editPatternModel?.patVatAccount = _;
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 25,
+                              ),
+                              if (patternController.editPatternModel?.patVatAccount != null && (patternController.editPatternModel?.patHasVat ?? false)) Icon(Icons.check)
+                            ],
+                          ),
+                        )
+                      else
+                        Row(
                           children: [
-                            Text("حساب الضريبة "),
-                            SizedBox(width: 25,),
-                            Expanded(
+                            const Text("المستودع الجديد:"),
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            SizedBox(
+                              width: Get.width * 0.3,
                               child: customTextFieldWithIcon(
-                                vatAccountController,
+                                storeNewController,
                                 (text) async {
-                                  var a = await getAccountComplete(text);
-                                  patternController.update();
-                                  if(a.isNotEmpty){
-                                    patternController.editPatternModel?.patVatAccount = a;
-                                    vatAccountController.text = a;
+                                  var a = await patternController.getStoreComplete(text);
+                                  if (a.isNotEmpty) {
+                                    patternController.editPatternModel?.patNewStore = a;
+                                    storeNewController.text = a;
                                     setState(() {});
                                   }
                                 },
                                 onChanged: (_) {
-                                  // patternController.editPatternModel?.patVatAccount = _;
+                                  // patternController.editPatternModel?.patStore = _;
                                 },
                               ),
                             ),
-                            SizedBox(width: 25,),
-                            if(patternController.editPatternModel?.patVatAccount!=null&&(patternController.editPatternModel?.patHasVat??false))
-                              Icon(Icons.check)
                           ],
                         ),
-                      )else   Row(
-                      
-                        children: [
-                            const Text("المستودع الجديد:"),
-                      const SizedBox(
-                        width: 25,
-                      ),
-                          SizedBox(
-                            width: Get.width * 0.3,
-                            child: customTextFieldWithIcon(
-                              storeNewController,
-                                  (text) async {
-                                var a = await patternController.getStoreComplete(text);
-                                if(a.isNotEmpty){
-                                  patternController.editPatternModel?.patNewStore = a;
-                                  storeNewController.text = a;
+                      if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                        const SizedBox(
+                          width: 10,
+                        ),
+                      if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                        Row(
+                          children: [
+                            Text("هل بخضع للضريبة"),
+                            Checkbox(
+                                value: patternController.editPatternModel?.patHasVat ?? false,
+                                onChanged: (_) {
                                   setState(() {});
-                                }
-                          
-                              },
-                              onChanged: (_) {
-                                // patternController.editPatternModel?.patStore = _;
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    
-                       if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                      Row(
-                        children: [
-                          Text("هل بخضع للضريبة"),
-                          Checkbox(
-                              value: patternController.editPatternModel?.patHasVat ?? false,
-                              onChanged: (_) {
-                                setState(() {});
-                                patternController.editPatternModel?.patHasVat = _;
-                              }),
-                        ],
-                      ),
+                                  patternController.editPatternModel?.patHasVat = _;
+                                }),
+                          ],
+                        ),
                     ],
                   ),
                   const SizedBox(
                     height: 40,
                   ),
-                    const SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
-                     if(patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [    
-                    
-                      SizedBox(
-                        width: Get.width/3,
-                        child: Row(
-                          children: [
-                            Text("حساب الهدايا "),
-                            SizedBox(width: 25,),
-                            Expanded(
-                              child: customTextFieldWithIcon(
-                                giftAccountController,
-                                (text) async {
-                                  var a = await getAccountComplete(text);
-                                  patternController.update();
-                                  if(a.isNotEmpty){
-                                    patternController.editPatternModel?.patGiftAccount = a;
-                                    giftAccountController.text = a;
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 25,),
-                            if(patternController.editPatternModel?.patGiftAccount!=null)
-                              Icon(Icons.check)
-                          ],
-                        ),
-                      ),
+                  if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         SizedBox(
-                        width: Get.width/3,
-                        child: Row(
-                          children: [
-                            Text("حساب  المقابل الهدايا "),
-                            SizedBox(width: 25,),
-                            Expanded(
-                              child: customTextFieldWithIcon(
-                                secgiftAccountController,
-                                (text) async {
-                                  var a = await getAccountComplete(text);
-                                  patternController.update();
-                                  if(a.isNotEmpty){
-                                    patternController.editPatternModel?.patSecGiftAccount = a;
-                                    secgiftAccountController.text = a;
-                                    setState(() {});
-                                  }
-                                },
+                          width: Get.width / 3,
+                          child: Row(
+                            children: [
+                              Text("حساب الهدايا "),
+                              SizedBox(
+                                width: 25,
                               ),
-                            ),
-                            SizedBox(width: 25,),
-                            if(patternController.editPatternModel?.patSecGiftAccount!=null)
-                              Icon(Icons.check)
-                          ],
+                              Expanded(
+                                child: customTextFieldWithIcon(
+                                  giftAccountController,
+                                  (text) async {
+                                    var a = await getAccountComplete(text);
+                                    patternController.update();
+                                    if (a.isNotEmpty) {
+                                      patternController.editPatternModel?.patGiftAccount = a;
+                                      giftAccountController.text = a;
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 25,
+                              ),
+                              if (patternController.editPatternModel?.patGiftAccount != null) Icon(Icons.check)
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        SizedBox(
+                          width: Get.width / 3,
+                          child: Row(
+                            children: [
+                              Text("حساب  المقابل الهدايا "),
+                              SizedBox(
+                                width: 25,
+                              ),
+                              Expanded(
+                                child: customTextFieldWithIcon(
+                                  secgiftAccountController,
+                                  (text) async {
+                                    var a = await getAccountComplete(text);
+                                    patternController.update();
+                                    if (a.isNotEmpty) {
+                                      patternController.editPatternModel?.patSecGiftAccount = a;
+                                      secgiftAccountController.text = a;
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 25,
+                              ),
+                              if (patternController.editPatternModel?.patSecGiftAccount != null) Icon(Icons.check)
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(
                     height: 40,
                   ),
@@ -437,32 +444,32 @@ class _PatternDetailsState extends State<PatternDetails> {
                         width: Get.width * 0.3,
                         child: customTextFieldWithIcon(
                           storeController,
-                              (text) async {
+                          (text) async {
                             var a = await patternController.getStoreComplete(text);
-                            if(a.isNotEmpty){
+                            if (a.isNotEmpty) {
                               patternController.editPatternModel?.patStore = a;
                               storeController.text = a;
                               setState(() {});
                             }
-
                           },
                           onChanged: (_) {
                             // patternController.editPatternModel?.patStore = _;
                           },
                         ),
                       ),
-                      SizedBox(width: 50,),
+                      SizedBox(
+                        width: 50,
+                      ),
                       SizedBox(
                         width: Get.width * 0.5,
                         child: MaterialColorPicker(
                             allowShades: false, // default true
                             onMainColorChange: (ColorSwatch? color) {
                               print(color?.value);
-                              patternController.editPatternModel?.patColor=color?.value;
+                              patternController.editPatternModel?.patColor = color?.value;
                               // Handle main color changes
                             },
-                            selectedColor: Color(patternController.editPatternModel?.patColor??4294198070)
-                        ),
+                            selectedColor: Color(patternController.editPatternModel?.patColor ?? 4294198070)),
                       )
                     ],
                   ),
@@ -482,54 +489,48 @@ class _PatternDetailsState extends State<PatternDetails> {
                           child: const Text("جديد")),
                       if (patternController.editPatternModel?.patId != null)
                         ElevatedButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                            ),
                             onPressed: () {
-                              if(patternController.editPatternModel?.patName?.isEmpty??true){
+                              if (patternController.editPatternModel?.patName?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة الاسم");
-                              }else if(patternController.editPatternModel?.patCode?.isEmpty??true){
+                              } else if (patternController.editPatternModel?.patCode?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة الرمز");
-                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd &&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if ((patternController.editPatternModel?.patPrimary?.isEmpty ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeAdd && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الاساسي");
-                              }else if((patternController.editPatternModel?.patSecondary?.isEmpty??true)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if ((patternController.editPatternModel?.patSecondary?.isEmpty ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الثانوي");
-                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if (patternController.editPatternModel?.patVatAccount?.isEmpty ?? true && (patternController.editPatternModel?.patHasVat ?? false) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة حساب الضريبة");
-                              }else if(patternController.editPatternModel?.patType?.isEmpty??true){
+                              } else if (patternController.editPatternModel?.patType?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة نوع النمط");
-                              }else if(patternController.editPatternModel?.patStore?.isEmpty??true){
+                              } else if (patternController.editPatternModel?.patStore?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة المستودع");
-                              }else{
-                                checkPermissionForOperation(Const.roleUserUpdate,Const.roleViewPattern).then((value) {
-                                  if(value)patternController.editPattern();
+                              } else {
+                                checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewPattern).then((value) {
+                                  if (value) patternController.editPattern();
                                 });
                               }
                             },
                             child: const Text("تعديل"))
                       else
                         ElevatedButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                            ),
                             onPressed: () {
-                              if(patternController.editPatternModel?.patName?.isEmpty??true){
+                              if (patternController.editPatternModel?.patName?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة الاسم");
-                              }else if(patternController.editPatternModel?.patCode?.isEmpty??true){
-                    Get.snackbar("خطأ", "يرجى كتابة الرمز");
-                              }else if((patternController.editPatternModel?.patPrimary?.isEmpty??true)&&patternController.editPatternModel?.patType!=Const.invoiceTypeAdd &&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if (patternController.editPatternModel?.patCode?.isEmpty ?? true) {
+                                Get.snackbar("خطأ", "يرجى كتابة الرمز");
+                              } else if ((patternController.editPatternModel?.patPrimary?.isEmpty ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeAdd && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الاساسي");
-                              }else if((patternController.editPatternModel?.patSecondary?.isEmpty??true)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if ((patternController.editPatternModel?.patSecondary?.isEmpty ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة الحساب الثانوي");
-                              }else if(patternController.editPatternModel?.patVatAccount?.isEmpty??true&&(patternController.editPatternModel?.patHasVat??false)&&patternController.editPatternModel?.patType != Const.invoiceTypeChange){
+                              } else if (patternController.editPatternModel?.patVatAccount?.isEmpty ?? true && (patternController.editPatternModel?.patHasVat ?? false) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                 Get.snackbar("خطأ", "يرجى كتابة حساب الضريبة");
-                              }else if(patternController.editPatternModel?.patType?.isEmpty??true){
+                              } else if (patternController.editPatternModel?.patType?.isEmpty ?? true) {
                                 Get.snackbar("خطأ", "يرجى كتابة نوع النمط");
-                              }else if(patternController.editPatternModel?.patStore?.isEmpty??true){
-                                    Get.snackbar("خطأ", "يرجى كتابة المستودع");
-                              }else{
-                                checkPermissionForOperation(Const.roleUserWrite,Const.roleViewPattern).then((value) {
-                                  if(value)patternController.addPattern();
+                              } else if (patternController.editPatternModel?.patStore?.isEmpty ?? true) {
+                                Get.snackbar("خطأ", "يرجى كتابة المستودع");
+                              } else {
+                                checkPermissionForOperation(Const.roleUserWrite, Const.roleViewPattern).then((value) {
+                                  if (value) patternController.addPattern();
                                 });
                               }
                             },

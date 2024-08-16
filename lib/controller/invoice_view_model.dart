@@ -18,6 +18,7 @@ import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/global_model.dart';
+import '../view/invoices/Controller/Screen_View_Model.dart';
 import '../view/invoices/widget/invoice_discount_record_source.dart';
 import '../view/invoices/widget/invoice_record_source.dart';
 import 'account_view_model.dart';
@@ -74,19 +75,19 @@ class InvoiceViewModel extends GetxController {
 
   Map<String, String> nextPrevList = {};
 
+  List<GlobalModel> allInvoiceForPluto = [];
 
-  List<GlobalModel> allInvoiceForPluto=[];
-/// we don't need this
-  getDataForPluto() async{
+  /// we don't need this
+  getDataForPluto() async {
     IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
     isolateViewModel.init();
     print("from invoice View");
-    final a = await compute<({List<GlobalModel> invoiceModel,IsolateViewModel isolateViewModel}),List<GlobalModel>>((message) {
+    final a = await compute<({List<GlobalModel> invoiceModel, IsolateViewModel isolateViewModel}), List<GlobalModel>>((message) {
       Get.put(message.isolateViewModel);
-      return  message.invoiceModel;
-    },(invoiceModel: invoiceModel.values.toList(),isolateViewModel:isolateViewModel));
-    allInvoiceForPluto=a;
-  // Get.find<PlutoViewModel>().  update();
+      return message.invoiceModel;
+    }, (invoiceModel: invoiceModel.values.toList(), isolateViewModel: isolateViewModel));
+    allInvoiceForPluto = a;
+    // Get.find<PlutoViewModel>().  update();
     update();
     // return a;
   }
@@ -182,11 +183,10 @@ class InvoiceViewModel extends GetxController {
     }
     for (var record in discountRecords) {
       if ((record.discountPercentage ?? 0) > 0) {
-
-        total -=total* (record.discountPercentage ?? 0);
+        total -= total * (record.discountPercentage ?? 0);
       }
       if ((record.addedPercentage ?? 0) > 0) {
-        total += total*(record.addedPercentage ?? 0);
+        total += total * (record.addedPercentage ?? 0);
       }
     }
     return total;
@@ -196,7 +196,6 @@ class InvoiceViewModel extends GetxController {
     int quantity = 0;
     total = 0.0;
     for (var record in records) {
-
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;
         total += quantity * record.invRecVat!;
@@ -204,21 +203,21 @@ class InvoiceViewModel extends GetxController {
     }
     for (var record in discountRecords) {
       if ((record.discountPercentage ?? 0) > 0) {
-        total -=total* (record.discountPercentage ?? 0);
+        total -= total * (record.discountPercentage ?? 0);
       }
       if ((record.addedPercentage ?? 0) > 0) {
-        total += total*(record.addedPercentage ?? 0);
+        total += total * (record.addedPercentage ?? 0);
       }
     }
 
-      return total;
-
+    return total;
   }
+
   double calculateTotalDiscount(List<double?> totalDiscount) {
     return totalDiscount.fold(0.0, (sum, item) => sum + (item ?? 0.0));
   }
-  double computeWithoutVatTotal() {
 
+  double computeWithoutVatTotal() {
     int quantity = 0;
     double subtotals = 0.0;
     total = 0.0;
@@ -238,8 +237,7 @@ class InvoiceViewModel extends GetxController {
       }
     }
 
-      return total;
-
+    return total;
   }
 
   // List<InvoiceRecordModel> getInvoiceRecords(String billId) {
@@ -473,9 +471,17 @@ class InvoiceViewModel extends GetxController {
     records = invoiceModel[billId]!.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
   }
+  buildSourceRecent(GlobalModel model) {
+    records = model.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
+    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
+  }
 
   buildDiscountSource(String billId) {
     discountRecords = invoiceModel[billId]!.invDiscountRecord! + [InvoiceDiscountRecordModel()];
+    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
+  }
+  buildDiscountSourceRecent(GlobalModel model) {
+    discountRecords = model.invDiscountRecord! + [InvoiceDiscountRecordModel()];
     invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
   }
 
@@ -564,16 +570,24 @@ class InvoiceViewModel extends GetxController {
       sellerController.text = getSellerNameFromId(getMyUserSellerId());
     }
     dateController = DateTime.now().toString().split(".")[0];
-    records = [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
-    discountRecords = [InvoiceDiscountRecordModel()];
+    records = [...List.generate(5, (index) => InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault))];
+    discountRecords = List.generate(3, (index) => InvoiceDiscountRecordModel());
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat);
     invoiceDiscountRecordSource = InvoiceDiscountRecordSource(
       records: discountRecords,
     );
   }
 
+  ScreenViewModel screenViewModel = Get.find<ScreenViewModel>();
+
   initCodeList(patternId) {
     nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+
+    // if (screenViewModel.openedScreen.values.where((element) => element.patternId == patternId).isEmpty) {
+    //   nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+    // } else {
+    //   nextPrevList = Map.fromEntries(screenViewModel.openedScreen.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+    // }
   }
 
   String getNextCodeInv() {
@@ -626,6 +640,46 @@ class InvoiceViewModel extends GetxController {
     if (!bool) {
       update();
     }
+  }
+
+  buildInvInitRecent(GlobalModel model) {
+
+      initModel = model;
+
+    // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
+    invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
+    storeController.text = getStoreNameFromId(initModel.invStorehouse);
+    billIDController.text = initModel.invId!;
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
+    initModel.invGiftAccount = patternModel.patGiftAccount;
+    initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
+    if (patternController.patternModel[initModel.patternId]!.patColor != null) {
+      colorInvoice = patternController.patternModel[initModel.patternId]!.patColor!;
+    }
+
+    if (patternModel.patType != Const.invoiceTypeChange && patternModel.patType != Const.invoiceTypeAdd) {
+      secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
+      primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
+      sellerController.text = getSellerNameFromId(initModel.invSeller);
+    } else {
+      primaryAccountController.clear();
+      secondaryAccountController.clear();
+      storeNewController.text = getStoreNameFromId(initModel.invSecStorehouse);
+    }
+    mobileNumberController.text = initModel.invMobileNumber ?? "";
+    noteController.text = initModel.invComment!;
+    entryBondIdController.text = initModel.entryBondId ?? "";
+    invCodeController.text = initModel.invCode!;
+    dateController = initModel.invDate;
+    // dateController = initModel.invDate!;
+    initCodeList(initModel.patternId);
+
+
+    buildSourceRecent(initModel);
+    buildDiscountSourceRecent(initModel);
+
+      update();
+
   }
 
   bool checkAllRecord() {

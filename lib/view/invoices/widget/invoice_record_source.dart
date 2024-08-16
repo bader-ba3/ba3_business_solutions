@@ -28,6 +28,7 @@ class InvoiceRecordSource extends DataGridSource {
   AccountModel? secAccountModel;
   bool? isPatternHasVat;
   int? color;
+
   InvoiceRecordSource({required this.records, this.secAccountModel, required this.accountVat}) {
     buildDataGridRows(records, accountVat);
   } //getVatFromName(accountVat)
@@ -61,8 +62,8 @@ class InvoiceRecordSource extends DataGridSource {
               DataGridCell<int>(columnName: Const.rowInvQuantity, value: dataGridRow.invRecQuantity),
               DataGridCell<double>(columnName: Const.rowInvSubTotal, value: dataGridRow.invRecSubTotal),
               DataGridCell<double>(columnName: Const.rowInvVat, value: dataGridRow.invRecVat),
-              DataGridCell<double>(columnName: Const.rowInvTotal, value:  (dataGridRow.invRecQuantity != null) && dataGridRow.invRecSubTotal != null ? (dataGridRow.invRecQuantity??0) * ((dataGridRow.invRecSubTotal ?? 0) + (dataGridRow.invRecQuantity??0) * ((dataGridRow.invRecVat ?? 0))) : null),
-              DataGridCell<double>(columnName: Const.rowInvTotalVat, value: (dataGridRow.invRecQuantity != null) && dataGridRow.invRecSubTotal != null ? (dataGridRow.invRecQuantity??0) * ((dataGridRow.invRecVat ?? 0) + (dataGridRow.invRecTotal ?? 0)) : null),
+              DataGridCell<double>(columnName: Const.rowInvTotal, value: (dataGridRow.invRecQuantity != null) && dataGridRow.invRecSubTotal != null ? (dataGridRow.invRecQuantity ?? 0) * ((dataGridRow.invRecSubTotal ?? 0) + (dataGridRow.invRecQuantity ?? 0) * ((dataGridRow.invRecVat ?? 0))) : null),
+              DataGridCell<double>(columnName: Const.rowInvTotalVat, value: (dataGridRow.invRecQuantity != null) && dataGridRow.invRecSubTotal != null ? (dataGridRow.invRecQuantity ?? 0) * ((dataGridRow.invRecVat ?? 0) + (dataGridRow.invRecTotal ?? 0)) : null),
             ]))
         .toList();
   }
@@ -109,7 +110,9 @@ class InvoiceRecordSource extends DataGridSource {
               width: Get.width / 1.5,
               child: ListView.separated(
                   itemCount: result.length,
-                  separatorBuilder: (context, index) =>   Divider(color: Colors.blue.withOpacity(0.5),),
+                  separatorBuilder: (context, index) => Divider(
+                        color: Colors.blue.withOpacity(0.5),
+                      ),
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
@@ -120,9 +123,14 @@ class InvoiceRecordSource extends DataGridSource {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Text("${index}_ ",style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w700,color: Colors.blue),),
-                            Text(result[index].prodName!,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w700),),
-
+                            Text(
+                              "${index}_ ",
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.blue),
+                            ),
+                            Text(
+                              result[index].prodName!,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                            ),
                           ],
                         ),
                       ),
@@ -147,7 +155,8 @@ class InvoiceRecordSource extends DataGridSource {
         List<ProductModel> result = searchText(product_name!.value);
         if (int.tryParse(newCellValue) != null) {
           if (int.parse(result.first.prodAllQuantity ?? "0") - int.parse(newCellValue) < 0 && result.first.prodType == Const.productTypeStore) {
-            Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
+            // Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
+            //todo:ali
           }
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<int>(columnName: Const.rowInvQuantity, value: int.parse(newCellValue));
           records[dataRowIndex].invRecQuantity = int.parse(newCellValue);
@@ -223,9 +232,9 @@ class InvoiceRecordSource extends DataGridSource {
       if (product_name?.value == '' || product_name?.value == null) {
         Get.snackbar("خطأ", "يجب إدخال المادة اولا");
       } else {
-        if (double.tryParse(newCellValue) != null) {        
+        if (double.tryParse(newCellValue) != null) {
           records[dataRowIndex].invRecGift = int.parse(newCellValue);
-          records[dataRowIndex].invRecGiftTotal = productController.getAvreageBuy(getProductModelFromId(getProductIdFromName(product_name!.value))!) * int.parse(newCellValue) ;
+          records[dataRowIndex].invRecGiftTotal = productController.getAvreageBuy(getProductModelFromId(getProductIdFromName(product_name!.value))!) * int.parse(newCellValue);
           dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] = DataGridCell<int>(columnName: Const.rowInvGift, value: int.parse(newCellValue));
           globalController.onCellTap(rowColumnIndex);
           buildDataGridRows(records, accountVat);
@@ -278,9 +287,9 @@ class InvoiceRecordSource extends DataGridSource {
         : (result.prodIsLocal ?? false)
             ? (searchLastPrice(result.prodId!, vat, dataRowIndex) - (searchLastPrice(result.prodId!, vat, dataRowIndex) / (vat + 1)))
             : 0;
-    records[dataRowIndex].invRecQuantity = 1;
+    records[dataRowIndex].invRecQuantity = null;
     if (int.parse(result.prodAllQuantity ?? "0") < 0 && result.prodType == Const.productTypeStore) {
-      Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
+      // Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
     }
     globalController.onCellTap(rowColumnIndex);
     buildDataGridRows(records, accountVat);
@@ -293,18 +302,22 @@ class InvoiceRecordSource extends DataGridSource {
     String displayText = dataGridRow.getCells().firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)?.value?.toString() ?? '';
 
     newCellValue = null;
-
+    editingController.selection = TextSelection(baseOffset: 0, extentOffset: editingController.text.length);
     final bool isNumericType = column.columnName == 'subTotal' || column.columnName == 'total';
     final bool isIntType = column.columnName == 'quantity';
     if (double.tryParse(displayText) != null) {
       displayText = double.parse(displayText).toStringAsFixed(2);
     }
     return Container(
-      color: effectiveRows.indexOf(dataGridRow) % 2 == 0 ? Colors.blue.shade200:Colors.white,
+      color: effectiveRows.indexOf(dataGridRow) % 2 == 0 ? Colors.blue.shade200 : Colors.white,
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-        style: TextStyle(color: Colors.red.shade500),
+        style: const TextStyle(color: Colors.black),
         autofocus: true,
+        onTap: () {
+
+          editingController.selection = TextSelection(baseOffset: 0, extentOffset: editingController.text.length);
+        },
         controller: editingController..text = displayText,
         decoration: const InputDecoration(
           fillColor: Colors.black,
@@ -356,6 +369,7 @@ class InvoiceRecordSource extends DataGridSource {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return GestureDetector(
+
         onSecondaryTapDown: (_) {
           var productName = row.getCells().firstWhereOrNull((element) => element.columnName == Const.rowInvProduct);
           if (productName?.value != null) {
@@ -381,11 +395,14 @@ class InvoiceRecordSource extends DataGridSource {
         child: Container(
           color: getRowBackgroundColor(),
           alignment: Alignment.center,
-          child: Text(dataGridCell.value == null
-              ? ""
-              : dataGridCell.value.runtimeType == double
-                  ? dataGridCell.value.toStringAsFixed(2)
-                  : dataGridCell.value.toString(),style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w600),),
+          child: Text(
+            dataGridCell.value == null
+                ? ""
+                : dataGridCell.value.runtimeType == double
+                    ? dataGridCell.value.toStringAsFixed(2)
+                    : dataGridCell.value.toString(),
+            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          ),
         ),
       );
     }).toList());
@@ -412,11 +429,20 @@ class InvoiceRecordSource extends DataGridSource {
 
   late List<ProductModel> products = [];
   late List<ProductModel> selectedProducts = [];
-
   List<ProductModel> searchText(String query) {
     query = replaceArabicNumbersWithEnglish(query);
+    String query2 = '';
+    String query3 = '';
+
+    if (query.contains(" ")) {
+      query3 = query.split(" ")[0];
+      query2 = query.split(" ")[1];
+    } else {
+      query3 = query;
+      query2 = query;
+    }
     products = productController.productDataMap.values.toList().where((item) {
-      bool prodName = item.prodName.toString().toLowerCase().contains(query.toLowerCase());
+      bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) && item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
       // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
       bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
       bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());

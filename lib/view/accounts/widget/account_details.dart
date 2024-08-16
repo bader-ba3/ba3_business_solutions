@@ -12,8 +12,8 @@ import '../../../controller/account_view_model.dart';
 
 class AccountDetails extends StatefulWidget {
   final String modelKey;
-  final Function? initFun;
-  const AccountDetails({super.key, required this.modelKey, this.initFun});
+
+  const AccountDetails({super.key, required this.modelKey});
 
   @override
   State<AccountDetails> createState() => _AccountDetailsState();
@@ -24,6 +24,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   var nameController = TextEditingController();
   var codeController = TextEditingController();
   List<AccountRecordModel> record = <AccountRecordModel>[];
+
   @override
   void initState() {
     super.initState();
@@ -48,8 +49,12 @@ class _AccountDetailsState extends State<AccountDetails> {
                     Get.to(AddAccount(modelKey: widget.modelKey));
                   },
                   child: Text("تعديل بطاقة الحساب")),
+
+              const SizedBox(
+                width: 20,
+              ),
               if (controller.accountList[widget.modelKey]!.accRecord.isEmpty)
-                ElevatedButton(
+              ...[  ElevatedButton(
                     onPressed: () {
                       confirmDeleteWidget().then((value) {
                         if (value) {
@@ -62,7 +67,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                         }
                       });
                     },
-                    child: Text("حذف")),
+                    child: Text("حذف")),    const SizedBox(
+                width: 40,
+              ),]
             ],
             title: Text(controller.accountList[widget.modelKey]?.accName ?? "error"),
           ),
@@ -76,9 +83,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                         controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex - 1].getCells().forEach((element) {
                           if (element.columnName == Const.rowAccountId) {
                             var value = element.value;
-                              Get.to(() => EntryBondDetailsView(
-                                    oldId: value,
-                                  ));
+                            Get.to(() => EntryBondDetailsView(
+                                  oldId: value,
+                                ));
                           }
                         });
                       },
@@ -118,16 +125,20 @@ class _AccountDetailsState extends State<AccountDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("الرصيد النهائي"),
-                    SizedBox(
+                    const Text(
+                      "الرصيد النهائي:",
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 20),
+                    ),
+                    const SizedBox(
                       width: 30,
                     ),
-                    Text(controller.getBalance(widget.modelKey).toStringAsFixed(2))
+                    Text(controller.getBalance(widget.modelKey).toStringAsFixed(2),
+                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold,fontSize: 24),)
                   ],
                 ),
               ),
-              SizedBox(
-                height: 50,
+              const SizedBox(
+                height: 10,
               ),
             ],
           ),
@@ -141,10 +152,12 @@ class _AccountDetailsState extends State<AccountDetails> {
         allowEditing: false,
         columnName: name,
         label: Container(
+            color: Colors.blue.shade700,
             padding: EdgeInsets.all(16.0),
             alignment: Alignment.center,
             child: Text(
               label.toString(),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
             )));
   }
 }

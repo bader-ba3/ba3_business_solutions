@@ -36,10 +36,19 @@ class AccountViewDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 == 0) {
+        return  Colors.white;
+      }
+
+      return Colors.blue.withOpacity(0.5);
+    }
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
         alignment: Alignment.center,
+        color: getRowBackgroundColor(),
         padding: EdgeInsets.all(8.0),
         child: Text(dataGridCell.value.runtimeType==double
           ?dataGridCell.value.toStringAsFixed(2)

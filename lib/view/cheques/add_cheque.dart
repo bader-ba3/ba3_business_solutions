@@ -198,29 +198,32 @@ class _AddChequeState extends State<AddCheque> {
                       height: 30,
                     ),
                     if (controller.initModel?.cheqId == null)
-                      ElevatedButton(
-                          onPressed: () async {
-                            if (double.tryParse(controller.initModel?.cheqAllAmount ?? "a") == null) {
-                              Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
-                            } else if (controller.initModel?.cheqName?.isEmpty ?? true) {
-                              Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
-                            } else if (controller.initModel?.cheqDate?.isEmpty ?? true) {
-                              Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
-                            } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
-                              Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
-                            } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text, Const.accountTypeDefault)) {
-                              Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
-                            } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
-                              Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                            } else if (secoundryController.text.isEmpty || !controller.checkAccountComplete(secoundryController.text, Const.accountTypeDefault)) {
-                              Get.snackbar("خطأ", "يرجى كتابة المعلومات");
-                            } else {
-                              checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
-                                if (value) controller.addCheque();
-                              });
-                            }
-                          },
-                          child: Text("إضافة"))
+                      Container(
+                        alignment: Alignment.center,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              if (double.tryParse(controller.initModel?.cheqAllAmount ?? "a") == null) {
+                                Get.snackbar("خطأ", "يرجى كتابة قيمة الشيك ");
+                              } else if (controller.initModel?.cheqName?.isEmpty ?? true) {
+                                Get.snackbar("خطأ", "يرجى كتابة رقم الشيك ");
+                              } else if (controller.initModel?.cheqDate?.isEmpty ?? true) {
+                                Get.snackbar("خطأ", "يرجى كتابة تاريخ الشيك ");
+                              } else if (controller.initModel?.cheqCode?.isEmpty ?? true) {
+                                Get.snackbar("خطأ", "يرجى كتابة رمز الشيك");
+                              } else if (bankController.text.isEmpty || !controller.checkAccountComplete(bankController.text, Const.accountTypeDefault)) {
+                                Get.snackbar("خطأ", "يرجى كتابة حساب البنك");
+                              } else if (primeryController.text.isEmpty || !controller.checkAccountComplete(primeryController.text, Const.accountTypeDefault)) {
+                                Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                              } else if (secoundryController.text.isEmpty || !controller.checkAccountComplete(secoundryController.text, Const.accountTypeDefault)) {
+                                Get.snackbar("خطأ", "يرجى كتابة المعلومات");
+                              } else {
+                                checkPermissionForOperation(Const.roleUserWrite, Const.roleViewCheques).then((value) {
+                                  if (value) controller.addCheque();
+                                });
+                              }
+                            },
+                            child: Text("إضافة")),
+                      )
                     else
                       Column(
                         children: [

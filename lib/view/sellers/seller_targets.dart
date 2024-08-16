@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../model/task_model.dart';
+import '../widget/CustomWindowTitleBar.dart';
 
 
 
@@ -35,114 +36,123 @@ class _SellerTargetState extends State<SellerTarget> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  num = num + 10000;
-                  othersKey.currentState?.addValue(num);
-                },
-                child: Text("aaa"))
-          ],
-          title: const Text(
-            "لوحة الانجازات",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+    return Column(
+      
+      children: [
+        const CustomWindowTitleBar(),
+        
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                actions: [
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       num = num + 10000;
+                  //       othersKey.currentState?.addValue(num);
+                  //     },
+                  //     child: Text("aaa"))
+                ],
+                title: const Text(
+                  "لوحة الانجازات",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              body: ListView(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          const Text(
+                            "تارغيت الجوالات ",
+                            style: TextStyle(fontSize: 22),
+                          ),
+                          SizedBox(
+                              width: MediaQuery.sizeOf(context).width / 2,
+                              height: 500,
+                              child: TargetPointerWidget(
+                                key: mobileKey,
+                                value: sellerData.mobileTotal.toInt(),
+                              )),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "تارغيت الاكسسوارات ",
+                            style: TextStyle(fontSize: 22),
+                          ),
+                          Container(
+                              width: MediaQuery.sizeOf(context).width / 2,
+                              height: 500,
+                              child: TargetPointerWidget(
+                                key: othersKey,
+                                value: sellerData.otherTotal.toInt(),
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                  GetBuilder<SellersViewModel>(builder: (controller) {
+                    // print("SetState");
+                    // print(newSellerData);
+                    if (sellerData.mobileTotal != sellerData.mobileTotal || sellerData.otherTotal != sellerData.otherTotal) {
+                      if(sellerData.otherTotal - sellerData.otherTotal.toInt() >0){
+                        othersKey.currentState!.addValue(sellerData.otherTotal.toInt());
+                      }else{
+                        othersKey.currentState!.removeValue(sellerData.otherTotal.toInt());
+                      }
+                      if(sellerData.mobileTotal - sellerData.mobileTotal.toInt() >0){
+                        mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
+                      }else{
+                        mobileKey.currentState!.removeValue(sellerData.mobileTotal.toInt());
+                      }
+                      // sellerData = sellerData;
+                      mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
+                    }
+                    return GetBuilder<TargetViewModel>(builder: (controller) {
+                     List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
+                      return Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                              "المهام",
+                              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          for (TaskModel model in allUserTask)
+                            Builder(builder: (context) {
+                              int count = sellerData.productsMap[model.taskProductId!] ?? 0;
+                              bool isDone = count >= model.taskQuantity!;
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Radio(toggleable: false, value: isDone, groupValue: true, onChanged: null),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "بيع  ${model.taskQuantity}  من  ${getProductNameFromId(model.taskProductId)}  لقد بعت  $count",
+                                      style: TextStyle(fontSize: 20, color: isDone ? Colors.green : Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                        ],
+                      );
+                    });
+                  })
+                ],
+              ),
+            ),
           ),
         ),
-        body: ListView(
-          children: [
-            Row(
-              children: [
-                Column(
-                  children: [
-                    const Text(
-                      "تارغيت الجوالات ",
-                      style: TextStyle(fontSize: 22),
-                    ),
-                    SizedBox(
-                        width: MediaQuery.sizeOf(context).width / 2,
-                        height: 500,
-                        child: TargetPointerWidget(
-                          key: mobileKey,
-                          value: sellerData.mobileTotal.toInt(),
-                        )),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text(
-                      "تارغيت الاكسسوارات ",
-                      style: TextStyle(fontSize: 22),
-                    ),
-                    Container(
-                        width: MediaQuery.sizeOf(context).width / 2,
-                        height: 500,
-                        child: TargetPointerWidget(
-                          key: othersKey,
-                          value: sellerData.otherTotal.toInt(),
-                        )),
-                  ],
-                ),
-              ],
-            ),
-            GetBuilder<SellersViewModel>(builder: (controller) {
-              // print("SetState");
-              // print(newSellerData);
-              if (sellerData.mobileTotal != sellerData.mobileTotal || sellerData.otherTotal != sellerData.otherTotal) {
-                if(sellerData.otherTotal - sellerData.otherTotal.toInt() >0){
-                  othersKey.currentState!.addValue(sellerData.otherTotal.toInt());
-                }else{
-                  othersKey.currentState!.removeValue(sellerData.otherTotal.toInt());
-                }
-                if(sellerData.mobileTotal - sellerData.mobileTotal.toInt() >0){
-                  mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
-                }else{
-                  mobileKey.currentState!.removeValue(sellerData.mobileTotal.toInt());
-                }
-                // sellerData = sellerData;
-                mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
-              }
-              return GetBuilder<TargetViewModel>(builder: (controller) {
-               List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
-                return Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        "المهام",
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    for (TaskModel model in allUserTask)
-                      Builder(builder: (context) {
-                        int count = sellerData.productsMap[model.taskProductId!] ?? 0;
-                        bool isDone = count >= model.taskQuantity!;
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Radio(toggleable: false, value: isDone, groupValue: true, onChanged: null),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "بيع  ${model.taskQuantity}  من  ${getProductNameFromId(model.taskProductId)}  لقد بعت  $count",
-                                style: TextStyle(fontSize: 20, color: isDone ? Colors.green : Colors.red),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                  ],
-                );
-              });
-            })
-          ],
-        ),
-      ),
+      ],
     );
   }
 }

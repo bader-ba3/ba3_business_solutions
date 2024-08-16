@@ -200,7 +200,7 @@ class ProductModel {
 
   Map<String, dynamic> toMap() {
     return {
-      // 'الرمز التسليلي': prodId,
+      'الرقم التسلسلي': prodId,
       'رمز المادة': prodFullCode,
       'اسم المادة': prodName,
       // 'prodCode': prodCode,
@@ -224,19 +224,15 @@ class ProductModel {
   }
 
   Map<String, dynamic> toTree() {
-    if(prodParentId == null && prodName.toString()!="CASH ADVANCEE 1000AED"&& prodName.toString()!="FREE"&& prodName.toString()!="ALL"){
-      print(prodName.toString()+ "   "+prodFullCode.toString()+ "    "+prodCode.toString());
-      print(prodId);
 
-    }
 
   return {
       'id': int.parse(prodId!.split("prod")[1]),
       'value': "$prodFullCode      $prodName"  ,
-  'parentId':prodParentId!=null&&prodParentId!.startsWith("prod") ?int.parse((prodParentId!.split("prod")[1])):"1"
-      // 'parentId': int.parse((prodParentId!.split("prod")[1])/* != null
-      //     ? (prodParentId?.split("prod")[1])!
-      //     : "1"*/ ),
+  'parentId':prodParentId!=null&&prodParentId!.startsWith("prod") ?int.parse((prodParentId!.split("prod")[1])):"prod0"
+      // 'parentId': int.parse((prodParentId?.split("prod").lastOrNull) != null
+      //     ? (prodParentId?.split("prod").lastOrNull)??"1"
+      //     : "1" ),
     };
 
 

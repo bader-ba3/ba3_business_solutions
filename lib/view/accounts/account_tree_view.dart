@@ -6,6 +6,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
 import '../../model/account_tree.dart';
+import '../widget/CustomWindowTitleBar.dart';
 
 
 class AccountTreeView extends StatelessWidget {
@@ -14,61 +15,70 @@ class AccountTreeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("شجرة الحسابات"),
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  accountController.treeController?.collapseAll();
-                },
-                child: const Text("-")),
-            const SizedBox(
-              width: 20,
+    return Column(
+      
+      children: [
+        const CustomWindowTitleBar(),
+        
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("شجرة الحسابات"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        accountController.treeController?.collapseAll();
+                      },
+                      child: const Text("-")),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        accountController.treeController?.expandAll();
+                      },
+                      child: const Text("+")),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                      Get.to(()=>const AddAccount());
+                      },
+                      child: const Text("اضافة حساب")),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                ],
+              ),
+              body: StreamBuilder(
+                  stream: accountController.accountList.stream,
+                  builder: (context, snapshot) {
+                    return GetBuilder<AccountViewModel>(builder: (controller) {
+                      return accountController.allCost.isEmpty
+                          ? const CircularProgressIndicator()
+                          : TreeView<AccountTree>(
+                              treeController: accountController.treeController!,
+                              nodeBuilder: (BuildContext context, TreeEntry<AccountTree> entry) {
+                                return myTreeTile(
+                                  context: context,
+                                  key: ValueKey(entry.node),
+                                  entry: entry,
+                                  onTap: () {
+                                    controller.lastIndex = entry.node.id;
+                                    accountController.treeController?.toggleExpansion(entry.node);
+                                  },
+                                );
+                              },
+                            );
+                    });
+                  }),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  accountController.treeController?.expandAll();
-                },
-                child: const Text("+")),
-            const SizedBox(
-              width: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                Get.to(()=>const AddAccount());
-                },
-                child: const Text("اضافة حساب")),
-            const SizedBox(
-              width: 20,
-            ),
-          ],
+          ),
         ),
-        body: StreamBuilder(
-            stream: accountController.accountList.stream,
-            builder: (context, snapshot) {
-              return GetBuilder<AccountViewModel>(builder: (controller) {
-                return accountController.allCost.isEmpty
-                    ? const CircularProgressIndicator()
-                    : TreeView<AccountTree>(
-                        treeController: accountController.treeController!,
-                        nodeBuilder: (BuildContext context, TreeEntry<AccountTree> entry) {
-                          return myTreeTile(
-                            context: context,
-                            key: ValueKey(entry.node),
-                            entry: entry,
-                            onTap: () {
-                              controller.lastIndex = entry.node.id;
-                              accountController.treeController?.toggleExpansion(entry.node);
-                            },
-                          );
-                        },
-                      );
-              });
-            }),
-      ),
+      ],
     );
   }
    myTreeTile({context,required ValueKey<AccountTree> key,required VoidCallback onTap,required TreeEntry<AccountTree> entry}) {

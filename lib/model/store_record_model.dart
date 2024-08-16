@@ -1,6 +1,8 @@
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 
+import '../controller/product_view_model.dart';
+
 class StoreRecordModel {
   String? storeRecId;
   String? storeRecInvId;
@@ -80,12 +82,14 @@ class StoreRecordView{
   String? affectedKey({String? type}) {
     return "productId";
   }
-  toAR(){
-    ProductModel productModel = getProductModelFromIdIsolate(productId)??ProductModel(prodName: "XXXXXXXXXXX");
+  toMap(){
+    print(productId);
+    ProductModel productModel = getProductModelFromId(productId)??ProductModel(prodName: "XXXXXXXXXXX");///Isolate
     return {
+      "id":productId,
        "رمز المادة":productModel.prodFullCode,
        "المادة":productModel.prodName,
-       "الكمية":double.parse(total??"0").toInt()
+       "الكمية":total=="hello"?15:double.parse(total??"0").toInt()
     };
     
   }

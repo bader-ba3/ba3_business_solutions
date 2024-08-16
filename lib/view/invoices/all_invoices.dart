@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../Const/const.dart';
 import '../../Widgets/new_Pluto.dart';
 import 'invoice_view.dart';
 
@@ -15,6 +16,8 @@ class AllInvoice extends StatelessWidget {
       builder: (controller) {
         return  CustomPlutoGrid(
           title: "جميع الفواتير",
+          type:Const.globalTypeInvoice,
+
           onLoaded: (e){
           },
           onSelected: (p0) {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tree_pro/flutter_tree.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/product_view_model.dart';
 import '../../../model/inventory_model.dart';
 import '../../../model/product_model.dart';
 import '../../../utils/hive.dart';
@@ -55,7 +56,7 @@ class _SelectTaskInventoryState extends State<SelectTaskInventory> {
 
       treeListData = dataList.map((e) => e.toTree()).toList();
       for (var element in (message.a)) {
-        ProductModel model =getProductModelFromIdIsolate(element)!;
+        ProductModel model =getProductModelFromId(element)!;//isoLate
         initialTreeData.add(model.toTree());
       }
      return (initialTreeData:initialTreeData,treeListData:treeListData);

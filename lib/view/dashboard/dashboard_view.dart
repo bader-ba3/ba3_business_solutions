@@ -23,9 +23,9 @@ class _DashboardViewState extends State<DashboardView> {
           height: Get.width / 4,
           child: GetBuilder<AccountViewModel>(builder: (accountController) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Container(
-                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.25), borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -158,7 +158,14 @@ class _DashboardViewState extends State<DashboardView> {
             );
           }),
         ),
-        DashboardChartWidget1(),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ClipRRect(
+              
+              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.circular(25),
+              child: DashboardChartWidget1()),
+        ),
       ],
     );
   }

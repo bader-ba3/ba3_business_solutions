@@ -160,9 +160,11 @@ class StoreViewModel extends GetxController {
     if (HiveDataBase.storeModelBox.isEmpty) {
       FirebaseFirestore.instance.collection(Const.storeCollection).get().then((value) {
         storeMap.clear();
+        HiveDataBase.storeModelBox.clear();
         for (var element in value.docs) {
           HiveDataBase.storeModelBox.put(element.id, StoreModel.fromJson(element.data()));
           storeMap[element.id] = StoreModel.fromJson(element.data());
+
         }
         recordViewDataSource = StoreRecordDataSource(stores: storeMap);
         update();
@@ -189,8 +191,8 @@ class StoreViewModel extends GetxController {
     totalAmountPage.forEach(
       (key, value) {
         allData[key] = StoreRecordView(
-          productId: value.toString(),
-          total: "hello",
+          productId: key.toString(),
+          total: value.toString(),
         );
       },
     );

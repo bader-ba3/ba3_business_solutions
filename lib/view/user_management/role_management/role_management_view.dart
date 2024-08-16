@@ -12,11 +12,11 @@ class RoleManagementView extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("إدارة الصلاحيات"),
+          title: const Text("إدارة الصلاحيات"),
           actions: [
             ElevatedButton(onPressed: (){
-              Get.to(()=>AddRoleView());
-            }, child: Text("إضافة دور",style: TextStyle(color: Colors.black),))
+              Get.to(()=>const AddRoleView());
+            }, child: const Text("إضافة دور",))
           ],
         ),
         body: GetBuilder<UserManagementViewModel>(
@@ -36,7 +36,7 @@ class RoleManagementView extends StatelessWidget {
                         },
                         child: Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(color: Colors.grey.withOpacity(0.5), borderRadius: BorderRadius.circular(10)),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                           height: 140,
                           width: 140,
                           child: Column(

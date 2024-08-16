@@ -170,15 +170,18 @@ class _ProductDetailsState extends State<ProductDetails> {
         allowEditing: false,
         columnName: name,
         label: Container(
-            padding: EdgeInsets.all(16.0),
+            color: Colors.blue.shade800,
+            padding: const EdgeInsets.all(16.0),
             alignment: Alignment.center,
             child: Text(
               label.toString(),
+              style: const TextStyle(color: Colors.white,fontWeight:FontWeight.bold,fontSize: 16),
             )));
   }
 
   void initPage() {
     if (widget.oldKey != null) {
+
       productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toFullJson());
       editedProductRecord.clear();
       productController.productModel?.prodRecord?.forEach((element) {

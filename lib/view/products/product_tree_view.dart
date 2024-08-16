@@ -7,76 +7,86 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
 import '../../model/product_tree.dart';
+import '../widget/CustomWindowTitleBar.dart';
 
 class ProductTreeView extends StatelessWidget {
   ProductTreeView({super.key});
- final ProductViewModel productController = Get.find<ProductViewModel>();
+
+  final ProductViewModel productController = Get.find<ProductViewModel>();
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("شجرة المواد"),
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  productController.treeController?.collapseAll();
-                },
-                child: Text("-")), ElevatedButton(
-                onPressed: () {
-                  // productController.correct();
-                },
-                child: Text("-aaaaa")),
-            SizedBox(
-              width: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  productController.treeController?.expandAll();
-                },
-                child: Text("+")),
-            SizedBox(
-              width: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  productController.createFolderDialog();
-                },
-                child: Text("إضافة ملف")),
-            SizedBox(
-              width: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(() => AddProduct());
-                },
-                child: Text("اضافة حساب")),
-            SizedBox(
-              width: 20,
-            ),
-          ],
-        ),
-        body: GetBuilder<ProductViewModel>(builder: (controller) {
-          return productController.allProductTree.isEmpty
-              ? const CircularProgressIndicator()
-              : TreeView<ProductTree>(
-                  treeController: productController.treeController!,
-                  nodeBuilder: (BuildContext context, TreeEntry<ProductTree> entry) {
-                    return myTreeTile(
-                      context: context,
-                      key: ValueKey(entry.node),
-                      entry: entry,
-                      onTap: () {
-                        controller.lastIndex = entry.node.id;
-                        productController.treeController?.toggleExpansion(entry.node);
+    return Column(
+      children: [
+        const CustomWindowTitleBar(),
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("شجرة المواد"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        productController.treeController?.collapseAll();
                       },
-                    );
-                  },
-                );
-        }),
-      ),
+                      child: const Text("-")),
+/*                  ElevatedButton(
+                      onPressed: () {
+                        // productController.correct();
+                      },
+                      child: Text("-aaaaa")),*/
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        productController.treeController?.expandAll();
+                      },
+                      child: Text("+")),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        productController.createFolderDialog();
+                      },
+                      child: Text("إضافة ملف")),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => AddProduct());
+                      },
+                      child: Text("اضافة حساب")),
+                  SizedBox(
+                    width: 20,
+                  ),
+                ],
+              ),
+              body: GetBuilder<ProductViewModel>(builder: (controller) {
+                return productController.allProductTree.isEmpty
+                    ? const CircularProgressIndicator()
+                    : TreeView<ProductTree>(
+                        treeController: productController.treeController!,
+                        nodeBuilder: (BuildContext context, TreeEntry<ProductTree> entry) {
+                          return myTreeTile(
+                            context: context,
+                            key: ValueKey(entry.node),
+                            entry: entry,
+                            onTap: () {
+                              controller.lastIndex = entry.node.id;
+                              productController.treeController?.toggleExpansion(entry.node);
+                            },
+                          );
+                        },
+                      );
+              }),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -106,11 +116,12 @@ class ProductTreeView extends StatelessWidget {
                   onPressed: entry.hasChildren ? onTap : null,
                 ),
                 if (productController.editItem != entry.node.id)
-                  Text(productController.getFullCodeOfProduct(entry.node.id!) + " - " + entry.node.name!)
+                  Text("${productController.getFullCodeOfProduct(entry.node.id!)} - ${entry.node.name!}")
                 else
                   SizedBox(
-                    width: 100,
+                    width: 300,
                     child: TextFormField(
+                      decoration: const InputDecoration(fillColor: Colors.white,filled: true),
                       controller: productController.editCon,
                       onFieldSubmitted: (_) {
                         productController.endRenameChild();

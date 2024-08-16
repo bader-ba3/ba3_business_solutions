@@ -46,7 +46,7 @@ class _InventoryTypeState extends State<InventoryType> {
               child: selectedInventory != null
               ?Container(
                   width: double.infinity,
-                 // decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                   padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 12),
                   child: Row(
                     children: [
@@ -75,12 +75,14 @@ class _InventoryTypeState extends State<InventoryType> {
                     },
                 child: Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.all(30.0),
-                    child: Text(
-                      "انشئ جرد" ,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      textDirection: TextDirection.rtl,
+                    child: const Center(
+                      child: Text(
+                        "انشئ جرد" ,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        textDirection: TextDirection.rtl,
+                      ),
                     )),
               ),
             ),
@@ -172,12 +174,14 @@ class _InventoryTypeState extends State<InventoryType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textDirection: TextDirection.rtl,
+            child: Center(
+              child: Text(
+                text,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textDirection: TextDirection.rtl,
+              ),
             )),
       ),
     );

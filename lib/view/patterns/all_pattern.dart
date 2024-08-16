@@ -14,13 +14,7 @@ class AllPattern extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("أنماط البيع"),
-          // actions: [
-          //   ElevatedButton(
-          //       onPressed: () {
-          //         Get.to(PatternDetails());
-          //       },
-          //       child: Text("Add New"))
-          // ],
+
         ),
         body: GetBuilder<PatternViewModel>(
           builder: (patternController) {

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 Widget customTextFieldWithIcon(TextEditingController controller, void Function(String) onSubmitted, {Function()? onIconPressed, void Function(String _)? onChanged,List<TextInputFormatter>? inputFormatters,TextInputType? keyboardType}) {
   return TextFormField(
+
     // validator: validator,
     onFieldSubmitted: onSubmitted,
     onChanged: onChanged,
@@ -11,6 +12,8 @@ Widget customTextFieldWithIcon(TextEditingController controller, void Function(S
 inputFormatters: inputFormatters,
     // onTapOutside: onTapOutside,
     decoration: InputDecoration(
+      fillColor: Colors.white,
+      filled: true,
       border: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.black, // Change the border color
@@ -47,6 +50,8 @@ Widget customTextFieldWithoutIcon(TextEditingController controller, bool enabled
     keyboardType:keyboardType,
     inputFormatters: inputFormatters,
     decoration: InputDecoration(
+      fillColor: Colors.white,
+      filled: true,
       border: OutlineInputBorder(
         borderSide: const BorderSide(
           color: Colors.black, // Change the border color

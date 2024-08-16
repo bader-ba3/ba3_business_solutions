@@ -24,6 +24,7 @@ class _BondTypeState extends State<BondType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
+
           title: const Text("السندات"),
         ),
         body: ListView(
@@ -31,13 +32,13 @@ class _BondTypeState extends State<BondType> {
           physics: const ClampingScrollPhysics(),
           children: [
             Item("سند يومية",(){
-              Get.to(() => BondDetailsView(bondType: Const.bondTypeDaily,));
+              Get.to(() => const BondDetailsView(bondType: Const.bondTypeDaily,));
             }),
             Item("سند دفع",(){
-              Get.to(() => CustomBondDetailsView(isDebit: true));
+              Get.to(() => const CustomBondDetailsView(isDebit: true));
             }),
             Item("سند قبض",(){
-              Get.to(() => CustomBondDetailsView(isDebit: false));
+              Get.to(() => const CustomBondDetailsView(isDebit: false));
             }),
             Item("قيد افتتاحي",(){
               Get.to(() => BondDetailsView(bondType: Const.bondTypeStart,));
@@ -66,9 +67,9 @@ class _BondTypeState extends State<BondType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
-            child: Text(text,style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+            child: Center(child: Text(text,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,))),
       ),
     );
   }

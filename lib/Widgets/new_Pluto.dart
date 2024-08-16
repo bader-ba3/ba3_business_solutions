@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
+import '../main.dart';
+import '../view/widget/CustomWindowTitleBar.dart';
 import 'Pluto_View_Model.dart';
 
 
@@ -14,7 +16,8 @@ class CustomPlutoGrid extends StatelessWidget {
     required this.onSelected,
     required this.modelList,
     this.onRowDoubleTap,
-    required this.title
+    required this.title,
+    this.type
 
   });
   final Function(PlutoGridOnLoadedEvent) onLoaded;
@@ -23,14 +26,13 @@ class CustomPlutoGrid extends StatelessWidget {
   final Function(PlutoGridOnSelectedEvent) onSelected;
 
   final String title;
+  final String? type;
 
   @override
   Widget build(BuildContext context) {
         return Column(
           children: [
-            WindowTitleBarBox(child: Container(
-              color: Colors.white,
-                child: MoveWindow())),
+            const CustomWindowTitleBar(),
             Expanded(
               child: Directionality(
                 textDirection: TextDirection.rtl,
@@ -52,16 +54,16 @@ class CustomPlutoGrid extends StatelessWidget {
                             key: controller.plutoKey,
                           onLoaded: onLoaded,
                             onSelected: onSelected,
-                            columns: controller.getColumns(modelList),
-                            rows:controller.getRows(modelList),
+                            columns: controller.getColumns(modelList,type:type),
+                            rows:controller.getRows(modelList,type:type),
                             mode: PlutoGridMode.selectWithOneTap,
                             configuration: PlutoGridConfiguration(
                               shortcut: const PlutoGridShortcut(),
                               style: PlutoGridStyleConfig(
                                 enableRowColorAnimation: true,
-                                evenRowColor: Colors.blue.withOpacity(0.5),
+                                evenRowColor: Colors.blueAccent.withOpacity(0.5),
                                 columnTextStyle:const TextStyle(color: Colors.black,fontSize: 24,fontWeight: FontWeight.bold),
-                                activatedColor: Colors.grey.withOpacity(0.5),
+                                activatedColor: Colors.white.withOpacity(0.5),
                                 // gridBackgroundColor: Colors.transparent,
                                 cellTextStyle: const TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),
                                 gridPopupBorderRadius: const BorderRadius.all(Radius.circular(15)),

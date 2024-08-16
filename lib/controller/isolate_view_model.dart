@@ -40,7 +40,7 @@ class IsolateViewModel extends GetxController {
   double getBalance(userId) {
     double _ = 0;
     List<AccountRecordModel> allRecord = [];
-    AccountModel accountModel = accountList[userId]!;
+    AccountModel accountModel = accountList[userId]??AccountModel();
     allRecord.addAll(accountList[userId]!.accRecord);
     for (var element in accountModel.accChild) {
       allRecord.addAll(accountList[element]?.accRecord.toList()??[]);

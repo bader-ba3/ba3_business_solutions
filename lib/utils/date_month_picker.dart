@@ -19,7 +19,7 @@ class _DateMonthPickerState extends State<DateMonthPicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all()),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all()),
       width: 150,
       height: 40,
       child: InkWell(

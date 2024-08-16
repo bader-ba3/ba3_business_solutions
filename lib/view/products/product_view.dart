@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Widgets/new_Pluto.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
 
@@ -16,10 +17,30 @@ class AllProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProductViewModel productViewModel = Get.find<ProductViewModel>();
+    // ProductViewModel productViewModel = Get.find<ProductViewModel>();
     // RxMap<String, ProductModel> data = Map.fromEntries(productViewModel.productDataMap.entries.where((element) => !element.value.prodIsGroup!).toList()).obs;
-    RxMap<String, ProductModel> data = productViewModel.productDataMap;
-    return Scaffold(
+    // RxMap<String, ProductModel> data = productViewModel.productDataMap;
+
+    return GetBuilder<ProductViewModel>(
+        builder: (controller) {
+          return  CustomPlutoGrid(
+            title: "جميع المواد",
+            onLoaded: (e){
+            },
+            onSelected: (p0) {
+              // Get.to(() => ProductDetails(
+              //   oldKey: model.prodId,
+              // ));
+              Get.to(() => ProductDetails(
+                oldKey:p0.row?.cells["الرقم التسلسلي"]?.value,
+              ));
+            },
+            modelList: controller.productDataMap.values.toList(),
+
+          );
+        }
+    );
+/*    return Scaffold(
       body: FilteringDataGrid<ProductModel>(
         title: "مواد",
         constructor: ProductModel(),
@@ -55,6 +76,6 @@ class AllProduct extends StatelessWidget {
 
         },
       ),
-    );
+    );*/
   }
 }

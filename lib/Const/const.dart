@@ -231,6 +231,7 @@ String getInvPayTypeFromEnum(String type) {
     case Const.invPayTypeDue:
       return "اجل";
   }
+
   return "UNKNOWN";
 }
 

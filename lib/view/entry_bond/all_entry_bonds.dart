@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Widgets/new_Pluto.dart';
 import '../../model/global_model.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
@@ -16,9 +17,28 @@ class AllEntryBonds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EntryBondViewModel entryBondViewModel = Get.find<EntryBondViewModel>();
-    RxMap<String, GlobalModel> data = entryBondViewModel.allEntryBonds;
-    return Scaffold(
+    return GetBuilder<EntryBondViewModel>(
+        builder: (controller) {
+          return  CustomPlutoGrid(
+            title: "جميع الفواتير",
+           type:Const.globalTypeBond,
+            onLoaded: (e){
+            },
+            onSelected: (p0) {
+              print(p0.row?.cells["bondId"]?.value);
+              if(p0.row?.cells["bondId"]?.value!='') {
+                Get.to(() => EntryBondDetailsView(
+                oldId: p0.row?.cells["bondId"]?.value,
+              ));
+              }
+
+            },
+            modelList: controller.allEntryBonds.values/*.where((element) => element.invRecords?.where((e) => e.invRecId==null,).isEmpty??false,)*/.toList(),
+
+          );
+        }
+    );
+/*    return Scaffold(
       body: FilteringDataGrid<GlobalModel>(
         title: "سندات القيد",
         constructor: GlobalModel(),
@@ -65,6 +85,6 @@ class AllEntryBonds extends StatelessWidget {
           return infoDataGridSource;
         },
       ),
-    );
+    );*/
   }
 }

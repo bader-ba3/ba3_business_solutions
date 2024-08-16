@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Const/const.dart';
+import '../../Widgets/new_Pluto.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
 
@@ -17,7 +19,28 @@ class AllAccount extends StatelessWidget {
   Widget build(BuildContext context) {
     AccountViewModel accountViewModel = Get.find<AccountViewModel>();
     RxMap<String, AccountModel> data = accountViewModel.accountList;
-    return Scaffold(
+
+    return GetBuilder<AccountViewModel>(
+        builder: (controller) {
+          return  CustomPlutoGrid(
+            title: "جميع الحسابات",
+            onLoaded: (e){
+            },
+            onSelected: (p0) {
+              Get.to(() => AccountDetails(
+                modelKey: p0.row?.cells["accId"]?.value,
+              ));
+              // Get.to(() => InvoiceView(
+              //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
+              //   patternId: "",
+              // ));
+            },
+            modelList: controller.accountList.values.toList(),
+
+          );
+        }
+    );
+/*    return Scaffold(
       body: FilteringDataGrid<AccountModel>(
         title: "الحسابات",
         constructor: AccountModel(),
@@ -58,6 +81,6 @@ class AllAccount extends StatelessWidget {
           return infoDataGridSource;
         },
       ),
-    );
+    );*/
   }
 }

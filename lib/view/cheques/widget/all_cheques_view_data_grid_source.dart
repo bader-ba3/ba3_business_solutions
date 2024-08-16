@@ -13,7 +13,10 @@ class AllChequesViewDataGridSource extends DataGridSource {
   );
 
   @override
-  List<DataGridRow> get rows => cheqMap.entries.map<DataGridRow>((entry) {
+  List<DataGridRow> get rows => cheqMap.entries.where((element) {
+
+        return element.value.cheqStatus==Const.chequeStatusNotPaid;
+  },).map<DataGridRow>((entry) {
         String cheqId = entry.key;
         GlobalModel cheque = entry.value;
         return DataGridRow(cells: [
@@ -27,9 +30,18 @@ class AllChequesViewDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 == 0) {
+        return  Colors.white;
+      }
+
+      return Colors.blue.withOpacity(0.5);
+    }
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
+        color: getRowBackgroundColor(),
         alignment: Alignment.center,
         padding: EdgeInsets.all(8.0),
         child: Text(dataGridCell.value.toString()),

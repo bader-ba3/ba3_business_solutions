@@ -11,7 +11,7 @@ class AllSellerInvoiceViewDataGridSource extends DataGridSource {
     dataGridRows = (sellerRecModel)
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: Const.rowSellerAllInvoiceInvId, value: e.selleRecInvId),
-              DataGridCell<String>(columnName: Const.rowSellerAllInvoiceAmount, value: double.parse(e.selleRecAmount??"0").toStringAsFixed(2)),
+              DataGridCell<String>(columnName: Const.rowSellerAllInvoiceAmount, value: double.parse(e.selleRecAmount ?? "0").toStringAsFixed(2)),
               DataGridCell<String>(columnName: Const.rowSellerAllInvoiceDate, value: e.selleRecInvDate),
             ]))
         .toList();
@@ -22,12 +22,25 @@ class AllSellerInvoiceViewDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 == 0) {
+        return Colors.white;
+      }
+
+      return Colors.blue.withOpacity(0.5);
+    }
+
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
+        color: getRowBackgroundColor(),
         alignment: Alignment.center,
-        padding: EdgeInsets.all(8.0),
-        child: Text(dataGridCell.value.toString()),
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          dataGridCell.value.toString(),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+        ),
       );
     }).toList());
   }

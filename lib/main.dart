@@ -19,7 +19,7 @@ import 'firebase_options.dart';
 
 
 
-void main(List<String> args) async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
 
@@ -85,17 +85,12 @@ void main(List<String> args) async {
   // FirebaseFirestore.instance.collection("2024").count().get().then((value) => print(value.count),);
   // HiveDataBase.globalModelBox.deleteFromDisk();
 
-  if (args.isNotEmpty && args[0] == 'AllInvoice') {
-    runApp(const AllInvoice());
-  } else {
-    runApp(const MyApp());
-  }
-
+  runApp(const MyApp());
  
 }
 
 
-
+const Color backGroundColor =Color(0xffE6E6E6);
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
@@ -106,17 +101,19 @@ class MyApp extends StatelessWidget {
       scrollBehavior: AppScrollBehavior(),
       title: "Ba3 Business",
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: const Color(0xffE6E6E6),
         fontFamily: 'Almarai',
         appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
+            backgroundColor: Color(0xffE6E6E6),
             foregroundColor: Colors.black,
-            surfaceTintColor: Colors.white,
+            surfaceTintColor:  Color(0xffE6E6E6),
             elevation: 0),
-        elevatedButtonTheme: ElevatedButtonThemeData(
+        elevatedButtonTheme:  ElevatedButtonThemeData(
             style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(Colors.lightBlue.shade100),
-          elevation: const WidgetStatePropertyAll(0),
+              foregroundColor:  const WidgetStatePropertyAll(Colors.white),
+          // textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white,)),
+          backgroundColor: WidgetStatePropertyAll(Colors.blue.shade700),
+          elevation: const WidgetStatePropertyAll(5),
         )),
         colorScheme: ColorScheme.fromSeed(
             primary: Colors.black,

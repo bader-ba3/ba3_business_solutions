@@ -51,7 +51,7 @@ TextEditingController nameController=TextEditingController();
               padding: const EdgeInsets.all(30.0),
               child: ListView(
                 children: [
-                  Text("الاسم"),
+                  const Text("الاسم",style: TextStyle(fontSize: 16),),
                    Container(
                      color: Colors.grey.shade200,
                      child: TextFormField(
@@ -67,9 +67,9 @@ TextEditingController nameController=TextEditingController();
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${getPageNameFromEnum(i.toString())}:",style: TextStyle(fontSize: 25),),
+                          Text("${getPageNameFromEnum(i.toString())}:",style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 50),
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: Column(
                               children: [
                                 checkBoxWidget(i,Const.roleUserRead,controller),
@@ -97,7 +97,16 @@ TextEditingController nameController=TextEditingController();
       children: [
         StatefulBuilder(
           builder: (context,setstate) {
-            return Checkbox(value: (allMap[keys]?.contains(text)??false), onChanged: (_){
+            return Checkbox(
+                fillColor:  WidgetStatePropertyAll(Colors.blue.shade800),
+                checkColor: Colors.white,
+                overlayColor:const WidgetStatePropertyAll(Colors.white),
+                side: const BorderSide(color: Colors.black),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: const BorderSide(color: Colors.white)
+                ),
+                value: (allMap[keys]?.contains(text)??false), onChanged: (_){
               if(_!) {
                 if(allMap[keys]==null){
                   allMap[keys]=[text];
@@ -112,7 +121,7 @@ TextEditingController nameController=TextEditingController();
             });
           }
         ),
-        Text(getNameOfRoleFromEnum(text))
+        Text(getNameOfRoleFromEnum(text),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16),)
       ],
     );
   }

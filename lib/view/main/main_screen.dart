@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/accounts/account_type.dart';
 import 'package:ba3_business_solutions/view/bonds/bond_type.dart';
 import 'package:ba3_business_solutions/view/cheques/cheque_type.dart';
@@ -47,8 +48,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     (name: "المستودعات", widget: const StoreType(), role: Const.roleViewStore),
     (name: "أنماط البيع", widget: const PatternType(), role: Const.roleViewPattern),
     (name: "الشيكات", widget: const ChequeType(), role: Const.roleViewCheques),
-    (name: "الاستحقاق", widget: const DueType(), role: Const.roleViewDue),
-    (name: "تقرير المبيعات", widget: const ReportGridView(), role: Const.roleViewReport),
+    // (name: "الاستحقاق", widget: const DueType(), role: Const.roleViewDue),
+    // (name: "تقرير المبيعات", widget: const ReportGridView(), role: Const.roleViewReport),
     (name: "الاحصائيات", widget: const StatisticsType(), role: Const.roleViewStatistics),
     (name: "البائعون", widget: const SellerType(), role: Const.roleViewSeller),
     (name: "استيراد المعلومات", widget: FilePickerWidget(), role: Const.roleViewImport),
@@ -79,7 +80,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: backGroundColor,
         body: WindowBorder(
           color: Colors.blue,
           width: 1,
@@ -96,6 +97,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           textDirection: TextDirection.rtl,
                           controller: tabController,
                           tabEdge: TabEdge.right,
+
                           tabsEnd: 1,
                           tabsStart: 0,
                           tabMaxLength: 60,
@@ -111,7 +113,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             color: Colors.white,
                             fontSize: 13.0,
                           ),
-                          colors: List.generate(rowData.length, (index) => Colors.white),
+                          colors: List.generate(rowData.length, (index) => backGroundColor),
                           tabs: List.generate(
                             rowData.length,
                             (index) {

@@ -145,13 +145,13 @@ class _AddProductState extends State<AddProduct> {
                           editedProduct.prodBarcode = _;
                           isEdit = true;
                         }),                       
-                        SizedBox(height: 30,),
+                        const SizedBox(height: 30,),
                         Row(
                           children: [
-                            SizedBox(
-                                width:70,
+                            const SizedBox(
+                                width:150,
                                 child: Text("isLocal")),
-                            SizedBox(
+                            const SizedBox(
                               width: 30,
                             ),
                             SizedBox(
@@ -159,6 +159,8 @@ class _AddProductState extends State<AddProduct> {
                               width: 20,
                               child: StatefulBuilder(builder: (context, setstate) {
                                 return Checkbox(
+                                  checkColor: Colors.white,
+                                    fillColor: WidgetStatePropertyAll(Colors.blue.shade800),
                                     value: editedProduct.prodIsLocal!,
                                     onChanged:  (_) {
                                       setstate(() {
@@ -202,7 +204,7 @@ class _AddProductState extends State<AddProduct> {
                             children: [
                               Row(
                                 children: [
-                                  Text("حساب اب"),
+                                  const SizedBox(child: Text("حساب اب")),
                                   SizedBox(
                                     width: 30,
                                     height: 30,
@@ -218,11 +220,11 @@ class _AddProductState extends State<AddProduct> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 30,),
+                              const SizedBox(height: 30,),
                               Row(
                                 children: [
-                                  Flexible(flex: 2, child: Text("الحساب الاب")),
-                                  SizedBox(
+                                  const Flexible(flex: 2, child: Text("الحساب الاب")),
+                                  const SizedBox(
                                     width: 30,
                                   ),
                                   Flexible(
@@ -249,13 +251,13 @@ class _AddProductState extends State<AddProduct> {
                             ],
                           );
                         }),
-                        SizedBox(height: 30,),
+                        const SizedBox(height: 30,),
                         Row(
                           children: [
-                            SizedBox(
-                                width:70,
+                            const SizedBox(
+                                width:100,
                                 child: Text("نوع الحساب")),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             SizedBox(
@@ -276,28 +278,31 @@ class _AddProductState extends State<AddProduct> {
                                 )),
                           ],
                         ),
-                        SizedBox(height: 30,),
-                        ElevatedButton(
-                          onPressed: () {
-                            if(checkInput()) {
-                          if (editedProduct.prodId == null) {
-                            checkPermissionForOperation(Const.roleUserWrite, Const.roleViewProduct).then((value) {
-                              if (value) {
-                                productController.createProduct(editedProduct, withLogger: true);
-                                isEdit = false;
-                              }
-                            });
-                          } else {
-                            checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewProduct).then((value) {
-                              if (value) {
-                                productController.updateProduct(editedProduct, withLogger: true);
-                                isEdit = false;
-                              }
-                            });
+                        const SizedBox(height: 30,),
+                        Container(
+                          alignment: Alignment.center,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if(checkInput()) {
+                            if (editedProduct.prodId == null) {
+                              checkPermissionForOperation(Const.roleUserWrite, Const.roleViewProduct).then((value) {
+                                if (value) {
+                                  productController.createProduct(editedProduct, withLogger: true);
+                                  isEdit = false;
+                                }
+                              });
+                            } else {
+                              checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewProduct).then((value) {
+                                if (value) {
+                                  productController.updateProduct(editedProduct, withLogger: true);
+                                  isEdit = false;
+                                }
+                              });
+                            }
                           }
-                        }
-                      },
-                          child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل"))
+                                                },
+                            child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل")),
+                        )
                 ],
               ),
             ),
@@ -389,15 +394,16 @@ class _AddProductState extends State<AddProduct> {
         Row(
           children: [
             SizedBox(
-                width:70,
+                width:150,
                 child: Text(text)),
-            SizedBox(
+            const SizedBox(
               width: 30,
             ),
             SizedBox(
               height: 50,
               width: 400,
               child: TextFormField(
+                decoration: const InputDecoration(fillColor: Colors.white,filled: true),
                 inputFormatters:inputFormatters ,
                 controller: controller,
                 onChanged: onChange

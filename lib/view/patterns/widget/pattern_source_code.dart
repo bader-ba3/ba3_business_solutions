@@ -26,11 +26,21 @@ class PatternRecordDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
+
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 == 0) {
+        return  Colors.white;
+      }
+
+      return Colors.blue.withOpacity(0.5);
+    }
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          color: getRowBackgroundColor(),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             dataGridCell.value == null ? '' : dataGridCell.value.toString(),
             overflow: TextOverflow.ellipsis,

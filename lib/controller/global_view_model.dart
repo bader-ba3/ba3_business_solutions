@@ -109,7 +109,7 @@ class GlobalViewModel extends GetxController {
       update();
       allGlobalModel.forEach((key, value) async {
         count.value++;
-        print(count.toString());
+        // print(count.toString());
         await updateDataInAll(value);
 
       });

@@ -325,14 +325,11 @@ class BondViewModel extends GetxController {
     update();
   }
 
-  void initPage(type) {
+   initPage(type) {
     initTotal();
-    print(tempBondModel.bondType);
-    print(Const.bondTypeDaily);
-    if (tempBondModel.bondType ==getBondTypeFromEnum(Const.bondTypeDaily) || tempBondModel.bondType == getBondTypeFromEnum(Const.bondTypeStart) || tempBondModel.bondType == getBondTypeFromEnum(Const.bondTypeInvoice)) {
-      // /// حطيت هي هون مابعرف ليش
-      // customBondRecordDataSource = CustomBondRecordDataSource(recordData: tempBondModel, oldisDebit: tempBondModel.bondType == Const.bondTypeDebit);
-
+    if (tempBondModel.bondType ==getBondTypeFromEnum(Const.bondTypeDaily) || tempBondModel.bondType == getBondTypeFromEnum(Const.bondTypeStart) || tempBondModel.bondType == getBondTypeFromEnum(Const.bondTypeInvoice)
+   || tempBondModel.bondType ==(Const.bondTypeDaily) || tempBondModel.bondType == (Const.bondTypeStart) || tempBondModel.bondType == (Const.bondTypeInvoice)
+    ) {
       recordDataSource = BondRecordDataSource(recordData: tempBondModel);
     } else {
       if ((tempBondModel.bondRecord!.length) > 1) {

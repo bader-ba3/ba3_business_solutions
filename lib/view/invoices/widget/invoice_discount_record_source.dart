@@ -167,10 +167,10 @@ class InvoiceDiscountRecordSource extends DataGridSource {
     Color getRowBackgroundColor() {
       final int index = effectiveRows.indexOf(row);
       if (index % 2 == 0) {
-        return  Colors.grey.shade300;
+        return  Colors.white;
       }
 
-      return Colors.grey;
+      return Colors.blueAccent.shade200;
     }
 
     return DataGridRowAdapter(

@@ -82,7 +82,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
             else
               const SizedBox(width: 50),
             Container(
-              decoration: BoxDecoration(border: Border.all()),
+              decoration: BoxDecoration(border: Border.all(),color: Colors.white),
               padding: const EdgeInsets.all(5),
               width: 80,
               child: TextFormField(
@@ -215,10 +215,12 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
         allowEditing: name == Const.rowBondId ? false : true,
         columnName: name,
         label: Container(
-            padding: EdgeInsets.all(16.0),
+          color: Colors.blue,
+            padding: const EdgeInsets.all(16.0),
             alignment: Alignment.center,
             child: Text(
               label.toString(),
+              style: const TextStyle(fontWeight: FontWeight.w700,color: Colors.white),
             )));
   }
 }

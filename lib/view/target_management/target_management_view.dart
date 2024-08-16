@@ -20,12 +20,12 @@ class _TargetManagementTypeState extends State<TargetManagementType> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("إدارة التارجيت"),
+          title: const Text("إدارة التارجيت"),
         ),
         body: Column(
           children: [
             Item("ادارة المهام",(){
-              Get.to(() => TaskManagementType());
+              Get.to(() => const TaskManagementType());
             }),
             Item("معاينة التارجيت",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewTarget).then((value) {
@@ -44,9 +44,9 @@ class _TargetManagementTypeState extends State<TargetManagementType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
-            child: Text(text,style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
+            child: Center(child: Text(text,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,))),
       ),
     );
   }

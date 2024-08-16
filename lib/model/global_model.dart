@@ -455,34 +455,35 @@ class GlobalModel {
   });
 
   Map<String, dynamic> toMap({String? type}) {
-    if (invId != null || type == Const.globalTypeInvoice) {
+
+    if ( type == Const.globalTypeInvoice) {
       return {
-        "الرقم التسلسلي": invId,
-        "الرمز": invCode,
-        "النمط": getPatModelFromPatternId(patternId).patName,//Isolate
-        "التاريخ": invDate,
-        "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? ""),
+        "الرقم التسلسلي": invId??'',
+        "الرمز": invCode??'',
+        "النمط": getPatModelFromPatternId(patternId).patName??'',//Isolate
+        "التاريخ": invDate??'',
+        "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? "")??'',
         'المجموع الكلي': (invTotal ?? 0).toStringAsFixed(2),
         'المستودع': getStoreNameFromId(invStorehouse),//Isolate
         'الحساب الاول': getAccountNameFromId(invPrimaryAccount),//Isolate
         'الحساب الثاني': getAccountNameFromId(invSecondaryAccount),//Isolate
-        "رقم جوال العميل": invMobileNumber,
+        "رقم جوال العميل": invMobileNumber??'',
         "حساب العميل": getAccountNameFromId(invCustomerAccount),//Isolate
         'النوع': getInvTypeFromEnum(invType ?? ""),
         "حساب البائع": getSellerNameFromId(invSeller),//Isolate
-        'وصف': invComment,
+        'وصف': invComment??'',
       };
-    } else if (bondId != null || type == Const.globalTypeBond) {
+    } else if ( type == Const.globalTypeBond) {
       return {
-        'bondId': bondId,
-        'bondCode': bondCode,
-        'AmenCode': originAmenId,
+        'bondId':bondId?? entryBondId,
+     if(bondCode!=null)   'bondCode': bondCode,
+        if(originAmenId!=null)   'AmenCode': originAmenId,
         'bondType': getBondTypeFromEnum(bondType ?? ""),
         'bondDate': bondDate,
         'bondTotal': bondTotal,
         'bondDescription': bondDescription,
       };
-    } else if (cheqId != null || type == Const.globalTypeCheque) {
+    } else if ( type == Const.globalTypeCheque) {
       return {
         'cheqId': cheqId,
         'cheqName': cheqName,

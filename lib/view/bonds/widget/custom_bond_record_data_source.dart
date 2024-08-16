@@ -40,10 +40,10 @@ class CustomBondRecordDataSource extends DataGridSource {
 
   void addItem(isDebit) {
     dataGridRows.add(DataGridRow(cells: [
-      DataGridCell<String>(columnName: Const.rowBondId, value: ""),
-      DataGridCell<String>(columnName: Const.rowBondAccount, value: ''),
-      isDebit ? DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: null) : DataGridCell<double>(columnName: Const.rowBondDebitAmount, value: null),
-      DataGridCell<String>(columnName: Const.rowBondDescription, value: ""),
+      const DataGridCell<String>(columnName: Const.rowBondId, value: ""),
+      const DataGridCell<String>(columnName: Const.rowBondAccount, value: ''),
+      isDebit ? const DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: null) : DataGridCell<double>(columnName: Const.rowBondDebitAmount, value: null),
+      const DataGridCell<String>(columnName: Const.rowBondDescription, value: ""),
     ]));
   }
 
@@ -56,7 +56,8 @@ class CustomBondRecordDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             dataGridCell.value == null ? '' : dataGridCell.value.toString(),
             overflow: TextOverflow.ellipsis,
@@ -135,7 +136,7 @@ class CustomBondRecordDataSource extends DataGridSource {
             title: "اختر احد الحسابات",
             content: SizedBox(
               height: Get.height/2,
-              width:Get.height/2,
+              width:Get.height/1.5,
               child: ListView.builder(
                   itemCount: result.length,
                   itemBuilder: (_, index) {
@@ -158,7 +159,7 @@ class CustomBondRecordDataSource extends DataGridSource {
                   onPressed: () {
                     Get.back();
                   },
-                  child: Text("رجوع"))
+                  child: const Text("رجوع"))
             ]);
       }
     }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../widget/CustomWindowTitleBar.dart';
 
 class UserManagementType extends StatefulWidget {
   const UserManagementType({super.key});
@@ -37,39 +38,47 @@ class _UserManagementTypeState extends State<UserManagementType> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("الإدارة"),
+    return Column(
+      children: [
+        const CustomWindowTitleBar(),
+        
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("الإدارة"),
+              ),
+              body: !isAdmin
+              ?const Center(child: Text("غير مصرح لك بالدخول"),)
+              :Column(
+                children: [
+                  item("إدارة المستخدمين",(){
+                    Get.to(() => AllUserView());
+                  }),
+                  item("إدارة الصلاحيات",(){
+                    Get.to(()=>RoleManagementView());
+                  }),
+                ],
+              ),
+            ),
+          ),
         ),
-        body: !isAdmin
-        ?Center(child: Text("غير مصرح لك بالدخول"),)
-        :Column(
-          children: [
-            Item("إدارة المستخدمين",(){
-              Get.to(() => AllUserView());
-            }),
-            Item("إدارة الصلاحيات",(){
-              Get.to(()=>RoleManagementView());
-            }),
-          ],
-        ),
-      ),
+      ],
     );
   }
-  Widget Item(text,onTap){
-    return   Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1),borderRadius: BorderRadius.circular(20)),
-            padding: const EdgeInsets.all(30.0),
-            child: Text(text,style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,)),
-      ),
-    );
-  }
-}
 
+}
+Widget item(text,onTap){
+  return   Padding(
+    padding: const EdgeInsets.all(15.0),
+    child: InkWell(
+      onTap: onTap,
+      child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(color:Colors.white,borderRadius: BorderRadius.circular(20)),
+          padding: const EdgeInsets.all(30.0),
+          child: Center(child: Text(text,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,))),
+    ),
+  );
+}

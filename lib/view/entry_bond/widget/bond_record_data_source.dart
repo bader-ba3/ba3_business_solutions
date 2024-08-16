@@ -32,7 +32,7 @@ class EntryBondRecordDataSource extends DataGridSource {
   }
 
   void addItem() {
-    dataGridRows.add(DataGridRow(cells: [
+    dataGridRows.add(const DataGridRow(cells: [
       DataGridCell<String>(columnName: Const.rowBondId, value: ""),
       DataGridCell<String>(columnName: Const.rowBondAccount, value: ''),
       DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: null),
@@ -50,7 +50,8 @@ class EntryBondRecordDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             dataGridCell.value == null
                 ? ''

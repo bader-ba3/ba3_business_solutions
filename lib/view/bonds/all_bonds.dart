@@ -18,8 +18,9 @@ class AllBonds extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<BondViewModel>(builder: (controller) {
       return CustomPlutoGrid(
-        title: "جميع الفواتير",
+        title: "جميع السندات",
         onLoaded: (e) {},
+        type: Const.globalTypeBond,
         onSelected: (p0) {
 
           if (p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeStart) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice)) {

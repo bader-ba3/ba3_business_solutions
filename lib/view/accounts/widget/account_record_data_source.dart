@@ -53,11 +53,20 @@ class AccountRecordDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 == 0) {
+        return  Colors.white;
+      }
+
+      return Colors.blueAccent.withOpacity(0.5);
+    }
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          color:getRowBackgroundColor(),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: dataGridCell.columnName == Const.rowAccountType
               ? Text(dataGridCell.value, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22))
               : dataGridCell.columnName == Const.rowAccountBalance || dataGridCell.columnName == Const.rowAccountTotal
@@ -71,6 +80,7 @@ class AccountRecordDataSource extends DataGridSource {
     return Container(
       padding: EdgeInsets.all(15.0),
       child: Text(
+
         summaryValue,
       ),
     );

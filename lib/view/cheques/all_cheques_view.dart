@@ -19,11 +19,7 @@ class AllCheques extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("الشيكات")),
-        body:
-
-            // String model = controller.allAccounts.keys.toList()[index];
-            // AccountModel accountModel=controller.accountListMyId[model]!;
-            StreamBuilder(
+        body: StreamBuilder(
                 stream: controller.allCheques.stream,
                 builder: (context, snapshot) {
                     return GetBuilder<ChequeViewModel>(builder: (controller) {
@@ -79,10 +75,12 @@ GridColumn GridColumnItem({required label, name}) {
       allowEditing: false,
       columnName: name,
       label: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           alignment: Alignment.center,
+          color: Colors.blue.shade700,
           child: Text(
             label.toString(),
+            style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
           )));
 }
 

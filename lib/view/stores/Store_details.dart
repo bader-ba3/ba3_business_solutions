@@ -113,6 +113,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Widgets/new_Pluto.dart';
 import '../widget/filtering_data_grid.dart';
 
 
@@ -124,7 +125,29 @@ class StoreDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     StoreViewModel storeViewModel = Get.find<StoreViewModel>();
     RxMap<String, StoreRecordView> data =  storeViewModel.allData.obs;
-    return Scaffold(
+    storeViewModel.initStorePage(oldKey);
+    return GetBuilder<StoreViewModel>(
+
+        builder: (controller) {
+          return  CustomPlutoGrid(
+            title: "جميع الحركات ${storeViewModel.storeMap[oldKey]!.stName}",
+            onLoaded: (e){
+            },
+            onSelected: (p0) {
+              Get.to(() => ProductDetails(
+                oldKey: p0.row?.cells["id"]?.value,
+              ));
+              // Get.to(() => InvoiceView(
+              //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
+              //   patternId: "",
+              // ));
+            },
+            modelList: data.values.toList(),
+
+          );
+        }
+    );
+/*    return Scaffold(
       body: FilteringDataGrid<StoreRecordView>(
         title: storeViewModel.storeMap[oldKey]!.stName.toString(),
         constructor: StoreRecordView(),
@@ -144,7 +167,7 @@ class StoreDetails extends StatelessWidget {
                 .map<DataGridRow>((order) => DataGridRow(cells: [
               DataGridCell(columnName: "storeRecId", value: order.key),
               ...order
-                  .value.toAR()
+                  .value.toMap()
                   .entries
                   .map((mapEntry) {
                     if(mapEntry.value.runtimeType == int){
@@ -163,6 +186,6 @@ class StoreDetails extends StatelessWidget {
 
         },
       ),
-    );
+    );*/
   }
 }

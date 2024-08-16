@@ -34,6 +34,7 @@ class AllPendingInvoice extends StatelessWidget {
           : CustomPlutoGrid(
               title: "جميع الفواتير",
               onLoaded: (e) {},
+        type:Const.globalTypeInvoice,
               onSelected: (p0) {
                 Get.to(() => InvoiceView(
                       billId: p0.row?.cells["الرقم التسلسلي"]?.value,

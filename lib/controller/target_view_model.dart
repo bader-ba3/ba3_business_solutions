@@ -1,5 +1,3 @@
-
-
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
@@ -57,31 +55,28 @@ class TargetViewModel extends GetxController {
     List<double> mobileList = [];
     List<List<InvoiceRecordModel>?> total = HiveDataBase.globalModelBox.values
         .where(
-      ///get invoice just for one seller and on month
-          (element) => element.invSeller == sellerId && element.invDate!.split("-")[1].split("-")[0] == "08" ,
+          ///get invoice just for one seller and on month
+          (element) {
+            return element.invSeller == sellerId && element.invDate?.split("-")[1].split("-")[0] == "08";
+          },
         )
         .map(
           (e) => e.invRecords,
         )
         .toList();
-    // print(total.map((e) => e!.map((e) => e.invRecTotal!,).reduce((value, element) => value+element,),).reduce((value, element) => value+element,));
     if (total.isNotEmpty) {
       for (var records in total) {
-       for(InvoiceRecordModel oneRecord in records??[]){
-
-         if(oneRecord.invRecGift==0) {
+        for (InvoiceRecordModel oneRecord in records ?? []) {
+          if (oneRecord.invRecGift == 0 || oneRecord.invRecGift == null && oneRecord.invRecQuantity != null) {
             if (oneRecord.invRecTotal! / oneRecord.invRecQuantity! <= 1000) {
-              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecTotal!.toInt();
+              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
               accessoryList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
             } else {
-              productsMap[oneRecord.invRecProduct!] =  oneRecord.invRecTotal!.toInt();
-
-              // print(oneRecord.toJson());
+              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
               mobileList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
             }
           }
         }
-
       }
 
       // print(total.map((e) => e?.map((e) => e.invRecTotal!/e.invRecQuantity!,).toList(),).toList());
@@ -106,11 +101,18 @@ class TargetViewModel extends GetxController {
     //     });
     //   }
     // });
-    if(mobileList.isNotEmpty)
-      print(mobileList.reduce((value, element) => element+value,));
-    if(accessoryList.isNotEmpty)
-      print(accessoryList.reduce((value, element) => element+value,));
-    return (mobileTotal:mobileList.isNotEmpty? mobileList.reduce((value, element) => element+value,):0, otherTotal:accessoryList.isNotEmpty? accessoryList.reduce((value, element) => element+value,):0, productsMap: productsMap);
+
+    return (
+      mobileTotal: mobileList.fold(
+        0,
+        (previousValue, element) => previousValue + element,
+      ),
+      otherTotal: accessoryList.fold(
+        0,
+        (previousValue, element) => previousValue + element,
+      ),
+      productsMap: productsMap
+    );
   }
 
   List accountPickList = [];

@@ -43,71 +43,88 @@ class _AddSellerState extends State<AddSeller> {
           appBar: AppBar(
             title: Text(model.sellerId ?? "جديد"),
           ),
-          body: Container(
-            width: double.infinity,
-            child: Column(
-              children: [
-                Text("الاسم"),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: nameController,
-                    onChanged: (_) {
-                      model.sellerName = _;
-                    },
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                      width: 70,
+                      child: Text("الاسم"),),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: const InputDecoration(filled: true,fillColor: Colors.white),
+
+                      controller: nameController,
+                      onChanged: (_) {
+                        model.sellerName = _;
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Text("الرمز"),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: codeController,
-                    onChanged: (_) {
-                      model.sellerCode = _;
-                    },
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: [
+                  const SizedBox(
+                    width: 70,
+                    child: Text("الرمز"),),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      decoration: const InputDecoration(filled: true,fillColor: Colors.white),
+                      controller: codeController,
+                      onChanged: (_) {
+                        model.sellerCode = _;
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      if(nameController.text.isNotEmpty &&codeController.text.isNotEmpty){
-                        if (model.sellerId == null) {
-                          checkPermissionForOperation(Const.roleUserWrite, Const.roleViewSeller).then((value) {
-                            if (value) sellerController.addSeller(model);
-                          });
-                        } else {
-                          checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewSeller).then((value) {
-                            if (value) sellerController.addSeller(model);
-                          });
-                        }
-                      }
-                    },
-                    child: Text(model.sellerId == null ? "إنشاء" : "تعديل")),
-                SizedBox(height: 50,),
-                if (model.sellerId != null&&(model.sellerRecord??[]).isEmpty)
-                  ElevatedButton(
-                      onPressed: () {
-                        confirmDeleteWidget().then((value) {
-                          if(value) {
-                        checkPermissionForOperation(Const.roleUserDelete,Const.roleViewSeller).then((value) {
-                          if(value) {
-                            sellerController.deleteSeller(model);
-                            Get.back();
-                            Get.back();
-                          }
+                ],
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    if(nameController.text.isNotEmpty &&codeController.text.isNotEmpty){
+                      if (model.sellerId == null) {
+                        checkPermissionForOperation(Const.roleUserWrite, Const.roleViewSeller).then((value) {
+                          if (value) sellerController.addSeller(model);
+                        });
+                      } else {
+                        checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewSeller).then((value) {
+                          if (value) sellerController.addSeller(model);
                         });
                       }
+                    }
+                  },
+                  child: Text(model.sellerId == null ? "إنشاء" : "تعديل")),
+              SizedBox(height: 50,),
+              if (model.sellerId != null&&(model.sellerRecord??[]).isEmpty)
+                ElevatedButton(
+                    onPressed: () {
+                      confirmDeleteWidget().then((value) {
+                        if(value) {
+                      checkPermissionForOperation(Const.roleUserDelete,Const.roleViewSeller).then((value) {
+                        if(value) {
+                          sellerController.deleteSeller(model);
+                          Get.back();
+                          Get.back();
+                        }
                       });
+                    }
+                    });
 
-                      },
-                      child: Text("حذف")),
-              ],
-            ),
+                    },
+                    child: Text("حذف")),
+            ],
           ),
         );
       }),
