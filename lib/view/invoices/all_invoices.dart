@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -8,29 +9,41 @@ import '../../Widgets/new_Pluto.dart';
 import 'invoice_view.dart';
 
 class AllInvoice extends StatelessWidget {
-  const AllInvoice({super.key});
+  const AllInvoice({super.key, required this.listDate, required this.productName});
+
+  final List<String> listDate;
+  final String? productName;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<InvoiceViewModel>(
-      builder: (controller) {
-        return  CustomPlutoGrid(
-          title: "جميع الفواتير",
-          type:Const.globalTypeInvoice,
-
-          onLoaded: (e){
+    return GetBuilder<InvoiceViewModel>(builder: (controller) {
+      return CustomPlutoGrid(
+        title: "جميع الفواتير",
+        type: Const.globalTypeInvoice,
+        onLoaded: (e) {},
+        onSelected: (p0) {
+          Get.to(() => InvoiceView(
+                billId: p0.row?.cells["الرقم التسلسلي"]?.value,
+                patternId: "",
+              ));
+        },
+        modelList: controller.invoiceModel.values.where(
+          (element) {
+            if (productName != null) {
+              return listDate.contains((element.invDate?.split(" ")[0] ?? "")) &&
+                  (element.invRecords
+                          ?.where(
+                            (invRecord) => invRecord.invRecProduct == productName,
+                          )
+                          .isNotEmpty ??
+                      false);
+            } else {
+              return listDate.contains((element.invDate?.split(" ")[0] ?? ""));
+            }
           },
-          onSelected: (p0) {
-            Get.to(() => InvoiceView(
-              billId:p0.row?.cells["الرقم التسلسلي"]?.value,
-              patternId: "",
-            ));
-          },
-          modelList: controller.invoiceModel.values.toList(),
-
-        );
-      }
-    );
+        ).toList(),
+      );
+    });
   }
 }
 

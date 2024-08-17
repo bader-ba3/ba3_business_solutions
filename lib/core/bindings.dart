@@ -16,6 +16,7 @@ import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
+import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:get/get.dart';
 import '../Widgets/Pluto_View_Model.dart';
 import '../controller/changes_view_model.dart';
@@ -27,6 +28,7 @@ class GetBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(ScreenViewModel());
+    Get.put(SearchViewController());
     Get.put(EntryBondViewModel());
     Get.put(ImportViewModel());
     Get.put(ProductViewModel());

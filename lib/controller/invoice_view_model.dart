@@ -31,6 +31,8 @@ class InvoiceViewModel extends GetxController {
   var patternController = Get.find<PatternViewModel>();
   var storeViewController = Get.find<StoreViewModel>();
   var sellerViewController = Get.find<SellersViewModel>();
+  var startDateController = TextEditingController()..text=DateTime.now().toString().split(" ")[0];
+  var endDateController = TextEditingController()..text=DateTime.now().toString().split(" ")[0];
 
   List<String> invIdList = [];
 

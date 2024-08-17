@@ -92,7 +92,7 @@ class InvoiceRecordSource extends DataGridSource {
     // }
     bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
     if (column.columnName == Const.rowInvProduct) {
-      List<ProductModel> result = searchText(newCellValue.toString());
+      List<ProductModel> result = searchOfProductByText(newCellValue.toString());
       print(result.map((e) => (e.prodName, e.prodIsGroup)));
       if (newCellValue == null) {
         result = productController.productDataMap.values.toList().where((element) => !(element.prodIsGroup ?? false)).toList();
@@ -152,7 +152,7 @@ class InvoiceRecordSource extends DataGridSource {
       if (product_name?.value == '' || product_name?.value == null) {
         Get.snackbar("خطأ", "يجب إدخال المادة اولا");
       } else {
-        List<ProductModel> result = searchText(product_name!.value);
+        List<ProductModel> result = searchOfProductByText(product_name!.value);
         if (int.tryParse(newCellValue) != null) {
           if (int.parse(result.first.prodAllQuantity ?? "0") - int.parse(newCellValue) < 0 && result.first.prodType == Const.productTypeStore) {
             // Get.snackbar("تحذير", "الكمية المضافة اكبر من الكمية الموجودة");
@@ -183,7 +183,7 @@ class InvoiceRecordSource extends DataGridSource {
       if (product_name?.value == '' || product_name?.value == null) {
         Get.snackbar("خطأ", "يجب إدخال المادة اولا");
       } else {
-        List<ProductModel> result = searchText(product_name!.value);
+        List<ProductModel> result = searchOfProductByText(product_name!.value);
         PatternModel patternModel = patternController.patternModel[globalController.initModel.patternId]!;
         if (double.tryParse(newCellValue) != null) {
           if (patternModel.patType != Const.invoiceTypeSales) {
@@ -429,7 +429,7 @@ class InvoiceRecordSource extends DataGridSource {
 
   late List<ProductModel> products = [];
   late List<ProductModel> selectedProducts = [];
-  List<ProductModel> searchText(String query) {
+  List<ProductModel> searchOfProductByText(String query) {
     query = replaceArabicNumbersWithEnglish(query);
     String query2 = '';
     String query3 = '';

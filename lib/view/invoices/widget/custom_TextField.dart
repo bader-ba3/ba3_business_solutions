@@ -10,6 +10,8 @@ Widget customTextFieldWithIcon(TextEditingController controller, void Function(S
     // onSubmitted: onSubmitted,
     controller: controller,
 inputFormatters: inputFormatters,
+    onTap: () =>       controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length),
+
     // onTapOutside: onTapOutside,
     decoration: InputDecoration(
       fillColor: Colors.white,
@@ -48,6 +50,7 @@ Widget customTextFieldWithoutIcon(TextEditingController controller, bool enabled
     enabled: enabled,
     controller: controller,
     keyboardType:keyboardType,
+    onTap: () =>       controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length),
     inputFormatters: inputFormatters,
     decoration: InputDecoration(
       fillColor: Colors.white,

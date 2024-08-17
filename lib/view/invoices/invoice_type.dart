@@ -1,12 +1,13 @@
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
+import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../../Dialogs/Invoice_Option_Dialog.dart';
 import '../../model/Pattern_model.dart';
-import 'all_invoices.dart';
 import 'all_pending_invoices.dart';
 import 'invoice_view.dart';
 
@@ -69,7 +70,14 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 child: InkWell(
                   onTap: () {
                     checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
-                      if (value) Get.to(() => const AllInvoice());
+                      // if (value) Get.to(() => const AllInvoice());
+                      if (value) {
+                        Get.find<SearchViewController>().initController();
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => const InvoiceOptionDialog(),
+                        );
+                      }
                     });
                   },
                   child: Container(
@@ -245,7 +253,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                 top: -5,
                                 left: -1,
                                 child: GestureDetector(
-                                  onTap: (){
+                                  onTap: () {
                                     screenController.openedScreen.remove(i.key);
                                     screenController.update();
                                   },
