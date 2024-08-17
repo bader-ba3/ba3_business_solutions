@@ -31,11 +31,11 @@ class _ProductTypeState extends State<ProductType> {
             Item("إضافة مادة",(){
               Get.to(() => AddProduct());
             }),
-            Item("معاينة المواد",(){
-              checkPermissionForOperation(Const.roleUserRead , Const.roleViewProduct).then((value) {
-                if(value) Get.to(()=>AllProductOLD());
-              });
-            }),
+            // Item("معاينة المواد",(){
+            //   checkPermissionForOperation(Const.roleUserRead , Const.roleViewProduct).then((value) {
+            //     if(value) Get.to(()=>AllProductOLD());
+            //   });
+            // }),
             Item("معاينة المواد(الشكل الجديد)",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewProduct).then((value) {
                 if(value) Get.to(()=>AllProduct());

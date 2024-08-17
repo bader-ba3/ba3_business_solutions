@@ -1,5 +1,8 @@
+import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/account_view_model.dart';
@@ -63,7 +66,7 @@ class _DashboardViewState extends State<DashboardView> {
                                               height: 40,
                                               child: TextFormField(
                                                 textDirection: TextDirection.rtl,
-                                                decoration: InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
+                                                decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
                                                 onChanged: (_) {
                                                   accountList = getAccountModelFromName(_);
                                                   print(accountList);
@@ -94,7 +97,7 @@ class _DashboardViewState extends State<DashboardView> {
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(8.0),
                                                                   child: Text(
-                                                                    model.accName.toString() + "   " + model.accCode.toString(),
+                                                                    "${model.accName}   ${model.accCode}",
                                                                     textDirection: TextDirection.rtl,
                                                                   ),
                                                                 )),
@@ -107,6 +110,17 @@ class _DashboardViewState extends State<DashboardView> {
                                     );
                                   }));
                               accountController.update();
+
+                            ///رفع الرصيد النهائي للحسابات
+            /*                print(accountController.accountList.length);
+                              accountController.accountList.forEach(
+                                (key, value) async{
+
+                                  print(getAccountNameFromId(key));
+                                  print(getAccountBalanceFromId(key));
+                                 await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
+                                },
+                              );*/
                             },
                             child: Text("إضافة حساب ")),
                         SizedBox(
@@ -118,6 +132,7 @@ class _DashboardViewState extends State<DashboardView> {
                         child: ListView.builder(
                       itemCount: HiveDataBase.mainAccountModelBox.values.toList().length,
                       itemBuilder: (context, index) {
+
                         AccountModel model = HiveDataBase.mainAccountModelBox.values.toList()[index];
                         return Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -141,7 +156,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    accountController.getBalance(model.accId).toStringAsFixed(2),
+                                    (accountController.accountList[model.accId]?.finalBalance??0).toStringAsFixed(2),
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -160,11 +175,7 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ClipRRect(
-              
-              clipBehavior: Clip.hardEdge,
-              borderRadius: BorderRadius.circular(25),
-              child: DashboardChartWidget1()),
+          child: ClipRRect(clipBehavior: Clip.hardEdge, borderRadius: BorderRadius.circular(25), child: DashboardChartWidget1()),
         ),
       ],
     );

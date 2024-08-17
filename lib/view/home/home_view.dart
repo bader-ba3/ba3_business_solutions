@@ -164,7 +164,7 @@ class HomeView extends StatelessWidget {
                                                           height: 40,
                                                           child: TextFormField(
                                                             textDirection: TextDirection.rtl,
-                                                            decoration: InputDecoration(hintText: "اكتب اسم الحساب او رقمه",hintTextDirection: TextDirection.rtl),
+                                                            decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه",hintTextDirection: TextDirection.rtl),
                                                             onChanged: (_){
                                                               accountList = getAccountModelFromName(_);
                                                               print(accountList);
@@ -175,7 +175,7 @@ class HomeView extends StatelessWidget {
                                                         ),
                                                         SizedBox(height: 10,),
                                                         Expanded(child: accountList.isEmpty
-                                                            ? Center(child: Text("لا يوجد نتائج"),)
+                                                            ? const Center(child: Text("لا يوجد نتائج"),)
                                                             : ListView.builder(
                                                           itemCount: accountList.length,
                                                           itemBuilder: (context, index) {

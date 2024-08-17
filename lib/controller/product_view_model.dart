@@ -31,7 +31,7 @@ class ProductViewModel extends GetxController {
     getAllProduct();
   }
 
-  void initGlobalProduct(GlobalModel globalModel) {
+   initGlobalProduct(GlobalModel globalModel) async{
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
     Map<String, List> allRecTotal = {};
     bool isPay = globalModel.invType == Const.invoiceTypeBuy||globalModel.invType == Const.invoiceTypeAdd;
@@ -430,6 +430,7 @@ for (ProductRecordModel element in productModel.prodRecord??[]) {
 
   void initProductPage(ProductModel editedProduct) {
     recordDataSource = ProductRecordDataSource(productModel: editedProduct);
+
   }
 
   String searchProductIdByName(name) {

@@ -10,8 +10,9 @@ class AccountModel {
   List accChild = [];
   List accAggregateList = [];
   List<AccountRecordModel> accRecord = [];
+  double? finalBalance ;
 
-  AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode, this.accParentId, this.accIsParent});
+  AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode, this.accParentId, this.accIsParent, this.finalBalance});
 
   AccountModel.fromJson(Map<dynamic, dynamic> map) {
     accId = map['accId'];
@@ -20,6 +21,8 @@ class AccountModel {
     accType = map['accType'];
     accCode = map['accCode'];
     accVat = map['accVat'];
+    ///this is new
+    finalBalance = map['finalBalance'];
     accParentId = map['accParentId'];
     accIsParent = map['accIsParent'];
     if (map['accRecord'] != null && map['accRecord'] != []) {
@@ -106,6 +109,7 @@ class AccountModel {
       'accIsParent': accIsParent,
       'accChild': accChild,
       'accAggregateList': accAggregateList,
+      'finalBalance': finalBalance,
     };
   }
 
@@ -120,6 +124,7 @@ class AccountModel {
       'accParentId': accParentId,
       'accIsParent': accIsParent,
       'accChild': accChild,
+      'finalBalance': finalBalance,
       'accAggregateList': accAggregateList,
       'accRecord': accRecord.map((e) => e.toJson()).toList(),
     };
@@ -134,7 +139,8 @@ class AccountModel {
       'نوع الضريبة': accVat,
       'حساب الاب': getAccountNameFromId(accParentId),
       'الوصف': accComment,
-      'الرصيد': getAccountBalanceFromId(accId),
+      // 'الرصيد': getAccountBalanceFromId(accId),
+      'الرصيد':finalBalance,
     };
   }
 }

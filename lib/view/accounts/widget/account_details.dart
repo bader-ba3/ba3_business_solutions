@@ -29,7 +29,9 @@ class _AccountDetailsState extends State<AccountDetails> {
   void initState() {
     super.initState();
 
-    accountController.initAccountPage(widget.modelKey);
+    accountController.getAllBondForAccount(widget.modelKey);
+    // accountController.initAccountPage(widget.modelKey);
+
   }
 
   @override

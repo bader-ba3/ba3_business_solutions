@@ -1,3 +1,5 @@
+import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/account_tree.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -34,15 +36,13 @@ class AccountViewModel extends GetxController {
 
   List<String> aminCods = [];
 
-  void initGlobalAccount(GlobalModel globalModel, {String? oldAccountKey}) async {
+  initGlobalAccount(GlobalModel globalModel, {String? oldAccountKey}) async {
     String? type;
     String? date;
     if (globalModel.globalType == Const.globalTypeBond) {
-      // print(globalModel.toFullJson());
       type = globalModel.bondType!;
       date = globalModel.bondDate!;
     } else if (globalModel.globalType == Const.globalTypeInvoice) {
-
       type = globalModel.patternId!;
       date = globalModel.invDate!;
     } else {
@@ -58,15 +58,11 @@ class AccountViewModel extends GetxController {
       }
     }
 
-
     for (int i = 0; i < (globalModel.bondRecord ?? []).length; i++) {
-
-      if (true) {
-        if (allRecTotal[globalModel.bondRecord![i].bondRecAccount] == null) {
-          allRecTotal[globalModel.bondRecord![i].bondRecAccount!] = [globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!];
-        } else {
-          allRecTotal[globalModel.bondRecord![i].bondRecAccount]!.add(globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!);
-        }
+      if (allRecTotal[globalModel.bondRecord![i].bondRecAccount] == null) {
+        allRecTotal[globalModel.bondRecord![i].bondRecAccount!] = [globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!];
+      } else {
+        allRecTotal[globalModel.bondRecord![i].bondRecAccount]!.add(globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!);
       }
     }
 
@@ -82,12 +78,14 @@ class AccountViewModel extends GetxController {
       // calculateBalance(key);
       // initAccountViewPage();
       // setDueAccount(key);
-      update();
+      // update();
     });
-
-    if (lastAccountOpened != null) {
-      initAccountPage(lastAccountOpened!);
-      update();
+    // if (lastAccountOpened != null) {
+    //   initAccountPage(lastAccountOpened!);
+    //   update();
+    // }
+    if (oldAccountKey != null) {
+      initAccountPage(oldAccountKey);
     }
   }
 
@@ -142,6 +140,46 @@ class AccountViewModel extends GetxController {
     }
   }
 
+  getAllBondForAccount(String modeKey) {
+
+    List<String> accountsId=getAccountModelFromId(modeKey)!.accChild.map((e) => e.toString(),).toList()+[modeKey];
+
+    List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
+        .where(
+          (element) =>
+          accountsId.contains( element.invSecondaryAccount) ||
+              accountsId.contains( element.invSecondaryAccount)       ||
+              accountsId.contains(  element.cheqPrimeryAccount)     ||
+              accountsId.contains( element.cheqSecoundryAccount)     ||
+              (element.bondRecord
+                      ?.where(
+                        (element) =>   accountsId.contains( element.bondRecAccount) ,
+                      )
+                      .isNotEmpty ??
+                  false) ||
+              (element.entryBondRecord
+                      ?.where(
+                        (element) => accountsId.contains( element.bondRecAccount),
+                      )
+                      .isNotEmpty ??
+                  false),
+        ).
+        toList();
+
+
+    for (var globalModel in globalModels) {
+      if (globalModel.invType != Const.invoiceTypeChange&&globalModel.invIsPending!=true) {
+        initGlobalAccount(globalModel,oldAccountKey: modeKey);
+      }
+      if (globalModel.globalType == Const.globalTypeBond) {
+        initGlobalAccount(globalModel ,oldAccountKey: modeKey);
+      }
+    }
+    if(globalModels.isEmpty) {
+      initAccountPage(modeKey);
+    }
+  }
+
   void deleteGlobalAccount(GlobalModel globalModel) {
     globalModel.bondRecord?.forEach((element) {
       accountList[element.bondRecAccount]?.accRecord.removeWhere((e) => e.id == globalModel.entryBondId);
@@ -183,17 +221,18 @@ class AccountViewModel extends GetxController {
       });
     } else {
       for (var element in HiveDataBase.accountModelBox.values) {
+        if (element.accId == null) {
+          print(element.toFullJson());
+        } else {
           accountList[element.accId!] = element;
           accountList[element.accId!]!.accRecord.clear();
-
+        }
       }
       initModel();
       initPage();
       go(lastIndex);
     }
   }
-
-
 
   addAccountToMemory(Map json) {
     AccountModel accountModel = AccountModel.fromJson(json);
@@ -248,14 +287,16 @@ class AccountViewModel extends GetxController {
     }
     dataGridController = DataGridController();
     recordDataSource = AccountRecordDataSource(accountRecordModel: (accountList[modeKey]?.accRecord ?? []), accountModel: accountList[modeKey]!);
-    //update();
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+      (value) {
+        update();
+      },
+    );
   }
 
   ///----------------------------
 
   addNewAccount(AccountModel accountModel, {bool withLogger = false}) async {
-
-
     if (accountList.values.toList().map((e) => e.accCode).toList().contains(accountModel.accCode)) {
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
@@ -344,7 +385,12 @@ class AccountViewModel extends GetxController {
   }
 
   String getLastCode() {
-    List<int> allCode = accountList.values.where((element) => (!element.accCode!.contains("F")),).map((e) => int.parse(e.accCode!)).toList();
+    List<int> allCode = accountList.values
+        .where(
+          (element) => (!element.accCode!.contains("F")),
+        )
+        .map((e) => int.parse(e.accCode!))
+        .toList();
     int _ = 0;
     if (accountList.isEmpty) {
       return "0";
@@ -360,7 +406,7 @@ class AccountViewModel extends GetxController {
   void calculateBalance(String modelKey) {
     double all = 0;
     if (accountList[modelKey] == null) {}
-    for (AccountRecordModel element in accountList[modelKey]!.accRecord ) {
+    for (AccountRecordModel element in accountList[modelKey]!.accRecord) {
       try {
         // all += double.parse(element.total!.toString());
         int? itemIndex = accountList[modelKey]!.accRecord.indexOf(element);
@@ -399,7 +445,7 @@ class AccountViewModel extends GetxController {
 
   Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
     if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
-    if(accountList[editProductModel.accId]?.accParentId!=null){
+    if (accountList[editProductModel.accId]?.accParentId != null) {
       await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
         'accChild': FieldValue.arrayRemove([editProductModel.accId]),
       });
@@ -593,7 +639,6 @@ AccountModel? getAccountIdFromName(text) {
     print("empty");
     return null;
   }
-
 }
 
 List<AccountModel> getAccountModelFromName(text) {
@@ -614,7 +659,7 @@ List<AccountModel> getAccountModelFromName(text) {
 
 String getAccountNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<AccountViewModel>().accountList[id]!.accName!;
+    return Get.find<AccountViewModel>().accountList[id]?.accName!??"no acc";
   } else {
     return "";
   }

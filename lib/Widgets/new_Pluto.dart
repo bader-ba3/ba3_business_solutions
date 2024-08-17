@@ -49,10 +49,11 @@ class CustomPlutoGrid extends StatelessWidget {
 
                         ],
                       ),
-                      body:
-                           PlutoGrid(
+                      body: PlutoGrid(
                             key: controller.plutoKey,
-                          onLoaded: onLoaded,
+                          onLoaded: (event) {
+                            event.stateManager.setShowColumnFilter(true);
+                          },
                             onSelected: onSelected,
                             columns: controller.getColumns(modelList,type:type),
                             rows:controller.getRows(modelList,type:type),

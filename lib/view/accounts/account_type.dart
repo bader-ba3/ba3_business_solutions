@@ -31,11 +31,11 @@ class _AccountTypeState extends State<AccountType> {
             item("إنشاء حساب", () {
               Get.to(() => const AddAccount());
             }),
-            item("معاينة الحسابات", () {
-              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-                if (value) Get.to(() => const AllAccountOLD());
-              });
-            }),
+            // item("معاينة الحسابات", () {
+            //   checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+            //     if (value) Get.to(() => const AllAccountOLD());
+            //   });
+            // }),
             item("معاينة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
                 if (value) Get.to(() => const AllAccount());

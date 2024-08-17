@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     (name: "لوحة التحكم", widget: const DashboardView(), role: Const.roleViewHome),
     (name: "الفواتير", widget: const InvoiceType(), role: Const.roleViewInvoice),
     (name: "السندات", widget: const BondType(), role: Const.roleViewBond),
-    (name: "سندات القيد", widget: const EntryBondType(), role: Const.roleViewBond),
+    // (name: "سندات القيد", widget: const EntryBondType(), role: Const.roleViewBond),
     (name: "الحسابات", widget: const AccountType(), role: Const.roleViewAccount),
     (name: "المواد", widget: const ProductType(), role: Const.roleViewProduct),
     (name: "المستودعات", widget: const StoreType(), role: Const.roleViewStore),

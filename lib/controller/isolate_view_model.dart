@@ -117,9 +117,7 @@ double getAccountBalanceFromIdIsolate(id) {
 String getProductNameFromIdIsolate(id) {
   if (id != null && id != " " && id != "") {
     if(Get.find<IsolateViewModel>().productDataMap[id] == null){
-        print("---------");
-        print(id);
-        print("---------");
+
     }
     return Get.find<IsolateViewModel>().productDataMap[id]?.prodName! ??'';
   } else {

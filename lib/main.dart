@@ -86,7 +86,8 @@ void main() async {
   // HiveDataBase.globalModelBox.deleteFromDisk();
 
   runApp(const MyApp());
- 
+
+
 }
 
 

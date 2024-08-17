@@ -8,8 +8,10 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
+import '../../../model/global_model.dart';
 import '../../../model/product_model.dart';
 import '../../../model/product_record_model.dart';
+import '../../../utils/hive.dart';
 
 class ProductDetails extends StatefulWidget {
   final String? oldKey;
@@ -179,8 +181,27 @@ class _ProductDetailsState extends State<ProductDetails> {
             )));
   }
 
-  void initPage() {
+   initPage()async {
     if (widget.oldKey != null) {
+
+
+      List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
+          .where(
+            (element) =>
+
+            (element.invRecords
+                ?.where(
+                  (element) =>   element.invRecProduct==widget.oldKey ,
+            )
+                .isNotEmpty ??
+                false)
+      ).
+      toList();
+      for (var globalModel in globalModels) {
+        if (globalModel.invType != Const.invoiceTypeChange) {
+        await  productController.initGlobalProduct(globalModel);
+        }
+      }
 
       productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toFullJson());
       editedProductRecord.clear();
@@ -194,5 +215,10 @@ class _ProductDetailsState extends State<ProductDetails> {
       editedProductRecord = <ProductRecordModel>[];
     }
     productController.initProductPage(productController.productModel!);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+      setState(() {
+
+      });
+    },);
   }
 }

@@ -113,6 +113,8 @@ class GlobalViewModel extends GetxController {
         await updateDataInAll(value);
 
       });
+
+
       if (Get.currentRoute == "/LoginView") {
         Get.offAll(() => MainScreen());
       }
@@ -359,23 +361,23 @@ class GlobalViewModel extends GetxController {
             sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);
           }
         }
-        if (filteredGlobalModel.invType != Const.invoiceTypeChange) {
+      /*  if (filteredGlobalModel.invType != Const.invoiceTypeChange) {
           accountViewModel.initGlobalAccount(filteredGlobalModel);
           productController.initGlobalProduct(filteredGlobalModel);
-        }
-        storeController.initGlobalStore(filteredGlobalModel);
+        }*/
+        // storeController.initGlobalStore(filteredGlobalModel);
       }
       invoiceViewModel.initGlobalInvoice(filteredGlobalModel);
-    } else if (globalModel.globalType == Const.globalTypeCheque) {
-      print("globalModel.globalType == Const.globalTypeCheque");
+    }/* else if (globalModel.globalType == Const.globalTypeCheque) {
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
-    }
+    }*/
     if (globalModel.globalType == Const.globalTypeBond) {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
-      accountViewModel.initGlobalAccount(globalModel);
+      // accountViewModel.initGlobalAccount(globalModel);
     }
+
   }
 
   deleteDataInAll(GlobalModel globalModel) {
@@ -395,6 +397,7 @@ class GlobalViewModel extends GetxController {
   }
 
   GlobalModel? checkFreeZoneProduct(GlobalModel filteredGlobalModel) {
+
     if (HiveDataBase.isFree.get("isFree")!) {
       if (filteredGlobalModel.invCode!.startsWith("F-")) {
         return null;
