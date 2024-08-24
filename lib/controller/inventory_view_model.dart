@@ -20,7 +20,7 @@ class InventoryViewModel extends GetxController{
   }
 
   List<ProductModel> getProduct(_,List targetedProductList ){
-    List<ProductModel>? listProduct =  getProductModelFromName(_);
+    List<ProductModel>? listProduct =  getProductsModelFromName(_);
    if(listProduct==null || listProduct.isEmpty){
      return [];
    }else{

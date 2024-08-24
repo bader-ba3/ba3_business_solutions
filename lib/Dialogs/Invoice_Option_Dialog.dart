@@ -32,25 +32,25 @@ class InvoiceOptionDialog extends StatelessWidget {
                   title: "المادة :  ",
                   controller: controller.productForSearchController,
                   onSubmitted: (text) async {
-                    controller.productForSearchController.text = await searchProductTextDialog(controller.productForSearchController.text);
+                    controller.productForSearchController.text = await searchProductTextDialog(controller.productForSearchController.text)??"";
                     controller.update();
                   },
                 ),
-                OptionTextWidget(
-                  title: "المجموعة :  ",
-                  controller: controller.groupForSearchController,
-                  onSubmitted: (text) async {},
-                ),
-                OptionTextWidget(
-                  title: "المستودع :  ",
-                  controller: controller.storeForSearchController,
-                  onSubmitted: (text) async {},
-                ),
-                OptionTextWidget(
-                  title: "الزبون :  ",
-                  controller: controller.clientForSearchController,
-                  onSubmitted: (text) async {},
-                ),
+                // OptionTextWidget(
+                //   title: "المجموعة :  ",
+                //   controller: controller.groupForSearchController,
+                //   onSubmitted: (text) async {},
+                // ),
+                // OptionTextWidget(
+                //   title: "المستودع :  ",
+                //   controller: controller.storeForSearchController,
+                //   onSubmitted: (text) async {},
+                // ),
+                // OptionTextWidget(
+                //   title: "الزبون :  ",
+                //   controller: controller.clientForSearchController,
+                //   onSubmitted: (text) async {},
+                // ),
                 OptionTextWidget(
                   title: "من تاريخ :  ",
                   controller: controller.startDateForSearchController,

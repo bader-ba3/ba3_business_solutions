@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
+import '../../../Dialogs/Search_Product_Text_Dialog.dart';
 import '../../../controller/invoice_view_model.dart';
 import '../../../controller/product_view_model.dart';
 import '../../../model/invoice_record_model.dart';
@@ -90,60 +91,15 @@ class InvoiceRecordSource extends DataGridSource {
     //       DataGridCell<String>(columnName: Const.rowInvId, value: newCellValue);
     //   records[dataRowIndex].invRecId = newCellValue.toString();
     // }
-    bool isPatternHasVat = patternController.patternModel[globalController.initModel.patternId]!.patHasVat!;
+    ///vat
+    bool isPatternHasVat = true/*patternController.patternModel[globalController.initModel.patternId]!.patHasVat!*/;
     if (column.columnName == Const.rowInvProduct) {
-      List<ProductModel> result = searchOfProductByText(newCellValue.toString());
-      print(result.map((e) => (e.prodName, e.prodIsGroup)));
-      if (newCellValue == null) {
-        result = productController.productDataMap.values.toList().where((element) => !(element.prodIsGroup ?? false)).toList();
-      }
-      if (result.isEmpty) {
+      ProductModel? prod = getProductModelFromName(await searchProductTextDialog(newCellValue.toString()));
+      if (prod==null) {
         Get.snackbar("خطأ", "غير موجود");
-      } else if (result.length == 1) {
-        var prod = result[0];
+      } else  {
+
         chooseProduct(prod, vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
-      } else {
-        Get.defaultDialog(
-            title: "اختر احد المواد",
-            content: SizedBox(
-              height: Get.height / 1.5,
-              width: Get.width / 1.5,
-              child: ListView.separated(
-                  itemCount: result.length,
-                  separatorBuilder: (context, index) => Divider(
-                        color: Colors.blue.withOpacity(0.5),
-                      ),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        chooseProduct(result[index], vat, dataRowIndex, rowColumnIndex, isPatternHasVat);
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "${index}_ ",
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.blue),
-                            ),
-                            Text(
-                              result[index].prodName!,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-            ),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: const Text("back"))
-            ]);
       }
     } else if (newCellValue == null || oldValue == newCellValue) {
       return;

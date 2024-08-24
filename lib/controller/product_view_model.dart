@@ -103,6 +103,7 @@ class ProductViewModel extends GetxController {
 
 
   List<ProductModel> searchOfProductByText(query) {
+    print(query);
     List<ProductModel> productsForSearch = [];
      query = replaceArabicNumbersWithEnglish(query);
     String query2 = '';
@@ -115,7 +116,13 @@ class ProductViewModel extends GetxController {
       query3 = query;
       query2 = query;
     }
-    productsForSearch = productDataMap.values.toList().where((item) {
+    productsForSearch = productDataMap.values.where((element) {
+      if( HiveDataBase.getIsFree()) {
+        return  !(element.prodName?.startsWith("F")??true);
+      } else {
+        return true;
+      }
+    },).toList().where((item) {
       bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) && item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
       // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
       bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
@@ -123,7 +130,7 @@ class ProductViewModel extends GetxController {
       //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
       return (prodName || prodCode || prodBarcode) && !item.prodIsGroup!;
     }).toList();
-
+print(productsForSearch.length);
     return productsForSearch.toList();
   }
 
@@ -699,7 +706,7 @@ String getProductIdFromName(name) {
   }
 }
 
-List<ProductModel>? getProductModelFromName(name) {
+List<ProductModel>? getProductsModelFromName(name) {
   if (name != null && name != " " && name != "") {
     return Get.find<ProductViewModel>()
         .productDataMap
@@ -707,6 +714,17 @@ List<ProductModel>? getProductModelFromName(name) {
         .toList()
         .where((element) => !element.prodIsGroup! && (element.prodName!.toLowerCase().contains(name.toLowerCase()) || element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) || element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
         .toList();
+  }
+  return null;
+}
+ProductModel? getProductModelFromName(name) {
+  if (name != null && name != " " && name != "") {
+    return Get.find<ProductViewModel>()
+        .productDataMap
+        .values
+        .toList()
+        .where((element) => !element.prodIsGroup! && (element.prodName!.toLowerCase().contains(name.toLowerCase()) || element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) || element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
+        .firstOrNull;
   }
   return null;
 }

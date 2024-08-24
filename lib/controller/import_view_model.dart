@@ -698,10 +698,10 @@ class ImportViewModel extends GetxController {
                   prodChoosePriceMethod: Const.invoiceChoosePriceMethodeCustom,
                   invRecId: "1",
                   invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
-                  invRecProduct: getProductModelFromName("F-" + element[indexOfProductName])!.first.prodId,
+                  invRecProduct: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodId,
                   //product id
                   invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
-                  invRecIsLocal: getProductModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
+                  invRecIsLocal: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
                   invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
 
                   // invRecVat: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs()/double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() - double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
@@ -715,8 +715,8 @@ class ImportViewModel extends GetxController {
                 prodChoosePriceMethod: Const.invoiceChoosePriceMethodeCustom,
                 invRecId: lastCode.toString(),
                 invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
-                invRecProduct: getProductModelFromName("F-" + element[indexOfProductName])!.first.prodId,
-                invRecIsLocal: getProductModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
+                invRecProduct: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodId,
+                invRecIsLocal: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
                 invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
                 invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("\"", "").replaceAll("٫", ".")).abs(),
                 // invRecVat: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs()/double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() - double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
@@ -968,7 +968,7 @@ class ImportViewModel extends GetxController {
               if (invMap[element[indexOfInvCode]] == null) {
                 //todo
 
-                if (getProductModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
+                if (getProductsModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
                   nunProd.add(element[indexOfProductName]);
                   print(element[indexOfProductName]);
                   Get.snackbar("error", "plz check if the file separeted ");
@@ -1016,7 +1016,7 @@ class ImportViewModel extends GetxController {
                           //product id
                           invRecGift: double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
                           invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
-                          invRecIsLocal: getProductModelFromName(element[indexOfProductName])!.first.prodIsLocal,
+                          invRecIsLocal: getProductsModelFromName(element[indexOfProductName])!.first.prodIsLocal,
                           invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
                           invRecVat: element[indexOfQuantity].toString() == "0.00"
                               ? 0
@@ -1027,7 +1027,7 @@ class ImportViewModel extends GetxController {
                       ]);
                 }
               } else {
-                if (getProductModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
+                if (getProductsModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
                   nunProd.add(element[indexOfProductName]);
                   print(element[indexOfProductName]);
                 } else {
@@ -1040,7 +1040,7 @@ class ImportViewModel extends GetxController {
 
                         invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
                         invRecProduct: getProductIdFromName(element[indexOfProductName]),
-                        invRecIsLocal: getProductModelFromName(element[indexOfProductName])!.first.prodIsLocal,
+                        invRecIsLocal: getProductsModelFromName(element[indexOfProductName])!.first.prodIsLocal,
                         invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
                         invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("\"", "").replaceAll("٫", ".")).abs(),
                         invRecVat: element[indexOfQuantity].toString() == "0.00"

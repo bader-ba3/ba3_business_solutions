@@ -23,4 +23,14 @@ class AccountRecordModel {
       "date": date,
     };
   }
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "total": total,
+      "account": account,
+      "accountRecordType": accountRecordType,
+      "isPaidStatus": isPaidStatus,
+      "date": date,
+    };
+  }
 }

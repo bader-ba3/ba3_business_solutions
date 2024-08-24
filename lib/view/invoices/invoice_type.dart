@@ -1,7 +1,12 @@
+import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
+import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
+import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +44,14 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 children: patternController.patternModel.entries.toList().map((MapEntry<String, PatternModel> i) {
                   return InkWell(
                     onTap: () {
-                      Get.to(() => InvoiceView(billId: '1', patternId: i.key));
+                      // Get.to(() => InvoiceView(billId: '1', patternId: i.key));
+                      Get.to(
+                        () =>  NewInvoiceView(billId: 'inv1722956007913527',patternId:  i.key,),
+                        binding: BindingsBuilder(() {
+                          Get.lazyPut(() => InvoicePlutoViewModel());
+                          Get.lazyPut(() => DiscountPlutoViewModel());
+                        }),
+                      );
                     },
                     child: Container(
                       width: 200,

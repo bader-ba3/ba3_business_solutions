@@ -223,6 +223,7 @@ class InvoiceViewModel extends GetxController {
     int quantity = 0;
     double subtotals = 0.0;
     total = 0.0;
+
     for (var record in records) {
       if (record.invRecQuantity != null && record.invRecSubTotal != null) {
         quantity = record.invRecQuantity!;

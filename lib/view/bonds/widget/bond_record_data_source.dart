@@ -37,7 +37,7 @@ class BondRecordDataSource extends DataGridSource {
   }
 
   void addItem() {
-    dataGridRows.add(DataGridRow(cells: [
+    dataGridRows.add(const DataGridRow(cells: [
       DataGridCell<String>(columnName: Const.rowBondId, value: ""),
       DataGridCell<String>(columnName: Const.rowBondAccount, value: ''),
       DataGridCell<double>(columnName: Const.rowBondCreditAmount, value: null),

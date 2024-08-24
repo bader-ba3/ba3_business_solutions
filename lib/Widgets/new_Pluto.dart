@@ -1,28 +1,17 @@
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../main.dart';
 import '../view/widget/CustomWindowTitleBar.dart';
+import 'CustomPlutoGridStyleConfig.dart';
 import 'Pluto_View_Model.dart';
 
-
-
 class CustomPlutoGrid extends StatelessWidget {
-  const CustomPlutoGrid({
-    super.key,
-    required this.onLoaded,
-    required this.onSelected,
-    required this.modelList,
-    this.onRowDoubleTap,
-    required this.title,
-    this.type
+  const CustomPlutoGrid({super.key, required this.onLoaded, required this.onSelected, required this.modelList, this.onRowDoubleTap, required this.title, this.type});
 
-  });
   final Function(PlutoGridOnLoadedEvent) onLoaded;
-   final List<dynamic> modelList;
-   final Function(PlutoGridOnRowDoubleTapEvent)? onRowDoubleTap;
+  final List<dynamic> modelList;
+  final Function(PlutoGridOnRowDoubleTapEvent)? onRowDoubleTap;
   final Function(PlutoGridOnSelectedEvent) onSelected;
 
   final String title;

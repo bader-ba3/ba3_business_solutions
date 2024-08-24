@@ -79,6 +79,9 @@ class HiveDataBase {
   static String getMyReadFlag(){
     return constBox.get("myReadFlag")!;
   }
+  static bool getIsFree(){
+    return  isFree.get("isFree")??false;
+  }
 
   static Future<void> setDataName(dataName) async {
     globalModelBox=await Hive.openBox<GlobalModel>(dataName);
@@ -86,6 +89,8 @@ class HiveDataBase {
 
   static Future<void> setIsFree(bool type) async {
     isFree.put("isFree", type);
+
+
   }
 static deleteAllLocal() {
     HiveDataBase.globalModelBox.deleteFromDisk();

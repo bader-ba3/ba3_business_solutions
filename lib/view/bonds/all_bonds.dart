@@ -1,13 +1,11 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Widgets/new_Pluto.dart';
 
+import '../../utils/hive.dart';
 import 'bond_details_view.dart';
 import 'custom_bond_details_view.dart';
 
@@ -23,19 +21,32 @@ class AllBonds extends StatelessWidget {
         type: Const.globalTypeBond,
         onSelected: (p0) {
 
-          if (p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeStart) || p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice)) {
+          if (p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeDaily)
+              || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart)
+              || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice)
+              || p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart)
+              || p0.row?.cells["نوع السند"]?.value == (Const.bondTypeInvoice)
+
+
+          ) {
             Get.to(() => BondDetailsView(
                   oldId: p0.row?.cells["bondId"]?.value,
-                  bondType: p0.row?.cells["bondType"]?.value,
+                  bondType: p0.row?.cells["نوع السند"]?.value,
                 ));
           } else {
             Get.to(() => CustomBondDetailsView(
                   oldId: p0.row?.cells["bondId"]?.value,
-                  isDebit: p0.row?.cells["bondType"]?.value == Const.bondTypeDebit,
+                  isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit||p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
                 ));
           }
         },
-        modelList: controller.allBondsItem.values.toList(),
+        modelList: controller.allBondsItem.values.where((element) {
+          if( HiveDataBase.getIsFree()) {
+            return  !(element.bondCode?.startsWith("F")??true);
+          } else {
+            return true;
+          }
+        },).toList(),
       );
     });
   }

@@ -123,8 +123,11 @@ class GlobalViewModel extends GetxController {
 
 
   changeFreeType(type) async {
-    HiveDataBase.setIsFree(type);
-    Const.init(isFree: type);
+    // print("chang type off free to $type");
+
+
+
+   /* Const.init(isFree: type);
     await Get.deleteAll(force: true);
     Get.put(UserManagementViewModel(), permanent: true);
     Get.put(AccountViewModel(), permanent: true);
@@ -144,7 +147,7 @@ class GlobalViewModel extends GetxController {
     Get.offAll(
       () => const UserManagement(),
       binding: GetBinding(),
-    );
+    );*/
   }
 
   /////-Add

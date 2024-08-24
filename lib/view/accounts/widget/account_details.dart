@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
+import '../../../Widgets/new_Pluto.dart';
 import '../../../controller/account_view_model.dart';
 
 class AccountDetails extends StatefulWidget {
@@ -36,7 +37,22 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+
+    return GetBuilder<AccountViewModel>(builder: (controller) {
+      print( controller.accountList[widget.modelKey]!.accRecord.length);
+      return CustomPlutoGrid(
+        title: "جميع الحركات",
+        // type: Const.globalTypeInvoice,
+        onLoaded: (e) {},
+        onSelected: (p0) {
+
+        },
+        modelList: controller.accountList[widget.modelKey]!.accRecord.toList()  ,
+      );
+    });
+  }
+
+/*    return Directionality(
       textDirection: TextDirection.rtl,
       child: GetBuilder<AccountViewModel>(builder: (controller) {
         return Scaffold(
@@ -146,8 +162,8 @@ class _AccountDetailsState extends State<AccountDetails> {
           ),
         );
       }),
-    );
-  }
+    );*/
+
 
   GridColumn GridColumnItem({required label, name}) {
     return GridColumn(

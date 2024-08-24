@@ -41,18 +41,18 @@ class _BondTypeState extends State<BondType> {
               Get.to(() => const CustomBondDetailsView(isDebit: false));
             }),
             Item("قيد افتتاحي",(){
-              Get.to(() => BondDetailsView(bondType: Const.bondTypeStart,));
+              Get.to(() => const BondDetailsView(bondType: Const.bondTypeStart,));
             }),
              if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Item("عرض جميع السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
-                if(value) Get.to(()=>AllBonds());
+                if(value) Get.to(()=>const AllBonds());
               });
             }),
              if(checkPermission(Const.roleUserAdmin , Const.roleViewInvoice))
             Item("عرض تقرير السندات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewBond).then((value) {
-                if(value) Get.to(()=>BondReport());
+                if(value) Get.to(()=>const BondReport());
               });
             }),
           ],

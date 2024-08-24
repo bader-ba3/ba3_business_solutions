@@ -1,7 +1,11 @@
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:pluto_grid/pluto_grid.dart';
+
 class InvoiceRecordModel {
-  String? invRecId, invRecProduct,prodChoosePriceMethod;
-  int? invRecQuantity,invRecGift;
-  double? invRecSubTotal, invRecTotal, invRecVat,invRecGiftTotal;
+  String? invRecId, invRecProduct, prodChoosePriceMethod;
+  int? invRecQuantity, invRecGift;
+  double? invRecSubTotal, invRecTotal, invRecVat, invRecGiftTotal;
   bool? invRecIsLocal;
 
   InvoiceRecordModel({
@@ -20,12 +24,12 @@ class InvoiceRecordModel {
   InvoiceRecordModel.fromJson(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
     invRecProduct = map['invRecProduct'];
-    invRecQuantity = map['invRecQuantity'];
+    invRecQuantity = int.tryParse(map['invRecQuantity'].toString());
     invRecSubTotal = double.tryParse(map['invRecSubTotal'].toString());
     invRecTotal = double.tryParse(map['invRecTotal'].toString());
-    invRecVat = double.tryParse((map['invRecVat'] ).toString());
+    invRecVat = double.tryParse((map['invRecVat']).toString());
     invRecIsLocal = map['invRecIsLocal'];
-    invRecGift = map['invRecGift'];
+    invRecGift = int.tryParse(map['invRecGift'].toString());
     invRecGiftTotal = map['invRecGiftTotal'];
   }
 
@@ -82,11 +86,11 @@ class InvoiceRecordModel {
       newChanges['invRecIsLocal'] = other.invRecIsLocal;
       oldChanges['invRecIsLocal'] = invRecIsLocal;
     }
-     if (invRecGift != other.invRecGift) {
+    if (invRecGift != other.invRecGift) {
       newChanges['invRecGift'] = other.invRecGift;
       oldChanges['invRecGift'] = invRecGift;
     }
-     if (invRecGiftTotal != other.invRecGiftTotal) {
+    if (invRecGiftTotal != other.invRecGiftTotal) {
       newChanges['invRecGiftTotal'] = other.invRecGiftTotal;
       oldChanges['invRecGiftTotal'] = invRecGiftTotal;
     }
@@ -95,5 +99,71 @@ class InvoiceRecordModel {
     if (oldChanges.isNotEmpty) oldChanges['invRecId'] = invRecId;
 
     return {"newData": newChanges, "oldData": oldChanges};
+  }
+
+  Map<PlutoColumn, dynamic> toEditedMap() {
+    return {
+      PlutoColumn(
+        title: 'الرقم',
+        field: 'invRecId',
+        readOnly: true,
+        width: 50,
+        type: PlutoColumnType.text(),
+        renderer: (rendererContext) {
+          if(rendererContext.row.cells["invRecProduct"]?.value!='') {
+            rendererContext.cell.value = rendererContext.rowIdx.toString();
+            return Text(rendererContext.rowIdx.toString());
+          }
+          return const Text("");
+        },
+      ): invRecId,
+      PlutoColumn(
+        title: 'المادة',
+        field: 'invRecProduct',
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return false;
+        },
+      ): getProductModelFromId(invRecProduct)?.prodName,
+      PlutoColumn(
+        title: 'الهدايا',
+        field: "invRecGift",
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return cell.row.cells['invRecProduct']?.value == '';
+        },
+      ): invRecGift,
+      PlutoColumn(
+        title: 'الكمية',
+        field: 'invRecQuantity',
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return cell.row.cells['invRecProduct']?.value == '';
+        },
+      ): invRecQuantity,
+      PlutoColumn(
+        title: 'السعر الإفرادي',
+        field: "invRecSubTotal",
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return cell.row.cells['invRecProduct']?.value == '';
+        },
+      ): invRecSubTotal,
+      PlutoColumn(
+        title: 'الضريبة',
+        field: 'invRecVat',
+        type: PlutoColumnType.text(),
+      ): invRecVat,
+      PlutoColumn(
+        title: 'المجموع',
+        field: 'invRecTotal',
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return cell.row.cells['invRecProduct']?.value == '';
+        },
+      ): (((invRecSubTotal??0)+(invRecVat??0)).toInt())*(invRecQuantity??1),
+
+
+    };
   }
 }

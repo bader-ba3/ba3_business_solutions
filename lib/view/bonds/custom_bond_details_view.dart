@@ -57,6 +57,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
     if (widget.oldId != null || widget.oldBondModel != null) {
       print("init");
       bondController.tempBondModel = GlobalModel.fromJson(widget.oldBondModel?.toFullJson() ?? bondController.allBondsItem[widget.oldId]!.toFullJson());
+      print(bondController.tempBondModel);
       bondController.bondModel = widget.oldBondModel ?? bondController.allBondsItem[widget.oldId]!;
       print( bondController.tempBondModel.toFullJson());
       isNew = false;

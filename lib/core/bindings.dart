@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/cards_view_model.dart';
@@ -18,6 +19,7 @@ import 'package:ba3_business_solutions/controller/target_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:get/get.dart';
+import '../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../Widgets/Pluto_View_Model.dart';
 import '../controller/changes_view_model.dart';
 import '../controller/database_view_model.dart';
@@ -43,16 +45,14 @@ class GetBinding extends Bindings {
     Get.put(CostCenterViewModel());
     Get.put(InventoryViewModel());
 
-    // Get.put(CameraService());
-    // Get.put(FaceDetectorService());
-    // Get.put(MLService());
+
     Get.put(IsolateViewModel());
     Get.put(DataBaseViewModel());
     Get.put(CardsViewModel());
     Get.put(TargetViewModel());
     Get.put(PrintViewModel());
     Get.put(PlutoViewModel());
-    // Get.lazyPut(()=>GlobalViewModel(),fenix: true);
+
     Get.lazyPut(()=>ChangesViewModel(),fenix: true);
   }
 }

@@ -22,14 +22,22 @@ class AllInvoice extends StatelessWidget {
         type: Const.globalTypeInvoice,
         onLoaded: (e) {},
         onSelected: (p0) {
+          print(p0.row?.cells["الرقم التسلسلي"]?.value);
           Get.to(() => InvoiceView(
                 billId: p0.row?.cells["الرقم التسلسلي"]?.value,
                 patternId: "",
               ));
         },
-        modelList: controller.invoiceModel.values.where(
+        modelList: controller.invoiceModel.values.where((element) {
+
+         if( HiveDataBase.getIsFree()) {
+         return  !(element.invCode?.startsWith("F")??true);
+         } else {
+           return true;
+         }
+        },).where(
           (element) {
-            if (productName != null) {
+            if (productName != null&&productName != "") {
               return listDate.contains((element.invDate?.split(" ")[0] ?? "")) &&
                   (element.invRecords
                           ?.where(

@@ -10,6 +10,7 @@ import '../controller/account_view_model.dart';
 import '../controller/pattern_model_view.dart';
 import '../controller/sellers_view_model.dart';
 import '../controller/store_view_model.dart';
+import '../utils/hive.dart';
 import 'bond_record_model.dart';
 import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
@@ -473,15 +474,18 @@ class GlobalModel {
         "حساب البائع": getSellerNameFromId(invSeller),//Isolate
         'وصف': invComment??'',
       };
+
     } else if ( type == Const.globalTypeBond) {
       return {
         'bondId':bondId?? entryBondId,
-     if(bondCode!=null)   'bondCode': bondCode,
-        if(originAmenId!=null)   'AmenCode': originAmenId,
-        'bondType': getBondTypeFromEnum(bondType ?? ""),
-        'bondDate': bondDate,
-        'bondTotal': bondTotal,
-        'bondDescription': bondDescription,
+        'رقم السند': bondCode,
+        // 'AmenCode': originAmenId,
+        'نوع السند': getBondTypeFromEnum(bondType ?? ""),
+        'تاريخ السند': bondDate,
+        'القيمة': bondRecord?.map((e) => e.bondRecDebitAmount!,).toList().fold(0.0, (previousValue, element) => previousValue+element,)??'',
+        'البيان': bondDescription,
+        "الحسابات المتأثرة":bondRecord?.map((e) => getAccountNameFromId(e.bondRecAccount),).toList()??''
+
       };
     } else if ( type == Const.globalTypeCheque) {
       return {

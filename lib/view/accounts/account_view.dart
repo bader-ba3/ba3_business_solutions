@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
 import '../../Widgets/new_Pluto.dart';
+import '../../utils/hive.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
 
@@ -35,7 +36,13 @@ class AllAccount extends StatelessWidget {
               //   patternId: "",
               // ));
             },
-            modelList: controller.accountList.values.toList(),
+            modelList: controller.accountList.values.where((element) {
+              if( HiveDataBase.getIsFree()) {
+                return  !(element.accName?.startsWith("F")??true);
+              } else {
+                return true;
+              }
+            },).toList(),
 
           );
         }

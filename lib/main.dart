@@ -59,21 +59,11 @@ void main() async {
       if (HardwareKeyboard.instance.isControlPressed &&
           HardwareKeyboard.instance.isShiftPressed &&
           HardwareKeyboard.instance
-              .isPhysicalKeyPressed(PhysicalKeyboardKey.keyD)) {
-        GlobalViewModel? globalViewModel = Get.find<GlobalViewModel>();
-        if (globalViewModel.initialized) {
-          globalViewModel.changeFreeType(true);
-        }
-        return true;
-      } else if (HardwareKeyboard.instance.isControlPressed &&
-          HardwareKeyboard.instance.isShiftPressed &&
-          HardwareKeyboard.instance
               .isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
-        GlobalViewModel? globalViewModel = Get.find<GlobalViewModel>();
-        if (globalViewModel.initialized) {
-          globalViewModel.changeFreeType(false);
-        }
-        return true;
+        print("object");
+        HiveDataBase.setIsFree(!HiveDataBase.getIsFree());
+
+      return true;
       }
       return false;
     },
