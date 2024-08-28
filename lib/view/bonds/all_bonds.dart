@@ -15,7 +15,7 @@ class AllBonds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<BondViewModel>(builder: (controller) {
-      return CustomPlutoGrid(
+      return CustomPlutoGridWithAppBar(
         title: "جميع السندات",
         onLoaded: (e) {},
         type: Const.globalTypeBond,

@@ -212,7 +212,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    invoiceController.prevInv(widget.patternModel!.patId!, invoiceController.invCodeController.text);
+                                    invoiceController.invNextOrPrev(widget.patternModel!.patId!, invoiceController.invCodeController.text,true);
                                   },
                                   icon: const Icon(Icons.keyboard_double_arrow_right)),
                               // const Text("Invoice Code : "),

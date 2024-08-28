@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/Widgets/Pluto_View_Model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
@@ -31,8 +32,8 @@ class InvoiceViewModel extends GetxController {
   var patternController = Get.find<PatternViewModel>();
   var storeViewController = Get.find<StoreViewModel>();
   var sellerViewController = Get.find<SellersViewModel>();
-  var startDateController = TextEditingController()..text=DateTime.now().toString().split(" ")[0];
-  var endDateController = TextEditingController()..text=DateTime.now().toString().split(" ")[0];
+  var startDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
+  var endDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
 
   List<String> invIdList = [];
 
@@ -62,6 +63,9 @@ class InvoiceViewModel extends GetxController {
   TextEditingController noteController = TextEditingController();
   TextEditingController entryBondIdController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
+  TextEditingController firstPayController = TextEditingController();
+  TextEditingController invReturnCodeController = TextEditingController();
+  TextEditingController invReturnDateController = TextEditingController();
   final DataGridController dataGridController = DataGridController();
   late GlobalModel initModel;
   int colorInvoice = Colors.grey.value;
@@ -474,6 +478,7 @@ class InvoiceViewModel extends GetxController {
     records = invoiceModel[billId]!.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
   }
+
   buildSourceRecent(GlobalModel model) {
     records = model.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
     invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
@@ -483,6 +488,7 @@ class InvoiceViewModel extends GetxController {
     discountRecords = invoiceModel[billId]!.invDiscountRecord! + [InvoiceDiscountRecordModel()];
     invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
   }
+
   buildDiscountSourceRecent(GlobalModel model) {
     discountRecords = model.invDiscountRecord! + [InvoiceDiscountRecordModel()];
     invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
@@ -511,19 +517,59 @@ class InvoiceViewModel extends GetxController {
     update();
   }
 
-  prevInv(String patId, invCode) {
-    var inv = invoiceModel.values.where((element) => element.invCode == invCode).firstOrNull;
-    if (inv == null) {
-      if (nextPrevList.isNotEmpty) {
-        buildInvInit(true, nextPrevList.values.last);
+  invNextOrPrev(String patId, invCode, bool isPrev) {
+    List<GlobalModel> inv = invoiceModel.values.where((element) => element.patternId == patId).toList().reversed.toList();
+    inv.sort(
+      (a, b) {
+        if (a.invCode!.startsWith("F") && b.invCode!.startsWith("F")) {
+          return int.parse((a.invCode ?? "F-0").split("F-")[1]).compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
+        } else if (a.invCode!.startsWith("F")) {
+          return int.parse((a.invCode ?? "F-0").split("F-")[1]).compareTo(int.parse(b.invCode ?? "0"));
+        } else if (b.invCode!.startsWith("F")) {
+          return int.parse((a.invCode ?? "0")).compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
+        } else {
+          return int.parse(a.invCode ?? "0").compareTo(int.parse(b.invCode ?? "0"));
+        }
+      },
+    );
+    int currentPosition = inv.indexOf(inv
+            .where(
+              (element) => element.invCode == invCode,
+            )
+            .firstOrNull ??
+        inv.last);
+
+
+    if (isPrev) {
+      if (currentPosition != 0) {
+        if(inv.where((element) => element.invCode == invCode,).isNotEmpty) {
+          buildInvInit(true, inv[currentPosition - 1].invId!);
+        }
+        else{
+          buildInvInit(true, inv.last.invId!);
+        }
       }
     } else {
-      var index = nextPrevList.values.toList().indexOf(inv.invId!);
-      if (nextPrevList.values.first == nextPrevList[index]) {
-      } else {
-        buildInvInit(true, nextPrevList.values.toList()[index - 1]);
+      if (currentPosition < inv.length-1) {
+        buildInvInit(true, inv[currentPosition + 1].invId!);
       }
     }
+    update();
+  }
+
+  getInvByInvCode(String patId, invCode) {
+    List<GlobalModel> inv = invoiceModel.values.where((element) => element.patternId == patId && element.invCode == invCode).toList();
+    if (inv.isNotEmpty) {
+      buildInvInit(true, inv.first.invId!);
+    } else {
+      Get.snackbar("خطأ رقم الفاتورة", "رقم الفاتورة غير موجود",
+          icon: const Icon(
+            Icons.error, color: Colors.red, textDirection: TextDirection.rtl,
+
+          ));
+      invCodeController.text=initModel.invCode??"";
+    }
+
     update();
   }
 
@@ -608,9 +654,12 @@ class InvoiceViewModel extends GetxController {
 
   //int old inv
   buildInvInit(bool bool, String invId) {
+
     if (bool) {
       initModel = invoiceModel[invId]!;
     }
+    invReturnCodeController.text=initModel.invReturnCode??'';
+    invReturnDateController.text=initModel.invReturnDate??'';
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
     invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
@@ -636,19 +685,24 @@ class InvoiceViewModel extends GetxController {
     entryBondIdController.text = initModel.entryBondId ?? "";
     invCodeController.text = initModel.invCode!;
     dateController = initModel.invDate;
+    firstPayController.text = initModel.firstPay.toString();
+
     // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
-    buildSource(initModel.invId!);
-    buildDiscountSource(initModel.invId!);
+
+    Get.find<InvoicePlutoViewModel>().getRows(initModel.invRecords ?? []);
+    // buildSource(initModel.invId!);
+    // buildDiscountSource(initModel.invId!);
+
     if (!bool) {
       update();
     }
   }
 
   buildInvInitRecent(GlobalModel model) {
-
-      initModel = model;
-
+    initModel = model;
+    invReturnCodeController.text=initModel.invReturnCode??'';
+    invReturnDateController.text=initModel.invReturnDate??'';
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
     invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
@@ -673,16 +727,15 @@ class InvoiceViewModel extends GetxController {
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
     invCodeController.text = initModel.invCode!;
+    firstPayController.text = initModel.firstPay.toString();
     dateController = initModel.invDate;
     // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
 
+    // buildSourceRecent(initModel);
+    // buildDiscountSourceRecent(initModel);
 
-    buildSourceRecent(initModel);
-    buildDiscountSourceRecent(initModel);
-
-      update();
-
+    // update();
   }
 
   bool checkAllRecord() {

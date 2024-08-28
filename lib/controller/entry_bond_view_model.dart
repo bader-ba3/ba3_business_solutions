@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
@@ -112,6 +113,8 @@ class EntryBondViewModel extends GetxController {
     allEntryBonds[globalModel.entryBondId!]?.bondDate ??= globalModel.invDate;
     allEntryBonds[globalModel.entryBondId!]?.bondDescription = "${getGlobalTypeFromEnum(globalModel.patternId!)} تم التوليد بشكل تلقائي";
     int bondRecId = 0;
+
+    allEntryBonds[globalModel.entryBondId!]?.firstPay=globalModel.firstPay;
     globalModel.invRecords?.forEach((element) {
       String dse = "${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
       List<InvoiceDiscountRecordModel> discountList = (globalModel.invDiscountRecord!).isEmpty ? [] : (globalModel.invDiscountRecord!).where((e) => e.discountId != null && (e.discountTotal ?? 0) > 0).toList();
@@ -141,7 +144,7 @@ class EntryBondViewModel extends GetxController {
         }
         if ((element.invRecGift ?? 0) > 0) {
           String giftDse = "هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecGiftTotal!, allEntryBonds[globalModel.entryBondId!]?.invGiftAccount, giftDse));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecGiftTotal??0, allEntryBonds[globalModel.entryBondId!]?.invGiftAccount, giftDse));
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecGiftTotal!, 0, allEntryBonds[globalModel.entryBondId!]?.invSecGiftAccount, giftDse));
         }
         if (totalDiscount > 0 || totalAdded > 0) {
@@ -178,6 +181,14 @@ class EntryBondViewModel extends GetxController {
         }
       }
     });
+
+    if(globalModel.firstPay!=null&&globalModel.firstPay!>0)
+    {
+      if(globalModel.invPayType==Const.invPayTypeDue) {
+        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), globalModel.firstPay, 0, globalModel.invPrimaryAccount, "الدفعة الاولى مبيعات ${globalModel.invCode}"));
+        allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, globalModel.firstPay, globalModel.invSecondaryAccount, "الدفعة الاولى مبيعات ${globalModel.invCode}"));
+      }
+    }
 
     if (lastEntryBondOpened != null) {
       tempBondModel = GlobalModel.fromJson(allEntryBonds[lastEntryBondOpened]?.toFullJson());

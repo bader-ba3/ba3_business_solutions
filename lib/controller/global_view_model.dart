@@ -302,7 +302,7 @@ class GlobalViewModel extends GetxController {
   }
 
   addInvoiceToFirebase(GlobalModel globalModel) async {
-   /* try {
+    try {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.invoiceRecordCollection).get().then((value) {
         for (var element in value.docs) {
           element.reference.delete();
@@ -315,18 +315,18 @@ class GlobalViewModel extends GetxController {
 
     await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());
     // await HiveDataBase.globalModelBox.delete(globalModel.entryBondId);
-    await Future.delayed(const Duration(milliseconds: 100));*/
+    await Future.delayed(const Duration(milliseconds: 100));
     await Future.delayed(const Duration(milliseconds: 50));
     await HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
     print("end ${globalModel.entryBondId}  ${globalModel.invId}");
   }
 
   Future addBondToFirebase(GlobalModel globalModel) async {
-/*    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).get().then((value) async {
+    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).get().then((value) async {
       for (var element in value.docs) {
         await element.reference.delete();
       }
-    });*/
+    });
     globalModel.bondRecord?.forEach((element) async {
       await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).collection(Const.bondRecordCollection).doc(element.bondRecId).set(element.toJson());
     });
@@ -358,7 +358,6 @@ class GlobalViewModel extends GetxController {
       }
       if (!globalModel.invIsPending!) {
         if (filteredGlobalModel.invType != Const.invoiceTypeAdd && filteredGlobalModel.invType != Const.invoiceTypeChange) {
-
           entryBondViewModel.initGlobalInvoiceBond(filteredGlobalModel);
           if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
             sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);

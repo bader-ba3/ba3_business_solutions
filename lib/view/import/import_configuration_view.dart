@@ -195,7 +195,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       var parentId = "F" + element[setting["prodParentId"]];
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String chechIsExist = isGroup ? getProductIdFromName("F-" + element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName("F-" + element[setting["prodName"]]);
+      String? chechIsExist = isGroup ? getProductIdFromName("F-" + element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName("F-" + element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -302,7 +302,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       var parentId = element[setting["prodParentId"]];
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String chechIsExist = isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
+      String? chechIsExist = isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());

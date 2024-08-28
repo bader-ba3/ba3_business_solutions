@@ -23,7 +23,19 @@ class InvoiceRecordModel {
 
   InvoiceRecordModel.fromJson(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
-    invRecProduct = map['invRecProduct'];
+    invRecProduct =map['invRecProduct'];
+    invRecQuantity = int.tryParse(map['invRecQuantity'].toString());
+    invRecSubTotal = double.tryParse(map['invRecSubTotal'].toString());
+    invRecTotal = double.tryParse(map['invRecTotal'].toString());
+    invRecVat = double.tryParse((map['invRecVat']).toString());
+    invRecIsLocal = map['invRecIsLocal'];
+    invRecGift = int.tryParse(map['invRecGift'].toString());
+    invRecGiftTotal = map['invRecGiftTotal'];
+  }
+
+  InvoiceRecordModel.fromJsonPluto(Map<dynamic, dynamic> map) {
+    invRecId = map['invRecId'];
+    invRecProduct =getProductIdFromName(map['invRecProduct'])??map['invRecProduct'];
     invRecQuantity = int.tryParse(map['invRecQuantity'].toString());
     invRecSubTotal = double.tryParse(map['invRecSubTotal'].toString());
     invRecTotal = double.tryParse(map['invRecTotal'].toString());

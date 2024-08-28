@@ -54,10 +54,10 @@ class _UserManagementTypeState extends State<UserManagementType> {
               :Column(
                 children: [
                   item("إدارة المستخدمين",(){
-                    Get.to(() => AllUserView());
+                    Get.to(() => const AllUserView());
                   }),
                   item("إدارة الصلاحيات",(){
-                    Get.to(()=>RoleManagementView());
+                    Get.to(()=>const RoleManagementView());
                   }),
                 ],
               ),

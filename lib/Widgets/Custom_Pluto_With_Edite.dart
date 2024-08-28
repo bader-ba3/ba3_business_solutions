@@ -13,6 +13,7 @@ class CustomPlutoWithEdite extends StatelessWidget {
   final Function(PlutoGridOnRowSecondaryTapEvent) onRowSecondaryTap;
   @override
   Widget build(BuildContext context) {
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: PlutoGrid(

@@ -33,6 +33,7 @@ abstract class Const {
 
   static const EnvType env = EnvType.debug; //"debug" or "release"
   static const vatGCC = 0.05;
+  static const constHeightTextField = 35.0;
   static const vat0_01 = 0.01;
   static const rowCustomBondAmount = 'rowCustomBondAmount';
   static const rowBondId = 'id';

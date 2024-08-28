@@ -1,9 +1,11 @@
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
+import '../../widget/CustomWindowTitleBar.dart';
 
 
 class AddRoleView extends StatefulWidget {
@@ -32,63 +34,74 @@ TextEditingController nameController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     // var all=["bond","account","product"];
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: GetBuilder<UserManagementViewModel>(
-        builder: (controller) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(controller.roleModel?.roleName??"دور جديد"),
-              actions: [
-                ElevatedButton(onPressed: (){
-                  if(controller.roleModel?.roleName?.isNotEmpty??false) {
-                    controller.addRole();
-                  }
-                }, child: Text(controller.roleModel?.roleId==null?"إضافة":"تعديل"))
-              ],
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: ListView(
-                children: [
-                  const Text("الاسم",style: TextStyle(fontSize: 16),),
-                   Container(
-                     color: Colors.grey.shade200,
-                     child: TextFormField(
-                       controller: nameController,
-                      onChanged: (_){
-                        controller.roleModel?.roleName=_.toString();
-                      },
+    return Column(
+      children: [
+        const CustomWindowTitleBar(),
+
+        Expanded(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: GetBuilder<UserManagementViewModel>(
+              builder: (controller) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: Text(controller.roleModel?.roleName??"دور جديد"),
+                    actions: [
+
+                      AppButton(title: controller.roleModel?.roleId==null?"إضافة":"تعديل", onPressed: (){
+                        if(controller.roleModel?.roleName?.isNotEmpty??false) {
+                          controller.addRole();
+                        }
+                      },  iconData: controller.roleModel?.roleId==null?Icons.add:Icons.edit)
+                      ,
+                      const SizedBox(width: 10),
+                    ],
                   ),
-                   ),
-                  for(var i in Const.allRolePage)
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${getPageNameFromEnum(i.toString())}:",style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                  body: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: ListView(
+                      children: [
+                        const Text("الاسم",style: TextStyle(fontSize: 16),),
+                         Container(
+                           color: Colors.grey.shade200,
+                           child: TextFormField(
+                             controller: nameController,
+                            onChanged: (_){
+                              controller.roleModel?.roleName=_.toString();
+                            },
+                        ),
+                         ),
+                        for(var i in Const.allRolePage)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                checkBoxWidget(i,Const.roleUserRead,controller),
-                                checkBoxWidget(i,Const.roleUserWrite,controller),
-                                checkBoxWidget(i,Const.roleUserUpdate,controller),
-                                checkBoxWidget(i,Const.roleUserDelete,controller),
-                                checkBoxWidget(i,Const.roleUserAdmin,controller),
+                                Text("${getPageNameFromEnum(i.toString())}:",style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                                  child: Column(
+                                    children: [
+                                      checkBoxWidget(i,Const.roleUserRead,controller),
+                                      checkBoxWidget(i,Const.roleUserWrite,controller),
+                                      checkBoxWidget(i,Const.roleUserUpdate,controller),
+                                      checkBoxWidget(i,Const.roleUserDelete,controller),
+                                      checkBoxWidget(i,Const.roleUserAdmin,controller),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+                );
+              }
             ),
-          );
-        }
-      ),
+          ),
+        ),
+      ],
     );
   }
 

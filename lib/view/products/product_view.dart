@@ -23,7 +23,7 @@ class AllProduct extends StatelessWidget {
 
     return GetBuilder<ProductViewModel>(
         builder: (controller) {
-          return  CustomPlutoGrid(
+          return  CustomPlutoGridWithAppBar(
             title: "جميع المواد",
             onLoaded: (e){
             },

@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
 import '../../model/global_model.dart';
 import '../../utils/logger.dart';
 import '../widget/filtering_data_grid.dart';
+import 'New_Invoice_View.dart';
 import 'invoice_view.dart';
 
 class AllPendingInvoice extends StatelessWidget {
@@ -31,15 +34,23 @@ class AllPendingInvoice extends StatelessWidget {
                 child: Text("لا يوجد فواتيير غير مأكدة"),
               ),
             )
-          : CustomPlutoGrid(
+          : CustomPlutoGridWithAppBar(
               title: "جميع الفواتير",
               onLoaded: (e) {},
         type:Const.globalTypeInvoice,
               onSelected: (p0) {
-                Get.to(() => InvoiceView(
-                      billId: p0.row?.cells["الرقم التسلسلي"]?.value,
-                      patternId: "",
-                    ));
+
+                Get.to(
+                      () => NewInvoiceView(
+                    billId:  p0.row?.cells["الرقم التسلسلي"]?.value,
+                    patternId: p0.row?.cells["النمط"]?.value,
+                  ),
+                  binding: BindingsBuilder(() {
+                    Get.lazyPut(() => InvoicePlutoViewModel());
+                    Get.lazyPut(() => DiscountPlutoViewModel());
+                  }),
+                );
+
               },
               modelList: controller.invoiceModel.values
                   .where(

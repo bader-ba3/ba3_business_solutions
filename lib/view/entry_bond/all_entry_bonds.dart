@@ -19,7 +19,7 @@ class AllEntryBonds extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EntryBondViewModel>(
         builder: (controller) {
-          return  CustomPlutoGrid(
+          return  CustomPlutoGridWithAppBar(
             title: "جميع الفواتير",
            type:Const.globalTypeBond,
             onLoaded: (e){

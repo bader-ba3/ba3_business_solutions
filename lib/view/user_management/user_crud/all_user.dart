@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:ba3_business_solutions/view/user_management/user_crud/add_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,11 +48,11 @@ class _AllUserViewState extends State<AllUserView> {
                   appBar: AppBar(
                     title: const Text("إدارة المستخدمين"),
                     actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Get.to(() => const AddUserView());
-                          },
-                          child: const Text("إضافة مستخدم")),
+                      AppButton(title: "إضافة",   onPressed: () {
+                        Get.to(() => const AddUserView());
+                      }, iconData: Icons.add),
+                      const SizedBox(width: 10,)
+
                     ],
                   ),
                   body: Padding(

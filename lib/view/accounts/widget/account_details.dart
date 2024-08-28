@@ -40,7 +40,7 @@ class _AccountDetailsState extends State<AccountDetails> {
 
     return GetBuilder<AccountViewModel>(builder: (controller) {
       print( controller.accountList[widget.modelKey]!.accRecord.length);
-      return CustomPlutoGrid(
+      return CustomPlutoGridWithAppBar(
         title: "جميع الحركات",
         // type: Const.globalTypeInvoice,
         onLoaded: (e) {},

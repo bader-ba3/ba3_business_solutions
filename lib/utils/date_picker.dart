@@ -20,7 +20,6 @@ class _DatePickerState extends State<DatePicker> {
     return Container(
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all()),
       width: 150,
-      height: 40,
       child: InkWell(
           onTap: () {
             Get.defaultDialog(

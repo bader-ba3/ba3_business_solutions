@@ -36,21 +36,6 @@ class InvoiceOptionDialog extends StatelessWidget {
                     controller.update();
                   },
                 ),
-                // OptionTextWidget(
-                //   title: "المجموعة :  ",
-                //   controller: controller.groupForSearchController,
-                //   onSubmitted: (text) async {},
-                // ),
-                // OptionTextWidget(
-                //   title: "المستودع :  ",
-                //   controller: controller.storeForSearchController,
-                //   onSubmitted: (text) async {},
-                // ),
-                // OptionTextWidget(
-                //   title: "الزبون :  ",
-                //   controller: controller.clientForSearchController,
-                //   onSubmitted: (text) async {},
-                // ),
                 OptionTextWidget(
                   title: "من تاريخ :  ",
                   controller: controller.startDateForSearchController,

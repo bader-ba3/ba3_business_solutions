@@ -21,7 +21,7 @@ class OptionTextWidget extends StatelessWidget {
         children: [
           SizedBox(width: 100, child: Text(title)),
           SizedBox(
-            width: Get.width / 1.5,
+            width: Get.width / 2,
             child: customTextFieldWithIcon(controller, onSubmitted, onIconPressed: () {}),
           ),
         ],

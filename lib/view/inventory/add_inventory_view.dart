@@ -4,11 +4,12 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+
+import '../../Const/const.dart';
 
 class AddInventoryView extends StatefulWidget {
   final InventoryModel inventoryModel;
@@ -38,17 +39,17 @@ class _AddInventoryViewState extends State<AddInventoryView> {
           child: Scaffold(
             appBar: AppBar(),
             body: Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               width: double.infinity,
               child: Column(
                 children: [
-                  SizedBox(
+         /*         SizedBox(
                     width: double.infinity,
                     height: 75,
                     child: TextFormField(
                       autofocus: true,
                       controller: searchController,
-                      decoration: InputDecoration(hintText: "أدخل اسم المنتج للبحث"),
+                      decoration: const InputDecoration(hintText: "أدخل اسم المنتج للبحث"),
                       onFieldSubmitted: (_) {
                         prodList = controller.getProduct(_,inventoryModel.inventoryTargetedProductList);
                         controller.update();
@@ -56,16 +57,16 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                         isNotFound = prodList.isEmpty;
                       },
                     ),
-                  ),
-                  if (prodList.isNotEmpty)
+                  ),*/
+                  // if (prodList.isNotEmpty)
                     Expanded(
                       child: GetBuilder<ProductViewModel>(
                         builder: (productController) {
                           return ListView.builder(
-                              itemCount: prodList.length,
+                              itemCount: inventoryModel.inventoryTargetedProductList.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                ProductModel model = prodList[index];
+                                ProductModel model = getProductModelFromId(inventoryModel.inventoryTargetedProductList[index])!;
                                 int count = productController.getCountOfProduct(model);
                                 Map<String, int> storeMap = {};
                                 model.prodRecord?.forEach((element) {
@@ -162,8 +163,9 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                                             );
                                             if(a!=null&&a.isNotEmpty){
                                               inventoryModel.inventoryRecord[model.prodId!] = a.toString();
-                                              setState(() {});
-                                              HiveDataBase.inventoryModelBox.put("0",inventoryModel );
+                                              inventoryModel.inventoryRecord[model.prodId!] = a.toString();
+                                              // setState(() {});
+                                              FirebaseFirestore.instance.collection(Const.inventoryCollection).doc(inventoryModel.inventoryId).set(inventoryModel.toJson(),SetOptions(merge: true));
                                             }
                                           }, child: Text("كتابة الكمية")),
                                           SizedBox(
@@ -181,11 +183,11 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                         },
                       ),
                     )
-                  else
-                    Expanded(
-                        child: Center(
-                      child: Text(isNotFound ? "لم يتم العثور على المنتج" : "ابحث عن المنتج المطلوب "),
-                    )),
+                  // else
+                  //   Expanded(
+                  //       child: Center(
+                  //     child: Text(isNotFound ? "لم يتم العثور على المنتج" : "ابحث عن المنتج المطلوب "),
+                  //   )),
                 ],
               ),
             ),

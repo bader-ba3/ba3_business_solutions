@@ -60,7 +60,6 @@ void main() async {
           HardwareKeyboard.instance.isShiftPressed &&
           HardwareKeyboard.instance
               .isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
-        print("object");
         HiveDataBase.setIsFree(!HiveDataBase.getIsFree());
 
       return true;
@@ -90,6 +89,8 @@ class MyApp extends StatelessWidget {
       initialBinding: GetBinding(),
       debugShowCheckedModeBanner: false,
       scrollBehavior: AppScrollBehavior(),
+      locale: const Locale("ar"),
+
       title: "Ba3 Business",
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xffE6E6E6),

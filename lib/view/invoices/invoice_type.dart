@@ -2,8 +2,7 @@ import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.da
 import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
-import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
@@ -14,7 +13,6 @@ import '../../Const/const.dart';
 import '../../Dialogs/Invoice_Option_Dialog.dart';
 import '../../model/Pattern_model.dart';
 import 'all_pending_invoices.dart';
-import 'invoice_view.dart';
 
 class InvoiceType extends StatefulWidget {
   const InvoiceType({super.key});
@@ -44,9 +42,11 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 children: patternController.patternModel.entries.toList().map((MapEntry<String, PatternModel> i) {
                   return InkWell(
                     onTap: () {
-                      // Get.to(() => InvoiceView(billId: '1', patternId: i.key));
                       Get.to(
-                        () =>  NewInvoiceView(billId: 'inv1722956007913527',patternId:  i.key,),
+                        () => NewInvoiceView(
+                          billId: '1',
+                          patternId: i.key,
+                        ),
                         binding: BindingsBuilder(() {
                           Get.lazyPut(() => InvoicePlutoViewModel());
                           Get.lazyPut(() => DiscountPlutoViewModel());
@@ -110,7 +110,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
               child: InkWell(
                 onTap: () {
                   checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
-                    if (value) Get.to(() => AllPendingInvoice());
+                    if (value) Get.to(() => const AllPendingInvoice());
                   });
                 },
                 child: Container(
@@ -134,7 +134,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                   children: [
                     Text(
                       "الفواتيير المفتوحة" "(${screenController.openedScreen.length})",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
                       height: 15,
@@ -149,11 +149,22 @@ class _InvoiceTypeState extends State<InvoiceType> {
                             InkWell(
                               onTap: () {
                                 // print(i.toFullJson());
-                                Get.to(() => InvoiceView(
+                                Get.to(
+                                  () => NewInvoiceView(
+                                    billId: i.key,
+                                    patternId: i.value.patternId!,
+                                    recentScreen: true,
+                                  ),
+                                  binding: BindingsBuilder(() {
+                                    Get.lazyPut(() => InvoicePlutoViewModel());
+                                    Get.lazyPut(() => DiscountPlutoViewModel());
+                                  }),
+                                );
+                 /*               Get.to(() => InvoiceView(
                                       billId: i.key,
                                       patternId: i.value.patternId!,
                                       recentScreen: true,
-                                    ));
+                                    ));*/
                               },
                               child: Container(
                                 // width: 300,

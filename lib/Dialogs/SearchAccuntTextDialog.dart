@@ -35,7 +35,7 @@ Future<String?> searchAccountTextDialog(String accountText)async {
                     child: ClipRRect(
                       clipBehavior: Clip.hardEdge,
                       borderRadius: BorderRadius.circular(15),
-                      child: CustomPlutoGrid(
+                      child: CustomPlutoGridWithAppBar(
                         onSelected: (selected) {
                           accountTextController.text=selected.row?.cells["اسم الحساب"]!.value;
                           Get.back();

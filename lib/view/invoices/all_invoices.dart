@@ -5,7 +5,10 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Const/const.dart';
+import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
+import 'New_Invoice_View.dart';
 import 'invoice_view.dart';
 
 class AllInvoice extends StatelessWidget {
@@ -17,16 +20,26 @@ class AllInvoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<InvoiceViewModel>(builder: (controller) {
-      return CustomPlutoGrid(
+      return CustomPlutoGridWithAppBar(
         title: "جميع الفواتير",
         type: Const.globalTypeInvoice,
         onLoaded: (e) {},
         onSelected: (p0) {
           print(p0.row?.cells["الرقم التسلسلي"]?.value);
-          Get.to(() => InvoiceView(
+          Get.to(
+                () => NewInvoiceView(
+              billId:  p0.row?.cells["الرقم التسلسلي"]?.value,
+              patternId: p0.row?.cells["النمط"]?.value,
+            ),
+            binding: BindingsBuilder(() {
+              Get.lazyPut(() => InvoicePlutoViewModel());
+              Get.lazyPut(() => DiscountPlutoViewModel());
+            }),
+          );
+       /*   Get.to(() => InvoiceView(
                 billId: p0.row?.cells["الرقم التسلسلي"]?.value,
                 patternId: "",
-              ));
+              ));*/
         },
         modelList: controller.invoiceModel.values.where((element) {
 

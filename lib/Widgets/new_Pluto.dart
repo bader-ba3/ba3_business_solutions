@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-
 import '../view/widget/CustomWindowTitleBar.dart';
-import 'CustomPlutoGridStyleConfig.dart';
 import 'Pluto_View_Model.dart';
 
-class CustomPlutoGrid extends StatelessWidget {
-  const CustomPlutoGrid({super.key, required this.onLoaded, required this.onSelected, required this.modelList, this.onRowDoubleTap, required this.title, this.type});
+class CustomPlutoGridWithAppBar extends StatelessWidget {
+  const CustomPlutoGridWithAppBar({super.key, required this.onLoaded, required this.onSelected, required this.modelList, this.onRowDoubleTap, required this.title, this.type});
 
   final Function(PlutoGridOnLoadedEvent) onLoaded;
   final List<dynamic> modelList;

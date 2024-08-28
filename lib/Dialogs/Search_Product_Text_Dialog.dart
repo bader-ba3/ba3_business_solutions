@@ -35,7 +35,7 @@ Future<String?> searchProductTextDialog(String productText)async {
                           child: ClipRRect(
                             clipBehavior: Clip.hardEdge,
                             borderRadius: BorderRadius.circular(15),
-                            child: CustomPlutoGrid(
+                            child: CustomPlutoGridWithAppBar(
                               onSelected: (selected) {
                                 productTextController.text = getProductNameFromId(selected.row?.cells["الرقم التسلسلي"]!.value);
                                 Get.back();

@@ -23,7 +23,7 @@ class AllAccount extends StatelessWidget {
 
     return GetBuilder<AccountViewModel>(
         builder: (controller) {
-          return  CustomPlutoGrid(
+          return  CustomPlutoGridWithAppBar(
             title: "جميع الحسابات",
             onLoaded: (e){
             },

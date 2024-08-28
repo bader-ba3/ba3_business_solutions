@@ -658,12 +658,12 @@ print(productsForSearch.length);
                 addFolder(nameCon.text, prodParentId: prodParentId);
                 Get.back();
               },
-              child: Text("إضافة")),
+              child: const Text("إضافة")),
           ElevatedButton(
               onPressed: () {
                 Get.back();
               },
-              child: Text("إلغاء")),
+              child: const Text("إلغاء")),
         ]);
   }
 
@@ -698,11 +698,11 @@ String getProductIdFromFullName(name) {
   }
 }
 
-String getProductIdFromName(name) {
+String? getProductIdFromName(name) {
   if (name != null && name != " " && name != "") {
-    return Get.find<ProductViewModel>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodName == name || element?.prodCode == name)?.prodId ?? "";
+    return Get.find<ProductViewModel>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodName == name || element?.prodCode == name)?.prodId ;
   } else {
-    return "";
+    return null;
   }
 }
 

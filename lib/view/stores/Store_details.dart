@@ -129,7 +129,7 @@ class StoreDetails extends StatelessWidget {
     return GetBuilder<StoreViewModel>(
 
         builder: (controller) {
-          return  CustomPlutoGrid(
+          return  CustomPlutoGridWithAppBar(
             title: "جميع الحركات ${storeViewModel.storeMap[oldKey]!.stName}",
             onLoaded: (e){
             },

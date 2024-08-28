@@ -117,7 +117,7 @@ class UserManagementViewModel extends GetxController {
   }
 
   void initAllUser() {
-    FirebaseFirestore.instance.collection(Const.usersCollection).get().then((event) {
+    FirebaseFirestore.instance.collection(Const.usersCollection).snapshots().listen((event) {
       allUserList.clear();
       for (var element in event.docs) {
         allUserList[element.id] = UserModel.fromJson(element.data());

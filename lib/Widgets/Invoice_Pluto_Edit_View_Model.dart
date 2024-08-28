@@ -20,8 +20,21 @@ class InvoicePlutoViewModel extends GetxController {
     return columns;
   }
 
+  clearRowIndex(int rowIdx){
+    final rowToRemove = stateManager.rows[rowIdx];
+
+    stateManager.removeRows([rowToRemove]);
+    Get.back();
+    update();
+
+  }
+
   getRows(List<InvoiceRecordModel> modelList) {
+    stateManager.removeAllRows();
+    final newRows = stateManager.getNewRows(count: 30);
+
     if (modelList.isEmpty) {
+      stateManager.appendRows(newRows);
       return rows;
     } else {
       rows = modelList.map((model) {
@@ -36,7 +49,10 @@ class InvoicePlutoViewModel extends GetxController {
         return PlutoRow(cells: cells);
       }).toList();
     }
-    update();
+
+    stateManager.appendRows(rows);
+    stateManager.appendRows(newRows);
+    // print(rows.length);
     return rows;
   }
 
@@ -70,7 +86,25 @@ class InvoicePlutoViewModel extends GetxController {
     stateManager.setShowLoading(false);
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
       (value) {
-        update();
+        // update();
+      },
+    );
+    return total;
+  }
+
+  double computeWithVatTotal() {
+    double total = 0.0;
+
+    stateManager.setShowLoading(true);
+    for (var record in stateManager.rows) {
+      if (record.toJson()["invRecTotal"] != '') {
+        total += double.tryParse(record.toJson()["invRecTotal"].toString()) ?? 0;
+      }
+    }
+    stateManager.setShowLoading(false);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+      (value) {
+        // update();
       },
     );
     return total;
@@ -190,7 +224,9 @@ class InvoicePlutoViewModel extends GetxController {
       value,
       callOnChangedEvent: false,
       notify: true,
+      force: true,
     );
+    update();
   }
 
   double parseExpression(String expression) {
@@ -216,12 +252,10 @@ class InvoicePlutoViewModel extends GetxController {
   PopupMenuItem showContextMenuItem(int index, ProductModel productModel, text, method) {
     return PopupMenuItem(
       onTap: () {
-        stateManager.changeCellValue(
-          stateManager.rows[index].cells["invRecSubTotal"]!,
+        updateInvoiceValues(
           getPrice(prodName: productModel.prodName, type: method) / 1.05,
-          notify: true,
+          int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value)??0,
         );
-        update();
       },
       enabled: true,
       child: ListTile(
@@ -233,18 +267,44 @@ class InvoicePlutoViewModel extends GetxController {
     );
   }
 
+  List<InvoiceRecordModel> invoiceRecord = [];
+
   List<InvoiceRecordModel> handleSaveAll() {
     stateManager.setShowLoading(true);
     List<InvoiceRecordModel> invRecord = [];
 
-    invRecord = stateManager.rows
-        .where((element) => element.cells['invRecProduct']!.value != '')
-        .map(
-          (e) => InvoiceRecordModel.fromJson(e.toJson()),
-        )
-        .toList();
+    invRecord = stateManager.rows.where((element) {
+      return getProductIdFromName(element.cells['invRecProduct']!.value) != null;
+    }).map(
+      (e) {
+        // e.cells['invRecProduct']!.value=getProductIdFromName(e.cells['invRecProduct']!.value)??e.cells['invRecProduct']!.value;
+        return InvoiceRecordModel.fromJsonPluto(e.toJson());
+      },
+    ).toList();
 
+    for (var record in invRecord) {
+      if (getProductModelFromId(record.invRecProduct)?.prodIsLocal == true) {
+        invoiceRecord.add(record);
+      } else {
+        invoiceRecord.add(InvoiceRecordModel(
+          invRecGift: record.invRecGift,
+          invRecGiftTotal: record.invRecGiftTotal,
+          invRecId: record.invRecId,
+          invRecIsLocal: record.invRecIsLocal,
+          invRecProduct: record.invRecProduct,
+          invRecQuantity: record.invRecQuantity,
+          invRecSubTotal: record.invRecSubTotal! + record.invRecVat!,
+          invRecTotal: (record.invRecSubTotal! + record.invRecVat!) * (record.invRecQuantity??0),
+          invRecVat: 0,
+        ));
+      }
+    }
     stateManager.setShowLoading(false);
+    // print(invoiceRecord
+    //     .map(
+    //       (e) => e.toJson(),
+    //     )
+    //     .toList());
     return invRecord;
   }
 }
