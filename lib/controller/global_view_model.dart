@@ -4,9 +4,7 @@ import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/cheque_view_model.dart';
 import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
@@ -17,15 +15,10 @@ import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../Const/const.dart';
-import '../core/bindings.dart';
 import '../model/bond_record_model.dart';
 import '../model/cheque_rec_model.dart';
 import '../model/invoice_record_model.dart';
 import '../view/main/main_screen.dart';
-import '../view/user_management/account_management_view.dart';
-import 'cards_view_model.dart';
-import 'cost_center_view_model.dart';
-import 'database_view_model.dart';
 import 'import_view_model.dart';
 import 'invoice_view_model.dart';
 
@@ -53,7 +46,7 @@ class GlobalViewModel extends GetxController {
   Future<void> initFromLocal() async {
     allGlobalModel.clear();
     print("-" * 20);
-    print("YOU RUN LONG TIME OPERATION");
+    print("YOU RUN SHORT TIME OPERATION");
     print("-" * 20);
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
     // List<({String? bondCode ,String? bondType })> allbond = allGlobalModel.values.map((e) => (bondCode:e.bondCode,bondType:e.bondType),).toList();
@@ -110,7 +103,7 @@ class GlobalViewModel extends GetxController {
       allGlobalModel.forEach((key, value) async {
         count.value++;
         // print(count.toString());
-        await updateDataInAll(value);
+        await initUpdateDataInAll(value);
 
       });
 
@@ -352,32 +345,52 @@ class GlobalViewModel extends GetxController {
 
   updateDataInAll(GlobalModel globalModel) async {
     if (globalModel.globalType == Const.globalTypeInvoice) {
-      GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
-      if (filteredGlobalModel == null) {
-        return;
-      }
+      // GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
+      // if (filteredGlobalModel == null) {
+      //   return;
+      // }
       if (!globalModel.invIsPending!) {
-        if (filteredGlobalModel.invType != Const.invoiceTypeAdd && filteredGlobalModel.invType != Const.invoiceTypeChange) {
-          entryBondViewModel.initGlobalInvoiceBond(filteredGlobalModel);
+        if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
+          entryBondViewModel.initGlobalInvoiceBond(globalModel);
           if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
-            sellerViewModel.postRecord(userId: filteredGlobalModel.invSeller!, invId: filteredGlobalModel.invId, amount: filteredGlobalModel.invTotal!, date: filteredGlobalModel.invDate);
+            sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }
-      /*  if (filteredGlobalModel.invType != Const.invoiceTypeChange) {
-          accountViewModel.initGlobalAccount(filteredGlobalModel);
-          productController.initGlobalProduct(filteredGlobalModel);
-        }*/
-        // storeController.initGlobalStore(filteredGlobalModel);
+        if (globalModel.invType != Const.invoiceTypeChange) {
+          accountViewModel.initGlobalAccount(globalModel);
+          productController.initGlobalProduct(globalModel);
+        }
+        storeController.initGlobalStore(globalModel);
       }
-      invoiceViewModel.initGlobalInvoice(filteredGlobalModel);
-    }/* else if (globalModel.globalType == Const.globalTypeCheque) {
+      invoiceViewModel.initGlobalInvoice(globalModel);
+    } else if (globalModel.globalType == Const.globalTypeCheque) {
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
-    }*/
+    }
     if (globalModel.globalType == Const.globalTypeBond) {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
-      // accountViewModel.initGlobalAccount(globalModel);
+      accountViewModel.initGlobalAccount(globalModel);
+    }
+
+  }
+  initUpdateDataInAll(GlobalModel globalModel) async {
+    if (globalModel.globalType == Const.globalTypeInvoice) {
+
+      if (!globalModel.invIsPending!) {
+        if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
+          entryBondViewModel.initGlobalInvoiceBond(globalModel);
+          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
+            sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
+          }
+        }
+
+      }
+      invoiceViewModel.initGlobalInvoice(globalModel);
+    }
+    if (globalModel.globalType == Const.globalTypeBond) {
+      bondViewModel.initGlobalBond(globalModel);
+      entryBondViewModel.initGlobalBond(globalModel);
     }
 
   }

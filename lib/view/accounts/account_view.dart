@@ -1,25 +1,16 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
-import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../Const/const.dart';
 import '../../Widgets/new_Pluto.dart';
 import '../../utils/hive.dart';
-import '../../utils/logger.dart';
-import '../widget/filtering_data_grid.dart';
 
 class AllAccount extends StatelessWidget {
   const AllAccount({super.key});
 
   @override
   Widget build(BuildContext context) {
-    AccountViewModel accountViewModel = Get.find<AccountViewModel>();
-    RxMap<String, AccountModel> data = accountViewModel.accountList;
 
     return GetBuilder<AccountViewModel>(
         builder: (controller) {
@@ -37,7 +28,7 @@ class AllAccount extends StatelessWidget {
               // ));
             },
             modelList: controller.accountList.values.where((element) {
-              if( HiveDataBase.getIsFree()) {
+              if( HiveDataBase.getIsNunFree()) {
                 return  !(element.accName?.startsWith("F")??true);
               } else {
                 return true;

@@ -43,7 +43,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                   return InkWell(
                     onTap: () {
                       Get.to(
-                        () => NewInvoiceView(
+                        () => InvoiceView(
                           billId: '1',
                           patternId: i.key,
                         ),
@@ -150,7 +150,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                               onTap: () {
                                 // print(i.toFullJson());
                                 Get.to(
-                                  () => NewInvoiceView(
+                                  () => InvoiceView(
                                     billId: i.key,
                                     patternId: i.value.patternId!,
                                     recentScreen: true,

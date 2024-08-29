@@ -3,13 +3,13 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../../controller/sellers_view_model.dart';
 
 class AddInventoryView extends StatefulWidget {
   final InventoryModel inventoryModel;
@@ -66,7 +66,8 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                               itemCount: inventoryModel.inventoryTargetedProductList.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                ProductModel model = getProductModelFromId(inventoryModel.inventoryTargetedProductList[index])!;
+                                ProductModel model = getProductModelFromId(inventoryModel.inventoryTargetedProductList.keys.toList()[index])!;
+
                                 int count = productController.getCountOfProduct(model);
                                 Map<String, int> storeMap = {};
                                 model.prodRecord?.forEach((element) {
@@ -75,109 +76,134 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                                 });
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Container(
-                                      color: Colors.grey.withOpacity(0.25),
-                                      height: 75,
-                                      child: Row(
+                                  child: Column(
+                                    children: [
+                                      Row(
+
                                         children: [
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
-                                          Text("الاسم:"),
-                                          SizedBox(
+                                          const Text("المسؤول عن جرد المادة:"),
+                                          const SizedBox(
                                             width: 10,
                                           ),
                                           Expanded(
                                               child: Text(
-                                            model.prodName.toString(),
-                                            style: TextStyle(fontSize: 18),
-                                          )),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Text("الكمية الحقيقية:"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            count.toString(),
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Text("الكمية المدخلة في هذا الجرد:"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            (inventoryModel.inventoryRecord[model.prodId!]??"0").toString(),
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Get.defaultDialog(
-                                                    title: "رؤية التوزع في المستودعات",
-                                                    content: SizedBox(
-                                                      width: MediaQuery.sizeOf(context).width / 4,
-                                                      height: MediaQuery.sizeOf(context).width / 4,
-                                                      child: ListView.builder(
-                                                        itemCount: storeMap.length,
-                                                        itemBuilder: (context, index) {
-                                                          MapEntry model = storeMap.entries.toList()[index];
-                                                          return Row(
-                                                            children: [
-                                                              Text(model.value.toString()),
-                                                              Spacer(),
-                                                              Text(getStoreNameFromId(model.key)),
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
-                                                    ));
-                                              },
-                                              child: Text("رؤية التوزع في المستودعات")),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          ElevatedButton(onPressed: () async {
-                                            TextEditingController textController = TextEditingController();
-                                            String? a = await Get.defaultDialog(
-                                              title: "ادخل العدد",
-                                                content: Column(
-                                                  children: [
-                                                    TextFormField(
-                                                      keyboardType: TextInputType.number,
-                                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                                      controller: textController,
-                                                    ),
-                                                    SizedBox(height: 10,),
-                                                    ElevatedButton(onPressed: (){
-                                                      return Get.back(result: textController.text);
-                                                    }, child: Text("موافق"))
-                                                  ],
-                                                )
-                                            );
-                                            if(a!=null&&a.isNotEmpty){
-                                              inventoryModel.inventoryRecord[model.prodId!] = a.toString();
-                                              inventoryModel.inventoryRecord[model.prodId!] = a.toString();
-                                              // setState(() {});
-                                              FirebaseFirestore.instance.collection(Const.inventoryCollection).doc(inventoryModel.inventoryId).set(inventoryModel.toJson(),SetOptions(merge: true));
-                                            }
-                                          }, child: Text("كتابة الكمية")),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          if(inventoryModel.inventoryRecord[model.prodId!]!=null)
-                                          Icon(Icons.check)else SizedBox(width: 25,),
-                                          SizedBox(
+                                                getSellerNameFromId(inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
+                                                style: const TextStyle(fontSize: 18),
+                                              )),
+                                          const SizedBox(
                                             width: 20,
                                           ),
                                         ],
-                                      )),
+                                      ),
+
+                                      Container(
+                                          color: Colors.grey.withOpacity(0.25),
+                                          height: 75,
+                                          child: Row(
+                                            children: [
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              const Text("الاسم:"),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                  child: Text(
+                                                model.prodName.toString(),
+                                                style: const TextStyle(fontSize: 18),
+                                              )),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              const Text("الكمية الحقيقية:"),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                count.toString(),
+                                                style: const TextStyle(fontSize: 18),
+                                              ),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              const Text("الكمية المدخلة في هذا الجرد:"),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                (inventoryModel.inventoryRecord[model.prodId!]??"0").toString(),
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Get.defaultDialog(
+                                                        title: "رؤية التوزع في المستودعات",
+                                                        content: SizedBox(
+                                                          width: MediaQuery.sizeOf(context).width / 4,
+                                                          height: MediaQuery.sizeOf(context).width / 4,
+                                                          child: ListView.builder(
+                                                            itemCount: storeMap.length,
+                                                            itemBuilder: (context, index) {
+                                                              MapEntry model = storeMap.entries.toList()[index];
+                                                              return Row(
+                                                                children: [
+                                                                  Text(model.value.toString()),
+                                                                  Spacer(),
+                                                                  Text(getStoreNameFromId(model.key)),
+                                                                ],
+                                                              );
+                                                            },
+                                                          ),
+                                                        ));
+                                                  },
+                                                  child: Text("رؤية التوزع في المستودعات")),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              ElevatedButton(onPressed: () async {
+                                                TextEditingController textController = TextEditingController();
+                                                String? a = await Get.defaultDialog(
+                                                  title: "ادخل العدد",
+                                                    content: Column(
+                                                      children: [
+                                                        TextFormField(
+                                                          keyboardType: TextInputType.number,
+                                                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                                          controller: textController,
+                                                        ),
+                                                        SizedBox(height: 10,),
+                                                        ElevatedButton(onPressed: (){
+                                                          return Get.back(result: textController.text);
+                                                        }, child: Text("موافق"))
+                                                      ],
+                                                    )
+                                                );
+                                                if(a!=null&&a.isNotEmpty){
+                                                  inventoryModel.inventoryRecord[model.prodId!] = a.toString();
+                                                  inventoryModel.inventoryRecord[model.prodId!] = a.toString();
+                                                  // setState(() {});
+                                                  FirebaseFirestore.instance.collection(Const.inventoryCollection).doc(inventoryModel.inventoryId).set(inventoryModel.toJson(),SetOptions(merge: true));
+                                                }
+                                              }, child: Text("كتابة الكمية")),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              if(inventoryModel.inventoryRecord[model.prodId!]!=null)
+                                              Icon(Icons.check)else SizedBox(width: 25,),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                            ],
+                                          )),
+                                    ],
+                                  ),
                                 );
                               });
                         },

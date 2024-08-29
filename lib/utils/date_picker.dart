@@ -16,7 +16,7 @@ class DatePicker extends StatefulWidget {
 class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
-    DateTime? _date;
+    DateTime? date;
     return Container(
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all()),
       width: 150,
@@ -39,15 +39,15 @@ class _DatePickerState extends State<DatePicker> {
                     navigationMode: DateRangePickerNavigationMode.scroll,
                     onSelectionChanged: (dateRangePickerSelectionChangedArgs) {
                       DateTime _ = dateRangePickerSelectionChangedArgs.value as DateTime;
-                      _date = _;
+                      date = _;
                     },
                   ),
                 ),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
-                        if (_date != null) {
-                          widget.onSubmit(_date!);
+                        if (date != null) {
+                          widget.onSubmit(date!);
                         }
                         Get.back();
                         setState(() {});
@@ -66,9 +66,9 @@ class _DatePickerState extends State<DatePicker> {
               children: [
                 Text(widget.initDate != null
                     ? widget.initDate.toString().split(" ").first
-                    : _date == null
+                    : date == null
                         ? "اختر يوم"
-                        : _date.toString().split(" ").first),
+                        : date.toString().split(" ").first),
                 Spacer(),
                 Icon(Icons.date_range)
               ],

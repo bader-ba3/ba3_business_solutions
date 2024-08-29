@@ -12,7 +12,6 @@ Future<String?> searchProductTextDialog(String productText)async {
 
   List<ProductModel> productsForSearch;
   productsForSearch=Get.find<ProductViewModel>().searchOfProductByText(productTextController.text);
-  print(productsForSearch.length);
   if(productsForSearch.length==1) {
     return productsForSearch.first.prodName!;
   }else if(productsForSearch.isEmpty) {

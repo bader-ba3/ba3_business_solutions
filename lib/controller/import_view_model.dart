@@ -524,7 +524,7 @@ class ImportViewModel extends GetxController {
     var indexOfTotalAdded;
     var indexOfFirstPay;
     //var indexOfTotalVat;
-    var indexOfTotalWithoutVat;
+    // int indexOfTotalWithoutVat;
     var indexOfSubTotal;
     var indexOfQuantity;
     var indexOfProductName;
@@ -566,7 +566,7 @@ class ImportViewModel extends GetxController {
         indexOfTotalDiscount = row.indexOf("مجموع الحسم");
         indexOfTotalAdded = row.indexOf("مجموع الإضافات");
         indexOfFirstPay = row.indexOf("الدفعة الأولى");
-        indexOfTotalWithoutVat = row.indexOf("القيمة");
+        // indexOfTotalWithoutVat = row.indexOf("القيمة");
         indexOfSubTotal = row.indexOf("السعر");
         indexOfQuantity = row.indexOf("الكمية");
         indexOfProductName = row.indexOf("اسم المادة");
@@ -591,7 +591,7 @@ class ImportViewModel extends GetxController {
         }
         var seller = '';
         if (element[indexOfSeller] != "") {
-          seller = getSellerIdFromText(element[indexOfSeller]);
+          seller = getSellerIdFromText(element[indexOfSeller])??'';
           if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
             notFoundSeller.add(element[indexOfSeller]);
           }
@@ -826,7 +826,7 @@ class ImportViewModel extends GetxController {
           var indexOfTotalDiscount;
           var indexOfTotalAdded;
 
-          var indexOfTotalWithoutVat;
+          // int indexOfTotalWithoutVat;
           var indexOfFirstPay;
           var indexOfSubTotal;
           var indexOfQuantity;
@@ -870,7 +870,7 @@ class ImportViewModel extends GetxController {
               indexOfInvCode = row.indexOf("الفاتورة");
               indexOfTotalWithVat = row.indexOf("صافي القيمة بعد الضريبة");
               //indexOfTotalVat = row.indexOf("القيمة المضافة");
-              indexOfTotalWithoutVat = row.indexOf("القيمة");
+              // indexOfTotalWithoutVat = row.indexOf("القيمة");
               indexOfSubTotal = row.indexOf("السعر");
               indexOfQuantity = row.indexOf("الكمية");
               indexOfProductName = row.indexOf("اسم المادة");
@@ -900,7 +900,7 @@ class ImportViewModel extends GetxController {
               }
               var seller = '';
               if (element[indexOfSeller] != "") {
-                seller = getSellerIdFromText(element[indexOfSeller]);
+                seller = getSellerIdFromText(element[indexOfSeller])??'';
                 if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
                   notFoundSeller.add(element[indexOfSeller]);
                 }

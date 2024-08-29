@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/account_record_model.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 
 import '../controller/account_view_model.dart';
 
@@ -10,9 +10,9 @@ class AccountModel {
   List accChild = [];
   List accAggregateList = [];
   List<AccountRecordModel> accRecord = [];
-  double? finalBalance ;
+  double? finalBalance ,fFinalBalance;
 
-  AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode, this.accParentId, this.accIsParent, this.finalBalance});
+  AccountModel({this.accId, this.accName, this.accComment, this.accVat, this.accType, this.accCode, this.accParentId, this.accIsParent, this.finalBalance,this.fFinalBalance});
 
   AccountModel.fromJson(Map<dynamic, dynamic> map) {
     accId = map['accId'];
@@ -21,18 +21,20 @@ class AccountModel {
     accType = map['accType'];
     accCode = map['accCode'];
     accVat = map['accVat'];
+
     ///this is new
     finalBalance = map['finalBalance'];
+    fFinalBalance = map['fFinalBalance'];
     accParentId = map['accParentId'];
     accIsParent = map['accIsParent'];
     if (map['accRecord'] != null && map['accRecord'] != []) {
       map['accRecord'].forEach((element) {
-            if (element.runtimeType == AccountRecordModel) {
-              accRecord.add(element);
-            } else {
-              accRecord.add(AccountRecordModel.fromJson(element));
-            }
-          }) ??
+        if (element.runtimeType == AccountRecordModel) {
+          accRecord.add(element);
+        } else {
+          accRecord.add(AccountRecordModel.fromJson(element));
+        }
+      }) ??
           [];
     } else {
       accRecord = [];
@@ -110,6 +112,7 @@ class AccountModel {
       'accChild': accChild,
       'accAggregateList': accAggregateList,
       'finalBalance': finalBalance,
+      'fFinalBalance': fFinalBalance,
     };
   }
 
@@ -121,6 +124,8 @@ class AccountModel {
       'accType': accType,
       'accCode': accCode,
       'accVat': accVat,
+      'fFinalBalance': fFinalBalance,
+
       'accParentId': accParentId,
       'accIsParent': accIsParent,
       'accChild': accChild,
@@ -140,7 +145,7 @@ class AccountModel {
       'حساب الاب': getAccountNameFromId(accParentId),
       'الوصف': accComment,
       // 'الرصيد': getAccountBalanceFromId(accId),
-      'الرصيد':finalBalance,
+      'الرصيد':HiveDataBase.getIsNunFree()? finalBalance:fFinalBalance,
     };
   }
 }

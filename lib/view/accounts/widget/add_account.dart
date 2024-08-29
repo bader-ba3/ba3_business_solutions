@@ -421,7 +421,7 @@ class _AddAccountState extends State<AddAccount> {
       Get.snackbar("خطأ", "يرجى اختيار نوع الضريبة");
     }else if(codeController.text.isEmpty){
       Get.snackbar("خطأ", "يرجى كتابة رمز");
-    }else if(!accIsRoot &&accParentId==null){
+    }else if(!accIsRoot &&accParentId.text==""){
       Get.snackbar("خطأ", "يرجى إضافة حساب اب");
     }else{
       return true;

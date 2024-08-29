@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:ba3_business_solutions/adapter/account_record_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/global_model_adapter.dart';
@@ -10,9 +8,7 @@ import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
-import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../adapter/account_model_adapter.dart';
 import '../adapter/inventory_model_adapter.dart';
@@ -79,7 +75,7 @@ class HiveDataBase {
   static String getMyReadFlag(){
     return constBox.get("myReadFlag")!;
   }
-  static bool getIsFree(){
+  static bool getIsNunFree(){
     return  isFree.get("isFree")??false;
   }
 

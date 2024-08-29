@@ -1,21 +1,14 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
 import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
-import '../../model/global_model.dart';
-import '../../utils/logger.dart';
-import '../widget/filtering_data_grid.dart';
 import 'New_Invoice_View.dart';
-import 'invoice_view.dart';
 
 class AllPendingInvoice extends StatelessWidget {
   const AllPendingInvoice({super.key});
@@ -41,7 +34,7 @@ class AllPendingInvoice extends StatelessWidget {
               onSelected: (p0) {
 
                 Get.to(
-                      () => NewInvoiceView(
+                      () => InvoiceView(
                     billId:  p0.row?.cells["الرقم التسلسلي"]?.value,
                     patternId: p0.row?.cells["النمط"]?.value,
                   ),

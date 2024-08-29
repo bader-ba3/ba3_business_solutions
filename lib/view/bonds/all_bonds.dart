@@ -41,7 +41,7 @@ class AllBonds extends StatelessWidget {
           }
         },
         modelList: controller.allBondsItem.values.where((element) {
-          if( HiveDataBase.getIsFree()) {
+          if( HiveDataBase.getIsNunFree()) {
             return  !(element.bondCode?.startsWith("F")??true);
           } else {
             return true;

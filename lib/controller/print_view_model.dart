@@ -32,18 +32,14 @@ class PrintViewModel extends GetxController{
   }
 
  // String _info = "";
-  String _msj = '';
+ //  String _msj = '';
   bool connected = false;
   List<BluetoothInfo> items = [];
 
-  bool _progress = false;
-  String _msjprogress = "";
 
     
   Future<List<BluetoothInfo>> getBluetoots() async {
     // setState(() {
-      _progress = true;
-      _msjprogress = "Wait";
       items = [];
     // });
     final List<BluetoothInfo> listResult = await PrintBluetoothThermal.pairedBluetooths;
@@ -54,13 +50,12 @@ class PrintViewModel extends GetxController{
     });*/
 
     // setState(() {
-      _progress = false;
     // });
 
     if (listResult.length == 0) {
-      _msj = "There are no bluetoohs linked, go to settings and link the printer";
+      // _msj = "There are no bluetoohs linked, go to settings and link the printer";
     } else {
-      _msj = "Touch an item in the list to connect";
+      // _msj = "Touch an item in the list to connect";
     }
 
     // setState(() {
@@ -71,15 +66,12 @@ class PrintViewModel extends GetxController{
 
   Future<void> connect(String mac) async {
     // setState(() {
-      _progress = true;
-      _msjprogress = "Connecting...";
       connected = false;
     // });
     final bool result = await PrintBluetoothThermal.connect(macPrinterAddress: mac);
     print("state conected $result");
     if (result) connected = true;
     // setState(() {
-      _progress = false;
     // });
   }
 

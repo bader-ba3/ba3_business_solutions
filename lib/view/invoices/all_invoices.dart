@@ -1,7 +1,5 @@
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Const/const.dart';
@@ -9,7 +7,6 @@ import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
 import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
 import 'New_Invoice_View.dart';
-import 'invoice_view.dart';
 
 class AllInvoice extends StatelessWidget {
   const AllInvoice({super.key, required this.listDate, required this.productName});
@@ -27,7 +24,7 @@ class AllInvoice extends StatelessWidget {
         onSelected: (p0) {
           print(p0.row?.cells["الرقم التسلسلي"]?.value);
           Get.to(
-                () => NewInvoiceView(
+                () => InvoiceView(
               billId:  p0.row?.cells["الرقم التسلسلي"]?.value,
               patternId: p0.row?.cells["النمط"]?.value,
             ),
@@ -43,7 +40,7 @@ class AllInvoice extends StatelessWidget {
         },
         modelList: controller.invoiceModel.values.where((element) {
 
-         if( HiveDataBase.getIsFree()) {
+         if( HiveDataBase.getIsNunFree()) {
          return  !(element.invCode?.startsWith("F")??true);
          } else {
            return true;

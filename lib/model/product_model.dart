@@ -1,7 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 import 'package:ba3_business_solutions/model/product_record_model.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
 
 class ProductModel {
   String? prodId, prodName, prodCode, prodFullCode, prodCustomerPrice, prodWholePrice, prodRetailPrice, prodCostPrice, prodMinPrice, prodAverageBuyPrice,prodAllQuantity, prodBarcode, prodGroupCode, prodType, prodParentId;

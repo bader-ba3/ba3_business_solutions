@@ -1,6 +1,4 @@
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
-import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
 import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
 import 'package:ba3_business_solutions/view/sellers/seller_targets.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,10 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
+import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../utils/date_range_picker.dart';
+import '../invoices/New_Invoice_View.dart';
 import '../widget/CustomWindowTitleBar.dart';
 
 class AllSellerInvoice extends StatelessWidget {
@@ -95,7 +96,10 @@ class AllSellerInvoice extends StatelessWidget {
                                   var rowData = controller.recordViewDataSource[rowIndex];
                                   String model = rowData.getCells()[0].value;
                                   print('Tapped Row Data: $model');
-                                  Get.to(()=>InvoiceView(billId: model, patternId: '',));
+                                  Get.to(()=>InvoiceView(billId: model, patternId: '',)  ,  binding: BindingsBuilder(() {
+                                    Get.lazyPut(() => InvoicePlutoViewModel());
+                                    Get.lazyPut(() => DiscountPlutoViewModel());
+                                  }),);
                                   // logger(
                                   //     newData: ChequeModel(
                                   //       cheqId: model,

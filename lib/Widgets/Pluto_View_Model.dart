@@ -2,13 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../Const/const.dart';
 
 class PlutoViewModel extends GetxController {
-  // List<PlutoColumn> columns = [];
-  // List<PlutoRow> rows = [];
 
-  // String? idName;
   GlobalKey plutoKey = GlobalKey();
 
   List<PlutoColumn> getColumns(List<dynamic> modelList,{String? type}) {

@@ -1,8 +1,6 @@
-import 'package:ba3_business_solutions/controller/isolate_view_model.dart';
 
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 import '../Const/const.dart';
@@ -10,7 +8,6 @@ import '../controller/account_view_model.dart';
 import '../controller/pattern_model_view.dart';
 import '../controller/sellers_view_model.dart';
 import '../controller/store_view_model.dart';
-import '../utils/hive.dart';
 import 'bond_record_model.dart';
 import 'cheque_rec_model.dart';
 import 'invoice_record_model.dart';
@@ -473,7 +470,7 @@ class GlobalModel {
         "الرمز": invCode??'',
         "النمط": getPatModelFromPatternId(patternId).patName??'',//Isolate
         "التاريخ": invDate??'',
-        "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? "")??'',
+        "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? ""),
         'المجموع الكلي': (invTotal ?? 0).toStringAsFixed(2),
         'المستودع': getStoreNameFromId(invStorehouse),//Isolate
         'الحساب الاول': getAccountNameFromId(invPrimaryAccount),//Isolate

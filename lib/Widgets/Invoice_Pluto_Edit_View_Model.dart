@@ -68,9 +68,10 @@ class InvoicePlutoViewModel extends GetxController {
 
     stateManager.setShowLoading(true);
     for (var record in stateManager.rows) {
-      if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != '') {
+      if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != ''&&(record.toJson()["invRecGift"] == ''||(int.tryParse(record.toJson()["invRecGift"]??"0")??0) >= 0)) {
         invRecQuantity = int.tryParse(record.toJson()["invRecQuantity"].toString()) ?? 0;
         subtotals = double.tryParse(record.toJson()["invRecSubTotal"].toString()) ?? 0;
+
         total += invRecQuantity * (subtotals);
       }
     }
@@ -89,6 +90,22 @@ class InvoicePlutoViewModel extends GetxController {
         // update();
       },
     );
+    return total;
+  }
+
+  int computeGiftsTotal() {
+
+    int total = 0;
+
+    stateManager.setShowLoading(true);
+    for (var record in stateManager.rows) {
+      if (record.toJson()["invRecGift"] != null&&record.toJson()["invRecGift"] != '') {
+
+        total =int.tryParse(record.toJson()["invRecQuantity"].toString()) ?? 0;
+      }
+    }
+    stateManager.setShowLoading(false);
+
     return total;
   }
 
@@ -284,11 +301,12 @@ class InvoicePlutoViewModel extends GetxController {
 
     for (var record in invRecord) {
       if (getProductModelFromId(record.invRecProduct)?.prodIsLocal == true) {
+        record.invRecGiftTotal=(record.invRecGift??0)*(double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice??"0")??0);
         invoiceRecord.add(record);
       } else {
         invoiceRecord.add(InvoiceRecordModel(
           invRecGift: record.invRecGift,
-          invRecGiftTotal: record.invRecGiftTotal,
+          invRecGiftTotal: (record.invRecGift??0)*(double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice??"0")??0),
           invRecId: record.invRecId,
           invRecIsLocal: record.invRecIsLocal,
           invRecProduct: record.invRecProduct,

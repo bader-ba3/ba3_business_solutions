@@ -1,19 +1,12 @@
 import 'dart:ui';
-
-import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/core/bindings.dart';
-
 import 'package:ba3_business_solutions/utils/hive.dart';
-import 'package:ba3_business_solutions/view/invoices/all_invoices.dart';
-
 import 'package:ba3_business_solutions/view/user_management/account_management_view.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import 'Const/const.dart';
 import 'firebase_options.dart';
 
@@ -60,20 +53,17 @@ void main() async {
           HardwareKeyboard.instance.isShiftPressed &&
           HardwareKeyboard.instance
               .isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
-        HiveDataBase.setIsFree(!HiveDataBase.getIsFree());
+        HiveDataBase.setIsFree(!HiveDataBase.getIsNunFree());
 
       return true;
       }
       return false;
     },
   );
- 
-
   // FirebaseFirestore.instance.collection("2024").doc("bon1720282515909594").delete();
   //  HiveDataBase.globalModelBox.delete("bon1720282515909594");
   // FirebaseFirestore.instance.collection("2024").count().get().then((value) => print(value.count),);
   // HiveDataBase.globalModelBox.deleteFromDisk();
-
   runApp(const MyApp());
 
 
@@ -90,7 +80,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       scrollBehavior: AppScrollBehavior(),
       locale: const Locale("ar"),
-
       title: "Ba3 Business",
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xffE6E6E6),
@@ -103,7 +92,6 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme:  ElevatedButtonThemeData(
             style: ButtonStyle(
               foregroundColor:  const WidgetStatePropertyAll(Colors.white),
-          // textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white,)),
           backgroundColor: WidgetStatePropertyAll(Colors.blue.shade700),
           elevation: const WidgetStatePropertyAll(5),
         )),

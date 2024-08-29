@@ -45,7 +45,7 @@ abstract class Const {
   static const minMobileTarget = 1000;
   static const minOtherTarget = 1000;
   ////////////--------------------------------------------------
-  static String changesCollection = dataName+"-"+'Changes';
+  static String changesCollection = "$dataName-Changes";
   static const recordCollection = 'Record';
   static String bondsCollection = 'Bonds';
   static String accountsCollection = 'Accounts';

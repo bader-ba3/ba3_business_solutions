@@ -1,6 +1,4 @@
-import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,10 +68,10 @@ class TargetViewModel extends GetxController {
           if (oneRecord.invRecGift == 0 || oneRecord.invRecGift == null && oneRecord.invRecQuantity != null) {
             if (oneRecord.invRecTotal! / oneRecord.invRecQuantity! <= 1000) {
               productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
-              accessoryList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
+              accessoryList.add(oneRecord.invRecTotal!);
             } else {
               productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
-              mobileList.add(oneRecord.invRecTotal! * oneRecord.invRecQuantity!);
+              mobileList.add(oneRecord.invRecTotal!);
             }
           }
         }

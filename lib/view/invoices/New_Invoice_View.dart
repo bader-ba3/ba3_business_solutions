@@ -4,11 +4,9 @@ import 'package:ba3_business_solutions/Widgets/Custom_Pluto_With_Edite.dart';
 import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-
 import '../../Const/const.dart';
 import '../../Dialogs/Widgets/Option_Text_Widget.dart';
 import '../../Services/Get_Date_From_String.dart';
@@ -28,7 +26,6 @@ import '../../model/Pattern_model.dart';
 import '../../model/account_model.dart';
 import '../../model/global_model.dart';
 import '../../model/invoice_record_model.dart';
-import '../../model/product_model.dart';
 import '../../model/store_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
 import '../../utils/date_picker.dart';
@@ -40,18 +37,18 @@ import '../stores/add_store.dart';
 import '../widget/CustomWindowTitleBar.dart';
 import 'Controller/Screen_View_Model.dart';
 
-class NewInvoiceView extends StatefulWidget {
-  NewInvoiceView({Key? key, required this.billId, required this.patternId, this.recentScreen = false}) : super(key: key);
+class InvoiceView extends StatefulWidget {
+  InvoiceView({Key? key, required this.billId, required this.patternId, this.recentScreen = false}) : super(key: key);
   final String billId;
   final String patternId;
   late final PatternModel? patternModel;
   final bool recentScreen;
 
   @override
-  State<NewInvoiceView> createState() => _NewInvoiceViewState();
+  State<InvoiceView> createState() => _InvoiceViewState();
 }
 
-class _NewInvoiceViewState extends State<NewInvoiceView> {
+class _InvoiceViewState extends State<InvoiceView> {
   final invoiceController = Get.find<InvoiceViewModel>();
   final globalController = Get.find<GlobalViewModel>();
   final accountController = Get.find<AccountViewModel>();
@@ -61,7 +58,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
 
   List<String> codeInvList = [];
 
-  String? selectedPayType;
+
   String typeBill = Const.invoiceTypeSales;
   bool isEditDate = false;
 
@@ -74,16 +71,15 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
       plutoEditViewModel.getRows(invoiceController.initModel.invRecords?.toList() ?? []);
       invoiceController.buildInvInitRecent(screenViewModel.openedScreen[widget.billId]!);
 
-      selectedPayType = invoiceController.initModel.invPayType;
+
     } else if (widget.billId != "1") {
       widget.patternModel = invoiceController.patternController.patternModel[invoiceController.invoiceModel[widget.billId]!.patternId!];
       invoiceController.buildInvInit(true, widget.billId);
       plutoEditViewModel.getRows(invoiceController.invoiceModel[widget.billId]?.invRecords?.toList() ?? []);
-      selectedPayType = invoiceController.initModel.invPayType;
     } else {
       widget.patternModel = invoiceController.patternController.patternModel[widget.patternId];
       invoiceController.getInit(widget.patternModel!.patId!);
-      selectedPayType = Const.invPayTypeDue;
+      invoiceController. selectedPayType = Const.invPayTypeDue;
       invoiceController.invReturnCodeController.text='';
       invoiceController. invReturnDateController.text='';
       // globalController.dateController = DateTime.now().toString().split(" ")[0];
@@ -154,7 +150,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                 ),
                 title: Text(widget.billId == "1" ? "فاتورة ${widget.patternModel?.patName ?? ""}" : "تفاصيل فاتورة " + (widget.patternModel?.patName ?? "")),
                 actions: [
-                  IconButton(
+           /*       IconButton(
                       onPressed: () async {
                         var a = await Get.to(() => const QRScannerView()) as List<ProductModel>?;
                         if (a == null) {
@@ -168,7 +164,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                       )),
                   const SizedBox(
                     width: 20,
-                  ),
+                  ),*/
                   SizedBox(
                     height: Const.constHeightTextField,
                     child: Row(
@@ -192,10 +188,13 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                                     child: DropdownButton(
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       underline: const SizedBox(),
-                                      value: selectedPayType,
+                                      value: invoiceController. selectedPayType,
                                       isExpanded: true,
                                       onChanged: (_) {
-                                        selectedPayType = _!;
+                                        invoiceController. selectedPayType = _!;
+                                        if( invoiceController.selectedPayType==Const.invPayTypeCash) {
+                                          invoiceController.firstPayController.clear();
+                                        }
                                         setState(() {});
                                       },
                                       items: [Const.invPayTypeDue, Const.invPayTypeCash]
@@ -246,6 +245,9 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                               IconButton(
                                   onPressed: () {
                                     invoiceController.invNextOrPrev(widget.patternModel!.patId!, invoiceController.invCodeController.text, true);
+                                    setState(() {
+
+                                    });
                                   },
                                   icon: const Icon(Icons.keyboard_double_arrow_right)),
                               // const Text("Invoice Code : "),
@@ -279,9 +281,10 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                 ],
               ),
               body: GetBuilder<InvoiceViewModel>(builder: (controller) {
-                return ListView(
-                  physics: const ClampingScrollPhysics(),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     if (widget.patternModel!.patType != Const.invoiceTypeChange)
                       Column(
                         children: [
@@ -309,7 +312,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                                             child: customTextFieldWithIcon(invoiceController.secondaryAccountController, (text) async {
                                               invoiceController.secondaryAccountController.text = await getAccountComplete(invoiceController.secondaryAccountController.text);
                                               // invoiceController.getAccountComplete();
-                                              invoiceController.changeSecAccount();
+                                              // invoiceController.changeSecAccount();
                                             }, onIconPressed: () {
                                               AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
                                               if (_ != null) {
@@ -338,7 +341,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                                           child: customTextFieldWithIcon(invoiceController.primaryAccountController, (text) async {
                                             invoiceController.primaryAccountController.text = await getAccountComplete(invoiceController.primaryAccountController.text);
                                             // invoiceController.getAccountComplete();
-                                            invoiceController.changeSecAccount();
+                                            // invoiceController.changeSecAccount();
                                           }, onIconPressed: () {
                                             AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.primaryAccountController.text);
                                             if (_ != null) {
@@ -626,263 +629,264 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      height: 300,
-                      child: GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
-                        return CustomPlutoWithEdite(
-                          controller: controller,
-                          shortCut: customPlutoShortcut(const InvoiceEnterPlutoGridAction()),
-                          onRowSecondaryTap: (event) {
-                            if (event.cell.column.field == "invRecSubTotal") {
-                              if (getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) != null) {
-                                controller.showContextMenuSubTotal(index: event.rowIdx, productModel: getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!)!, tapPosition: event.offset);
+
+                    Expanded(
+                      // flex: 3,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
+                          return CustomPlutoWithEdite(
+                            controller: controller,
+                            shortCut: customPlutoShortcut(const InvoiceEnterPlutoGridAction()),
+                            onRowSecondaryTap: (event) {
+                              if (event.cell.column.field == "invRecSubTotal") {
+                                if (getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) != null) {
+                                  controller.showContextMenuSubTotal(index: event.rowIdx, productModel: getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!)!, tapPosition: event.offset);
+                                }
                               }
-                            }
-                            if (event.cell.column.field == "invRecId") {
-                              Get.defaultDialog(title: "تأكيد الحذف", content: const Text("هل انت متأكد من حذف هذا العنصر"), actions: [
-                                AppButton(
-                                    title: "نعم",
+                              if (event.cell.column.field == "invRecId") {
+                                Get.defaultDialog(title: "تأكيد الحذف", content: const Text("هل انت متأكد من حذف هذا العنصر"), actions: [
+                                  AppButton(
+                                      title: "نعم",
+                                      onPressed: () {
+                                        controller.clearRowIndex(event.rowIdx);
+                                      },
+                                      iconData: Icons.check),
+                                  AppButton(
+                                    title: "لا",
                                     onPressed: () {
-                                      controller.clearRowIndex(event.rowIdx);
+                                      Get.back();
                                     },
-                                    iconData: Icons.check),
-                                AppButton(
-                                  title: "لا",
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  iconData: Icons.clear,
-                                  color: Colors.red,
-                                ),
-                              ]);
-                            }
-                          },
-                          onChanged: (PlutoGridOnChangedEvent event) async {
-                            String? quantityNum = controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString();
-                            String? subTotalStr = controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value == "" ? null : controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value.toString();
+                                    iconData: Icons.clear,
+                                    color: Colors.red,
+                                  ),
+                                ]);
+                              }
+                            },
+                            onChanged: (PlutoGridOnChangedEvent event) async {
+                              String? quantityNum = controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString();
+                              String? subTotalStr = controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value == "" ? null : controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value.toString();
 
-                            /*     if (event.column.field != "invRecProduct") {
-                                print("object");
-                                controller.handleProductColumn("invRecProduct", event.value);
-                              }*/
+                              /*     if (event.column.field != "invRecProduct") {
+                                  print("object");
+                                  controller.handleProductColumn("invRecProduct", event.value);
+                                }*/
 
-                            double subTotal = controller.parseExpression(subTotalStr ?? "00");
-                            int quantity = int.tryParse(quantityNum ?? "0") ?? 0;
+                              double subTotal = controller.parseExpression(subTotalStr ?? "00");
+                              int quantity = int.tryParse(quantityNum ?? "0") ?? 0;
 
-                            controller.updateInvoiceValues(subTotal, quantity);
-                          },
-                        );
-                      }),
+                              controller.updateInvoiceValues(subTotal, quantity);
+                            },
+                          );
+                        }),
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     if (widget.patternModel!.patType != Const.invoiceTypeChange)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              child: SizedBox(
-                                height: 150,
-                                width: Get.width / 1.3,
-                                child: GetBuilder<DiscountPlutoViewModel>(builder: (controller) {
-                                  return CustomPlutoWithEdite(
-                                    controller: controller,
-                                    shortCut: customPlutoShortcut(const DiscountEnterPlutoGridAction()),
-                                    onRowSecondaryTap: (event) {},
-                                    onChanged: (PlutoGridOnChangedEvent event) async {},
-                                  );
-                                }),
-                                /*   child: SfDataGrid(
-                                  horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
-                                  verticalScrollPhysics: const ClampingScrollPhysics(),
-                                  source: invoiceController.invoiceDiscountRecordSource,
-                                  // tableSummaryRows: [
-                                  //   GridTableSummaryRow(color: Colors.blueGrey, showSummaryInRow: true, title: 'Total : {Total} AED', columns: [const GridSummaryColumn(name: 'Total', columnName: Const.rowInvTotal, summaryType: GridSummaryType.sum)], position: GridTableSummaryRowPosition.bottom),
-                                  // ],
-                                  columns: [
-                                    GridColumn(
-                                        allowEditing: false,
-                                        width: 50,
-                                        columnName: Const.rowInvDiscountId,
-                                        label: Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
-                                            color: Colors.grey,
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            'الرقم',
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                    GridColumn(
-                                        width: columnWidths['product']!,
-                                        columnWidthMode: ColumnWidthMode.fill,
-                                        columnName: Const.rowInvDiscountAccount,
-                                        label: Container(
-                                          color: Colors.grey,
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            'الحساب',
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                    GridColumn(
-                                        width: columnWidths['quantity']!,
-                                        columnName: Const.rowInvDisAddedTotal,
-                                        label: Container(
-                                          color: Colors.grey,
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            "الإضافات",
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                    GridColumn(
-                                        width: columnWidths['subTotal']!,
-                                        columnName: Const.rowInvDisAddedPercentage,
-                                        label: Container(
-                                          color: Colors.grey,
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            "النسبة المئوية للاضافات",
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                    GridColumn(
-                                        width: columnWidths['quantity']!,
-                                        columnName: Const.rowInvDisDiscountTotal,
-                                        label: Container(
-                                          color: Colors.grey,
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            "الحسميات",
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                    GridColumn(
-                                        width: columnWidths['subTotal']!,
-                                        columnName: Const.rowInvDisDiscountPercentage,
-                                        label: Container(
-                                          color: Colors.grey,
-                                          alignment: Alignment.center,
-                                          child: const Text(
-                                            "النسبة المئوية للحسميات",
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        )),
-                                  ],
-                                  // controller: invoiceController.dataGridController,
-                                  columnWidthMode: ColumnWidthMode.none,
-                                  allowColumnsResizing: true,
-                                  onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
-                                    // setState(() {
-                                    //   columnWidths[details.column.columnName] =
-                                    //       details.width;
-                                    // });
-                                    return true;
-                                  },
-                                  // showColumnHeaderIconOnHover: true,
-                                  gridLinesVisibility: GridLinesVisibility.both,
-                                  headerGridLinesVisibility: GridLinesVisibility.both,
-                                  allowEditing: true,
-                                  navigationMode: GridNavigationMode.cell,
-                                  selectionMode: SelectionMode.singleDeselect,
-                                  editingGestureType: EditingGestureType.tap,
-                                  // onCellTap: (DataGridCellTapDetails details) {
-                                  //   globalController.onCellTap(details);
-                                  // },
+                      Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          child: SizedBox(
+                            height: 150,
+                            width: Get.width / 1.3,
+                            child: GetBuilder<DiscountPlutoViewModel>(builder: (controller) {
+                              return CustomPlutoWithEdite(
+                                controller: controller,
+                                shortCut: customPlutoShortcut(const DiscountEnterPlutoGridAction()),
+                                onRowSecondaryTap: (event) {},
+                                onChanged: (PlutoGridOnChangedEvent event) async {},
+                              );
+                            }),
+                            /*   child: SfDataGrid(
+                              horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
+                              verticalScrollPhysics: const ClampingScrollPhysics(),
+                              source: invoiceController.invoiceDiscountRecordSource,
+                              // tableSummaryRows: [
+                              //   GridTableSummaryRow(color: Colors.blueGrey, showSummaryInRow: true, title: 'Total : {Total} AED', columns: [const GridSummaryColumn(name: 'Total', columnName: Const.rowInvTotal, summaryType: GridSummaryType.sum)], position: GridTableSummaryRowPosition.bottom),
+                              // ],
+                              columns: [
+                                GridColumn(
+                                    allowEditing: false,
+                                    width: 50,
+                                    columnName: Const.rowInvDiscountId,
+                                    label: Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
+                                        color: Colors.grey,
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'الرقم',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                GridColumn(
+                                    width: columnWidths['product']!,
+                                    columnWidthMode: ColumnWidthMode.fill,
+                                    columnName: Const.rowInvDiscountAccount,
+                                    label: Container(
+                                      color: Colors.grey,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'الحساب',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                GridColumn(
+                                    width: columnWidths['quantity']!,
+                                    columnName: Const.rowInvDisAddedTotal,
+                                    label: Container(
+                                      color: Colors.grey,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "الإضافات",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                GridColumn(
+                                    width: columnWidths['subTotal']!,
+                                    columnName: Const.rowInvDisAddedPercentage,
+                                    label: Container(
+                                      color: Colors.grey,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "النسبة المئوية للاضافات",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                GridColumn(
+                                    width: columnWidths['quantity']!,
+                                    columnName: Const.rowInvDisDiscountTotal,
+                                    label: Container(
+                                      color: Colors.grey,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "الحسميات",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                GridColumn(
+                                    width: columnWidths['subTotal']!,
+                                    columnName: Const.rowInvDisDiscountPercentage,
+                                    label: Container(
+                                      color: Colors.grey,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "النسبة المئوية للحسميات",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                              ],
+                              // controller: invoiceController.dataGridController,
+                              columnWidthMode: ColumnWidthMode.none,
+                              allowColumnsResizing: true,
+                              onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
+                                // setState(() {
+                                //   columnWidths[details.column.columnName] =
+                                //       details.width;
+                                // });
+                                return true;
+                              },
+                              // showColumnHeaderIconOnHover: true,
+                              gridLinesVisibility: GridLinesVisibility.both,
+                              headerGridLinesVisibility: GridLinesVisibility.both,
+                              allowEditing: true,
+                              navigationMode: GridNavigationMode.cell,
+                              selectionMode: SelectionMode.singleDeselect,
+                              editingGestureType: EditingGestureType.tap,
+                              // onCellTap: (DataGridCellTapDetails details) {
+                              //   globalController.onCellTap(details);
+                              // },
 
-                                  allowSwiping: false,
-                                  swipeMaxOffset: Get.width / 2,
-                                  startSwipeActionsBuilder: (BuildContext context, DataGridRow row, int rowIndex) {
-                                    return GestureDetector(
-                                        onTap: () {
-                                          invoiceController.invoiceRecordSource.dataGridRows.removeAt(rowIndex);
-                                          plutoEditViewModel.invoiceRecord.removeAt(rowIndex);
-                                          invoiceController.invoiceRecordSource.updateDataGridSource();
-                                        },
-                                        child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
-                                  },
-                                ),*/
-                              )),
-                        ],
-                      ),
+                              allowSwiping: false,
+                              swipeMaxOffset: Get.width / 2,
+                              startSwipeActionsBuilder: (BuildContext context, DataGridRow row, int rowIndex) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      invoiceController.invoiceRecordSource.dataGridRows.removeAt(rowIndex);
+                                      plutoEditViewModel.invoiceRecord.removeAt(rowIndex);
+                                      invoiceController.invoiceRecordSource.updateDataGridSource();
+                                    },
+                                    child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
+                              },
+                            ),*/
+                          )),
                     if (widget.patternModel!.patType != Const.invoiceTypeChange) ...[
                       const Divider(),
                       GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
-                        return Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.end,
-                          alignment: WrapAlignment.end,
-                          children: [
-                            Container(
-                              color: Colors.blueGrey.shade400,
-                              width: 150,
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    (controller.computeWithoutVatTotal() * 0.05).toStringAsFixed(2),
-                                    style: const TextStyle(fontSize: 30, color: Colors.white),
-                                  ),
-                                  const Text(
-                                    "القيمة المضافة",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              color: Colors.grey.shade600,
-                              width: 150,
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    controller.computeWithoutVatTotal().toStringAsFixed(2),
-                                    style: const TextStyle(fontSize: 30, color: Colors.white),
-                                  ),
-                                  const Text(
-                                    "المجموع",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              color: Colors.blue,
-                              width: 300,
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Text(
-                                      (controller.computeWithVatTotal()).toStringAsFixed(2),
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                        return SizedBox(
+                          width: Get.width,
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.end,
+                            alignment: WrapAlignment.end,
+                            children: [
+                              Container(
+                                color: Colors.blueGrey.shade400,
+                                width: 150,
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      (controller.computeWithoutVatTotal() * 0.05).toStringAsFixed(2),
+                                      style: const TextStyle(fontSize: 30, color: Colors.white),
                                     ),
-                                  ),
-                                  const Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "النهائي",
+                                    const Text(
+                                      "القيمة المضافة",
                                       style: TextStyle(color: Colors.white),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                color: Colors.grey.shade600,
+                                width: 150,
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      controller.computeWithoutVatTotal().toStringAsFixed(2),
+                                      style: const TextStyle(fontSize: 30, color: Colors.white),
+                                    ),
+                                    const Text(
+                                      "المجموع",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                color: Colors.blue,
+                                width: 300,
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Text(
+                                        (controller.computeWithVatTotal()).toStringAsFixed(2),
+                                        style: const TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    const Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        "النهائي",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       }),
                     ],
@@ -1035,10 +1039,8 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                                   } else {
                                     checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewInvoice).then((value) async {
                                       if (value) {
-                                        // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
-                                        invoiceController.buildSource(invoiceController.initModel.invId!);
-                                        invoiceController.buildDiscountSource(invoiceController.initModel.invId!);
+
                                       }
                                     });
                                   }
@@ -1079,7 +1081,7 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
                                 )
                             ]
                           ],
-                          if (selectedPayType == Const.invPayTypeDue && widget.patternModel?.patName == "مبيع")
+                          if ( invoiceController.selectedPayType == Const.invPayTypeDue && widget.patternModel?.patName == "مبيع")
                             AppButton(
                               iconData: Icons.more_horiz_outlined,
                               title: 'المزيد',
@@ -1203,53 +1205,16 @@ class _NewInvoiceViewState extends State<NewInvoiceView> {
     );
   }
 
-  /* Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-
-                                const SizedBox(
-                                  height: 25,
-                                ),
-
-                              ],
-                            ),
-                            if (controller.initModel.invId != null && controller.initModel.invIsPending != null)
-                              Column(
-                                children: [
-
-                                  //     ElevatedButton(
-                                  //         style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green), shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))))),
-                                  //         child: const Text(
-                                  //           'موافقة على الفاتورة',
-                                  //           style: TextStyle(color: Colors.white, fontSize: 25),
-                                  //         ),
-                                  // ),
-                                  const Spacer(),
-
-
-                                ],
-                              ),
-                            if (controller.initModel.invId != null)
-                              Column(
-                                children: [
-
-                                ],
-                              )
-                          ],
-                        )*/
 
   GlobalModel _updateData(List<InvoiceRecordModel> record) {
     print(invoiceController.initModel.invId);
     return GlobalModel(
-        firstPay: selectedPayType == Const.invPayTypeDue ? 150 : null,
+        firstPay: double.tryParse(invoiceController.firstPayController.text),
         invReturnCode: invoiceController.invReturnCodeController.text,
         invReturnDate: invoiceController.invReturnDateController.text,
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
-        invPayType: selectedPayType,
+        invPayType:  invoiceController.selectedPayType,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],
         invIsPending: invoiceController.initModel.invIsPending,
         invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),

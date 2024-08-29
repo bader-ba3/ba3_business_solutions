@@ -1,7 +1,7 @@
 class InventoryModel {
   String? inventoryName,inventoryDate,inventoryId ,inventoryUserId;
   Map inventoryRecord = {};
-  List inventoryTargetedProductList = [];
+  Map<String,dynamic> inventoryTargetedProductList = {};
   bool? isDone;
   InventoryModel({required this.inventoryId,required this.inventoryName,required this.inventoryDate ,required this.inventoryRecord,required this.inventoryTargetedProductList,required this.inventoryUserId,this.isDone});
 
@@ -12,7 +12,7 @@ class InventoryModel {
     inventoryUserId = json['inventoryUserId'];
     inventoryRecord =   json['inventoryRecord'];
     inventoryId =   json['inventoryId'];
-    inventoryTargetedProductList =   json['inventoryTargetedProductList']??[];
+    inventoryTargetedProductList =   json['inventoryTargetedProductList'];
     // inventoryRecord =   Map.fromEntries( json['inventoryRecord'].entries.map((e) => MapEntry(e.key.toString(), e.value.toString())).toList());
 
   }

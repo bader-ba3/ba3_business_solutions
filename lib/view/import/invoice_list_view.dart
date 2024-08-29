@@ -40,7 +40,7 @@ class InvoiceListView extends StatelessWidget {
                   Text(invoiceList[index].invId.toString()),
                   Text("المجموع: "+invoiceList[index].invTotal.toString()),
                   Text("الوقت: "+invoiceList[index].invDate.toString()),
-                  Text("البائع: "+getSellerNameFromId(invoiceList[index].invSeller.toString())),
+                  Text("البائع:  ${getSellerNameFromId(invoiceList[index].invSeller.toString())}"),
                   Text("المستودع: "+getStoreNameFromId(invoiceList[index].invStorehouse.toString())),
                  Text("من: "+(invoiceList[index].invPrimaryAccount == null ?"لا يوجد":getAccountNameFromId(invoiceList[index].invPrimaryAccount.toString()))),
                  Text("الى: "+(invoiceList[index].invSecondaryAccount == null ?"لا يوجد":getAccountNameFromId(invoiceList[index].invSecondaryAccount.toString()))),

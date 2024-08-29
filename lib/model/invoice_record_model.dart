@@ -137,14 +137,7 @@ class InvoiceRecordModel {
           return false;
         },
       ): getProductModelFromId(invRecProduct)?.prodName,
-      PlutoColumn(
-        title: 'الهدايا',
-        field: "invRecGift",
-        type: PlutoColumnType.text(),
-        checkReadOnly: (row, cell) {
-          return cell.row.cells['invRecProduct']?.value == '';
-        },
-      ): invRecGift,
+
       PlutoColumn(
         title: 'الكمية',
         field: 'invRecQuantity',
@@ -174,6 +167,14 @@ class InvoiceRecordModel {
           return cell.row.cells['invRecProduct']?.value == '';
         },
       ): (((invRecSubTotal??0)+(invRecVat??0)).toInt())*(invRecQuantity??1),
+      PlutoColumn(
+        title: 'الهدايا',
+        field: "invRecGift",
+        type: PlutoColumnType.text(),
+        checkReadOnly: (row, cell) {
+          return cell.row.cells['invRecProduct']?.value == '';
+        },
+      ): invRecGift,
 
 
     };

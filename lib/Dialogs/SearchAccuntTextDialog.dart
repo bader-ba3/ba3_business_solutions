@@ -1,11 +1,9 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
-import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Widgets/new_Pluto.dart';
-import '../../controller/product_view_model.dart';
 import '../view/invoices/widget/custom_TextField.dart';
 
 Future<String?> searchAccountTextDialog(String accountText)async {

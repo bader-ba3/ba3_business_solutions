@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:ba3_business_solutions/Widgets/new_Pluto.dart';
 import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -20,7 +19,6 @@ import '../model/invoice_record_model.dart';
 import '../model/product_model.dart';
 import '../model/product_tree.dart';
 import '../utils/logger.dart';
-import '../view/invoices/widget/custom_TextField.dart';
 import '../view/products/widget/product_record_data_source.dart';
 
 class ProductViewModel extends GetxController {
@@ -117,7 +115,7 @@ class ProductViewModel extends GetxController {
       query2 = query;
     }
     productsForSearch = productDataMap.values.where((element) {
-      if( HiveDataBase.getIsFree()) {
+      if( HiveDataBase.getIsNunFree()) {
         return  !(element.prodName?.startsWith("F")??true);
       } else {
         return true;

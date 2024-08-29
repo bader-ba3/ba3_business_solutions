@@ -84,7 +84,7 @@ class _NewInventoryViewState extends State<NewInventoryView> {
                 onPressed: () async {
                   // widget.inventoryModel.inventoryTargetedProductList = allData;
                   await HiveDataBase.inventoryModelBox
-                      .put("0", InventoryModel(inventoryUserId: getMyUserUserId(), inventoryId: generateId(RecordType.inventory), inventoryDate: DateTime.now().toString().split(" ")[0], inventoryName: dateInventoryController.text, inventoryRecord: {}, inventoryTargetedProductList: allData));
+                      .put("0", InventoryModel(inventoryUserId: getMyUserUserId(), inventoryId: generateId(RecordType.inventory), inventoryDate: DateTime.now().toString().split(" ")[0], inventoryName: dateInventoryController.text, inventoryRecord: {}, inventoryTargetedProductList: {}));
                   setState(() {});
                   Get.back();
                 },

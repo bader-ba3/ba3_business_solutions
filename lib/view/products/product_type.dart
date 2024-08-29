@@ -3,7 +3,6 @@ import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/products/product_management_view.dart';
 import 'package:ba3_business_solutions/view/products/product_tree_view.dart';
 import 'package:ba3_business_solutions/view/products/product_view.dart';
-import 'package:ba3_business_solutions/view/products/product_view_old.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

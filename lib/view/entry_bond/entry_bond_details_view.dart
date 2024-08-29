@@ -6,11 +6,13 @@ import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/bonds/custom_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
-import 'package:ba3_business_solutions/view/invoices/invoice_view.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../model/bond_record_model.dart';
 import '../bonds/bond_details_view.dart';
 
@@ -179,8 +181,13 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                       if (controller.tempBondModel.globalType == Const.globalTypeInvoice) {
                         Get.to(() => InvoiceView(
                               billId: controller.tempBondModel.invId!,
-                              patternId: "",
-                            ));
+                              patternId: controller.tempBondModel.patternId!,
+
+                            ),
+                          binding: BindingsBuilder(() {
+                            Get.lazyPut(() => InvoicePlutoViewModel());
+                            Get.lazyPut(() => DiscountPlutoViewModel());
+                          }),);
                       } else if (controller.tempBondModel.globalType == Const.globalTypeCheque) {
                         Get.to(() => AddCheque(
                               modelKey: controller.tempBondModel.cheqId,

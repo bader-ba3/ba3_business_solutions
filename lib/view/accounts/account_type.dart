@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
-import 'account_view_old.dart';
 
 class AccountType extends StatefulWidget {
   const AccountType({super.key});
