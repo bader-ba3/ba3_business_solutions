@@ -20,15 +20,12 @@ class AllBonds extends StatelessWidget {
         onLoaded: (e) {},
         type: Const.globalTypeBond,
         onSelected: (p0) {
-
-          if (p0.row?.cells["bondType"]?.value == getBondTypeFromEnum(Const.bondTypeDaily)
-              || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart)
-              || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice)
-              || p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart)
-              || p0.row?.cells["نوع السند"]?.value == (Const.bondTypeInvoice)
-
-
-          ) {
+          print(p0.row?.cells["bondId"]?.value);
+          if (p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) ||
+              p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart) ||
+              p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice) ||
+              p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart) ||
+              p0.row?.cells["نوع السند"]?.value == (Const.bondTypeInvoice)) {
             Get.to(() => BondDetailsView(
                   oldId: p0.row?.cells["bondId"]?.value,
                   bondType: p0.row?.cells["نوع السند"]?.value,
@@ -36,67 +33,20 @@ class AllBonds extends StatelessWidget {
           } else {
             Get.to(() => CustomBondDetailsView(
                   oldId: p0.row?.cells["bondId"]?.value,
-                  isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit||p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
+                  isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
                 ));
           }
         },
-        modelList: controller.allBondsItem.values.where((element) {
-          if( HiveDataBase.getIsNunFree()) {
-            return  !(element.bondCode?.startsWith("F")??true);
-          } else {
-            return true;
-          }
-        },).toList(),
+        modelList: controller.allBondsItem.values.where(
+          (element) {
+            if (HiveDataBase.getIsNunFree()) {
+              return !(element.bondCode?.startsWith("F") ?? true);
+            } else {
+              return true;
+            }
+          },
+        ).toList(),
       );
     });
   }
 }
-/*  return Scaffold(
-      body: */ /*FilteringDataGrid<GlobalModel>(
-        title: "السندات",
-        constructor: GlobalModel(),
-        dataGridSource: data,
-        globalType: Const.globalTypeBond,
-        onCellTap: (index,id,init) {
-          GlobalModel model = data[id]!;
-          logger(newData: model, transfersType: TransfersType.read);
-          if (model.bondType == Const.bondTypeDaily ||model.bondType == Const.bondTypeStart ||model.bondType == Const.bondTypeInvoice ) {
-            Get.to(() => BondDetailsView(oldId: model.bondId,bondType: model.bondType!,));
-          } else {
-            Get.to(() => CustomBondDetailsView(oldId: model.bondId, isDebit: model.bondType == Const.bondTypeDebit,));
-          }
-        },
-        init: () async {
-          IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
-          isolateViewModel.init();
-          final a = await compute<({List<GlobalModel> a,IsolateViewModel isolateViewModel}),List<DataGridRow>>((message) {
-            Get.put(message.isolateViewModel);
-            List<DataGridRow> dataGridRow  = message.a
-                .map<DataGridRow>((order) => DataGridRow(cells: [
-              DataGridCell(columnName: "bondId", value: order.toJson()['bondId']),
-              ...order.toBondAR().entries.map((mapEntry) {
-                // if (int.tryParse(mapEntry.value.toString()) != null) {
-                //   return DataGridCell<int>(columnName: mapEntry.key, value: int.parse(mapEntry.value.toString()));
-                // } else if (double.tryParse(mapEntry.value.toString()) != null) {
-                //   return DataGridCell<double>(columnName: mapEntry.key, value: double.parse(mapEntry.value.toString()));
-                // }
-                // else
-                if(mapEntry.key == "bondDate"){
-                  // int day = int.parse(mapEntry.value.toString().split("-")[2]);
-                  // int month =  int.parse(mapEntry.value.toString().split("-")[1]);
-                  // int year =  int.parse(mapEntry.value.toString().split("-")[0]);
-                  return DataGridCell<DateTime>(columnName: mapEntry.key, value:DateTime.parse(mapEntry.value));
-                }
-                else{
-                  return DataGridCell<String>(columnName: mapEntry.key, value: (mapEntry.value??"-").toString());
-                }
-              }).cast<DataGridCell<dynamic>>().toList()
-            ])).toList();
-            return dataGridRow;
-          },(a: data.values.toList(),isolateViewModel:isolateViewModel));
-          InfoDataGridSource  infoDataGridSource = InfoDataGridSource();
-          infoDataGridSource.dataGridRows =a;
-          return infoDataGridSource;
-        },
-      ),*/ /*
-    );*/

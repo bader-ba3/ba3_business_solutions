@@ -1,12 +1,15 @@
+import 'package:ba3_business_solutions/Dialogs/Account_Option_Dialog.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/accounts/account_tree_view.dart';
 import 'package:ba3_business_solutions/view/accounts/account_view.dart';
+import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../invoices/Controller/Search_View_Controller.dart';
 
 class AccountType extends StatefulWidget {
   const AccountType({super.key});
@@ -37,7 +40,15 @@ class _AccountTypeState extends State<AccountType> {
             // }),
             item("معاينة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-                if (value) Get.to(() => const AllAccount());
+
+
+                if (value) {
+                  Get.find<SearchViewController>().initController();
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => const AccountOptionDialog(),
+                  );
+                }
               });
             }),
             item("شجرة الحسابات", () {

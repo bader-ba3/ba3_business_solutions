@@ -211,7 +211,7 @@ class _DashboardViewState extends State<DashboardView> {
       ],
     ).then((value) {
       if (value == 'details') {
-        Get.to(() => AccountDetails(modelKey: id));
+        /*Get.to(() => AccountDetails(modelKey: id));*/
       } else if (value == 'delete') {
         HiveDataBase.mainAccountModelBox.delete(id);
         accountController.update();

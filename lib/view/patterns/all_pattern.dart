@@ -64,3 +64,16 @@ class AllPattern extends StatelessWidget {
     );
   }
 }
+GridColumn gridColumnItem({required label, name}) {
+  return GridColumn(
+      allowEditing: false,
+      columnName: name,
+      label: Container(
+          color: Colors.blue.shade800,
+          padding: const EdgeInsets.all(16.0),
+          alignment: Alignment.center,
+          child: Text(
+            label.toString(),
+            style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
+          )));
+}

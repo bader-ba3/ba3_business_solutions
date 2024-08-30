@@ -392,6 +392,10 @@ class GlobalViewModel extends GetxController {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
     }
+    else if (globalModel.globalType == Const.globalTypeCheque) {
+      entryBondViewModel.initGlobalChequeBond(globalModel);
+      chequeViewModel.initGlobalCheque(globalModel);
+    }
 
   }
 

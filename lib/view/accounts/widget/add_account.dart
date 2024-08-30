@@ -119,7 +119,7 @@ class _AddAccountState extends State<AddAccount> {
                                         value: accountType,
                                         items: Const.accountTypeList
                                             .map((e) => DropdownMenuItem(
-                                                  child: Text(getAccountTypefromEnum(e)),
+                                                  child: Text(getAccountTypeFromEnum(e)),
                                                   value: e,
                                                 ))
                                             .toList(),

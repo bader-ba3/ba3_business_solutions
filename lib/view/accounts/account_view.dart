@@ -19,9 +19,9 @@ class AllAccount extends StatelessWidget {
             onLoaded: (e){
             },
             onSelected: (p0) {
-              Get.to(() => AccountDetails(
-                modelKey: p0.row?.cells["accId"]?.value,
-              ));
+              // Get.to(() => AccountDetails(
+              //   modelKey: p0.row?.cells["accId"]?.value,
+              // ));
               // Get.to(() => InvoiceView(
               //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
               //   patternId: "",

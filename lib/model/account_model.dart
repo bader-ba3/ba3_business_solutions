@@ -140,12 +140,12 @@ class AccountModel {
       'accId': accId,
       'رمز الحساب': int.tryParse(accCode.toString()) ?? 0,
       'اسم الحساب': accName,
-      'نوع الحساب': getAccountTypefromEnum(accType ?? ""),
+      'نوع الحساب': getAccountTypeFromEnum(accType ?? ""),
       'نوع الضريبة': accVat,
       'حساب الاب': getAccountNameFromId(accParentId),
       'الوصف': accComment,
       // 'الرصيد': getAccountBalanceFromId(accId),
-      'الرصيد':HiveDataBase.getIsNunFree()? finalBalance:fFinalBalance,
+      'الرصيد':HiveDataBase.getIsNunFree()? fFinalBalance:finalBalance,
     };
   }
 }

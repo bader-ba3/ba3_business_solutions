@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../Const/const.dart';
 import '../accounts/acconts_view_old.dart';
+import '../patterns/all_pattern.dart';
 
 class AllStore extends StatelessWidget {
   AllStore({super.key});

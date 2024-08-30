@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../../Const/const.dart';
 import '../../../Widgets/new_Pluto.dart';
 import '../../../controller/account_view_model.dart';
+import '../../bonds/bond_details_view.dart';
+import '../../bonds/custom_bond_details_view.dart';
+import '../../entry_bond/entry_bond_details_view.dart';
 
 class AccountDetails extends StatefulWidget {
   final String modelKey;
+  final List<String> listDate;
 
-  const AccountDetails({super.key, required this.modelKey});
+  const AccountDetails({super.key, required this.modelKey,required this.listDate});
 
   @override
   State<AccountDetails> createState() => _AccountDetailsState();
@@ -25,7 +30,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   void initState() {
     super.initState();
 
-    accountController.getAllBondForAccount(widget.modelKey);
+    accountController.getAllBondForAccount(widget.modelKey,widget.listDate);
     // accountController.initAccountPage(widget.modelKey);
 
   }
@@ -34,15 +39,45 @@ class _AccountDetailsState extends State<AccountDetails> {
   Widget build(BuildContext context) {
 
     return GetBuilder<AccountViewModel>(builder: (controller) {
-      print( controller.accountList[widget.modelKey]!.accRecord.length);
-      return CustomPlutoGridWithAppBar(
-        title: "جميع الحركات",
-        // type: Const.globalTypeInvoice,
-        onLoaded: (e) {},
-        onSelected: (p0) {
-
-        },
-        modelList: controller.accountList[widget.modelKey]!.accRecord.toList()  ,
+      return Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: CustomPlutoGridWithAppBar(
+                title: "حركات ${getAccountNameFromId(widget.modelKey)} من تاريخ  ${widget.listDate.first}  إلى تاريخ  ${widget.listDate.last}",
+                // type: Const.globalTypeInvoice,
+                onLoaded: (e) {},
+                onSelected: (p0) {
+                  if (p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) ||
+                      p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart) ||
+                      p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice) ||
+                      p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart) ) {
+                    Get.to(() => BondDetailsView(
+                      bondType: p0.row?.cells["نوع السند"]?.value,
+                    ));
+                  } else if(p0.row?.cells["نوع السند"]?.value.toString().contains("مولد")??false) {
+                    Get.off(() => EntryBondDetailsView(oldId: p0.row?.cells["id"]?.value));
+                  }else{
+                    Get.to(() => CustomBondDetailsView(
+                      oldId: p0.row?.cells["id"]?.value,
+                      isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
+                    ));
+                  }
+                },
+                modelList: controller.currentViewAccount,
+              ),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("المجموع :",style:  TextStyle(color: Colors.black,fontWeight: FontWeight.w300,fontSize: 24),),
+                const SizedBox(width: 10,),
+                Text("${controller.searchValue}",style:  TextStyle(color: Colors.blue.shade700,fontWeight: FontWeight.w600,fontSize: 32),),
+              ],
+            ),
+          ],
+        ),
       );
     });
   }

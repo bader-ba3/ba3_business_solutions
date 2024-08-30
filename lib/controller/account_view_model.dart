@@ -10,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../Const/const.dart';
 import '../model/account_record_model.dart';
+import '../model/bond_record_model.dart';
+import '../model/entry_bond_record_model.dart';
 import '../utils/generate_id.dart';
 import '../view/accounts/widget/account_record_data_source.dart';
 import '../view/accounts/widget/account_view_data_grid_source.dart';
@@ -64,17 +66,30 @@ class AccountViewModel extends GetxController {
     }
 
     allRecTotal.forEach((key, value) {
-      accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.entryBondId);
+      accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.bondId || element.id == globalModel.entryBondId);
       var recCredit = value.reduce((value, element) => value + element);
       if (accountList[key]?.accRecord == null) {
-        accountList[key]?.accRecord = [AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0, type, date)].obs;
+        accountList[key]?.accRecord = [
+          AccountRecordModel(
+            globalModel.bondId ?? globalModel.entryBondId,
+            key,
+            recCredit.toString(),
+            0,
+            type,
+            date,
+          )
+        ].obs;
       } else {
-        accountList[key]?.accRecord.add(AccountRecordModel(globalModel.entryBondId, key, recCredit.toString(), 0, type, date));
+        accountList[key]?.accRecord.add(AccountRecordModel(
+              globalModel.bondId ?? globalModel.entryBondId,
+              key,
+              recCredit.toString(),
+              0,
+              type,
+              date,
+            ));
       }
-
     });
-
-
   }
 
   void setDueAccount(String accountKey) {
@@ -128,41 +143,67 @@ class AccountViewModel extends GetxController {
     }
   }
 
-  getAllBondForAccount(String modeKey) {
 
+  List<AccountRecordModel> currentViewAccount=[];
+ double searchValue=0.0;
+  void getAllBondForAccount(String modeKey, List<String> allDate) {
+    currentViewAccount.clear();
 
-    List<String> accountsId = getAccountModelFromId(modeKey)!
-        .accChild
-        .map(
-          (e) => e.toString(),
-    ).toList() +
-        [modeKey];
+    // جمع حسابات الأبناء بالإضافة إلى الحساب الأساسي
+    List<String> accountsId = getAccountModelFromId(modeKey)!.accChild.map((e) => e.toString()).toList() + [modeKey];
+
+    // فلترة النماذج بناءً على التاريخ والحسابات
     List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
-        .where(
-          (element) =>
-      accountsId.contains(element.invSecondaryAccount) ||
-          accountsId.contains(element.invSecondaryAccount) ||
-          accountsId.contains(element.cheqPrimeryAccount) ||
-          accountsId.contains(element.cheqSecoundryAccount) ||
-          (element.bondRecord
-              ?.where(
-                (element) => accountsId.contains(element.bondRecAccount),
-          )
-              .isNotEmpty ??
-              false) ||
-          (element.entryBondRecord
-              ?.where(
-                (element) => accountsId.contains(element.bondRecAccount),
-          )
-              .isNotEmpty ??
-              false),
-    )
+        .where((element) => allDate.contains((element.bondDate?.split(" ")[0] ?? "")))
+        .where((element) => _containsAccountId(accountsId, element))
         .toList();
-    print(globalModels.length);
 
+    // تفريغ سجلات الحسابات
+    _clearAccountRecords(modeKey);
+
+    // تهيئة الحسابات بناءً على النماذج
     for (var globalModel in globalModels) {
       initGlobalAccount(globalModel, oldAccountKey: modeKey);
     }
+
+    // جمع السجلات الحالية
+    _collectCurrentViewAccount(modeKey);
+
+    // حساب مجموع القيم
+    searchValue = _calculateTotal(currentViewAccount);
+
+    update();
+  }
+
+  bool _containsAccountId(List<String> accountsId, GlobalModel element) {
+    return accountsId.contains(element.invSecondaryAccount) ||
+        accountsId.contains(element.cheqPrimeryAccount) ||
+        accountsId.contains(element.cheqSecoundryAccount) ||
+        _containsBondRecord(accountsId, element.bondRecord) ||
+        _containsEntryBondRecord(accountsId, element.entryBondRecord);
+  }
+
+  bool _containsBondRecord(List<String> accountsId, List<BondRecordModel>? bondRecords) {
+    return bondRecords?.where((record) => accountsId.contains(record.bondRecAccount)).isNotEmpty ?? false;
+  }
+  bool _containsEntryBondRecord(List<String> accountsId, List<EntryBondRecordModel>? bondRecords) {
+    return bondRecords?.where((record) => accountsId.contains(record.bondRecAccount)).isNotEmpty ?? false;
+  }
+
+  void _clearAccountRecords(String modeKey) {
+    for (var element in accountList[modeKey]!.accChild + [modeKey]) {
+      accountList[element]!.accRecord.clear();
+    }
+  }
+
+  void _collectCurrentViewAccount(String modeKey) {
+    for (var element in accountList[modeKey]!.accChild + [modeKey]) {
+      currentViewAccount.addAll(accountList[element]!.accRecord);
+    }
+  }
+
+  double _calculateTotal(List<AccountRecordModel> accounts) {
+    return accounts.map((e) => double.parse(e.total.toString())).fold(0.0, (previousValue, element) => previousValue + element);
   }
 
   void deleteGlobalAccount(GlobalModel globalModel) {
@@ -272,11 +313,8 @@ class AccountViewModel extends GetxController {
     }
     dataGridController = DataGridController();
     recordDataSource = AccountRecordDataSource(accountRecordModel: (accountList[modeKey]?.accRecord ?? []), accountModel: accountList[modeKey]!);
-    WidgetsFlutterBinding
-        .ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then(
-          (value) {
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+      (value) {
         update();
       },
     );
@@ -376,7 +414,7 @@ class AccountViewModel extends GetxController {
     List<int> allCode = accountList.values
         .where(
           (element) => (!element.accCode!.contains("F")),
-    )
+        )
         .map((e) => int.parse(e.accCode!))
         .toList();
     int _ = 0;
@@ -582,9 +620,7 @@ class AccountViewModel extends GetxController {
       for (var i = 0; i < allper.length; i++) {
         if (_.isNotEmpty) {
           treeController?.expand(_.firstWhere((element) => element.id == allper[i]));
-          _ = _
-              .firstWhereOrNull((element) => element.id == allper[i])
-              ?.list ?? [];
+          _ = _.firstWhereOrNull((element) => element.id == allper[i])?.list ?? [];
         }
       }
     }
@@ -605,12 +641,14 @@ class AccountViewModel extends GetxController {
   }
 
   List<AccountModel> searchAccount(String text) {
-    List<AccountModel> accountFound=[];
-    accountFound=   accountList.values.where((element) {
-    return  element.accName?.contains(text)??false;
-    },).toList();
+    List<AccountModel> accountFound = [];
+    accountFound = accountList.values.where(
+      (element) {
+        return element.accName?.contains(text) ?? false;
+      },
+    ).toList();
 
-   return accountFound;
+    return accountFound;
   }
 }
 
@@ -658,9 +696,7 @@ List<AccountModel> getAccountModelFromName(text) {
 
 String getAccountNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get
-        .find<AccountViewModel>()
-        .accountList[id]?.accName! ?? "no acc";
+    return Get.find<AccountViewModel>().accountList[id]?.accName! ?? "no acc";
   } else {
     return "";
   }
@@ -676,9 +712,7 @@ double getAccountBalanceFromId(id) {
 
 AccountModel? getAccountModelFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get
-        .find<AccountViewModel>()
-        .accountList[id]!;
+    return Get.find<AccountViewModel>().accountList[id]!;
   } else {
     return null;
   }
@@ -689,10 +723,7 @@ AccountModel? getAccountModelFromId(id) {
 Future<String> getAccountComplete(text) async {
   var _ = '';
   List accountPickList = [];
-  Get
-      .find<AccountViewModel>()
-      .accountList
-      .forEach((key, value) {
+  Get.find<AccountViewModel>().accountList.forEach((key, value) {
     accountPickList.addIf(value.accType == Const.accountTypeDefault && (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value.accName!);
   });
   // print(accountPickList.length);
@@ -737,10 +768,7 @@ Future<AccountModel?> getAccountCompleteID(_text) async {
   AccountModel? _;
   List<AccountModel> accountPickList = [];
   String text = _text ?? "";
-  Get
-      .find<AccountViewModel>()
-      .accountList
-      .forEach((key, value) {
+  Get.find<AccountViewModel>().accountList.forEach((key, value) {
     accountPickList.addIf(value.accType == Const.accountTypeDefault && (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())), value);
   });
   // print(accountPickList.length);

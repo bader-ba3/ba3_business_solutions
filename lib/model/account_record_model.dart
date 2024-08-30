@@ -1,4 +1,9 @@
 
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+
+
+import '../Const/const.dart';
+
 class AccountRecordModel {
   String? id, total, account,isPaidStatus,accountRecordType,date;
   double? balance,paid;
@@ -26,11 +31,12 @@ class AccountRecordModel {
   Map<String, dynamic> toMap() {
     return {
       "id": id,
-      "total": total,
-      "account": account,
-      "accountRecordType": accountRecordType,
-      "isPaidStatus": isPaidStatus,
-      "date": date,
+      "القيمة": total,
+      "الحساب": getAccountNameFromId(account),
+      'نوع السند':accountRecordType!.startsWith("pat")?getPatNameFromId(accountRecordType??''): getBondTypeFromEnum(accountRecordType ?? ""),
+      // "accountRecordType": accountRecordType,
+      // "isPaidStatus": isPaidStatus,
+      "التاريخ": date,
     };
   }
 }

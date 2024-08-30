@@ -1,5 +1,6 @@
 
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+import 'package:get/get.dart';
 
 import '../utils/hive.dart';
 
@@ -257,7 +258,7 @@ String getGlobalTypeFromEnum(String type) {
       return "شيك دفع";
   }
 
- return "فاتورة "+getPatModelFromPatternId(type).patName!;
+ return "فاتورة ${getPatModelFromPatternId(type).patName!}";
 }
 
 String getAccountPaidStatusFromEnum(String type,bool isPositive) {
@@ -304,7 +305,17 @@ String getChequeTypefromEnum(String type) {
   }
   return "error";
 }
+List<String> getDatesBetween(DateTime startDate, DateTime endDate) {
+  List<String> dates = [];
+  DateTime currentDate = startDate;
 
+  while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+    dates.add(currentDate.toString().split(" ")[0]);
+    currentDate = currentDate.add(const Duration(days: 1));
+  }
+
+  return dates;
+}
 String getBondTypeFromEnum(String type) {
   switch (type) {
     case Const.bondTypeDaily:
@@ -318,8 +329,8 @@ String getBondTypeFromEnum(String type) {
     case Const.bondTypeInvoice:
       return "سند قيد";
   }
-  print(type);
-  return "error";
+
+  return type;
 }
 
 String getProductTypeFromEnum(String type) {
@@ -331,8 +342,12 @@ String getProductTypeFromEnum(String type) {
   }
   return type;
 }
+String getPatNameFromId(String id) {
+return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
+}
 
-String getAccountTypefromEnum(String type) {
+
+String getAccountTypeFromEnum(String type) {
   switch (type) {
     case Const.accountTypeDefault:
       return "حساب عادي";

@@ -316,7 +316,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                             }, onIconPressed: () {
                                               AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
                                               if (_ != null) {
-                                                Get.to(AccountDetails(modelKey: _.accId!));
+                                                // Get.to(AccountDetails(modelKey: _.accId!));
                                               }
                                             }),
                                           )
@@ -345,7 +345,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           }, onIconPressed: () {
                                             AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.primaryAccountController.text);
                                             if (_ != null) {
-                                              Get.to(AccountDetails(modelKey: _.accId!));
+                                              // Get.to(AccountDetails(modelKey: _.accId!));
                                             }
                                           }),
                                         ),
@@ -395,7 +395,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         }, onIconPressed: () {
                                           AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.invCustomerAccountController.text);
                                           if (_ != null) {
-                                            Get.to(AccountDetails(modelKey: _.accId!));
+                                            // Get.to(AccountDetails(modelKey: _.accId!));
                                           }
                                         }),
                                       ),
