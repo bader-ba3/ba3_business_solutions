@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/view/patterns/pattern_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import '../accounts/acconts_view_old.dart';
 class AllPattern extends StatelessWidget {
   const AllPattern({super.key});
   @override

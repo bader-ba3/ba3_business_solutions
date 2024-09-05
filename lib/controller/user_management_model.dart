@@ -8,6 +8,7 @@ import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/role_model.dart';
 import 'package:ba3_business_solutions/model/user_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
+import 'package:ba3_business_solutions/view/main/main_screen.dart';
 import 'package:ba3_business_solutions/view/user_management/login_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,8 @@ class UserManagementViewModel extends GetxController {
   }
 
   void checkUserStatus() async {
+
+
     if (userPin != null) {
       FirebaseFirestore.instance.collection(Const.usersCollection).where('userPin', isEqualTo: userPin).get().then((value) async {
         if (userPin == null) {
@@ -114,6 +117,7 @@ class UserManagementViewModel extends GetxController {
         Get.offAll(() => const LoginView());
       });
     }
+
   }
 
   void initAllUser() {
@@ -274,6 +278,7 @@ Future<bool> checkPermissionForOperation(role, page) async {
                       defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
                       length: 6,
                       onCompleted: (_) {
+
                         UserModel? user = userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin == _);
                         if (user != null) {
                           Map<String, List<String>>? newUserRole = userManagementViewController.allRole[user.userRole]?.roles;

@@ -4,17 +4,21 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../Const/const.dart';
+import '../../../Widgets/Bond_Record_Pluto_View_Model.dart';
+import '../../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../../Widgets/new_Pluto.dart';
 import '../../../controller/account_view_model.dart';
 import '../../bonds/bond_details_view.dart';
 import '../../bonds/custom_bond_details_view.dart';
 import '../../entry_bond/entry_bond_details_view.dart';
+import '../../invoices/New_Invoice_View.dart';
 
 class AccountDetails extends StatefulWidget {
   final String modelKey;
   final List<String> listDate;
 
-  const AccountDetails({super.key, required this.modelKey,required this.listDate});
+  const AccountDetails({super.key, required this.modelKey, required this.listDate});
 
   @override
   State<AccountDetails> createState() => _AccountDetailsState();
@@ -30,14 +34,12 @@ class _AccountDetailsState extends State<AccountDetails> {
   void initState() {
     super.initState();
 
-    accountController.getAllBondForAccount(widget.modelKey,widget.listDate);
+    accountController.getAllBondForAccount(widget.modelKey, widget.listDate);
     // accountController.initAccountPage(widget.modelKey);
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return GetBuilder<AccountViewModel>(builder: (controller) {
       return Scaffold(
         body: Column(
@@ -48,20 +50,36 @@ class _AccountDetailsState extends State<AccountDetails> {
                 // type: Const.globalTypeInvoice,
                 onLoaded: (e) {},
                 onSelected: (p0) {
-                  if (p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) ||
-                      p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart) ||
-                      p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice) ||
-                      p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart) ) {
-                    Get.to(() => BondDetailsView(
-                      bondType: p0.row?.cells["نوع السند"]?.value,
-                    ));
-                  } else if(p0.row?.cells["نوع السند"]?.value.toString().contains("مولد")??false) {
-                    Get.off(() => EntryBondDetailsView(oldId: p0.row?.cells["id"]?.value));
-                  }else{
-                    Get.to(() => CustomBondDetailsView(
-                      oldId: p0.row?.cells["id"]?.value,
-                      isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
-                    ));
+                  if (!(p0.row?.cells["id"]?.value.toString().startsWith("inv") ?? true)) {
+                    Get.to(
+                      () => BondDetailsView(
+                        oldId: p0.row?.cells["id"]?.value,
+                        bondType: getBondEnumFromType(p0.row?.cells["نوع السند"]?.value),
+                      ),
+                      binding: BindingsBuilder(() {
+                        Get.lazyPut(() => BondRecordPlutoViewModel(getBondEnumFromType(p0.row?.cells["نوع السند"]?.value)));
+                      }),
+                    );
+                  }
+                  /*else if(p0.row?.cells["نوع السند"]?.value.toString().contains("مولد")??false) {
+
+                  }*/
+                  else {
+                    Get.to(
+                          () => InvoiceView(
+                        billId: p0.row?.cells["id"]?.value,
+                        patternId: p0.row?.cells["نوع السند"]?.value,
+                      ),
+                      binding: BindingsBuilder(() {
+                        Get.lazyPut(() => InvoicePlutoViewModel());
+                        Get.lazyPut(() => DiscountPlutoViewModel());
+                      }),
+                    );
+                    // Get.to(() => EntryBondDetailsView(oldId: p0.row?.cells["id"]?.value));
+                    // Get.to(() => CustomBondDetailsView(
+                    //   oldId: p0.row?.cells["id"]?.value,
+                    //   isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
+                    // ));
                   }
                 },
                 modelList: controller.currentViewAccount,
@@ -71,9 +89,17 @@ class _AccountDetailsState extends State<AccountDetails> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("المجموع :",style:  TextStyle(color: Colors.black,fontWeight: FontWeight.w300,fontSize: 24),),
-                const SizedBox(width: 10,),
-                Text("${controller.searchValue}",style:  TextStyle(color: Colors.blue.shade700,fontWeight: FontWeight.w600,fontSize: 32),),
+                const Text(
+                  "المجموع :",
+                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 24),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  controller.searchValue.toStringAsFixed(2),
+                  style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.w600, fontSize: 32),
+                ),
               ],
             ),
           ],
@@ -193,7 +219,6 @@ class _AccountDetailsState extends State<AccountDetails> {
         );
       }),
     );*/
-
 
   GridColumn GridColumnItem({required label, name}) {
     return GridColumn(

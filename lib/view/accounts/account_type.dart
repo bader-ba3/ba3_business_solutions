@@ -3,7 +3,6 @@ import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/view/accounts/account_tree_view.dart';
 import 'package:ba3_business_solutions/view/accounts/account_view.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,7 +37,7 @@ class _AccountTypeState extends State<AccountType> {
             //     if (value) Get.to(() => const AllAccountOLD());
             //   });
             // }),
-            item("معاينة الحسابات", () {
+            item("كشف حساب", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
 
 
@@ -48,6 +47,15 @@ class _AccountTypeState extends State<AccountType> {
                     context: context,
                     builder: (BuildContext context) => const AccountOptionDialog(),
                   );
+                }
+              });
+            }),
+            item("معاينة الحسابات", () {
+              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+
+
+                if (value) {
+             Get.to(()=> const AllAccount());
                 }
               });
             }),

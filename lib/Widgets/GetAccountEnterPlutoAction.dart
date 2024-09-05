@@ -1,20 +1,22 @@
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../Const/const.dart';
-import '../Dialogs/Search_Product_Text_Dialog.dart';
-import 'Invoice_Pluto_Edit_View_Model.dart';
+import '../Dialogs/SearchAccuntTextDialog.dart';
 
-class InvoiceEnterPlutoGridAction extends PlutoGridShortcutAction  {
-  const InvoiceEnterPlutoGridAction();
+
+class GetAccountEnterPlutoGridAction extends PlutoGridShortcutAction {
+  const GetAccountEnterPlutoGridAction(this.controller,this.fieldTitle);
+
+  final dynamic controller;
+  final String fieldTitle;
 
   @override
   void execute({
     required PlutoKeyManagerEvent keyEvent,
     required PlutoGridStateManager stateManager,
   }) async {
-    await getProduct(stateManager, Get.find<InvoicePlutoViewModel>());
+
+    await getAccount(stateManager,controller,fieldTitle);
     // In SelectRow mode, the current Row is passed to the onSelected callback.
     if (stateManager.mode.isSelectMode && stateManager.onSelected != null) {
       stateManager.onSelected!(PlutoGridOnSelectedEvent(
@@ -56,24 +58,19 @@ class InvoiceEnterPlutoGridAction extends PlutoGridShortcutAction  {
     stateManager.notifyListeners();
   }
 
-  getProduct(PlutoGridStateManager stateManager, InvoicePlutoViewModel controller) async {
-
-    if (stateManager.currentColumn?.field == "invRecProduct") {
-      String? newValue = await searchProductTextDialog(stateManager.currentCell?.value);
-      if (newValue != null) {
+  getAccount(PlutoGridStateManager stateManager, dynamic controller,String fieldName) async {
+    if (stateManager.currentColumn?.field == fieldName) {
+      String? newValue = await searchAccountTextDialog(stateManager.currentCell?.value);
+      if (newValue != "") {
         stateManager.changeCellValue(
-          stateManager.currentRow!.cells[stateManager.currentColumn?.field]!,
+          stateManager.currentRow!.cells[fieldName]!,
           newValue,
           notify: true,
         );
-        stateManager.changeCellValue(
-          stateManager.currentRow!.cells["invRecSubTotal"]!,
-          (double.parse(controller.getPrice(prodName: newValue, type: Const.invoiceChoosePriceMethodeCustomerPrice).toString()) / 1.05).toString(),
-          notify: true,
-        );
+
       } else {
         stateManager.changeCellValue(
-          stateManager.currentRow!.cells["invRecProduct"]!,
+          stateManager.currentRow!.cells[fieldName]!,
           '',
           notify: true,
         );

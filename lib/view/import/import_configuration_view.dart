@@ -203,7 +203,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       // print(element[setting['prodType']].removeAllWhitespace=="مستودعية");
       // print(!(element[setting['prodType']].removeAllWhitespace=="خدمية"||element[setting['prodType']].removeAllWhitespace=="مستودعية"));
       // print("===");
-      if (chechIsExist == "") {
+      if (chechIsExist == ""||chechIsExist == null) {
         finalData.add(ProductModel(
             prodId: generateId(RecordType.product),
             prodName: "F-" + element[setting["prodName"]],
@@ -263,7 +263,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       print(i.toString() + " OF " + finalData.length.toString());
 
       ///FireBse Todo
-      // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
+      await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
     }
     // i = 0;
@@ -310,7 +310,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       // print(element[setting['prodType']].removeAllWhitespace=="مستودعية");
       // print(!(element[setting['prodType']].removeAllWhitespace=="خدمية"||element[setting['prodType']].removeAllWhitespace=="مستودعية"));
       // print("===");
-      if (chechIsExist == "") {
+      if (chechIsExist == ""||chechIsExist==null) {
         finalData.add(ProductModel(
             prodId: generateId(RecordType.product),
             prodName: element[setting["prodName"]],
@@ -414,13 +414,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       bool accIsParent = element[setting['accParentId']].isEmpty;
       finalData.add(AccountModel(
         accId: generateId(RecordType.account),
-        accName: "F-${(element[setting["accName"]]).replaceAll("-", "")}",
-        accCode: "F-${element[setting["accCode"]].replaceAll("-", "")}",
+        accName: "F-${(element[setting["accName"]]).replaceAll("-", "")}",/**/
+        accCode: "F-${element[setting["accCode"]].replaceAll("-", "")}",/*F-*/
         accComment: '',
         // accType: element[setting["accType"]]=="حساب تجميعي"?Const.accountTypeAggregateAccount:element[setting["accType"]]=="حساب ختامي"?Const.accountTypeFinalAccount:Const.accountTypeDefault,
         accType: Const.accountTypeDefault,
         accVat: 'GCC',
-        accParentId: accIsParent ? null : "F-" + element[setting['accParentId']],
+        accParentId: accIsParent ? null :   "F-${element[setting['accParentId']]}",/*"F-"*/
         accIsParent: accIsParent,
       ));
     }
@@ -438,25 +438,25 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       print(element.accId);
       element.accId = generateId(RecordType.account);
       print(element.accId);
-      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
+      // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson());
       HiveDataBase.accountModelBox.put(element.accId, element);
     }
     // i=0;
-    // for (var element in finalData) {
-    //   i++;
-    //   print(i.toString());
-    //   if(!element.accIsParent! ||element.accParentId!=null){
-    //     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId)).update({
-    //       'accChild': FieldValue.arrayUnion([element.accId]),
-    //     });
-    //     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).update({
-    //       "accParentId":getAccountIdFromText(element.accParentId)
-    //     });
-    //   }
-    // }
+    for (var element in finalData) {
+      i++;
+      print(i.toString());
+      if(!element.accIsParent! ||element.accParentId!=null){
+        FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId)).update({
+          'accChild': FieldValue.arrayUnion([element.accId]),
+        });
+        FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).update({
+          "accParentId":getAccountIdFromText(element.accParentId)
+        });
+      }
+    }
   }
 
-Future<void> addCheque() async {
+Future<void> addCheque() async  {
     List<GlobalModel> finalData = [];
     var cheqCode = 2 ;
     for (var i = 0 ; i< widget.productList.length ; i++) {
@@ -475,8 +475,9 @@ Future<void> addCheque() async {
         await Future.delayed(const Duration(milliseconds: 100));
        String cheqType =element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace?Const.chequeTypePay:Const.chequeTypePay; 
        String cheqStatus =element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace?Const.chequeStatusPaid:Const.chequeStatusNotPaid;
+       print(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""));
        print(element[setting["cheqPrimeryAccount"]]);
-       String cheqPrimeryAccount=getAccountIdFromName(element[setting["cheqPrimeryAccount"]])!.accId!;
+       String cheqPrimeryAccount=getAccountIdFromName(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""))?.accId!??getAccountIdFromName(element[setting["cheqPrimeryAccount"]])!.accId!;
        String cheqSecoundryAccount=getAccountIdFromName(element[setting["cheqSecoundryAccount"]].toString())!.accId!;
        String cheqBankAccount=getAccountIdFromText("المصرف");
        double cheqAllAmount=double.parse(element[setting["cheqAllAmount"]].replaceAll(",", ""));

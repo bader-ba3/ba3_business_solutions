@@ -45,7 +45,7 @@ Future<String?> searchAccountTextDialog(String accountText)async {
                     )),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: customTextFieldWithIcon(accountTextController, (_) async {
+                  child: CustomTextFieldWithIcon(controller: accountTextController,        onSubmitted:(_) async {
                     accountViewModel.update();
                   }, onIconPressed: () {}),
                 ),

@@ -497,16 +497,18 @@ class GlobalModel {
     } else if ( type == Const.globalTypeCheque) {
       return {
         'cheqId': cheqId,
-        'cheqName': cheqName,
-        'cheqAllAmount': cheqAllAmount,
-        'cheqRemainingAmount': cheqRemainingAmount,
-        'cheqPrimeryAccount': cheqPrimeryAccount,
-        'cheqSecoundryAccount': cheqSecoundryAccount,
-        'cheqCode': cheqCode,
-        'cheqDate': cheqDate,
-        'cheqStatus': cheqStatus,
-        'cheqType': cheqType,
-        'cheqBankAccount': cheqBankAccount,
+        'رقم الشيك': cheqCode,
+        // 'نوع الشيك ورقمه': cheqName,
+        'القيمة': cheqAllAmount,
+        'تاريخ الاستحقاق': cheqDate,
+        // 'cheqRemainingAmount': cheqRemainingAmount,
+        'حساب الورقة': getAccountNameFromId(cheqPrimeryAccount),
+        'الحساب المقابل': getAccountNameFromId(cheqSecoundryAccount),
+
+
+        'حالة الشيك': getChequeStatusfromEnum(cheqStatus.toString()),
+        'نوع الشيك': getChequeTypefromEnum(cheqType.toString()),
+        'اسم البنك': getAccountNameFromId(cheqBankAccount),
       };
     } else {
       print("UNKNOW TYPE");

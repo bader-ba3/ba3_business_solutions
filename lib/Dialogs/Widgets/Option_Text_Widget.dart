@@ -22,7 +22,7 @@ class OptionTextWidget extends StatelessWidget {
           SizedBox(width: 100, child: Text(title)),
           SizedBox(
             width: Get.width / 2,
-            child: customTextFieldWithIcon(controller, onSubmitted, onIconPressed: () {}),
+            child: CustomTextFieldWithIcon(controller: controller,       onSubmitted: onSubmitted, ),
           ),
         ],
       ),

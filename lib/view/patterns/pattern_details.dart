@@ -88,9 +88,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                             width: 25,
                           ),
                           Expanded(
-                            child: customTextFieldWithoutIcon(
-                              nameController,
-                              true,
+                            child: CustomTextFieldWithoutIcon(
+                            controller:   nameController,
+
                               onChanged: (_) {
                                 patternController.editPatternModel?.patName = _;
                               },
@@ -111,9 +111,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                             width: 25,
                           ),
                           Expanded(
-                            child: customTextFieldWithoutIcon(
-                              codeController,
-                              true,
+                            child: CustomTextFieldWithoutIcon(
+                          controller:     codeController,
+
                               keyboardType: TextInputType.number,
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                               onChanged: (_) {
@@ -145,9 +145,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 Expanded(
                                   child: Container(
                                     foregroundDecoration: typeController.text == Const.invoiceTypeAdd ? BoxDecoration(color: Colors.grey.withOpacity(0.5)) : null,
-                                    child: customTextFieldWithIcon(
-                                      primaryController,
-                                      (text) async {
+                                    child: CustomTextFieldWithIcon(
+                                     controller:  primaryController,
+                                     onSubmitted:  (text) async {
                                         var a = await getAccountComplete(text);
                                         patternController.update();
                                         if (a.isNotEmpty) {
@@ -182,9 +182,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 width: 25,
                               ),
                               Expanded(
-                                child: customTextFieldWithIcon(
-                                  secondaryController,
-                                  (text) async {
+                                child: CustomTextFieldWithIcon(
+                                 controller:  secondaryController,
+                                  onSubmitted:  (text) async {
                                     var a = await getAccountComplete(text);
                                     patternController.update();
                                     if (a.isNotEmpty) {
@@ -193,9 +193,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                       setState(() {});
                                     }
                                   },
-                                  onChanged: (_) {
-                                    // patternController.editPatternModel?.patPrimary = _;
-                                  },
+
                                 ),
                               ),
                               const SizedBox(
@@ -293,9 +291,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 width: 25,
                               ),
                               Expanded(
-                                child: customTextFieldWithIcon(
-                                  vatAccountController,
-                                  (text) async {
+                                child: CustomTextFieldWithIcon(
+                                controller:   vatAccountController,
+                                  onSubmitted:     (text) async {
                                     var a = await getAccountComplete(text);
                                     patternController.update();
                                     if (a.isNotEmpty) {
@@ -325,9 +323,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                             ),
                             SizedBox(
                               width: Get.width * 0.3,
-                              child: customTextFieldWithIcon(
-                                storeNewController,
-                                (text) async {
+                              child: CustomTextFieldWithIcon(
+                              controller:   storeNewController,
+                                onSubmitted:  (text) async {
                                   var a = await patternController.getStoreComplete(text);
                                   if (a.isNotEmpty) {
                                     patternController.editPatternModel?.patNewStore = a;
@@ -379,9 +377,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 width: 25,
                               ),
                               Expanded(
-                                child: customTextFieldWithIcon(
-                                  giftAccountController,
-                                  (text) async {
+                                child: CustomTextFieldWithIcon(
+                              controller:     giftAccountController,
+                                  onSubmitted:  (text) async {
                                     var a = await getAccountComplete(text);
                                     patternController.update();
                                     if (a.isNotEmpty) {
@@ -408,9 +406,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 width: 25,
                               ),
                               Expanded(
-                                child: customTextFieldWithIcon(
-                                  secgiftAccountController,
-                                  (text) async {
+                                child: CustomTextFieldWithIcon(
+                                 controller:  secgiftAccountController,
+                                  onSubmitted:  (text) async {
                                     var a = await getAccountComplete(text);
                                     patternController.update();
                                     if (a.isNotEmpty) {
@@ -442,9 +440,9 @@ class _PatternDetailsState extends State<PatternDetails> {
                       ),
                       SizedBox(
                         width: Get.width * 0.3,
-                        child: customTextFieldWithIcon(
-                          storeController,
-                          (text) async {
+                        child: CustomTextFieldWithIcon(
+                        controller:   storeController,
+                          onSubmitted:   (text) async {
                             var a = await patternController.getStoreComplete(text);
                             if (a.isNotEmpty) {
                               patternController.editPatternModel?.patStore = a;

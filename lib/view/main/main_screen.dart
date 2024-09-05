@@ -18,6 +18,7 @@ import 'package:tab_container/tab_container.dart';
 
 import '../card_management/card_management_view.dart';
 import '../database/database_type.dart';
+import '../entry_bond/entry_bond_type.dart';
 import '../import/picker_file.dart';
 import '../inventory/inventory_type.dart';
 import '../sellers/seller_type.dart';
@@ -63,7 +64,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
 
     super.initState();
     allData = rowData.where((element) => checkMainPermission(element.role)).toList();

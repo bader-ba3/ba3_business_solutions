@@ -36,12 +36,12 @@ class InvoiceRecordModel {
   InvoiceRecordModel.fromJsonPluto(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
     invRecProduct =getProductIdFromName(map['invRecProduct'])??map['invRecProduct'];
-    invRecQuantity = int.tryParse(map['invRecQuantity'].toString());
-    invRecSubTotal = double.tryParse(map['invRecSubTotal'].toString());
+    invRecQuantity = int.tryParse(replaceArabicNumbersWithEnglish(map['invRecQuantity'].toString()));
+    invRecSubTotal = double.tryParse(replaceArabicNumbersWithEnglish(map['invRecSubTotal'].toString()));
     invRecTotal = double.tryParse(map['invRecTotal'].toString());
     invRecVat = double.tryParse((map['invRecVat']).toString());
     invRecIsLocal = map['invRecIsLocal'];
-    invRecGift = int.tryParse(map['invRecGift'].toString());
+    invRecGift = int.tryParse(replaceArabicNumbersWithEnglish(map['invRecGift'].toString()));
     invRecGiftTotal = map['invRecGiftTotal'];
   }
 

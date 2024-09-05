@@ -1,5 +1,6 @@
-import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
+import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/account_view_model.dart';
@@ -46,7 +47,46 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                         const Spacer(),
                         ElevatedButton(
-                            onPressed: () async {
+                            onPressed: () {
+                              int i = 0;
+                              // HiveDataBase.accountModelBox.deleteFromDisk();
+                              HiveDataBase.globalModelBox.deleteFromDisk();
+              /*                FirebaseFirestore.instance.collection(Const.accountsCollection).get().then((value) {
+
+                                AccountModel model=AccountModel();
+
+                                model=AccountModel.fromJson((value.docs.last.data() ));
+                                HiveDataBase.accountModelBox.put(model.accId, model);
+                                print(value.docs.length);
+                              },);*/
+                              // print(HiveDataBase.accountModelBox.values.map((e) => e.toJson(),).toList());
+
+              /*                HiveDataBase.accountModelBox.values
+                                  .where(
+                                (element) => *//*element.accIsParent != true&&*//*element.accId=="acc1725318978879576",
+                              )
+                                  .forEach((element) {
+                             *//*   if (getAccountIdFromText(element.accParentId!) != '') {
+                                  if (i == 0) {
+                                    //acc1725319203402595
+                                    print(element.toJson());
+
+                                    // HiveDataBase.accountModelBox.put(getAccountIdFromText(element.accParentId!), element..accChild.add(element.accId!));
+                                    *//**//*       FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId!)).set({
+                                        "accChild": FieldValue.arrayUnion([element.accId!])
+                                      }, SetOptions(merge: true));
+                                      FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set({
+                                        "accParentId": getAccountIdFromText(element.accParentId!)
+                                      }, SetOptions(merge: true));*//**//*
+                                    print(element.toJson());
+                                    i++;
+                                  }
+                                }*//*
+                              });*/
+
+                              // print();
+                            },
+                            /*  onPressed: () async {
                               TextEditingController nameController = TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
@@ -109,7 +149,7 @@ class _DashboardViewState extends State<DashboardView> {
                               accountController.update();
 
                             ///رفع الرصيد النهائي للحسابات
-            /*                print(accountController.accountList.length);
+            */ /*                print(accountController.accountList.length);
                               accountController.accountList.forEach(
                                 (key, value) async{
 
@@ -117,8 +157,8 @@ class _DashboardViewState extends State<DashboardView> {
                                   print(getAccountBalanceFromId(key));
                                  await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
                                 },
-                              );*/
-                            },
+                              );*/ /*
+                            },*/
                             child: Text("إضافة حساب ")),
                         SizedBox(
                           width: 20,
@@ -129,7 +169,6 @@ class _DashboardViewState extends State<DashboardView> {
                         child: ListView.builder(
                       itemCount: HiveDataBase.mainAccountModelBox.values.toList().length,
                       itemBuilder: (context, index) {
-
                         AccountModel model = HiveDataBase.mainAccountModelBox.values.toList()[index];
                         return Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -153,7 +192,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    (accountController.accountList[model.accId]?.finalBalance??0).toStringAsFixed(2),
+                                    (accountController.accountList[model.accId]?.finalBalance ?? 0).toStringAsFixed(2),
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),

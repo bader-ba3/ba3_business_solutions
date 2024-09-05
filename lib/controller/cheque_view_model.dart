@@ -36,7 +36,7 @@ class ChequeViewModel extends GetxController {
   }
 
   void getAllCheques() async {
- /*   FirebaseFirestore.instance.collection(Const.chequesCollection).snapshots().listen((value) async {
+/*    FirebaseFirestore.instance.collection(Const.chequesCollection).get().then((value) async {
       print("Listen from fire base Get all cheques");
       allCheques.clear();
       for (var element in value.docs) {
@@ -73,13 +73,16 @@ class ChequeViewModel extends GetxController {
           accountId: element.cheqRecPrimeryAccount,
           amount: globalModel.cheqType == Const.chequeTypeCatch ? (-double.parse(element.cheqRecAmount!)).toString() : element.cheqRecAmount,
           type: globalModel.cheqType,
-          date: globalModel.cheqDate);
+          date: globalModel.cheqDate,
+      code: globalModel.cheqCode);
       accountController.addAccountRecord(
           bondId: element.cheqRecEntryBondId,
           accountId: element.cheqRecSecoundryAccount,
           amount: globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecAmount : (-double.parse(element.cheqRecAmount!)).toString(),
           type: globalModel.cheqType,
-          date: globalModel.cheqDate);
+          date: globalModel.cheqDate,
+          code: globalModel.cheqCode
+      );
     });
     initChequeViewPage();
   }

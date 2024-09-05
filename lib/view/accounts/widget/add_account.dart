@@ -48,7 +48,7 @@ class _AddAccountState extends State<AddAccount> {
       notesController.text = accountModel.accComment ?? "23232332";
       codeController.text = accountModel.accCode ?? "23232332";
       accVat = accountModel.accVat ?? "GCC";
-      accParentId.text = accountModel.accParentId??'' ;
+      accParentId.text = getAccountNameFromId(accountModel.accParentId) ;
       accIsRoot=accountModel.accParentId==null;
       //accountModel.accAggregateList=accountModel.accAggregateList.map((e) => getAccountNameFromId(e)).toList();
       // idController.text = accountModel.accCode??"23232332";
@@ -81,7 +81,10 @@ class _AddAccountState extends State<AddAccount> {
                     child: Row(
                       children: [
                         const Flexible(flex: 3, child: Text("رمز الحساب: ")),
-                        Flexible(flex: 3, child: customTextFieldWithoutIcon(codeController, true)),
+                        Flexible(flex: 3, child: CustomTextFieldWithoutIcon(
+
+
+                           controller:  codeController)),
                       ],
                     ),
                   )
@@ -102,7 +105,7 @@ class _AddAccountState extends State<AddAccount> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 const Flexible(flex: 2, child: Text("اسم الحساب :")),
-                                Flexible(flex: 3, child: customTextFieldWithoutIcon(nameController, true)),
+                                Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller:  nameController)),
                               ],
                             ),
                           ),
@@ -145,7 +148,7 @@ class _AddAccountState extends State<AddAccount> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           const Flexible(flex: 1, child: Text("ملاحظات:")),
-                          Flexible(flex: 3, child: customTextFieldWithoutIcon(notesController, true)),
+                          Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller:  notesController)),
                         ],
                       ),
                       SizedBox(

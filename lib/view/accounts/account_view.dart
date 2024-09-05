@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
+import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +19,8 @@ class AllAccount extends StatelessWidget {
             onLoaded: (e){
             },
             onSelected: (p0) {
+
+              Get.to(() =>  AddAccount(  modelKey: p0.row?.cells["accId"]?.value,oldParent:(p0.row?.cells["حساب الاب"]?.value) ,));
               // Get.to(() => AccountDetails(
               //   modelKey: p0.row?.cells["accId"]?.value,
               // ));

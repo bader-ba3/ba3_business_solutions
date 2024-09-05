@@ -11,7 +11,9 @@ Future<String?> searchProductTextDialog(String productText)async {
   TextEditingController productTextController=TextEditingController()..text=productText;
 
   List<ProductModel> productsForSearch;
+
   productsForSearch=Get.find<ProductViewModel>().searchOfProductByText(productTextController.text);
+
   if(productsForSearch.length==1) {
     return productsForSearch.first.prodName!;
   }else if(productsForSearch.isEmpty) {
@@ -46,7 +48,7 @@ Future<String?> searchProductTextDialog(String productText)async {
                           )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: customTextFieldWithIcon(productTextController, (_) async {
+                        child: CustomTextFieldWithIcon(controller: productTextController,       onSubmitted: (_) async {
                           productsForSearch=productViewModel.searchOfProductByText(productTextController.text);
                           productViewModel.update();
                         }, onIconPressed: () {}),

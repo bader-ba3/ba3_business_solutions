@@ -81,7 +81,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
       bondController.tempBondModel.bondCode = newCodeController.text;
     }
     defualtCode = bondController.tempBondModel.bondCode!;
-    bondController.initPage(bondController.tempBondModel.bondType);
+    // bondController.initPage(bondController.tempBondModel.bondType);
 
     // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
     // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
@@ -198,7 +198,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 onFieldSubmitted: (_) {
                                   controller.changeIndexCode(code: _,type: controller.tempBondModel.bondType!,);
-                                  bondController.initPage(bondController.tempBondModel.bondType);
+                                  // bondController.initPage(bondController.tempBondModel.bondType);
                                 },
                                 decoration: const InputDecoration.collapsed(hintText: ""),
                                 controller: TextEditingController(text: bondController.tempBondModel.bondCode),
@@ -348,8 +348,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     startSwipeActionsBuilder: (BuildContext context, DataGridRow row, int rowIndex) {
                                       return GestureDetector(
                                           onTap: () {
-                                            controller.deleteOneRecord(rowIndex);
-                                            controller.initPage(bondController.tempBondModel.bondType);
+                                            // controller.deleteOneRecord(rowIndex);
+                                            // controller.initPage(bondController.tempBondModel.bondType);
                                           },
                                           child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
                                     },

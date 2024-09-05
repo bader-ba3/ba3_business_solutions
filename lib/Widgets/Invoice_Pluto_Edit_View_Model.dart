@@ -69,8 +69,8 @@ class InvoicePlutoViewModel extends GetxController {
     stateManager.setShowLoading(true);
     for (var record in stateManager.rows) {
       if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != ''&&(record.toJson()["invRecGift"] == ''||(int.tryParse(record.toJson()["invRecGift"]??"0")??0) >= 0)) {
-        invRecQuantity = int.tryParse(record.toJson()["invRecQuantity"].toString()) ?? 0;
-        subtotals = double.tryParse(record.toJson()["invRecSubTotal"].toString()) ?? 0;
+        invRecQuantity = int.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecQuantity"].toString())) ?? 0;
+        subtotals = double.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecSubTotal"].toString())) ?? 0;
 
         total += invRecQuantity * (subtotals);
       }
@@ -101,7 +101,7 @@ class InvoicePlutoViewModel extends GetxController {
     for (var record in stateManager.rows) {
       if (record.toJson()["invRecGift"] != null&&record.toJson()["invRecGift"] != '') {
 
-        total =int.tryParse(record.toJson()["invRecQuantity"].toString()) ?? 0;
+        total =int.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecQuantity"].toString())) ?? 0;
       }
     }
     stateManager.setShowLoading(false);
@@ -111,11 +111,11 @@ class InvoicePlutoViewModel extends GetxController {
 
   double computeWithVatTotal() {
     double total = 0.0;
-
     stateManager.setShowLoading(true);
     for (var record in stateManager.rows) {
       if (record.toJson()["invRecTotal"] != '') {
-        total += double.tryParse(record.toJson()["invRecTotal"].toString()) ?? 0;
+
+        total += double.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecTotal"].toString())) ?? 0;
       }
     }
     stateManager.setShowLoading(false);
@@ -243,7 +243,7 @@ class InvoicePlutoViewModel extends GetxController {
       notify: true,
       force: true,
     );
-    update();
+
   }
 
   double parseExpression(String expression) {
@@ -261,9 +261,12 @@ class InvoicePlutoViewModel extends GetxController {
     double vat = (subTotal * 0.05);
     double total = (subTotal + vat) * quantity;
 
-    updateCellValue("invRecVat", vat.toStringAsFixed(2));
-    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
-    updateCellValue("invRecTotal", total.round().toString());
+
+    updateCellValue("invRecVat", vat.toStringAsFixed(4));
+    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(4));
+    updateCellValue("invRecTotal", total.toStringAsFixed(2));
+
+
   }
 
   PopupMenuItem showContextMenuItem(int index, ProductModel productModel, text, method) {

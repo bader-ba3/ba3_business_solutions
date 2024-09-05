@@ -12,7 +12,7 @@ import '../../../model/inventory_model.dart';
 
 class SelectTaskInventory extends StatefulWidget {
    final  String userId;
-  SelectTaskInventory({Key? key, required this.userId}) : super(key: key);
+  const SelectTaskInventory({Key? key, required this.userId}) : super(key: key);
 
 
   @override
@@ -110,7 +110,7 @@ class _SelectTaskInventoryState extends State<SelectTaskInventory> {
                   addChild(checkedList);
                 },
               )
-                  : Center(child: CircularProgressIndicator()))
+                  : const Center(child: CircularProgressIndicator()))
             ],
           ),
         ),
