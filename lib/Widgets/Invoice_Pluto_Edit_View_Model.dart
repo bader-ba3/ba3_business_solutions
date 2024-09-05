@@ -113,7 +113,7 @@ class InvoicePlutoViewModel extends GetxController {
 
     // stateManager.setShowLoading(true);
 
-    return computeWithoutVatTotal()+(computeWithoutVatTotal() * 0.05);
+    return computeWithoutVatTotal()*1.05;
   }
 
   double getPrice({type, prodName}) {
