@@ -110,21 +110,10 @@ class InvoicePlutoViewModel extends GetxController {
   }
 
   double computeWithVatTotal() {
-    double total = 0.0;
-    stateManager.setShowLoading(true);
-    for (var record in stateManager.rows) {
-      if (record.toJson()["invRecTotal"] != '') {
 
-        total += double.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecTotal"].toString())) ?? 0;
-      }
-    }
-    stateManager.setShowLoading(false);
-    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
-      (value) {
-        // update();
-      },
-    );
-    return total;
+    // stateManager.setShowLoading(true);
+
+    return computeWithoutVatTotal()+(computeWithoutVatTotal() * 0.05);
   }
 
   double getPrice({type, prodName}) {
