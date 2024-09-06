@@ -66,6 +66,7 @@ abstract class Const {
   static String readFlagsCollection = "ReadFlags";
   static String inventoryCollection = "Inventory";
   static String globalCollection=dataName;
+  static String ba3Invoice="ba3Invoice";
   static String dataCollection = "data";
   ////////////--------------------------------------------------
   static const rowAccountId = 'rowAccountId';

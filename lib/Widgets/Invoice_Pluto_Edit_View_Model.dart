@@ -111,9 +111,21 @@ class InvoicePlutoViewModel extends GetxController {
 
   double computeWithVatTotal() {
 
-    // stateManager.setShowLoading(true);
+    double total = 0.0;
+    for (var record in stateManager.rows) {
+      if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != '') {
 
-    return computeWithoutVatTotal()*1.05;
+        total += double.tryParse(record.toJson()["invRecTotal"].toString()) ?? 0;
+
+      }
+    }
+    stateManager.setShowLoading(false);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+          (value) {
+        // update();
+      },
+    );
+    return total;
   }
 
   double getPrice({type, prodName}) {
@@ -250,21 +262,49 @@ class InvoicePlutoViewModel extends GetxController {
     double vat = (subTotal * 0.05);
     double total = (subTotal + vat) * quantity;
 
+    updateCellValue("invRecVat", vat.toStringAsFixed(2));
+    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
+    updateCellValue("invRecTotal", total.toStringAsFixed(2));
+  }
 
-    updateCellValue("invRecVat", vat.toStringAsFixed(4));
-    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(4));
+  void updateInvoiceValuesByTotal(double total, int quantity) {
+
+    double subTotal = (total  / quantity)-((total *0.05) / quantity);
+    double vat = ((total/ quantity) - subTotal);
+
+    updateCellValue("invRecVat", vat.toStringAsFixed(2));
+    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
+    updateCellValue("invRecTotal", total.toStringAsFixed(2));
+  }
+
+  void updateInvoiceValuesByDiscount(double total, int quantity, double discount) {
+    total =   total-(total * (discount / 100));
+    double subTotal = (total / 1.05) / quantity;
+
+    double vat = ((total/quantity) - subTotal);
+
+    updateCellValue("invRecVat", vat.toStringAsFixed(2));
+    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
     updateCellValue("invRecTotal", total.toStringAsFixed(2));
 
+  }
+  void updateInvoiceValuesByQuantity( int quantity,subtotal,double vat) {
+
+   double total =  (subtotal+vat)*quantity;
+
+    updateCellValue("invRecTotal", total.toStringAsFixed(2));
 
   }
 
   PopupMenuItem showContextMenuItem(int index, ProductModel productModel, text, method) {
     return PopupMenuItem(
       onTap: () {
-        updateInvoiceValues(
-          getPrice(prodName: productModel.prodName, type: method) / 1.05,
-          int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value)??0,
+        updateInvoiceValuesByTotal(
+          getPrice(prodName: productModel.prodName, type: method) ,
+          int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value.toString()??"0") ?? 0,
+
         );
+        update();
       },
       enabled: true,
       child: ListTile(

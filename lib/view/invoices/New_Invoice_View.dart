@@ -676,13 +676,28 @@ class _InvoiceViewState extends State<InvoiceView> {
                               }
                             },
                             onChanged: (PlutoGridOnChangedEvent event) async {
-                              String quantityNum = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString()??'');
-                              String? subTotalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value) ;
+                              String quantityNum = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString() ?? '');
+                              String? subTotalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value);
+                              String? totalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecTotal"]?.value);
+                              String? dis = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecDis"]?.value??"0");
+                              String? vat = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecVat"]?.value??"0");
 
                               double subTotal = controller.parseExpression(subTotalStr);
+                              double total = controller.parseExpression(totalStr);
                               int quantity = double.parse(quantityNum).toInt();
-
-                              controller.updateInvoiceValues(subTotal, quantity);
+                              if (event.column.field == "invRecSubTotal") {
+                                controller.updateInvoiceValues(subTotal, quantity);
+                              }
+                              if (event.column.field == "invRecTotal") {
+                                controller.updateInvoiceValuesByTotal(total, quantity);
+                              }
+                              // if (event.column.field == "invRecDis" && quantity > 0) {
+                              //   controller.updateInvoiceValuesByDiscount(total, quantity, double.parse(dis));
+                              // }
+                              if (event.column.field == "invRecQuantity" && quantity > 0) {
+                                controller.updateInvoiceValuesByQuantity( quantity,subTotal, double.parse(vat));
+                              }
+                              controller.update();
                             },
                           );
                         }),
@@ -836,7 +851,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      (controller.computeWithoutVatTotal() * 0.05).toStringAsFixed(2),
+                                      (controller.computeWithVatTotal() * 0.05).toStringAsFixed(2),
                                       style: const TextStyle(fontSize: 30, color: Colors.white),
                                     ),
                                     const Text(
@@ -1067,6 +1082,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   });
                                 },
                               ),
+                              AppButton(title: "E-Invoice", onPressed: (){
+                                showEIknvoiceDialog(mobileNumber: controller.initModel.invMobileNumber ?? "", invId:controller.initModel.invId!);
+                              }, iconData: Icons.link),
                               if (screenViewModel.openedScreen[widget.billId] == null)
                                 AppButton(
                                   iconData: Icons.delete_outline,
@@ -1228,7 +1246,7 @@ class _InvoiceViewState extends State<InvoiceView> {
         patternId: widget.patternModel!.patId!,
         invType: widget.patternModel!.patType!,
         invTotal: Get.find<InvoicePlutoViewModel>().computeWithVatTotal(),
-        invFullCode: invoiceController.initModel.invId == null ? widget.patternModel!.patName! + ": " + invoiceController.invCodeController.text : invoiceController.initModel.invFullCode,
+        invFullCode: invoiceController.initModel.invId == null ? "${widget.patternModel!.patName!}: ${invoiceController.invCodeController.text}" : invoiceController.initModel.invFullCode,
         invId: invoiceController.initModel.invId ?? generateId(RecordType.invoice),
         invStorehouse: getStoreIdFromText(invoiceController.storeController.text),
         invSecStorehouse: getStoreIdFromText(invoiceController.storeNewController.text),
@@ -1264,15 +1282,18 @@ class AppButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  style: const TextStyle(fontSize: 20),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
-                const Spacer(),
+                // const Spacer(),
                 Icon(
                   iconData,
-                  size: 24,
+                  size: 22,
                 ),
               ],
             ),

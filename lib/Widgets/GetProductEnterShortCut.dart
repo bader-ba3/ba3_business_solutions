@@ -56,31 +56,39 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction  {
 
   getProduct(PlutoGridStateManager stateManager, dynamic controller,fieldTitle) async {
 
-    if (stateManager.currentColumn?.field == fieldTitle) {
+    if (stateManager.currentColumn?.field == "invRecProduct") {
       String? newValue = await searchProductTextDialog(stateManager.currentCell?.value);
       if (newValue != null) {
         stateManager.changeCellValue(
           stateManager.currentRow!.cells[stateManager.currentColumn?.field]!,
           newValue,
+          force: true,
+          callOnChangedEvent: true,
           notify: true,
         );
-        if(fieldTitle=="invRecProduct") {
-          stateManager.changeCellValue(
-            stateManager.currentRow!.cells["invRecSubTotal"]!,
-            (double.parse(controller.getPrice(prodName: newValue, type: Const.invoiceChoosePriceMethodeCustomerPrice).toString()) / 1.05).toString(),
-            notify: true,
-          );
-        }
+        controller.updateInvoiceValuesByTotal(controller.getPrice(prodName: newValue, type: Const.invoiceChoosePriceMethodeCustomerPrice), 1);
+        // stateManager.changeCellValue(
+        //   stateManager.currentRow!.cells["invRecQuantity"]!,
+        //   1,
+        //
+        //   callOnChangedEvent: false,
+        //   force: true,
+        //   notify: true,
+        // );
+        // stateManager.moveCurrentCell(PlutoMoveDirection.right,force: true,notify: true);
+
+        // stateManager.moveSelectingCell(PlutoMoveDirection.left,);
       } else {
         stateManager.changeCellValue(
-          stateManager.currentRow!.cells[fieldTitle]!,
+          stateManager.currentRow!.cells["invRecProduct"]!,
           '',
+          callOnChangedEvent: false,
           notify: true,
         );
       }
+      stateManager.notifyListeners();
+      controller.update();
     }
-    stateManager.notifyListeners();
-    controller.update();
   }
 
   bool _isExpandableCell(PlutoGridStateManager stateManager) {

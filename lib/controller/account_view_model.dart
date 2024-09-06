@@ -430,7 +430,7 @@ class AccountViewModel extends GetxController {
     if (accountList.isEmpty) {
       return "0";
     } else {
-      _ = int.parse(accountList.values.last.accCode!) + 1;
+      _ = int.parse(accountList.values.last.accCode!.replaceAll("F-", "")) + 1;
       while (allCode.contains(_)) {
         _++;
       }

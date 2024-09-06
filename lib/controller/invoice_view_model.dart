@@ -685,12 +685,12 @@ void showEIknvoiceDialog({required String mobileNumber, required String invId}) 
         child: Column(
           children: [
             QrImageView(
-              data: 'https://ba3-business-solutions.firebaseapp.com/?id=' + invId + '&year=' + Const.dataName,
+              data: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
               version: QrVersions.auto,
               size: Get.height / 2.5,
             ),
             //SizedBox(height: 20,),
-            Text(
+            const Text(
               "مشاركة عبر",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -700,21 +700,21 @@ void showEIknvoiceDialog({required String mobileNumber, required String invId}) 
                 InkWell(
                     onTap: () {
                       Clipboard.setData(ClipboardData(
-                        text: 'https://ba3-business-solutions.firebaseapp.com/?id=' + invId + '&year=' + Const.dataName,
+                        text: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
                       ));
                     },
                     child: CircleAvatar(
                       radius: 30,
+                      backgroundColor: Colors.grey,
                       child: Icon(
                         Icons.copy,
                         color: Colors.grey.shade300,
                       ),
-                      backgroundColor: Colors.grey,
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   child: Icon(Icons.chat_bubble),
                 ),

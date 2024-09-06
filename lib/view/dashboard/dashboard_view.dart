@@ -47,10 +47,15 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                         const Spacer(),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async{
                               int i = 0;
                               // HiveDataBase.accountModelBox.deleteFromDisk();
-                              HiveDataBase.globalModelBox.deleteFromDisk();
+                              // HiveDataBase.globalModelBox.deleteFromDisk();
+                              // print(HiveDataBase.productModelBox.values.length);
+                              for (var element in HiveDataBase.productModelBox.values) {
+                               await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson(),SetOptions(merge: true));
+                                print(element.prodId);
+                              }
               /*                FirebaseFirestore.instance.collection(Const.accountsCollection).get().then((value) {
 
                                 AccountModel model=AccountModel();
