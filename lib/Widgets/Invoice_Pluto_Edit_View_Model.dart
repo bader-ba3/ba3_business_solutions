@@ -322,6 +322,8 @@ class InvoicePlutoViewModel extends GetxController {
     stateManager.setShowLoading(true);
     List<InvoiceRecordModel> invRecord = [];
 
+    invoiceRecord.clear();
+
     invRecord = stateManager.rows.where((element) {
       return getProductIdFromName(element.cells['invRecProduct']!.value) != null;
     }).map(
@@ -355,6 +357,8 @@ class InvoicePlutoViewModel extends GetxController {
     //       (e) => e.toJson(),
     //     )
     //     .toList());
+
+    // print(invRecord.map((e) => e.toJson(),));
     return invRecord;
   }
 }

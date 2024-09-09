@@ -191,7 +191,7 @@ class EntryBondViewModel extends GetxController {
 
     if (lastEntryBondOpened != null) {
       tempBondModel = GlobalModel.fromJson(allEntryBonds[lastEntryBondOpened]?.toFullJson());
-      initPage();
+      // initPage();
     }
 
     update();
@@ -214,7 +214,7 @@ class EntryBondViewModel extends GetxController {
   }
 
   void fastAddBondAddToModel({required GlobalModel globalModel, required List<EntryBondRecordModel> record}) {
-    tempBondModel = GlobalModel();
+    tempBondModel = globalModel;
     tempBondModel.globalType = Const.globalTypeCheque;
     tempBondModel.entryBondRecord = record;
     tempBondModel.originId = globalModel.originId;
@@ -224,12 +224,12 @@ class EntryBondViewModel extends GetxController {
     } else {
       tempBondModel.entryBondId = globalModel.entryBondId;
     }
-    tempBondModel.bondTotal = globalModel.cheqAllAmount.toString();
-    tempBondModel.bondType = Const.bondTypeInvoice;
+    // tempBondModel.bondTotal = globalModel.cheqAllAmount.toString();
+    // tempBondModel.bondType = Const.bondTypeInvoice;
     // var bondCode = "";
     // tempBondModel.bondDate=bondDate;
-    tempBondModel.bondDate ??= DateTime.now().toString().split(" ")[0];
-    tempBondModel.bondDescription = "تم التوليد من " + getChequeTypefromEnum(globalModel.cheqType.toString()) + " رقم " + globalModel.cheqCode.toString();
+    // tempBondModel.bondDate ??= DateTime.now().toString().split(" ")[0];
+    // tempBondModel.entr = "تم التوليد من " + getChequeTypefromEnum(globalModel.cheqType.toString()) + " رقم " + globalModel.cheqCode.toString();
     allEntryBonds[tempBondModel.entryBondId!] = tempBondModel;
   }
 

@@ -100,8 +100,8 @@ class ProductViewModel extends GetxController {
 
 
 
-  List<ProductModel> searchOfProductByText(query) {
-    print(query);
+  List<ProductModel> searchOfProductByText(query,bool withGroup) {
+
     List<ProductModel> productsForSearch = [];
      query = replaceArabicNumbersWithEnglish(query);
     String query2 = '';
@@ -126,11 +126,42 @@ class ProductViewModel extends GetxController {
       bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
       bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());
       //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
-      return (prodName || prodCode || prodBarcode) && !item.prodIsGroup!;
+      return (prodName || prodCode || prodBarcode) && item.prodIsGroup==withGroup;
     }).toList();
-print(productsForSearch.length);
+
     return productsForSearch.toList();
   }
+/*  List<ProductModel> searchOfProductGroupByText(query) {
+
+    List<ProductModel> productsForSearch = [];
+     query = replaceArabicNumbersWithEnglish(query);
+    String query2 = '';
+    String query3 = '';
+    if (query.contains(" ")) {
+      query3 = query.split(" ")[0];
+      query2 = query.split(" ")[1];
+    } else {
+      query3 = query;
+      query2 = query;
+    }
+
+    productsForSearch = productDataMap.values.where((element) => element.prodChild?.isNotEmpty??false,).where((element) {
+      if( HiveDataBase.getIsNunFree()) {
+        return  !(element.prodName?.startsWith("F")??true);
+      } else {
+        return true;
+      }
+    },).toList().where((item) {
+      bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) && item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
+      // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
+      bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
+      bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());
+      //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
+      return (prodName || prodCode || prodBarcode) && !item.prodIsGroup!;
+    }).toList();
+
+    return productsForSearch.toList();
+  }*/
 
 
 
@@ -362,7 +393,10 @@ print(productsForSearch.length);
       });
       if (productDataMap[editProductModel.prodParentId]?.prodChild == null) {
         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
+        HiveDataBase.productModelBox.put(editProductModel.prodParentId,getProductModelFromId(editProductModel.prodParentId)!..prodChild=[editProductModel.prodId]);
+
       } else {
+        HiveDataBase.productModelBox.put(editProductModel.prodParentId,getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
         productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
       }
       changesViewModel.addChangeToChanges(productDataMap[editProductModel.prodParentId]!.toFullJson(), Const.productsCollection);
@@ -370,6 +404,7 @@ print(productsForSearch.length);
     }
     if (withLogger) logger(newData: editProductModel);
     await FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).set(editProductModel.toJson());
+    HiveDataBase.productModelBox.put(editProductModel.prodId,editProductModel);
     changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
     Get.snackbar("فحص المطاييح", ' تم اضافة المطيح');
   }
@@ -412,15 +447,21 @@ print(productsForSearch.length);
       FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodParentId).update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
       });
+
       if (productDataMap[editProductModel.prodParentId]?.prodChild == null) {
         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
+        HiveDataBase.productModelBox.put(editProductModel.prodParentId,getProductModelFromId(editProductModel.prodParentId)!..prodChild=[editProductModel.prodId]);
+
       } else {
         productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
+        HiveDataBase.productModelBox.put(editProductModel.prodParentId,getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
+
       }
       changesViewModel.addChangeToChanges(productDataMap[editProductModel.prodParentId]!.toFullJson(), Const.productsCollection);
       editProductModel.prodIsParent = false;
     }
     FirebaseFirestore.instance.collection(Const.productsCollection).doc(editProductModel.prodId).update(editProductModel.toJson());
+    HiveDataBase.productModelBox.put(editProductModel.prodId,editProductModel);
 
     changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.productsCollection);
     update();

@@ -22,12 +22,14 @@ import '../Widgets/Pluto_View_Model.dart';
 import '../controller/changes_view_model.dart';
 import '../controller/database_view_model.dart';
 
+import '../controller/global_view_model.dart';
 import '../controller/user_management_model.dart';
 
 class GetBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(ScreenViewModel());
+    // Get.put(GlobalViewModel());
     Get.put(SearchViewController());
     Get.put(EntryBondViewModel());
     Get.put(ImportViewModel());
@@ -44,7 +46,7 @@ class GetBinding extends Bindings {
     Get.put(InventoryViewModel());
 
 
-    Get.put(IsolateViewModel());
+    // Get.put(IsolateViewModel());
     Get.put(DataBaseViewModel());
     Get.put(CardsViewModel());
     Get.put(TargetViewModel());

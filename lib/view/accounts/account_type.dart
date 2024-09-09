@@ -19,6 +19,7 @@ class AccountType extends StatefulWidget {
 
 class _AccountTypeState extends State<AccountType> {
   PatternViewModel patternController = Get.find<PatternViewModel>();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -39,8 +40,6 @@ class _AccountTypeState extends State<AccountType> {
             // }),
             item("كشف حساب", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-
-
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(
@@ -52,10 +51,8 @@ class _AccountTypeState extends State<AccountType> {
             }),
             item("معاينة الحسابات", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
-
-
                 if (value) {
-             Get.to(()=> const AllAccount());
+                  Get.to(() => const AllAccount());
                 }
               });
             }),
@@ -64,7 +61,6 @@ class _AccountTypeState extends State<AccountType> {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
-
           ],
         ),
       ),

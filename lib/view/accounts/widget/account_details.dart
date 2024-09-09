@@ -26,9 +26,9 @@ class AccountDetails extends StatefulWidget {
 
 class _AccountDetailsState extends State<AccountDetails> {
   var accountController = Get.find<AccountViewModel>();
-  var nameController = TextEditingController();
-  var codeController = TextEditingController();
-  List<AccountRecordModel> record = <AccountRecordModel>[];
+  // var nameController = TextEditingController();
+  // var codeController = TextEditingController();
+  // List<AccountRecordModel> record = <AccountRecordModel>[];
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   Widget build(BuildContext context) {
     return GetBuilder<AccountViewModel>(builder: (controller) {
       return Scaffold(
-        body: Column(
+        body: !controller.isLoadingBond?const Center(child: CircularProgressIndicator(),):Column(
           children: [
             Expanded(
               child: CustomPlutoGridWithAppBar(
@@ -97,7 +97,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   width: 10,
                 ),
                 Text(
-                  controller.searchValue.toStringAsFixed(2),
+                  formatDecimalNumberWithCommas(controller.searchValue),
                   style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.w600, fontSize: 32),
                 ),
               ],

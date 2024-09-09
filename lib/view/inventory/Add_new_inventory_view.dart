@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Const/const.dart';
+import '../../Dialogs/Search_Product_Group_Text_Dialog.dart';
 import '../../Widgets/CustomPlutoGrid.dart';
 import '../../controller/product_view_model.dart';
 import '../../model/inventory_model.dart';
@@ -27,7 +28,7 @@ class AddNewInventoryView extends StatefulWidget {
 class _AddNewInventoryViewState extends State<AddNewInventoryView> {
   List<Map<String, dynamic>> treeListData = [];
   TextEditingController dateInventoryController = TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
-  TextEditingController productNameController = TextEditingController();
+  TextEditingController productGroupNameController = TextEditingController();
   List<ProductModel> allData = [];
 
   @override
@@ -54,18 +55,24 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                       title: "موافق",
                       onPressed: () async {
                         SellersViewModel sellerViewController = Get.find<SellersViewModel>();
-                        List<String?> sellers = List.generate(allData.length, (index) => null);
-                        Map<String,String>allInventoryProducts={};
+                        List<String?> sellers = [];
+                        Map<String, String> allInventoryProducts = {};
+                        List<String> groupProduct = [];
+                        for (var element in allData) {
+                          groupProduct.addIf(!groupProduct.contains(element.prodParentId!), element.prodParentId!);
+                        }
+                        sellers = List.generate(groupProduct.length, (index) => null);
                         Get.defaultDialog(
-                          backgroundColor: backGroundColor,
-                          title: "اختر الموظف لكل مهمة",
-                          middleText: "",
-                          content: GetBuilder<InventoryViewModel>(builder: (inventoryController) {
-                            return SizedBox(
-                              width: Get.width / 2,
-                              height: Get.height / 1.5,
-                              child: ListView.builder(
-                                  itemBuilder: (context, index) => Container(
+                            backgroundColor: backGroundColor,
+                            title: "اختر الموظف لكل مهمة",
+                            middleText: "",
+                            content: GetBuilder<InventoryViewModel>(builder: (inventoryController) {
+                              return SizedBox(
+                                width: Get.width / 2,
+                                height: Get.height / 1.5,
+                                child: ListView.builder(
+                                    itemBuilder: (context, index) {
+                                      return Container(
                                         padding: const EdgeInsets.all(15),
                                         margin: const EdgeInsets.all(15),
                                         decoration: BoxDecoration(color: Colors.blue.shade200, borderRadius: BorderRadius.circular(15)),
@@ -77,7 +84,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                             SizedBox(
                                               width: 300,
                                               child: Text(
-                                                allData[index].prodName.toString(),
+                                                getProductNameFromId(groupProduct[index]).toString(),
                                                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -117,16 +124,29 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                             ),
                                           ],
                                         ),
-                                      ),
-                                  itemCount: allData.length),
-                            );
-                          }),
-                          confirm: AppButton(title: "حفظ", onPressed: () {
-                            if(!sellers.contains(null)) {
-                              for(int i=0;i<sellers.length;i++)
-                                {
-                                  allInventoryProducts[allData.map((e) => e.prodId,).toList()[i]!]=sellers[i]!;
-                                }
+                                      );
+                                    },
+                                    itemCount: groupProduct.length),
+                              );
+                            }),
+                            confirm: AppButton(
+                                title: "حفظ",
+                                onPressed: () {
+                                  if (!sellers.contains(null)) {
+                                    for (int i = 0; i < groupProduct.length; i++) {
+                                      allData
+                                          .where(
+                                            (element) => element.prodParentId == groupProduct[i],
+                                          )
+                                          .map(
+                                            (e) => e.prodId,
+                                          )
+                                          .forEach(
+                                        (element) {
+                                          allInventoryProducts[element!] = sellers[i]!;
+                                        },
+                                      );
+                                    }
                                     InventoryModel inventory = InventoryModel(
                                         isDone: false,
                                         inventoryUserId: getMyUserUserId(),
@@ -140,13 +160,11 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
 
                                     Get.back();
                                     Get.back();
-                                  }else{
-                              Get.snackbar("خطأ", "يجب تعبئة كل الحقول");
-                            }
-                                }, iconData: Icons.save_as_outlined)
-                        );
-
-
+                                  } else {
+                                    Get.snackbar("خطأ", "يجب تعبئة كل الحقول");
+                                  }
+                                },
+                                iconData: Icons.save_as_outlined));
                       },
                       iconData: Icons.add),
                   const SizedBox(
@@ -181,25 +199,33 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                       height: 10,
                     ),
                     OptionTextWidget(
-                      title: "اسم المادة",
-                      controller: productNameController,
+                      title: "اسم المجموعة",
+                      controller: productGroupNameController,
                       onSubmitted: (productText) async {
                         PlutoViewModel plutoViewMode = Get.find<PlutoViewModel>();
                         plutoViewMode.plutoKey = GlobalKey();
                         ProductModel? productModel;
-                        productModel = getProductModelFromName(await searchProductTextDialog(productText));
+                        productModel = getProductModelFromId(await searchProductGroupTextDialog(productText));
                         if (productModel != null) {
-                          if (allData.contains(productModel)) {
-                            Get.snackbar("فشل العملية", "المادة موجودة من قبل");
+                          if (hasCommonElements(
+                              productModel.prodChild!,
+                              allData
+                                  .map(
+                                    (e) => e.prodId,
+                                  )
+                                  .toList())) {
+                            Get.snackbar("فشل العملية", "المجموعة موجودة من قبل");
                             return;
                           }
-                          allData.add(productModel);
+                          allData.addAll(productModel.prodChild!.map(
+                            (e) => getProductModelFromId(e)!,
+                          ));
 
-                          Get.snackbar("تمت العملية بنجاح", "تمت اضافة المادرة الى الجرد");
+                          Get.snackbar("تمت العملية بنجاح", "تمت اضافة المجموعة الى الجرد");
                           setState(() {});
-                          productNameController.clear();
+                          productGroupNameController.clear();
                         } else {
-                          Get.snackbar("فشل العملية", "هذه المادة غير موجودة");
+                          Get.snackbar("فشل العملية", "هذه المجموعة غير موجودة");
                         }
                       },
                     ),

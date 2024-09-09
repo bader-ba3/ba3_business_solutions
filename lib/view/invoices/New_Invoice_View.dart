@@ -962,7 +962,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInvoice).then((value) async {
                                       if (value) {
                                         screenViewModel.openedScreen.removeWhere(
-                                          (key, value) => key == _updateData(plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
+                                          (key, value) => key == _updateData( plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
                                         );
                                         // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
@@ -1229,7 +1229,7 @@ class _InvoiceViewState extends State<InvoiceView> {
   }
 
   GlobalModel _updateData(List<InvoiceRecordModel> record) {
-    print(invoiceController.initModel.invId);
+
     return GlobalModel(
         firstPay: double.tryParse(invoiceController.firstPayController.text),
         invReturnCode: invoiceController.invReturnCodeController.text,

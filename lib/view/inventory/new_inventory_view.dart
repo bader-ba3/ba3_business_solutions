@@ -28,8 +28,8 @@ class _NewInventoryViewState extends State<NewInventoryView> {
   }
 
   loadData() async {
-    IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
-    isolateViewModel.init();
+    // IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
+    // isolateViewModel.init();
     ProductViewModel productViewModel = Get.find<ProductViewModel>();
 
     ProductModel a = ProductModel(prodName: "ALL DATA", prodId: 'prod1', prodParentId: "prod0", prodFullCode: "0");

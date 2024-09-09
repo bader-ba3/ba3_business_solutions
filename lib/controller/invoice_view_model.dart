@@ -79,9 +79,9 @@ class InvoiceViewModel extends GetxController {
 
   List<GlobalModel> allInvoiceForPluto = [];
 
-  /// we don't need this
+/*  /// we don't need this
   getDataForPluto() async {
-    IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
+    // IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
     isolateViewModel.init();
     print("from invoice View");
     final a = await compute<({List<GlobalModel> invoiceModel, IsolateViewModel isolateViewModel}), List<GlobalModel>>((message) {
@@ -92,7 +92,7 @@ class InvoiceViewModel extends GetxController {
     // Get.find<PlutoViewModel>().  update();
     update();
     // return a;
-  }
+  }*/
 
 /*
   onCellTap(RowColumnIndex rowColumnIndex) {

@@ -63,12 +63,17 @@ class ChequeViewModel extends GetxController {
       });
     }
     allCheques[globalModel.cheqId!] = globalModel;
-    globalModel.cheqRecords?.forEach((element) {
+    globalModel.entryBondRecord=[];
+    globalModel.entryBondRecord!.add(EntryBondRecordModel("00", 0, double.parse( globalModel.cheqRecords![0].cheqRecAmount!), globalModel.cheqRecords![0].cheqRecPrimeryAccount, "تم التوليد من الشيكات"));
+    globalModel.entryBondRecord!.add(EntryBondRecordModel("01", double.parse( globalModel.cheqRecords![0].cheqRecAmount!), 0, globalModel.cheqRecords![0].cheqRecSecoundryAccount, "تم التوليد من الشيكات"));
+/*    globalModel.cheqRecords?.forEach((element) {
+
+
       // bondController.fastAddBondAddToModel(bondId: element.cheqRecBondId, originId: globalModel.cheqId!, total: double.parse(globalModel.cheqAllAmount!),bondType: Const.bondTypeInvoice,  record: [
       //   BondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
       //   BondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
       // ]);
-      accountController.addAccountRecord(
+    *//*  accountController.addAccountRecord(
           bondId: element.cheqRecEntryBondId,
           accountId: element.cheqRecPrimeryAccount,
           amount: globalModel.cheqType == Const.chequeTypeCatch ? (-double.parse(element.cheqRecAmount!)).toString() : element.cheqRecAmount,
@@ -82,9 +87,9 @@ class ChequeViewModel extends GetxController {
           type: globalModel.cheqType,
           date: globalModel.cheqDate,
           code: globalModel.cheqCode
-      );
-    });
-    initChequeViewPage();
+      );*//*
+    });*/
+    // initChequeViewPage();
   }
 
   ///checked

@@ -143,9 +143,9 @@ class AccountModel {
       'نوع الحساب': getAccountTypeFromEnum(accType ?? ""),
       'نوع الضريبة': accVat,
       'حساب الاب': getAccountNameFromId(accParentId),
-      'الوصف': accComment,
+      // 'الوصف': accComment,
       // 'الرصيد': getAccountBalanceFromId(accId),
-      'الرصيد':HiveDataBase.getIsNunFree()? fFinalBalance:finalBalance,
+      'الرصيد':finalBalance,
     };
   }
 }

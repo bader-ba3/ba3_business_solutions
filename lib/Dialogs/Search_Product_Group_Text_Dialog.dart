@@ -6,16 +6,16 @@ import '../../Widgets/new_Pluto.dart';
 import '../../controller/product_view_model.dart';
 import '../view/invoices/widget/custom_TextField.dart';
 
-Future<String?> searchProductTextDialog(String productText)async {
+Future<String?> searchProductGroupTextDialog(String productGroupText)async {
 
-  TextEditingController productTextController=TextEditingController()..text=productText;
+  TextEditingController productTextController=TextEditingController()..text=productGroupText;
 
   List<ProductModel> productsForSearch;
 
-  productsForSearch=Get.find<ProductViewModel>().searchOfProductByText(productTextController.text,false);
+  productsForSearch=Get.find<ProductViewModel>().searchOfProductByText(productTextController.text,true);
 
   if(productsForSearch.length==1) {
-    return productsForSearch.first.prodName!;
+    return productsForSearch.first.prodId!;
   }else if(productsForSearch.isEmpty) {
     return null;
   }
@@ -38,7 +38,7 @@ Future<String?> searchProductTextDialog(String productText)async {
                             borderRadius: BorderRadius.circular(15),
                             child: CustomPlutoGridWithAppBar(
                               onSelected: (selected) {
-                                productTextController.text = getProductNameFromId(selected.row?.cells["الرقم التسلسلي"]!.value);
+                                productTextController.text =selected.row?.cells["الرقم التسلسلي"]!.value;
                                 Get.back();
                               },
                               title: "اختيار مادة",
@@ -49,7 +49,7 @@ Future<String?> searchProductTextDialog(String productText)async {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: CustomTextFieldWithIcon(controller: productTextController,       onSubmitted: (_) async {
-                          productsForSearch=productViewModel.searchOfProductByText(productTextController.text,false);
+                          productsForSearch=productViewModel.searchOfProductByText(productTextController.text,true);
                           productViewModel.update();
                         }, onIconPressed: () {}),
                       ),

@@ -175,6 +175,7 @@ class GlobalViewModel extends GetxController {
   }
 
   void addGlobalInvoice(GlobalModel globalModel) {
+
     GlobalModel _ = correctInvRecord(globalModel);
     UserManagementViewModel userManagementViewModel = Get.find<UserManagementViewModel>();
     if ((userManagementViewModel.allRole[getMyUserRole()]?.roles[Const.roleViewInvoice]?.contains(Const.roleUserAdmin)) ?? false) {
@@ -245,7 +246,12 @@ class GlobalViewModel extends GetxController {
   ////--Delete
   void deleteGlobal(GlobalModel globalModel) {
     entryBondViewModel.deleteBondById(globalModel.entryBondId);
-    FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.entryBondId).set({"isDeleted": true}, SetOptions(merge: true));
+    if(globalModel.invId!=null) {
+      FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.invId).set({"isDeleted": true}, SetOptions(merge: true));
+    }
+    if(globalModel.bondId!=null) {
+      FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set({"isDeleted": true}, SetOptions(merge: true));
+    }
     deleteGlobalFromLocal(globalModel);
     deleteDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
@@ -260,7 +266,12 @@ class GlobalViewModel extends GetxController {
   }
 
   void deleteGlobalFromLocal(GlobalModel globalModel) {
-    HiveDataBase.globalModelBox.delete(globalModel.entryBondId);
+    if(globalModel.invId!=null) {
+      HiveDataBase.globalModelBox.delete(globalModel.invId);
+    }
+    if(globalModel.bondId!=null) {
+      HiveDataBase.globalModelBox.delete(globalModel.bondId);
+    }
   }
 
   void deleteAllLocal() {
@@ -314,7 +325,7 @@ class GlobalViewModel extends GetxController {
   }
 
   Future addBondToFirebase(GlobalModel globalModel) async {
-    print(globalModel.toFullJson());
+    // print(globalModel.toFullJson());
     // await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).collection(Const.bondRecordCollection).get().then((value) async {
     //   for (var element in value.docs) {
     //     await element.reference.delete();
@@ -344,6 +355,8 @@ class GlobalViewModel extends GetxController {
   }
 
   updateDataInAll(GlobalModel globalModel) async {
+    print(globalModel.entryBondRecord?.map((e) => e.toJson(),));
+    print("updateDataInAll${"-"*30}");
     if (globalModel.globalType == Const.globalTypeInvoice) {
       // GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
       // if (filteredGlobalModel == null) {
@@ -352,6 +365,8 @@ class GlobalViewModel extends GetxController {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
           entryBondViewModel.initGlobalInvoiceBond(globalModel);
+          print(globalModel.entryBondRecord?.map((e) => e.toJson(),));
+          print("initGlobalInvoiceBond${"-"*30}");
           if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
@@ -364,7 +379,7 @@ class GlobalViewModel extends GetxController {
       }
       invoiceViewModel.initGlobalInvoice(globalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
-      entryBondViewModel.initGlobalChequeBond(globalModel);
+      // entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
     }
     if (globalModel.globalType == Const.globalTypeBond) {
@@ -390,6 +405,10 @@ class GlobalViewModel extends GetxController {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
+      entryBondViewModel.initGlobalChequeBond(globalModel);
+      chequeViewModel.initGlobalCheque(globalModel);
+    }
+    if (globalModel.globalType == Const.globalTypeCheque) {
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
     }

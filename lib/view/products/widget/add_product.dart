@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../Const/const.dart';
+import '../../../Dialogs/Search_Product_Group_Text_Dialog.dart';
 import '../../../controller/user_management_model.dart';
 import '../../../model/product_model.dart';
 import '../../../model/product_record_model.dart';
@@ -82,7 +84,6 @@ class _AddProductState extends State<AddProduct> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(editedProduct.prodName ?? "إضافة المادة"),
-
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -255,11 +256,21 @@ class _AddProductState extends State<AddProduct> {
                         children: [
                           const SizedBox(width: 100, child: Text("الحساب الاب")),
                           SizedBox(
+                            width: (Get.width * .45)-100,
                             child: IgnorePointer(
                               ignoring: editedProduct.prodIsParent ?? false,
                               child: Container(
-                                decoration: BoxDecoration(color: editedProduct.prodIsParent ?? false ? Colors.grey.shade700 : Colors.white, borderRadius: BorderRadius.circular(5)),
-                                child: DropdownButton(
+                                  decoration: BoxDecoration(color: editedProduct.prodIsParent ?? false ? Colors.grey.shade700 : Colors.white, borderRadius: BorderRadius.circular(5)),
+                                  child: CustomTextFieldWithoutIcon(
+                                    controller: TextEditingController()..text=getProductNameFromId(editedProduct.prodParentId),
+                                    onSubmitted: (productText) async {
+                                      editedProduct.prodParentId = await searchProductGroupTextDialog(productText);
+                                      setState(() {
+
+                                      });
+                                    },
+                                  )
+                                  /* DropdownButton(
                                   underline: const SizedBox(),
                                   value: editedProduct.prodParentId,
                                   items: productController.productDataMap.entries.toList().where((element) => element.value.prodIsGroup!).map((MapEntry<String, ProductModel> e) => DropdownMenuItem(value: e.key, child: Text(e.value.prodCode! + " - " + e.value.prodName!))).toList(),
@@ -268,8 +279,8 @@ class _AddProductState extends State<AddProduct> {
                                       editedProduct.prodParentId = _.toString();
                                     });
                                   },
-                                ),
-                              ),
+                                ),*/
+                                  ),
                             ),
                           ),
                         ],
@@ -307,7 +318,7 @@ class _AddProductState extends State<AddProduct> {
                 Container(
                     alignment: Alignment.center,
                     child: AppButton(
-                      color: editedProduct.prodId == null ?null:Colors.green ,
+                      color: editedProduct.prodId == null ? null : Colors.green,
                       title: editedProduct.prodId == null ? "إضافة" : "تعديل",
                       onPressed: () {
                         if (checkInput()) {

@@ -28,10 +28,9 @@ class PlutoViewModel extends GetxController {
     }
     return columns;
   }
-
+  List<PlutoRow> rows = [];
   List<PlutoRow> getRows(List<dynamic> modelList, {String? type}) {
     List<PlutoRow> rows = [];
-
     if (modelList.isEmpty) {
       return rows;
     } else {

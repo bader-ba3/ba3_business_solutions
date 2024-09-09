@@ -1,11 +1,15 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../Dialogs/Account_Option_Dialog.dart';
 import '../../controller/account_view_model.dart';
 import '../../model/account_model.dart';
 import '../../utils/hive.dart';
+import '../accounts/widget/account_details.dart';
+import '../invoices/Controller/Search_View_Controller.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -47,51 +51,18 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                         const Spacer(),
                         ElevatedButton(
-                            onPressed: () async{
-                              int i = 0;
-                              // HiveDataBase.accountModelBox.deleteFromDisk();
-                              // HiveDataBase.globalModelBox.deleteFromDisk();
-                              // print(HiveDataBase.productModelBox.values.length);
-                              for (var element in HiveDataBase.productModelBox.values) {
-                               await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(element.toJson(),SetOptions(merge: true));
-                                print(element.prodId);
-                              }
-              /*                FirebaseFirestore.instance.collection(Const.accountsCollection).get().then((value) {
-
-                                AccountModel model=AccountModel();
-
-                                model=AccountModel.fromJson((value.docs.last.data() ));
-                                HiveDataBase.accountModelBox.put(model.accId, model);
-                                print(value.docs.length);
-                              },);*/
-                              // print(HiveDataBase.accountModelBox.values.map((e) => e.toJson(),).toList());
-
-              /*                HiveDataBase.accountModelBox.values
+                            onPressed: () async {
+                              print(Get.find<GlobalViewModel>().allGlobalModel.values
                                   .where(
-                                (element) => *//*element.accIsParent != true&&*//*element.accId=="acc1725318978879576",
+                                    (element) => element.globalType == Const.globalTypeCheque,
                               )
-                                  .forEach((element) {
-                             *//*   if (getAccountIdFromText(element.accParentId!) != '') {
-                                  if (i == 0) {
-                                    //acc1725319203402595
-                                    print(element.toJson());
-
-                                    // HiveDataBase.accountModelBox.put(getAccountIdFromText(element.accParentId!), element..accChild.add(element.accId!));
-                                    *//**//*       FirebaseFirestore.instance.collection(Const.accountsCollection).doc(getAccountIdFromText(element.accParentId!)).set({
-                                        "accChild": FieldValue.arrayUnion([element.accId!])
-                                      }, SetOptions(merge: true));
-                                      FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set({
-                                        "accParentId": getAccountIdFromText(element.accParentId!)
-                                      }, SetOptions(merge: true));*//**//*
-                                    print(element.toJson());
-                                    i++;
-                                  }
-                                }*//*
-                              });*/
-
-                              // print();
+                                  .toList()
+                                  .map(
+                                    (e) => e.toFullJson(),
+                              )
+                                  .toList());
                             },
-                            /*  onPressed: () async {
+                        /*      onPressed: () async {
                               TextEditingController nameController = TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
@@ -111,7 +82,7 @@ class _DashboardViewState extends State<DashboardView> {
                                                 decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
                                                 onChanged: (_) {
                                                   accountList = getAccountModelFromName(_);
-                                                  print(accountList);
+                                                  // print(accountList);
                                                   setstate(() {});
                                                 },
                                                 controller: nameController,
@@ -154,18 +125,18 @@ class _DashboardViewState extends State<DashboardView> {
                               accountController.update();
 
                             ///رفع الرصيد النهائي للحسابات
-            */ /*                print(accountController.accountList.length);
-                              accountController.accountList.forEach(
-                                (key, value) async{
-
-                                  print(getAccountNameFromId(key));
-                                  print(getAccountBalanceFromId(key));
-                                 await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
-                                },
-                              );*/ /*
+                             print(accountController.accountList.length);
+                              // accountController.accountList.forEach(
+                              //   (key, value) async{
+                              //
+                              //     print(getAccountNameFromId(key));
+                              //     print(getAccountBalanceFromId(key));
+                              //    await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
+                              //   },
+                              // );
                             },*/
-                            child: Text("إضافة حساب ")),
-                        SizedBox(
+                            child: const Text("إضافة حساب ")),
+                        const SizedBox(
                           width: 20,
                         ),
                       ],
@@ -197,7 +168,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    (accountController.accountList[model.accId]?.finalBalance ?? 0).toStringAsFixed(2),
+                                    model.finalBalance?.toStringAsFixed(2)??"0.00",
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -233,6 +204,13 @@ class _DashboardViewState extends State<DashboardView> {
       ),
       items: [
         PopupMenuItem(
+          onTap: (){
+            Get.find<SearchViewController>().initController(accountForSearch: getAccountNameFromId(id));
+            showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => const AccountOptionDialog(),
+            );
+          },
           value: 'details',
           child: ListTile(
             leading: Icon(
@@ -244,6 +222,10 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         PopupMenuItem(
           value: 'delete',
+          onTap: (){
+            HiveDataBase.mainAccountModelBox.delete(id);
+            accountController.update();
+          },
           child: ListTile(
             leading: Icon(
               Icons.remove_circle_outline,
@@ -253,13 +235,6 @@ class _DashboardViewState extends State<DashboardView> {
           ),
         ),
       ],
-    ).then((value) {
-      if (value == 'details') {
-        /*Get.to(() => AccountDetails(modelKey: id));*/
-      } else if (value == 'delete') {
-        HiveDataBase.mainAccountModelBox.delete(id);
-        accountController.update();
-      }
-    });
+    );
   }
 }
