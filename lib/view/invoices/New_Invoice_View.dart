@@ -86,7 +86,6 @@ class _InvoiceViewState extends State<InvoiceView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.patternModel!.toJson());
     return Column(
       children: [
         const CustomWindowTitleBar(),
@@ -161,80 +160,56 @@ class _InvoiceViewState extends State<InvoiceView> {
                   const SizedBox(
                     width: 20,
                   ),*/
+
                   SizedBox(
                     height: Const.constHeightTextField,
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 250,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(
-                                width: 80,
-                                child: Text(
-                                  "نوع الفاتورة" + ": ",
-                                  textDirection: TextDirection.rtl,
+                        if (widget.patternModel!.patType != Const.invoiceTypeSalesWithPartner)
+                          SizedBox(
+                            width: 250,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    "نوع الفاتورة" ": ",
+                                    textDirection: TextDirection.rtl,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                    height: Const.constHeightTextField,
-                                    decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
-                                    child: DropdownButton(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      underline: const SizedBox(),
-                                      value: invoiceController.selectedPayType,
-                                      isExpanded: true,
-                                      onChanged: (_) {
-                                        invoiceController.selectedPayType = _!;
-                                        if (invoiceController.selectedPayType == Const.invPayTypeCash) {
-                                          invoiceController.firstPayController.clear();
-                                        }
-                                        setState(() {});
-                                      },
-                                      items: [Const.invPayTypeDue, Const.invPayTypeCash]
-                                          .map((e) => DropdownMenuItem(
-                                                value: e,
-                                                child: SizedBox(
-                                                    width: double.infinity,
-                                                    child: Text(
-                                                      getInvPayTypeFromEnum(e),
-                                                      textDirection: TextDirection.rtl,
-                                                    )),
-                                              ))
-                                          .toList(),
-                                    )),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Container(
+                                      height: Const.constHeightTextField,
+                                      decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
+                                      child: DropdownButton(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                                        underline: const SizedBox(),
+                                        value: invoiceController.selectedPayType,
+                                        isExpanded: true,
+                                        onChanged: (_) {
+                                          invoiceController.selectedPayType = _!;
+                                          if (invoiceController.selectedPayType == Const.invPayTypeCash) {
+                                            invoiceController.firstPayController.clear();
+                                          }
+                                          setState(() {});
+                                        },
+                                        items: [Const.invPayTypeDue, Const.invPayTypeCash]
+                                            .map((e) => DropdownMenuItem(
+                                                  value: e,
+                                                  child: SizedBox(
+                                                      width: double.infinity,
+                                                      child: Text(
+                                                        getInvPayTypeFromEnum(e),
+                                                        textDirection: TextDirection.rtl,
+                                                      )),
+                                                ))
+                                            .toList(),
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: 250,
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 100, child: Text("تاريخ الفاتورة : ", style: TextStyle())),
-                              Expanded(
-                                child: GetBuilder<InvoiceViewModel>(builder: (controller) {
-                                  return DatePicker(
-                                    initDate: invoiceController.dateController,
-                                    onSubmit: (_) {
-                                      invoiceController.dateController = _.toString().split(".")[0];
-                                      isEditDate = true;
-                                      controller.update();
-                                    },
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
                         if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
                           Row(
                             children: [
@@ -288,6 +263,47 @@ class _InvoiceViewState extends State<InvoiceView> {
                               alignment: WrapAlignment.spaceBetween,
                               runSpacing: 10,
                               children: [
+                                SizedBox(
+                                  width: Get.width * 0.45,
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(width: 100, child: Text("تاريخ الفاتورة : ", style: TextStyle())),
+                                      Expanded(
+                                        child: GetBuilder<InvoiceViewModel>(builder: (controller) {
+                                          return DatePicker(
+                                            initDate: invoiceController.dateController,
+                                            onSubmit: (_) {
+                                              invoiceController.dateController = _.toString().split(".")[0];
+                                              isEditDate = true;
+                                              controller.update();
+                                            },
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (widget.patternModel?.patType != Const.invoiceTypeSalesWithPartner)
+                                  SizedBox(
+                                    width: Get.width * 0.45,
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 100, child: Text("تاريخ الاستحقاق : ", style: TextStyle())),
+                                        Expanded(
+                                          child: GetBuilder<InvoiceViewModel>(builder: (controller) {
+                                            return DatePicker(
+                                              initDate: invoiceController.invDueDateController,
+                                              onSubmit: (_) {
+                                                invoiceController.invDueDateController = _.toString().split(".")[0];
+                                                isEditDate = true;
+                                                controller.update();
+                                              },
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 if (widget.patternModel!.patType == Const.invoiceTypeSales)
                                   SizedBox(
                                     width: Get.width * 0.45,
@@ -448,6 +464,18 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
+                                if (widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner)
+                                  SizedBox(
+                                    width: Get.width * 0.45,
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 100, child: Text("رقم فاتورة الشريك")),
+                                        Expanded(
+                                          child: CustomTextFieldWithoutIcon(controller: invoiceController.invPartnerCodeController),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -648,8 +676,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
                           return CustomPlutoWithEdite(
+                            evenRowColor: Color(widget.patternModel!.patColor!),
                             controller: controller,
-                            shortCut: customPlutoShortcut( GetProductEnterPlutoGridAction(controller,"invRecProduct")),
+                            shortCut: customPlutoShortcut(GetProductEnterPlutoGridAction(controller, "invRecProduct")),
                             onRowSecondaryTap: (event) {
                               if (event.cell.column.field == "invRecSubTotal") {
                                 if (getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) != null) {
@@ -679,8 +708,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               String quantityNum = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString() ?? '');
                               String? subTotalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value);
                               String? totalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecTotal"]?.value);
-                              String? dis = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecDis"]?.value??"0");
-                              String? vat = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecVat"]?.value??"0");
+                              String? vat = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecVat"]?.value ?? "0");
 
                               double subTotal = controller.parseExpression(subTotalStr);
                               double total = controller.parseExpression(totalStr);
@@ -695,7 +723,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               //   controller.updateInvoiceValuesByDiscount(total, quantity, double.parse(dis));
                               // }
                               if (event.column.field == "invRecQuantity" && quantity > 0) {
-                                controller.updateInvoiceValuesByQuantity( quantity,subTotal, double.parse(vat));
+                                controller.updateInvoiceValuesByQuantity(quantity, subTotal, double.parse(vat));
                               }
                               controller.update();
                             },
@@ -706,7 +734,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    if (widget.patternModel!.patType != Const.invoiceTypeChange)
+                    /*      if (widget.patternModel!.patType != Const.invoiceTypeChange)
                       Container(
                           margin: const EdgeInsets.symmetric(horizontal: 8),
                           child: SizedBox(
@@ -720,7 +748,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 onChanged: (PlutoGridOnChangedEvent event) async {},
                               );
                             }),
-                            /*   child: SfDataGrid(
+                            */ /*   child: SfDataGrid(
                               horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
                               verticalScrollPhysics: const ClampingScrollPhysics(),
                               source: invoiceController.invoiceDiscountRecordSource,
@@ -832,80 +860,132 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     },
                                     child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
                               },
-                            ),*/
-                          )),
+                            ),*/ /*
+                          )),*/
                     if (widget.patternModel!.patType != Const.invoiceTypeChange) ...[
                       const Divider(),
                       GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
                         return SizedBox(
                           width: Get.width,
                           child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.end,
-                            alignment: WrapAlignment.end,
+                            alignment: WrapAlignment.spaceBetween,
                             children: [
-                              Container(
-                                color: Colors.blueGrey.shade400,
-                                width: 150,
-                                padding: const EdgeInsets.all(8),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      (controller.computeWithVatTotal() * 0.05).toStringAsFixed(2),
-                                      style: const TextStyle(fontSize: 30, color: Colors.white),
-                                    ),
-                                    const Text(
-                                      "القيمة المضافة",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                color: Colors.grey.shade600,
-                                width: 150,
-                                padding: const EdgeInsets.all(8),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      controller.computeWithoutVatTotal().toStringAsFixed(2),
-                                      style: const TextStyle(fontSize: 30, color: Colors.white),
-                                    ),
-                                    const Text(
-                                      "المجموع",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                color: Colors.blue,
-                                width: 300,
-                                padding: const EdgeInsets.all(8),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Text(
-                                        (controller.computeWithVatTotal()).toStringAsFixed(2),
-                                        style: const TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
+                              if (widget.patternModel!.patType == Const.invoiceTypeSalesWithPartner)
+                                Wrap(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        color: Color(widget.patternModel!.patColor!),
+                                        width: 150,
+                                        padding: const EdgeInsets.all(8),
+                                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              widget.patternModel?.patName == "م Tabby"
+                                                  ? (((controller.computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!) * 1.05).toStringAsFixed(2)
+                                                  : ((controller.computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!).toStringAsFixed(2),
+                                              style: const TextStyle(fontSize: 30, color: Colors.white),
+                                            ),
+                                            const Text(
+                                              "النسبة",
+                                              style: TextStyle(color: Colors.white),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        "النهائي",
-                                        style: TextStyle(color: Colors.white),
+                                      Container(
+                                        color: Color(widget.patternModel!.patColor!),
+                                        width: 150,
+                                        padding: const EdgeInsets.all(8),
+                                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              widget.patternModel?.patName == "م Tabby"
+                                                  ? (controller.computeWithVatTotal() - (((controller.computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!) * 1.05)).toStringAsFixed(2)
+                                                  : (controller.computeWithVatTotal() - ((controller.computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!)).toStringAsFixed(2),
+                                              style: const TextStyle(fontSize: 30, color: Colors.white),
+                                            ),
+                                            const Text(
+                                              "الصافي",
+                                              style: TextStyle(color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                    ])
+                              else
+                                const SizedBox(),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.end,
+                                alignment: WrapAlignment.end,
+                                children: [
+                                  Container(
+                                    color: Colors.blueGrey.shade400,
+                                    width: 150,
+                                    padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          (controller.computeWithVatTotal() * 0.05).toStringAsFixed(2),
+                                          style: const TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                        const Text(
+                                          "القيمة المضافة",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Container(
+                                    color: Colors.grey.shade600,
+                                    width: 150,
+                                    padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          controller.computeWithoutVatTotal().toStringAsFixed(2),
+                                          style: const TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                        const Text(
+                                          "المجموع",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Colors.blue,
+                                    width: 300,
+                                    padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Text(
+                                            (controller.computeWithVatTotal()).toStringAsFixed(2),
+                                            style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        const Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            "النهائي",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -958,11 +1038,13 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                   } else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
+                                  } else if (widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
+                                    Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
                                   } else {
                                     checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInvoice).then((value) async {
                                       if (value) {
                                         screenViewModel.openedScreen.removeWhere(
-                                          (key, value) => key == _updateData( plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
+                                          (key, value) => key == _updateData(plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
                                         );
                                         // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
@@ -975,7 +1057,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                           if (controller.initModel.invId != null && controller.initModel.invIsPending != null) ...[
                             if (!(controller.initModel.invIsPending ?? true))
                               AppButton(
-                                  title: 'أصل',
+                                  title: 'السند',
                                   onPressed: () async {
                                     Get.to(() => EntryBondDetailsView(
                                           oldId: controller.initModel.entryBondId,
@@ -1082,9 +1164,12 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   });
                                 },
                               ),
-                              AppButton(title: "E-Invoice", onPressed: (){
-                                showEIknvoiceDialog(mobileNumber: controller.initModel.invMobileNumber ?? "", invId:controller.initModel.invId!);
-                              }, iconData: Icons.link),
+                              AppButton(
+                                  title: "E-Invoice",
+                                  onPressed: () {
+                                    showEIknvoiceDialog(mobileNumber: controller.initModel.invMobileNumber ?? "", invId: controller.initModel.invId!);
+                                  },
+                                  iconData: Icons.link),
                               if (screenViewModel.openedScreen[widget.billId] == null)
                                 AppButton(
                                   iconData: Icons.delete_outline,
@@ -1105,7 +1190,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 )
                             ]
                           ],
-                          if (invoiceController.selectedPayType == Const.invPayTypeDue && widget.patternModel?.patName == "مبيع")
+                          if (widget.patternModel!.patName == Const.invoiceTypeSalesWithPartner)
                             AppButton(
                               iconData: Icons.more_horiz_outlined,
                               title: 'المزيد',
@@ -1229,7 +1314,6 @@ class _InvoiceViewState extends State<InvoiceView> {
   }
 
   GlobalModel _updateData(List<InvoiceRecordModel> record) {
-
     return GlobalModel(
         firstPay: double.tryParse(invoiceController.firstPayController.text),
         invReturnCode: invoiceController.invReturnCodeController.text,
@@ -1237,6 +1321,8 @@ class _InvoiceViewState extends State<InvoiceView> {
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
         invPayType: invoiceController.selectedPayType,
+        invPartnerCode: invoiceController.invPartnerCodeController.text,
+        invDueDate: widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],
         invIsPending: invoiceController.initModel.invIsPending,
         invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
@@ -1258,6 +1344,11 @@ class _InvoiceViewState extends State<InvoiceView> {
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
+        invTotalPartner: widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner
+            ? widget.patternModel?.patName == "م Tabby"
+                ? Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - (((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!) * 1.05)
+                : Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - ((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (widget.patternModel!.patPartnerRatio! / 100)) + widget.patternModel!.patPartnerCommission!)
+            : 0,
         globalType: Const.globalTypeInvoice);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/Dialogs/SearchAccuntTextDialog.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,7 +34,7 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "اسم الحساب :  ",
                   controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text)??"";
+                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -54,16 +55,17 @@ class AccountOptionDialog extends StatelessWidget {
                   },
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    if(getAccountIdFromText(controller.accountForSearchController.text)!="") {
-        
+                  onPressed: ()  {
+                    AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
+                    if (model != null) {
+                      List<String> listDate = getDatesBetween(DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text));
 
                       Get.to(() => AccountDetails(
-                            modelKey: getAccountIdFromText(controller.accountForSearchController.text),
-                            listDate: getDatesBetween(DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text)),
-                          ));
-                    }else{
-                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ",icon: const Icon(Icons.error_outline));
+                        modelKey: model.accChild.map((e) => e.toString(),).toList()+[model.accId!],
+                        listDate: listDate,
+                      ));
+                    } else {
+                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ", icon: const Icon(Icons.error_outline));
                     }
                   },
                   child: const Text('موافق'),
@@ -76,4 +78,3 @@ class AccountOptionDialog extends StatelessWidget {
     );
   }
 }
-

@@ -1,6 +1,8 @@
+import 'dart:ui';
 
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../utils/hive.dart';
@@ -10,27 +12,25 @@ enum EnvType { debug, release }
 //release :
 //      send data to logger
 abstract class Const {
-  static String dataName='';
-  static bool isFreeType=false;
+  static String dataName = '';
+  static bool isFreeType = false;
 
-  static init({String? oldData,bool? isFree})async{
-    if(dataName==''){
+  static init({String? oldData, bool? isFree}) async {
+    if (dataName == '') {
       // await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
       //   dataName=value.data()?['defaultDataName'];
       // });
-      dataName="2024";
-    }else{
-      dataName=oldData!;
+      dataName = "2024";
+    } else {
+      dataName = oldData!;
     }
     await HiveDataBase.setDataName(dataName);
-    globalCollection=dataName;
-    if(isFree!=null){
+    globalCollection = dataName;
+    if (isFree != null) {
       isFreeType = isFree;
-    }else{
-
-      isFreeType = HiveDataBase.isFree.get("isFreeType")??false;
+    } else {
+      isFreeType = HiveDataBase.isFree.get("isFreeType") ?? false;
     }
-
   }
 
   static const EnvType env = EnvType.debug; //"debug" or "release"
@@ -46,6 +46,7 @@ abstract class Const {
   static const noVatKey = 'noVat-';
   static const minMobileTarget = 1000;
   static const minOtherTarget = 1000;
+
   ////////////--------------------------------------------------
   static String changesCollection = "$dataName-Changes";
   static const recordCollection = 'Record';
@@ -65,9 +66,10 @@ abstract class Const {
   static String settingCollection = "Setting";
   static String readFlagsCollection = "ReadFlags";
   static String inventoryCollection = "Inventory";
-  static String globalCollection=dataName;
-  static String ba3Invoice="ba3Invoice";
+  static String globalCollection = dataName;
+  static String ba3Invoice = "ba3Invoice";
   static String dataCollection = "data";
+
   ////////////--------------------------------------------------
   static const rowAccountId = 'rowAccountId';
   static const rowAccountTotal = 'rowAccountTotal';
@@ -76,6 +78,7 @@ abstract class Const {
   static const rowAccountName = 'rowAccountName';
   static const rowAccountDate = 'rowAccountDate';
   static const rowAccountBalance = 'rowAccountBalance';
+
   ////////////--------------------------------------------------
   static const rowInvId = "invId";
   static const rowInvProduct = "invProduct";
@@ -87,16 +90,18 @@ abstract class Const {
   static const rowInvTotalVat = "rowInvTotalVat";
   static const rowInvDiscountId = "rowInvDiscountId";
   static const rowInvDiscountAccount = "rowInvDiscountAccount";
-    static const rowInvDisAddedTotal = "rowInvDisAddedTotal";
+  static const rowInvDisAddedTotal = "rowInvDisAddedTotal";
   static const rowInvDisAddedPercentage = "rowInvDisAddedPercentage";
   static const rowInvDisDiscountTotal = "rowInvDisDiscountTotal";
   static const rowInvDisDiscountPercentage = "rowInvDisDiscountPercentage";
+
   ////////////--------------------------------------------------
   static const rowViewAccountId = "rowViewAccountId";
   static const rowViewAccountName = "rowViewAccountName";
   static const rowViewAccountCode = "rowViewAccountCode";
   static const rowViewAccountBalance = "rowViewAccountBalance";
   static const rowViewAccountLength = "rowViewAccountLength";
+
   ////////////--------------------------------------------------
   static const rowProductRecProduct = "rowProductRecProduct";
   static const rowProductType = "rowProductType";
@@ -106,27 +111,36 @@ abstract class Const {
   static const rowProductInvId = "rowProductInvId";
   static const productTypeService = "productTypeService";
   static const productTypeStore = "productTypeStore";
+
   ////////////--------------------------------------------------
-  static const bondTypeDaily = /*"سند يومية";*/"bondTypeDaily";
-  static const bondTypeDebit = /*"سند قبض";*/"bondTypeDebit";
-  static const bondTypeCredit = /*"سند دفع";*/"bondTypeCredit";
-  static const bondTypeStart = /*"قيد افتتاحي";*/"bondTypeStart";
-  static const bondTypeInvoice = /*"سند قيد";*/"bondTypeInvoice";
+  static const bondTypeDaily = /*"سند يومية";*/ "bondTypeDaily";
+  static const bondTypeDebit = /*"سند قبض";*/ "bondTypeDebit";
+  static const bondTypeCredit = /*"سند دفع";*/ "bondTypeCredit";
+  static const bondTypeStart = /*"قيد افتتاحي";*/ "bondTypeStart";
+  static const bondTypeInvoice = /*"سند قيد";*/ "bondTypeInvoice";
+
   ////////////--------------------------------------------------
   static const patId = "patId";
   static const patCode = "patCode";
   static const patPrimary = "patPrimary";
   static const patName = "patName";
   static const patType = "patType";
+
   ////////////--------------------------------------------------
   static const invoiceTypeSales = "invoiceTypeSales";
+  static const invoiceTypeSalesWithPartner = "invoiceTypeSalesWithPartner";
   static const invoiceTypeBuy = 'invoiceTypeBuy';
   static const invoiceTypeAdd = "invoiceTypeAdd";
   static const invoiceTypeChange = "invoiceTypeChange";
+  static const tabbySales = "م Tabby";
+  static const stripSales = "م Strip";
+  static const cardSales = "م Card";
+
   ////////////--------------------------------------------------
   static const stCode = "stCode";
   static const stId = "stId";
   static const stName = "stName";
+
   ////////////--------------------------------------------------
   static const rowViewCheqId = 'rowViewCheqId';
   static const rowViewChequeStatus = 'rowViewChequeStatus';
@@ -142,15 +156,18 @@ abstract class Const {
   static const chequeRecTypeInit = 'chequeRecTypeInit';
   static const chequeRecTypeAllPayment = 'chequeRecTypeAllPayment';
   static const chequeRecTypePartPayment = 'chequeRecTypePartPayment';
+
   ////////////--------------------------------------------------
   static const accountTypeDefault = "accountTypeDefault";
   static const accountTypeFinalAccount = "accountTypeFinalAccount";
   static const accountTypeAggregateAccount = "accountTypeAggregateAccount";
-  static const accountTypeList = [accountTypeDefault,accountTypeFinalAccount,accountTypeAggregateAccount];
+  static const accountTypeList = [accountTypeDefault, accountTypeFinalAccount, accountTypeAggregateAccount];
+
   ////////////--------------------------------------------------
   static const rowSellerAllInvoiceInvId = "rowSellerAllInvoiceInvId";
   static const rowSellerAllInvoiceAmount = "rowSellerAllInvoiceAmount";
   static const rowSellerAllInvoiceDate = "rowSellerAllInvoiceDate";
+
   ////////////--------------------------------------------------
   static const rowImportName = "rowImportName";
   static const rowImportPrice = "rowImportPrice";
@@ -158,6 +175,7 @@ abstract class Const {
   static const rowImportCode = "rowImportCode";
   static const rowImportGroupCode = "rowImportGroupCode";
   static const rowImportHasVat = "rowImportHasVat";
+
   ////////////--------------------------------------------------
   static const roleUserRead = "roleUserRead";
   static const roleUserWrite = "roleUserWrite";
@@ -180,12 +198,33 @@ abstract class Const {
   static const roleViewUserManagement = "roleViewUserManagement";
   static const roleViewDue = "roleViewDue";
   static const roleViewStatistics = "roleViewStatistics";
-  static const roleViewTimer="roleViewTimer";
-  static const roleViewDataBase="roleViewDataBase";
-  static const roleViewCard="roleViewCard";
-  static const roleViewHome="roleViewHome";
-  static const allRolePage=[roleViewBond,roleViewAccount,roleViewInvoice,roleViewProduct,roleViewStore,roleViewPattern,roleViewCheques,roleViewSeller,roleViewReport,roleViewTarget,roleViewInventory,roleViewTask,roleViewImport
-  ,roleViewUserManagement,roleViewDue,roleViewStatistics,roleViewTimer,roleViewDataBase,roleViewCard,roleViewHome];
+  static const roleViewTimer = "roleViewTimer";
+  static const roleViewDataBase = "roleViewDataBase";
+  static const roleViewCard = "roleViewCard";
+  static const roleViewHome = "roleViewHome";
+  static const allRolePage = [
+    roleViewBond,
+    roleViewAccount,
+    roleViewInvoice,
+    roleViewProduct,
+    roleViewStore,
+    roleViewPattern,
+    roleViewCheques,
+    roleViewSeller,
+    roleViewReport,
+    roleViewTarget,
+    roleViewInventory,
+    roleViewTask,
+    roleViewImport,
+    roleViewUserManagement,
+    roleViewDue,
+    roleViewStatistics,
+    roleViewTimer,
+    roleViewDataBase,
+    roleViewCard,
+    roleViewHome
+  ];
+
   ////////////--------------------------------------------------
   static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
   static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
@@ -199,34 +238,40 @@ abstract class Const {
   static const invoiceChoosePriceMethodeRetailPrice = "invoiceChoosePriceMethodeRetailPrice";
   static const invoiceChoosePriceMethodeCostPrice = "invoiceChoosePriceMethodeCostPrice";
   static const invoiceChoosePriceMethodeCustom = "invoiceChoosePriceMethodeCustom";
+
   ////////////--------------------------------------------------
-  static const rowAccountAggregateName= "rowAccountAggregateName";
+  static const rowAccountAggregateName = "rowAccountAggregateName";
+
   ////////////---------------------------------------------------
-  static const globalTypeInvoice= "globalTypeInvoice";
-  static const globalTypeBond= "globalTypeBond";
-  static const globalTypeCheque= "globalTypeCheque";
+  static const globalTypeInvoice = "globalTypeInvoice";
+  static const globalTypeBond = "globalTypeBond";
+  static const globalTypeCheque = "globalTypeCheque";
+
   ////////////---------------------------------------------------
-  static const invoiceRecordCollection="invoiceRecord";
-  static const bondRecordCollection="bondRecord";
-  static const chequeRecordCollection="chequeRecord";
+  static const invoiceRecordCollection = "invoiceRecord";
+  static const bondRecordCollection = "bondRecord";
+  static const chequeRecordCollection = "chequeRecord";
+
   ////////////----------------------------------------------------
-  static const productsAllSubscription  = "productsAllSubscription";
+  static const productsAllSubscription = "productsAllSubscription";
+
   ////////////----------------------------------------------------
-  static const paidStatusFullUsed  = "paidStatusFullUse";
-  static const paidStatusNotUsed  = "paidStatusNotUsed";
-  static const paidStatusSemiUsed  = "paidStatusSemiUsed";
+  static const paidStatusFullUsed = "paidStatusFullUse";
+  static const paidStatusNotUsed = "paidStatusNotUsed";
+  static const paidStatusSemiUsed = "paidStatusSemiUsed";
+
   ////////////----------------------------------------------------
-  static const userStatusOnline  = "userStatusOnline";
-  static const userStatusAway  = "userStatusAway";
-    ////////////----------------------------------------------------
-  static const invPayTypeDue  = "invPayTypeDue";
-  static const invPayTypeCash  = "invPayTypeCash";
+  static const userStatusOnline = "userStatusOnline";
+  static const userStatusAway = "userStatusAway";
+
+  ////////////----------------------------------------------------
+  static const invPayTypeDue = "invPayTypeDue";
+  static const invPayTypeCash = "invPayTypeCash";
+
   /////////////---------------------------------------------------
   static const taskTypeProduct = 'taskTypeProduct';
   static const taskTypeInventory = 'taskTypeInventory';
-
 }
-
 
 String getInvPayTypeFromEnum(String type) {
   switch (type) {
@@ -240,7 +285,6 @@ String getInvPayTypeFromEnum(String type) {
 }
 
 String getGlobalTypeFromEnum(String type) {
-  
   switch (type) {
     case Const.globalTypeBond:
       return "سند";
@@ -250,9 +294,9 @@ String getGlobalTypeFromEnum(String type) {
       return "سند يومية";
     case Const.bondTypeDebit:
       return "سند دفع";
-          case Const.bondTypeInvoice:
+    case Const.bondTypeInvoice:
       return "سند قيد";
-          case Const.bondTypeStart:
+    case Const.bondTypeStart:
       return "قيد افتتاحي";
     case Const.chequeTypeCatch:
       return "شيك قبض";
@@ -260,20 +304,21 @@ String getGlobalTypeFromEnum(String type) {
       return "شيك دفع";
   }
 
- return "فاتورة ${getPatModelFromPatternId(type).patName!}";
+  return "فاتورة ${getPatModelFromPatternId(type).patName!}";
 }
 
-String getAccountPaidStatusFromEnum(String type,bool isPositive) {
+String getAccountPaidStatusFromEnum(String type, bool isPositive) {
   switch (type) {
     case Const.paidStatusFullUsed:
-      return isPositive?"مقبوض كليا":"مدفوع كليا";
+      return isPositive ? "مقبوض كليا" : "مدفوع كليا";
     case Const.paidStatusNotUsed:
-      return isPositive?"غير مقبوض":"غير مدفوع";
+      return isPositive ? "غير مقبوض" : "غير مدفوع";
     case Const.paidStatusSemiUsed:
-      return isPositive?"مقبوض جزئيا":"مدفوع جزئيا";
+      return isPositive ? "مقبوض جزئيا" : "مدفوع جزئيا";
   }
   return type;
 }
+
 String getUserStatusFromEnum(String type) {
   switch (type) {
     case Const.userStatusOnline:
@@ -292,7 +337,7 @@ String getInvTypeFromEnum(String type) {
       return "شراء";
     case Const.invoiceTypeAdd:
       return "إدخال";
-          case Const.invoiceTypeChange:
+    case Const.invoiceTypeChange:
       return "مناقلة";
   }
   return type;
@@ -307,6 +352,7 @@ String getChequeTypefromEnum(String type) {
   }
   return "error";
 }
+
 List<String> getDatesBetween(DateTime startDate, DateTime endDate) {
   List<String> dates = [];
   DateTime currentDate = startDate;
@@ -318,6 +364,7 @@ List<String> getDatesBetween(DateTime startDate, DateTime endDate) {
 
   return dates;
 }
+
 String getBondTypeFromEnum(String type) {
   switch (type) {
     case Const.bondTypeDaily:
@@ -334,15 +381,16 @@ String getBondTypeFromEnum(String type) {
 
   return type;
 }
+
 String getBondEnumFromType(String type) {
   switch (type) {
-    case "سند يومية" :
+    case "سند يومية":
       return Const.bondTypeDaily;
     case "سند دفع":
       return Const.bondTypeDebit;
-    case"سند قبض" :
+    case "سند قبض":
       return Const.bondTypeCredit;
-    case"قيد افتتاحي" :
+    case "قيد افتتاحي":
       return Const.bondTypeStart;
     case "سند قيد":
       return Const.bondTypeInvoice;
@@ -350,7 +398,6 @@ String getBondEnumFromType(String type) {
 
   return type;
 }
-
 
 String getProductTypeFromEnum(String type) {
   switch (type) {
@@ -361,11 +408,11 @@ String getProductTypeFromEnum(String type) {
   }
   return type;
 }
+
 String getPatNameFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
-return Get.find<PatternViewModel>().patternModel[id]?.patName??"";
+  return Get.find<PatternViewModel>().patternModel[id]?.patName ?? "";
 }
-
 
 String getAccountTypeFromEnum(String type) {
   switch (type) {
@@ -404,6 +451,7 @@ double getVatFromName(text) {
           ? 0.05
           : 0;
 }
+
 String getRoleNameFromEnum(String type) {
   switch (type) {
     case Const.roleUserRead:
@@ -419,6 +467,7 @@ String getRoleNameFromEnum(String type) {
   }
   return "error";
 }
+
 String getPageNameFromEnum(String type) {
   switch (type) {
     case Const.roleViewInvoice:
@@ -449,21 +498,22 @@ String getPageNameFromEnum(String type) {
       return "الجرد";
     case Const.roleViewUserManagement:
       return "إدارة المستخدمين";
-      case Const.roleViewDue:
+    case Const.roleViewDue:
       return "الاستحقاق";
-            case Const.roleViewStatistics:
+    case Const.roleViewStatistics:
       return "التقارير";
     case Const.roleViewTimer:
       return "المؤقت";
-     case Const.roleViewDataBase:
+    case Const.roleViewDataBase:
       return "ادارة قواعد البيانات";
-         case Const.roleViewCard:
+    case Const.roleViewCard:
       return "ادارة البطاقات";
-               case Const.roleViewHome:
+    case Const.roleViewHome:
       return "الصفحة الرئيسية";
   }
   return "error";
 }
+
 String getNameOfRoleFromEnum(String type) {
   switch (type) {
     case Const.roleUserRead:
@@ -483,7 +533,7 @@ String getNameOfRoleFromEnum(String type) {
 String extractNumbersAndCalculate(String input) {
   // استبدال الفاصلة العربية بالنقطة
 
-  input=replaceArabicNumbersWithEnglish(input);
+  input = replaceArabicNumbersWithEnglish(input);
   String cleanedInput = input.replaceAll('٫', '.');
 
   // تحقق مما إذا كانت السلسلة تحتوي على معاملات حسابية
@@ -530,9 +580,8 @@ String extractNumbersAndCalculate(String input) {
       }
     }
 
-    return numbers.isNotEmpty ? numbers.first.toString() :"0.0";
+    return numbers.isNotEmpty ? numbers.first.toString() : "0.0";
   } else {
-
     //! إذا لم يكن هناك معاملات، فقط استخرج الأرقام /
     RegExp regex = RegExp(r'[0-9.]+');
     Iterable<Match> matches = regex.allMatches(cleanedInput);
@@ -546,10 +595,11 @@ String extractNumbersAndCalculate(String input) {
 String formatNumberWithCommas(int number) {
   // تحويل الرقم إلى سلسلة نصية وتنسيقه باستخدام RegExp لإضافة الفاصلة كل ثلاث خانات
   return number.toString().replaceAllMapped(
-    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+        RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
         (Match match) => '${match[1]},',
-  );
+      );
 }
+
 String formatDecimalNumberWithCommas(double number) {
   // ضبط الرقم العشري إلى رقمين بعد الفاصلة
   String formattedNumber = number.toStringAsFixed(2);
@@ -562,12 +612,12 @@ String formatDecimalNumberWithCommas(double number) {
   // تنسيق الجزء الصحيح باستخدام RegExp لإضافة الفاصلة كل ثلاث خانات
   String formattedIntegerPart = integerPart.replaceAllMapped(
     RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-        (Match match) => '${match[1]},',
+    (Match match) => '${match[1]},',
   );
-
 
   return '$formattedIntegerPart.$decimalPart';
 }
+
 bool hasCommonElements(List<dynamic> list1, List<dynamic> list2) {
   // تحويل القائمتين إلى مجموعات (Sets)
   Set<dynamic> set1 = list1.toSet();
@@ -575,4 +625,32 @@ bool hasCommonElements(List<dynamic> list1, List<dynamic> list2) {
 
   // التحقق من وجود أي عنصر مشترك بين المجموعتين
   return set1.intersection(set2).isNotEmpty;
+}
+
+DateTime getDueDate(String invTyp) {
+  DateTime dueDate = DateTime.now();
+
+  switch (invTyp) {
+    case Const.tabbySales:
+      dueDate = getNextMonday();
+      case Const.stripSales:
+      dueDate = DateTime.now().copyWith(day: dueDate.day + 5);
+
+  }
+
+  return dueDate;
+}
+DateTime getNextMonday() {
+  DateTime now = DateTime.now();
+
+  // حساب الأيام المتبقية للوصول إلى الاثنين القادم
+  int daysUntilMonday = DateTime.monday - now.weekday;
+
+  // إذا كان اليوم الاثنين بالفعل، اجعل الأيام +7 للوصول إلى الاثنين القادم
+  if (daysUntilMonday <= 0) {
+    daysUntilMonday += 7;
+  }
+
+  // إضافة الأيام المتبقية إلى التاريخ الحالي للحصول على الاثنين القادم
+  return now.add(Duration(days: daysUntilMonday));
 }

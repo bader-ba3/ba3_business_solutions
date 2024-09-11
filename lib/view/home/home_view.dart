@@ -166,7 +166,7 @@ class HomeView extends StatelessWidget {
                                                             textDirection: TextDirection.rtl,
                                                             decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه",hintTextDirection: TextDirection.rtl),
                                                             onChanged: (_){
-                                                              accountList = getAccountModelFromName(_);
+                                                              accountList = getAccountModelsFromName(_);
                                                               print(accountList);
                                                               setstate(() {});
                                                             },

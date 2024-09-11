@@ -44,7 +44,7 @@ dependencies:
   flutter_fancy_tree_view:
   file_picker:
   pinput:
-  fl_chart: 0.68.0
+  fl_chart: ^0.69.0
   qr_code_scanner: 1.0.1
   csv:
   qr_flutter: ^4.1.0
@@ -53,9 +53,9 @@ dependencies:
   hive_flutter:
   flutter_material_color_picker:
   nfc_manager:
-  audioplayers: ^5.0.0
-  audioplayers_android: ^4.0.3
-  audioplayers_darwin: ^5.0.0
+  audioplayers: ^6.1.0
+  audioplayers_android: ^5.0.0
+  audioplayers_darwin: ^6.0.0
   syncfusion_flutter_gauges:
   stop_watch_timer:
   infinite_scroll_pagination:
@@ -83,7 +83,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

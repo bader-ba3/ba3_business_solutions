@@ -3,27 +3,34 @@ import 'package:pluto_grid/pluto_grid.dart';
 
 import 'CustomPlutoGridStyleConfig.dart';
 
-
 class CustomPlutoWithEdite extends StatelessWidget {
-  const CustomPlutoWithEdite({Key? key,required this.controller, required this.shortCut, this.onChanged, required this.onRowSecondaryTap}) : super(key: key);
+  const CustomPlutoWithEdite({
+    super.key,
+    required this.controller,
+    required this.shortCut,
+    this.onChanged,
+    required this.onRowSecondaryTap,
+    this.evenRowColor=Colors.blueAccent,
+  });
 
   final dynamic controller;
   final PlutoGridShortcut shortCut;
   final Function(PlutoGridOnChangedEvent)? onChanged;
   final Function(PlutoGridOnRowSecondaryTapEvent) onRowSecondaryTap;
+  final Color evenRowColor;
+
   @override
   Widget build(BuildContext context) {
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: PlutoGrid(
         columns: controller.columns,
         rows: controller.rows,
-        onRowSecondaryTap:onRowSecondaryTap,
-        onChanged:onChanged,
+        onRowSecondaryTap: onRowSecondaryTap,
+        onChanged: onChanged,
         configuration: PlutoGridConfiguration(
           shortcut: shortCut,
-          style:buildGridStyleConfig(),
+          style: buildGridStyleConfig(evenRowColor:evenRowColor),
           localeText: const PlutoGridLocaleText.arabic(),
         ),
         onLoaded: (PlutoGridOnLoadedEvent event) {
@@ -35,6 +42,3 @@ class CustomPlutoWithEdite extends StatelessWidget {
     );
   }
 }
-
-
-

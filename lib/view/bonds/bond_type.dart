@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/Dialogs/BondDebitOption.dart';
 import 'package:ba3_business_solutions/Widgets/Bond_Record_Pluto_View_Model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
@@ -53,6 +54,7 @@ class _BondTypeState extends State<BondType> {
                 }),
               );
             }),
+
             Item("سند قبض", () {
               Get.to(
                 () => const BondDetailsView(
@@ -61,6 +63,13 @@ class _BondTypeState extends State<BondType> {
                 binding: BindingsBuilder(() {
                   Get.lazyPut(() => BondRecordPlutoViewModel(Const.bondTypeCredit));
                 }),
+              );
+            }),
+            Item("سند دفع اجل", () {
+
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) =>  BondDebitDialog(),
               );
             }),
             Item("قيد افتتاحي", () {

@@ -203,7 +203,6 @@ class _AddAccountState extends State<AddAccount> {
                                   child: Checkbox(
                                     value: accIsRoot,
                                     onChanged: (_) {
-                                      setState(() {});
                                       setstate(() {
                                         accIsRoot = _!;
                                         accParentId.clear();
@@ -394,10 +393,11 @@ class _AddAccountState extends State<AddAccount> {
     accountModel.accComment = notesController.text;
     accountModel.accType = typeController;
     accountModel.accVat = accVat;
+    accountModel.accIsParent=!isRoot;
     if(isRoot){
       accountModel.accParentId = null;
     }else{
-      accountModel.accParentId = accParentId;
+      accountModel.accParentId = getAccountIdFromText(accParentId);
       
     }
   }

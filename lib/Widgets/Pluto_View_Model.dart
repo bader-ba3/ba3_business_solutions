@@ -24,8 +24,8 @@ class PlutoViewModel extends GetxController {
           hide: sampleData.keys.first == key,
         );
       }).toList();
-      plutoKey = GlobalKey();
     }
+
     return columns;
   }
   List<PlutoRow> rows = [];
@@ -47,7 +47,6 @@ class PlutoViewModel extends GetxController {
       }).toList();
       plutoKey = GlobalKey();
     }
-
     return rows;
   }
 

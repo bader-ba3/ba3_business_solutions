@@ -19,7 +19,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../model/global_model.dart';
 import '../view/invoices/Controller/Screen_View_Model.dart';
 import 'account_view_model.dart';
-import 'isolate_view_model.dart';
 
 class InvoiceViewModel extends GetxController {
   var accountController = Get.find<AccountViewModel>();
@@ -30,6 +29,8 @@ class InvoiceViewModel extends GetxController {
   var sellerViewController = Get.find<SellersViewModel>();
   var startDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
   var endDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
+
+  GlobalModel? invoiceForSearch;
 
   List<String> invIdList = [];
 
@@ -48,6 +49,7 @@ class InvoiceViewModel extends GetxController {
   List<String> storePickList = [];
 
   String? dateController;
+  String? invDueDateController;
   TextEditingController primaryAccountController = TextEditingController();
   TextEditingController secondaryAccountController = TextEditingController();
   TextEditingController invCustomerAccountController = TextEditingController();
@@ -57,11 +59,14 @@ class InvoiceViewModel extends GetxController {
   TextEditingController storeNewController = TextEditingController();
   TextEditingController billIDController = TextEditingController();
   TextEditingController noteController = TextEditingController();
+  TextEditingController invPartnerCodeController = TextEditingController();
   TextEditingController entryBondIdController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController firstPayController = TextEditingController();
   TextEditingController invReturnCodeController = TextEditingController();
   TextEditingController invReturnDateController = TextEditingController();
+  TextEditingController totalPaidFromPartner = TextEditingController();
+  // TextEditingController invDueDateController = TextEditingController();
   final DataGridController dataGridController = DataGridController();
   late GlobalModel initModel;
   int colorInvoice = Colors.grey.value;
@@ -78,6 +83,11 @@ class InvoiceViewModel extends GetxController {
   Map<String, String> nextPrevList = {};
 
   List<GlobalModel> allInvoiceForPluto = [];
+
+
+  searchInvoice(String invPartnerId){
+    invoiceForSearch=invoiceModel.values.where((element) => element.invPartnerCode==invPartnerId,).firstOrNull;
+  }
 
 /*  /// we don't need this
   getDataForPluto() async {
@@ -365,6 +375,8 @@ class InvoiceViewModel extends GetxController {
     invCodeController.text = getNextCodeInv();
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
+    invPartnerCodeController.text='';
+
     // var vat = "a";
     if (patternModel.patType != Const.invoiceTypeChange) {
       primaryAccountController.text = getAccountNameFromId(patternModel.patPrimary!);
@@ -388,6 +400,7 @@ class InvoiceViewModel extends GetxController {
       sellerController.text = getSellerNameFromId(getMyUserSellerId())??'';
     }
     dateController = DateTime.now().toString().split(".")[0];
+    invDueDateController = DateTime.now().toString().split(".")[0];
     records = [...List.generate(5, (index) => InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault))];
     discountRecords = List.generate(3, (index) => InvoiceDiscountRecordModel());
     // invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat);
@@ -427,6 +440,7 @@ class InvoiceViewModel extends GetxController {
     if (bool) {
       initModel = invoiceModel[invId]!;
     }
+    invPartnerCodeController.text=initModel.invPartnerCode??'';
     invReturnCodeController.text=initModel.invReturnCode??'';
     invReturnDateController.text=initModel.invReturnDate??'';
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
@@ -454,6 +468,7 @@ class InvoiceViewModel extends GetxController {
     entryBondIdController.text = initModel.entryBondId ?? "";
     invCodeController.text = initModel.invCode!;
     dateController = initModel.invDate;
+    invDueDateController = initModel.invDueDate;
     firstPayController.text = initModel.firstPay.toString();
 
     // dateController = initModel.invDate!;
@@ -474,6 +489,7 @@ class InvoiceViewModel extends GetxController {
     initModel = model;
     invReturnCodeController.text=initModel.invReturnCode??'';
     invReturnDateController.text=initModel.invReturnDate??'';
+    invPartnerCodeController.text=model.invPartnerCode??'';
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
     invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
@@ -500,6 +516,7 @@ class InvoiceViewModel extends GetxController {
     invCodeController.text = initModel.invCode!;
     firstPayController.text = initModel.firstPay.toString();
     dateController = initModel.invDate;
+    invDueDateController = initModel.invDueDate;
     // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
     selectedPayType = initModel.invPayType;

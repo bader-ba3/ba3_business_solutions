@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/Widgets/Bond_Record_Pluto_View_Model.dart';
@@ -55,11 +54,7 @@ class BondViewModel extends GetxController {
 
   initGlobalBond(GlobalModel globalModel) {
     // if(globalModel.bondCode)
-    if (globalModel.bondCode == null) {
-      // print(globalModel.toFullJson());
-      HiveDataBase.globalModelBox.delete(globalModel.bondId);
-      return;
-    }
+
     allBondsItem[globalModel.bondId!] = globalModel;
     // tempBondModel=GlobalModel.fromJson(globalModel.toFullJson());
     // initPage();

@@ -54,7 +54,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       );
                     },
                     child: Container(
-                      width: 200,
+                      width: 250,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Colors.white,
@@ -66,7 +67,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       padding: const EdgeInsets.all(30.0),
                       child: Center(
                         child: Text(
-                          i.value.patName ?? "error",
+                          i.value.patFullName ?? "error",
                           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           textDirection: TextDirection.rtl,
                         ),

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
@@ -13,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../Const/const.dart';
 import '../model/account_record_model.dart';
-import '../model/bond_record_model.dart';
 import '../model/entry_bond_record_model.dart';
 import '../utils/generate_id.dart';
 import '../view/accounts/widget/account_record_data_source.dart';
@@ -58,39 +56,56 @@ class AccountViewModel extends GetxController {
           (element) => accountsId?.contains(element.bondRecAccount) ?? false,
         )
         .toList();
-    Map<String, List> allRecTotal = {};
+    // Map<String, List> allRecTotal = {};
     for (int i = 0; i < currentEntry.length; i++) {
       var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
 
-      currentViewAccount.add(
-        AccountRecordModel(type.startsWith("pat") ? globalModel.invId : globalModel.bondId, currentEntry[i].bondRecAccount!, recCredit.toString(), 0, type, date, type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
-            currentViewAccount.lastOrNull?.subBalance != null ? currentViewAccount.last.subBalance! + recCredit : recCredit,
-            credit: currentEntry[i].bondRecCreditAmount!, debit: currentEntry[i].bondRecDebitAmount!),
-      );
-
-      /*
-      if (allRecTotal[currentEntry[i].bondRecAccount] == null) {
-        allRecTotal[currentEntry[i].bondRecAccount!] = [currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!];
+      if (accountList[accountsId!.last]?.accRecord.lastOrNull == null) {
+        accountList[accountsId.last]!.accRecord = [
+          AccountRecordModel(
+              type.startsWith("pat")
+                  ? globalModel.invId
+                  : type.startsWith("cheque")
+                      ? globalModel.cheqId
+                      : globalModel.bondId,
+              currentEntry[i].bondRecAccount!,
+              recCredit.toString(),
+              0,
+              type,
+              date,
+              type.startsWith("pat")
+                  ? globalModel.invCode
+                  : type.startsWith("cheque")
+                      ? globalModel.cheqCode
+                      : globalModel.bondCode,
+              recCredit,
+              currentEntry[i].bondRecDebitAmount!,
+              currentEntry[i].bondRecCreditAmount!),
+        ];
       } else {
-        allRecTotal[currentEntry[i].bondRecAccount]!.add(currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!);
-      }*/
-    }
-    // print(globalModel.bondRecord?.length);
-    // print(globalModel.entryBondRecord?.length);
-    /*  for (int i = 0; i < (globalModel.bondRecord ?? []).length; i++) {
-      if (allRecTotal[globalModel.bondRecord![i].bondRecAccount] == null) {
-        allRecTotal[globalModel.bondRecord![i].bondRecAccount!] = [globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!];
-      } else {
-        allRecTotal[globalModel.bondRecord![i].bondRecAccount]!.add(globalModel.bondRecord![i].bondRecDebitAmount! - globalModel.bondRecord![i].bondRecCreditAmount!);
+        accountList[accountsId.last]!.accRecord.add(
+              AccountRecordModel(
+                  type.startsWith("pat")
+                      ? globalModel.invId
+                      : type.startsWith("cheque")
+                          ? globalModel.cheqId
+                          : globalModel.bondId,
+                  currentEntry[i].bondRecAccount!,
+                  recCredit.toString(),
+                  0,
+                  type,
+                  date,
+                  type.startsWith("pat")
+                      ? globalModel.invCode
+                      : type.startsWith("cheque")
+                          ? globalModel.cheqCode
+                          : globalModel.bondCode,
+                  accountList[accountsId.last]!.accRecord.last.subBalance! + recCredit,
+                  currentEntry[i].bondRecDebitAmount,
+                  currentEntry[i].bondRecCreditAmount!),
+            );
       }
-    }*/
-
-    allRecTotal.forEach((key, value) {
-      // accountList[key]?.accRecord.removeWhere((element) => element.id == globalModel.bondId || element.id == globalModel.entryBondId);
-      var recCredit = value.reduce((value, element) => value + element);
-      currentViewAccount.add(AccountRecordModel((type?.startsWith("pat") ?? false) ? globalModel.invId : globalModel.bondId, key, recCredit.toString(), 0, type, date, (type?.startsWith("pat") ?? false) ? globalModel.invCode : globalModel.bondCode,
-          currentViewAccount.lastOrNull?.subBalance != null ? currentViewAccount.last.subBalance! + recCredit : recCredit));
-    });
+    }
   }
 
   void setDueAccount(String accountKey) {
@@ -148,46 +163,28 @@ class AccountViewModel extends GetxController {
 
   List<AccountRecordModel> currentViewAccount = [];
   double searchValue = 0.0;
+  double debitValue = 0.0;
+  double creditValue = 0.0;
 
-  void getAllBondForAccount(String modeKey, List<String> allDate) {
+  Future<void> getAllBondForAccount(List<String> modeKey, List<String> allDate) async {
+    accountList[modeKey.last]?.accRecord.clear();
     GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    isLoadingBond = false;
-    update();
-    currentViewAccount.clear();
-    // جمع حسابات الأبناء بالإضافة إلى الحساب الأساسي
-    List<String> accountsId = getAccountModelFromId(modeKey)!.accChild.map((e) => e.toString()).toList() + [modeKey];
-
-    // فلترة النماذج بناءً على التاريخ والحسابات
-    List<GlobalModel> globalModels = globalViewModel.allGlobalModel.values.where((element) => (allDate.contains(element.bondDate?.split(" ")[0]) || allDate.contains(element.invDate?.split(" ")[0])) || allDate.contains(element.cheqDate?.split(" ")[0])).toList();
-
-
-
-    // تهيئة الحسابات بناءً على النماذج
-    for (var globalModel in globalModels) {
-      initGlobalAccount(globalModel, accountsId: accountsId);
+    // List<GlobalModel> globalModels = globalViewModel.allGlobalModel.values.where((element) => (allDate.contains(element.bondDate?.split(" ")[0]) || allDate.contains(element.invDate?.split(" ")[0])) || allDate.contains(element.cheqDate?.split(" ")[0])).toList();
+    for (var globalModel in globalViewModel.allGlobalModel.values.toList()) {
+      initGlobalAccount(globalModel, accountsId: modeKey);
     }
 
-    // حساب مجموع القيم
-    searchValue = currentViewAccount.lastOrNull?.subBalance ?? 0;
-    isLoadingBond = true;
-    update();
+
+    // searchValue = accountList[modeKey.last]?.accRecord.lastOrNull?.subBalance ?? 0;
+    debitValue = accountList[modeKey.last]?.accRecord.fold(0.0, (previousValue, element) => element.debit!+previousValue!,)??0;
+    creditValue = accountList[modeKey.last]?.accRecord.fold(0.0, (previousValue, element) => element.credit!+previousValue!,)??0;
+    searchValue=debitValue-creditValue;
   }
 
   void _clearAccountRecords(List<String> modeKey) {
     for (var element in modeKey) {
       accountList[element]!.accRecord.clear();
     }
-  }
-
-  void _collectCurrentViewAccount(String modeKey) {
-    for (var element in accountList[modeKey]!.accChild + [modeKey]) {
-      currentViewAccount.addAll(accountList[element]!.accRecord);
-    }
-  }
-
-  double _calculateTotal(List<AccountRecordModel> accounts) {
-    // print( accounts.map((e) => e.total!+"\n").toList());
-    return accounts.map((e) => e.total!).fold(0.0, (previousValue, element) => previousValue + double.parse(element));
   }
 
   void deleteGlobalAccount(GlobalModel globalModel) {
@@ -526,7 +523,7 @@ class AccountViewModel extends GetxController {
 
   void addAccountRecord({bondId, accountId, amount, type, date, code}) {
     accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
-    accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0, type, date, code, 0));
+    accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0, type, date, code, 0, 0, 0));
     calculateBalance(accountId);
     if (lastAccountOpened != null) {
       initAccountPage(lastAccountOpened!);
@@ -686,7 +683,7 @@ AccountModel? getAccountIdFromName(text) {
   }
 }
 
-List<AccountModel> getAccountModelFromName(text) {
+List<AccountModel> getAccountModelsFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
     List<AccountModel> _ = accountController.accountList.values.toList().where((element) => element.accName!.contains(text) || element.accCode!.contains(text)).toList();
@@ -701,10 +698,19 @@ List<AccountModel> getAccountModelFromName(text) {
     return [];
   }
 }
+AccountModel? getAccountModelFromName(text) {
+  var accountController = Get.find<AccountViewModel>();
+  if (text != null && text != " " && text != "") {
+ return   accountController.accountList.values.toList().where((element) => element.accName==text ).toList().firstOrNull;
+  } else {
+    print("empty");
+    return null;
+  }
+}
 
 String getAccountNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<AccountViewModel>().accountList[id]?.accName! ?? "$id sss";
+    return Get.find<AccountViewModel>().accountList[id]?.accName ?? "$id";
   } else {
     return "";
   }

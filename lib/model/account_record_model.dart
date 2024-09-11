@@ -1,12 +1,11 @@
+import 'dart:ffi';
 
+import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 
-
-import '../Const/const.dart';
-
 class AccountRecordModel {
-  String? id, total, account,isPaidStatus,accountRecordType,date,code;
-  double? balance,paid,subBalance=0,debit,credit;
+  String? id, total, account, isPaidStatus, accountRecordType, date, code;
+  double? balance, paid, subBalance, debit, credit;
 
   AccountRecordModel.fromJson(json) {
     id = json['id'];
@@ -19,7 +18,8 @@ class AccountRecordModel {
     date = json['date'];
     code = json['code'];
   }
-  AccountRecordModel(this.id, this.account, this.total, this.balance,this.accountRecordType,this.date,this.code,this.subBalance,{this.debit,this.credit});
+
+  AccountRecordModel(this.id, this.account, this.total, this.balance, this.accountRecordType, this.date, this.code, this.subBalance, this.debit, this.credit);
 
   Map<String, dynamic> toJson() {
     return {
@@ -35,19 +35,18 @@ class AccountRecordModel {
       "credit": credit,
     };
   }
+
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "رقم": code,
-      "مدين": debit,
-      "دائن": credit,
-      "الحساب": getAccountNameFromId(account),
-      'نوع السند':accountRecordType!.startsWith("pat")?getPatNameFromId(accountRecordType??''): getBondTypeFromEnum(accountRecordType ?? ""),
-      // "accountRecordType": accountRecordType,
-      // "isPaidStatus": isPaidStatus,
-      "التاريخ": date,
-      "الحساب بعد العملية": subBalance,
-      "القيمة": total,
+      "مدين": debit?.toStringAsFixed(2),
+      "دائن": credit?.toStringAsFixed(2),
+      // "الحساب": getAccountNameFromId(account).toString(),
+      "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :getBondTypeFromEnum(accountRecordType??''),
+      "التاريخ": date.toString().split(" ")[0],
+      "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
+      "القيمة": double.parse(total!).toStringAsFixed(2),
     };
   }
 }

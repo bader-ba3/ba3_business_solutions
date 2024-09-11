@@ -50,7 +50,6 @@ class CustomPlutoGridWithAppBar extends StatelessWidget {
                       evenRowColor: Colors.blueAccent.withOpacity(0.5),
                       columnTextStyle: const TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
                       activatedColor: Colors.white.withOpacity(0.5),
-                      // gridBackgroundColor: Colors.transparent,
                       cellTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                       gridPopupBorderRadius: const BorderRadius.all(Radius.circular(15)),
                       gridBorderRadius: const BorderRadius.all(Radius.circular(15)),

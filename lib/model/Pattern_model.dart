@@ -1,9 +1,12 @@
 class PatternModel {
-  String? patName, patCode, patType, patPrimary, patId, patVatAccount, patSecondary,patStore,patNewStore,patGiftAccount,patSecGiftAccount;
+  String? patName, patCode, patType, patPrimary, patId, patVatAccount, patSecondary, patStore, patNewStore, patGiftAccount, patSecGiftAccount, patFullName, patPartnerFeeAccount;
   int? patColor;
   bool? patHasVat;
+  double? patPartnerRatio, patPartnerCommission;
+
   PatternModel({
     this.patName,
+    this.patFullName,
     this.patCode,
     this.patType,
     this.patPrimary,
@@ -16,10 +19,15 @@ class PatternModel {
     this.patNewStore,
     this.patGiftAccount,
     this.patSecGiftAccount,
+    this.patPartnerCommission,
+    this.patPartnerRatio,
+    this.patPartnerFeeAccount,
   });
 
   PatternModel.fromJson(Map<String, dynamic> json) {
     patName = json['patName'];
+    patFullName = json['patFullName'];
+    patPartnerFeeAccount = json['patPartnerFeeAccount'];
     patCode = json['patCode'];
     patType = json['patType'];
     patPrimary = json['patPrimary'];
@@ -32,11 +40,15 @@ class PatternModel {
     patNewStore = json['patNewStore'];
     patGiftAccount = json['patGiftAccount'];
     patSecGiftAccount = json['patSecGiftAccount'];
+    patPartnerRatio = json['patPartnerRatio'] ?? 0.0;
+    patPartnerCommission = json['patPartnerCommission'] ?? 0.0;
   }
 
   toJson() {
     return {
       'patName': patName,
+      'patPartnerFeeAccount': patPartnerFeeAccount,
+      'patFullName': patFullName,
       'patCode': patCode,
       'patType': patType,
       'patPrimary': patPrimary,
@@ -49,6 +61,15 @@ class PatternModel {
       'patNewStore': patNewStore,
       'patGiftAccount': patGiftAccount,
       'patSecGiftAccount': patSecGiftAccount,
+      'patPartnerCommission': patPartnerCommission,
+      'patPartnerRatio': patPartnerRatio,
+    };
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'الرمز': patCode,
+      'الاسم': patFullName,
+      'النوع': patType,
     };
   }
 }

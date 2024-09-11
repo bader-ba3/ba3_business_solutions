@@ -43,7 +43,8 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
 
   void initPage() {
     entryBondController.initCodeList();
-    entryBondController.tempBondModel = GlobalModel.fromJson(entryBondController.allEntryBonds[widget.oldId]?.toFullJson());
+    print(entryBondController.allEntryBonds[widget.oldId]?.toFullJson());
+    entryBondController.tempBondModel = entryBondController.allEntryBonds[widget.oldId]!;
     entryBondController.initPage();
   }
 

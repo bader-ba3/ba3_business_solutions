@@ -23,10 +23,10 @@ import '../widget/CustomWindowTitleBar.dart';
 
 class BondDetailsView extends StatefulWidget {
   const BondDetailsView({
-    Key? key,
+    super.key,
     required this.bondType,
     this.oldId,
-  }) : super(key: key);
+  });
 
   final String? oldId;
   final String bondType;
