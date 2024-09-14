@@ -283,7 +283,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
-                                if (widget.patternModel?.patType != Const.invoiceTypeSalesWithPartner)
+                                if (widget.patternModel?.patType != Const.invoiceTypeSalesWithPartner&&invoiceController.selectedPayType == Const.invPayTypeDue)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -1321,6 +1321,7 @@ class _InvoiceViewState extends State<InvoiceView> {
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
         invPayType: invoiceController.selectedPayType,
+        invIsPaid:invoiceController.selectedPayType == Const.invPayTypeDue? getInvIsPay(widget.patternModel!.patType!):true,
         invPartnerCode: invoiceController.invPartnerCodeController.text,
         invDueDate: widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],

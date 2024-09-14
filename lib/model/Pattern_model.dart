@@ -1,3 +1,6 @@
+import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+
 class PatternModel {
   String? patName, patCode, patType, patPrimary, patId, patVatAccount, patSecondary, patStore, patNewStore, patGiftAccount, patSecGiftAccount, patFullName, patPartnerFeeAccount;
   int? patColor;
@@ -67,9 +70,15 @@ class PatternModel {
   }
   Map<String, dynamic> toMap() {
     return {
+      'id': patId,
       'الرمز': patCode,
       'الاسم': patFullName,
-      'النوع': patType,
+      'الاخصار': patFullName,
+      'النوع': getInvTypeFromEnum(patType??''),
+      'patPrimary': getAccountNameFromId(patPrimary),
+      'patSecondary': getAccountNameFromId(patSecondary),
+
+
     };
   }
 }

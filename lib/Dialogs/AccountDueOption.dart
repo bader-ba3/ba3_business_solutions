@@ -1,18 +1,20 @@
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/Dialogs/SearchAccuntTextDialog.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
 import '../Services/Get_Date_From_String.dart';
 import '../main.dart';
+import '../view/accounts/All_Due_Account.dart';
+import '../view/accounts/account_details.dart';
 import '../view/invoices/Controller/Search_View_Controller.dart';
 import '../view/invoices/New_Invoice_View.dart';
-import '../view/invoices/all_invoices.dart';
-import 'Search_Product_Text_Dialog.dart';
 import 'Widgets/Option_Text_Widget.dart';
 
-class InvoiceOptionDialog extends StatelessWidget {
-  const InvoiceOptionDialog({
+class AccountDueOptionDialog extends StatelessWidget {
+  const AccountDueOptionDialog({
     super.key,
   });
 
@@ -34,14 +36,14 @@ class InvoiceOptionDialog extends StatelessWidget {
                 const Text('خيارت العرض'),
                 const SizedBox(height: 15),
                 OptionTextWidget(
-                  title: "المادة :  ",
-                  controller: controller.productForSearchController,
+                  title: "اسم الحساب :  ",
+                  controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.productForSearchController.text = await searchProductTextDialog(controller.productForSearchController.text)??"";
+                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
-                OptionTextWidget(
+   /*             OptionTextWidget(
                   title: "من تاريخ :  ",
                   controller: controller.startDateForSearchController,
                   onSubmitted: (text) async {
@@ -56,14 +58,21 @@ class InvoiceOptionDialog extends StatelessWidget {
                     controller.endDateForSearchController.text = getDateFromString(text);
                     controller.update();
                   },
-                ),
+                ),*/
                 AppButton(
                   title: "موافق",
 
                   iconData: Icons.check,
-                  onPressed: () {
+                  onPressed: ()  {
+                    AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
+                    if (model != null) {
+                      Get.to(() =>  AllDueAccount(
+                        modelKey: model.accChild.map((e) => e.toString(),).toList()+[model.accId!],
+                      ));
 
-                    Get.to(() => AllInvoice(listDate: getDatesBetween(DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text)), productName: getProductIdFromName(controller.productForSearchController.text)));
+                    } else {
+                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ", icon: const Icon(Icons.error_outline));
+                    }
                   },
                 ),
               ],
@@ -74,4 +83,3 @@ class InvoiceOptionDialog extends StatelessWidget {
     );
   }
 }
-

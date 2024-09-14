@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Const/const.dart';
+import '../../Dialogs/AccountDueOption.dart';
 import '../invoices/Controller/Search_View_Controller.dart';
+import 'All_Due_Account.dart';
+import 'PartnerDueAccount.dart';
 
 class AccountType extends StatefulWidget {
   const AccountType({super.key});
@@ -43,7 +46,7 @@ class _AccountTypeState extends State<AccountType> {
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(
-                    context: context,
+                    context: Get.context!,
                     builder: (BuildContext context) => const AccountOptionDialog(),
                   );
                 }
@@ -60,6 +63,25 @@ class _AccountTypeState extends State<AccountType> {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
+            }),
+            item("سجل استحقاق الشركاء", () {
+              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+                if (value) Get.to(() => const AllPartnerDueAccount());
+              });
+
+            }),
+            item("المستحقات", () {
+              checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {
+                if (value) {
+                  Get.find<SearchViewController>().initController();
+                  showDialog<String>(
+                    context: Get.context!,
+                    builder: (BuildContext context) => const AccountDueOptionDialog(),
+                  );
+                }
+              });
+
+
             }),
           ],
         ),

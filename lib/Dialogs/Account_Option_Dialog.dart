@@ -1,12 +1,14 @@
 import 'package:ba3_business_solutions/Dialogs/SearchAccuntTextDialog.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
+import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Const/const.dart';
 import '../Services/Get_Date_From_String.dart';
-import '../view/accounts/widget/account_details.dart';
+import '../view/accounts/account_details.dart';
 import '../view/invoices/Controller/Search_View_Controller.dart';
 import 'Widgets/Option_Text_Widget.dart';
 
@@ -18,6 +20,7 @@ class AccountOptionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: backGroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
@@ -54,21 +57,28 @@ class AccountOptionDialog extends StatelessWidget {
                     controller.update();
                   },
                 ),
-                ElevatedButton(
-                  onPressed: ()  {
+                AppButton(
+                  title: "موافق",
+
+                  iconData: Icons.check,
+                  onPressed: () {
                     AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
                     if (model != null) {
                       List<String> listDate = getDatesBetween(DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text));
 
                       Get.to(() => AccountDetails(
-                        modelKey: model.accChild.map((e) => e.toString(),).toList()+[model.accId!],
+                        modelKey: model.accChild
+                            .map(
+                              (e) => e.toString(),
+                        )
+                            .toList() +
+                            [model.accId!],
                         listDate: listDate,
                       ));
                     } else {
                       Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ", icon: const Icon(Icons.error_outline));
                     }
                   },
-                  child: const Text('موافق'),
                 ),
               ],
             );

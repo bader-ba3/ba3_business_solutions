@@ -246,6 +246,7 @@ abstract class Const {
   static const globalTypeInvoice = "globalTypeInvoice";
   static const globalTypeBond = "globalTypeBond";
   static const globalTypeCheque = "globalTypeCheque";
+  static const globalTypeAccountDue = "globalAccountDue";
 
   ////////////---------------------------------------------------
   static const invoiceRecordCollection = "invoiceRecord";
@@ -271,6 +272,9 @@ abstract class Const {
   /////////////---------------------------------------------------
   static const taskTypeProduct = 'taskTypeProduct';
   static const taskTypeInventory = 'taskTypeInventory';
+
+  static const typeAccountView="typeAccountView";
+  static const typeAccountDueView="typeAccountDueView";
 }
 
 String getInvPayTypeFromEnum(String type) {
@@ -339,6 +343,8 @@ String getInvTypeFromEnum(String type) {
       return "إدخال";
     case Const.invoiceTypeChange:
       return "مناقلة";
+    case Const.invoiceTypeSalesWithPartner:
+      return "مبيعات مع نسبة شريك";
   }
   return type;
 }
@@ -633,13 +639,30 @@ DateTime getDueDate(String invTyp) {
   switch (invTyp) {
     case Const.tabbySales:
       dueDate = getNextMonday();
-      case Const.stripSales:
+    case Const.stripSales:
       dueDate = DateTime.now().copyWith(day: dueDate.day + 5);
-
   }
 
   return dueDate;
 }
+
+bool getInvIsPay(String invTyp) {
+  bool isPay = true;
+
+  switch (invTyp) {
+    case Const.invoiceTypeBuy:
+      isPay = false;
+    case Const.invoiceTypeSales:
+      isPay = true;
+    case Const.invoiceTypeSalesWithPartner:
+      isPay = false;
+    default:
+      isPay = true;
+  }
+
+  return isPay;
+}
+
 DateTime getNextMonday() {
   DateTime now = DateTime.now();
 

@@ -45,14 +45,14 @@ class GlobalModel {
       invSecStorehouse,
       globalType,
       invPartnerCode;
-  double? invTotal,invTotalPartner;
+  double? invTotal, invTotalPartner;
   double? discountTotal;
   double? addedTotal;
   double? firstPay;
   List<BondRecordModel>? bondRecord = [];
   List<InvoiceRecordModel>? invRecords = [];
   List<InvoiceDiscountRecordModel>? invDiscountRecord = [];
-  bool? invIsPending,invIsPaid;
+  bool? invIsPending, invIsPaid;
 
   String? cheqId, cheqName, cheqAllAmount, cheqRemainingAmount, cheqPrimeryAccount, cheqSecoundryAccount, cheqCode, cheqDate, cheqStatus, cheqType, cheqBankAccount;
 
@@ -216,11 +216,11 @@ class GlobalModel {
       discountTotal: json['discountTotal'],
       firstPay: json['firstPay'],
       addedTotal: json['addedTotal'],
-      invIsPaid: json['invIsPaid'],
+      invIsPaid: json['invIsPaid'] ?? json['invPayType']== Const.invPayTypeCash?true:false,
       originAmenId: json['originAmenId'],
       bondDescription: json['bondDescription'],
       bondTotal: json['bondTotal'],
-      invDueDate: json['invDueDate'],
+      invDueDate: json['invDueDate'] ?? json['bondDate'] ?? json['invDate'] ?? '',
       bondDate: json['bondDate'],
       bondCode: json['bondCode'],
       invReturnCode: json['invReturnCode'],
@@ -488,9 +488,10 @@ class GlobalModel {
         "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? ""),
         'المجموع الكلي': (invTotal ?? 0).toStringAsFixed(2),
         'المستودع': getStoreNameFromId(invStorehouse), //Isolate
-        'الحساب الاول': getAccountNameFromId(invPrimaryAccount), //Isolate
-        'الحساب الثاني': getAccountNameFromId(invSecondaryAccount), //Isolate
+        'دائن': getAccountNameFromId(invPrimaryAccount), //Isolate
+        'مدين': getAccountNameFromId(invSecondaryAccount), //Isolate
         "رقم جوال العميل": invMobileNumber ?? '',
+
         "حساب العميل": getAccountNameFromId(invCustomerAccount), //Isolate
         'النوع': getInvTypeFromEnum(invType ?? ""),
         "حساب البائع": getSellerNameFromId(invSeller), //Isolate
@@ -536,8 +537,24 @@ class GlobalModel {
         'نوع الشيك': getChequeTypefromEnum(cheqType.toString()),
         'اسم البنك': getAccountNameFromId(cheqBankAccount),
       };
+    } else if (type == Const.globalTypeAccountDue) {
+      return {
+        "الرقم التسلسلي": invId ?? '',
+        "الرمز": invCode ?? '',
+        "النمط": getPatModelFromPatternId(patternId).patFullName ?? '', //Isolate
+        "التاريخ": invDate?.split(" ")[0] ?? '',
+        "تاريخ الاستحقاق": invDueDate?.split("T")[0] ?? '',
+        // "حالة الفاتورة":invIsPaid,
+        // "نوع الفاتورة": getInvPayTypeFromEnum(invPayType ?? ""),
+        'المجموع الكلي': (invTotal ?? 0).toStringAsFixed(2),
+        'المستودع': getStoreNameFromId(invStorehouse), //Isolate
+        'دائن': getAccountNameFromId(invPrimaryAccount), //Isolate
+        'مدين': getAccountNameFromId(invSecondaryAccount), //Isolate
+        "رقم جوال العميل": invMobileNumber ?? '',
+        'النوع': getInvTypeFromEnum(invType ?? ""),
+        'وصف': invComment ?? '',
+      };
     } else {
-      print("UNKNOW TYPE");
       return toFullJson();
     }
   }

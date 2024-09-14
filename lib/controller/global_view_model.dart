@@ -291,17 +291,17 @@ class GlobalViewModel extends GetxController {
 
   ////-Utils
   GlobalModel correctInvRecord(GlobalModel globalModel) {
-    GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
-    _.invRecords?.removeWhere((element) => element.invRecId == null);
-    _.bondRecord?.removeWhere((element) => element.bondRecId == null);
-    _.invDiscountRecord?.removeWhere((element) => element.discountId == null);
-    for (var element in _.invRecords ?? []) {
+    GlobalModel correctedModel = GlobalModel.fromJson(globalModel.toFullJson());
+    correctedModel.invRecords?.removeWhere((element) => element.invRecId == null);
+    correctedModel.bondRecord?.removeWhere((element) => element.bondRecId == null);
+    correctedModel.invDiscountRecord?.removeWhere((element) => element.discountId == null);
+    for (var element in correctedModel.invRecords ?? []) {
       if (!(element.invRecProduct?.contains("prod") ?? true)) globalModel.invRecords?[globalModel.invRecords!.indexOf(element)].invRecProduct = productController.searchProductIdByName(element.invRecProduct);
     }
-    for (BondRecordModel element in _.bondRecord ?? []) {
+    for (BondRecordModel element in correctedModel.bondRecord ?? []) {
       if (!(element.bondRecAccount?.contains("acc") ?? true)) globalModel.bondRecord?[globalModel.bondRecord!.indexOf(element)].bondRecAccount = getAccountIdFromText(element.bondRecAccount);
     }
-    return _;
+    return correctedModel;
   }
 
   addInvoiceToFirebase(GlobalModel globalModel) async {
@@ -445,6 +445,7 @@ class GlobalViewModel extends GetxController {
 
 
   updateDataInAll(GlobalModel globalModel) async {
+
     if (globalModel.globalType == Const.globalTypeInvoice) {
       // GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
       // if (filteredGlobalModel == null) {
@@ -455,7 +456,8 @@ class GlobalViewModel extends GetxController {
 
           entryBondViewModel.initGlobalInvoiceBond(globalModel);
 
-          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
+          if (getPatModelFromPatternId(globalModel.patternId).patType == Const.invoiceTypeSales||getPatModelFromPatternId(globalModel.patternId).patType==Const.invoiceTypeSalesWithPartner) {
+
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }
@@ -484,7 +486,8 @@ class GlobalViewModel extends GetxController {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
           entryBondViewModel.initGlobalInvoiceBond(globalModel);
-          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع") {
+          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع"||getPatModelFromPatternId(globalModel.patternId).patType==Const.invoiceTypeSalesWithPartner) {
+            // print("Posted");
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }

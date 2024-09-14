@@ -13,12 +13,11 @@ class AllPattern extends StatelessWidget {
     return GetBuilder<PatternViewModel>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "أنماط البيع",
-        type: Const.globalTypeInvoice,
         onLoaded: (e) {},
         onSelected: (p0) {
-          print(p0.row?.cells["الرقم التسلسلي"]?.value);
+
           Get.to(PatternDetails(
-            oldKey: p0.row?.cells["الرمز"]?.value,
+            oldKey: p0.row?.cells["id"]?.value,
           ));
 
           /*   Get.to(() => InvoiceView(

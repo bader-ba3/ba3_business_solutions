@@ -8,9 +8,11 @@ import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../model/global_model.dart';
+import '../view/invoices/New_Invoice_View.dart';
 import 'Widgets/Option_Text_Widget.dart';
 
 class BondDebitDialog extends StatelessWidget {
@@ -48,7 +50,7 @@ class BondDebitDialog extends StatelessWidget {
                     controller.update();
                   },
                 ),
-                OptionTextWidget(
+                OptionTextWithoutIconWidget(
                   title: "القيمة الواصلة :  ",
                   controller: controller.totalPaidFromPartner,
                   onSubmitted: (text) async {
@@ -56,6 +58,8 @@ class BondDebitDialog extends StatelessWidget {
                     // controller.update();
                   },
                 ),
+
+
                 if (controller.invoiceForSearch != null)
                   Container(
                     decoration: BoxDecoration(
@@ -186,16 +190,19 @@ class BondDebitDialog extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                ElevatedButton(
+                AppButton(
+                  title: "موافق",
+                  iconData: Icons.check,
                   onPressed: () async {
                     if (controller.invoiceForSearch != null && double.tryParse(controller.totalPaidFromPartner.text) != null) {
-                      String des = "سند دفع مولد من عملية تسديد فاتورة رقم${controller.invoiceForSearch!.invPartnerCode} - ${patternController.patternModel[controller.invoiceForSearch!.patternId]!.patFullName}:${controller.invoiceForSearch!.invCode!}" ;
+                      String des = "سند دفع مولد من عملية تسديد فاتورة رقم${controller.invoiceForSearch!.invPartnerCode} - ${patternController.patternModel[controller.invoiceForSearch!.patternId]!.patFullName}:${controller.invoiceForSearch!.invCode!}";
                       List<BondRecordModel> bondRecord = [];
                       List<EntryBondRecordModel> entryBondRecord = [];
 
                       bondRecord.add(BondRecordModel("00", 0, double.parse(controller.totalPaidFromPartner.text), getAccountIdFromText("المصرف"), des));
                       bondRecord.add(BondRecordModel("01", 0, controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), patternController.patternModel[controller.invoiceForSearch!.patternId]!.patPartnerFeeAccount!, des));
-                      bondRecord.add(BondRecordModel("02", double.parse(controller.totalPaidFromPartner.text)+(controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text)), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
+                      bondRecord
+                          .add(BondRecordModel("02", double.parse(controller.totalPaidFromPartner.text) + (controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text)), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
                       // bondRecord.add(BondRecordModel("03", controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
 
                       for (var element in bondRecord) {
@@ -205,22 +212,15 @@ class BondDebitDialog extends StatelessWidget {
                       GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
                       // print(GlobalModel(bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit), bondDate: DateTime.now().toIso8601String(), bondRecord: bondRecord, entryBondRecord: entryBondRecord, bondDescription: des, bondType: Const.bondTypeDebit, bondTotal: "0")
                       //     .toFullJson());
-                      globalViewModel.updateGlobalInvoice(controller.invoiceForSearch!..invIsPaid=true);
-                      await globalViewModel.addGlobalBond(GlobalModel(
-                          bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit),
-                          bondDate: DateTime.now().toIso8601String(),
-                          bondRecord:bondRecord ,
-                          entryBondRecord:entryBondRecord ,
-                          bondDescription: des,
-                          bondType: Const.bondTypeDebit,
-                          bondTotal: "0"));
+                      globalViewModel.updateGlobalInvoice(controller.invoiceForSearch!..invIsPaid = true);
+                      await globalViewModel.addGlobalBond(
+                          GlobalModel(bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit), bondDate: DateTime.now().toIso8601String(), bondRecord: bondRecord, entryBondRecord: entryBondRecord, bondDescription: des, bondType: Const.bondTypeDebit, bondTotal: "0"));
                       Get.back();
 
                       // controller.invoiceForSearch!.entryBondRecord!.add(EntryBondRecordModel(controller.invoiceForSearch!.entryBondRecord.length + 1, bondRecCreditAmount, bondRecDebitAmount, bondRecAccount, bondRecDescription))
                     }
                     // Get.to(() => AllInvoice(listDate: getDatesBetween(DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text)), productName: getProductIdFromName(controller.productForSearchController.text)));
                   },
-                  child: const Text('موافق'),
                 ),
               ],
             );

@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import '../../Dialogs/Account_Option_Dialog.dart';
 import '../../controller/account_view_model.dart';
 import '../../model/account_model.dart';
 import '../../utils/hive.dart';
-import '../accounts/widget/account_details.dart';
+import '../accounts/account_details.dart';
 import '../invoices/Controller/Search_View_Controller.dart';
 
 class DashboardView extends StatefulWidget {
@@ -52,17 +53,6 @@ class _DashboardViewState extends State<DashboardView> {
                         const Spacer(),
                         ElevatedButton(
                             onPressed: () async {
-                              print(Get.find<GlobalViewModel>().allGlobalModel.values
-                                  .where(
-                                    (element) => element.globalType == Const.globalTypeCheque,
-                              )
-                                  .toList()
-                                  .map(
-                                    (e) => e.toFullJson(),
-                              )
-                                  .toList());
-                            },
-                        /*      onPressed: () async {
                               TextEditingController nameController = TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
@@ -81,7 +71,7 @@ class _DashboardViewState extends State<DashboardView> {
                                                 textDirection: TextDirection.rtl,
                                                 decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
                                                 onChanged: (_) {
-                                                  accountList = getAccountModelFromName(_);
+                                                  accountList = getAccountModelsFromName(_);
                                                   // print(accountList);
                                                   setstate(() {});
                                                 },
@@ -124,8 +114,8 @@ class _DashboardViewState extends State<DashboardView> {
                                   }));
                               accountController.update();
 
-                            ///رفع الرصيد النهائي للحسابات
-                             print(accountController.accountList.length);
+                              ///رفع الرصيد النهائي للحسابات
+                              print(accountController.accountList.length);
                               // accountController.accountList.forEach(
                               //   (key, value) async{
                               //
@@ -134,7 +124,7 @@ class _DashboardViewState extends State<DashboardView> {
                               //    await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
                               //   },
                               // );
-                            },*/
+                            },
                             child: const Text("إضافة حساب ")),
                         const SizedBox(
                           width: 20,
@@ -168,7 +158,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    model.finalBalance?.toStringAsFixed(2)??"0.00",
+                                    formatDecimalNumberWithCommas( accountController.getBalance(model.accId)),
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -204,7 +194,7 @@ class _DashboardViewState extends State<DashboardView> {
       ),
       items: [
         PopupMenuItem(
-          onTap: (){
+          onTap: () {
             Get.find<SearchViewController>().initController(accountForSearch: getAccountNameFromId(id));
             showDialog<String>(
               context: context,
@@ -222,7 +212,7 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         PopupMenuItem(
           value: 'delete',
-          onTap: (){
+          onTap: () {
             HiveDataBase.mainAccountModelBox.delete(id);
             accountController.update();
           },

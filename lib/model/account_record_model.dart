@@ -20,7 +20,6 @@ class AccountRecordModel {
   }
 
   AccountRecordModel(this.id, this.account, this.total, this.balance, this.accountRecordType, this.date, this.code, this.subBalance, this.debit, this.credit);
-
   Map<String, dynamic> toJson() {
     return {
       "id": id,
@@ -36,17 +35,44 @@ class AccountRecordModel {
     };
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "رقم": code,
-      "مدين": debit?.toStringAsFixed(2),
-      "دائن": credit?.toStringAsFixed(2),
-      // "الحساب": getAccountNameFromId(account).toString(),
-      "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :getBondTypeFromEnum(accountRecordType??''),
-      "التاريخ": date.toString().split(" ")[0],
-      "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
-      "القيمة": double.parse(total!).toStringAsFixed(2),
-    };
+  Map<String, dynamic> toMap({required String type}) {
+    switch (type){
+      case Const.typeAccountView:
+        return {
+          "id": id,
+          "رقم": code,
+          "مدين": debit?.toStringAsFixed(2),
+          "دائن": credit?.toStringAsFixed(2),
+          "الحساب": getAccountNameFromId(account).toString(),
+          "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :getBondTypeFromEnum(accountRecordType??''),
+          "التاريخ": date.toString().split(" ")[0],
+          "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
+          "القيمة": double.parse(total!).toStringAsFixed(2),
+        };
+      case Const.typeAccountDueView:
+        return {
+          "id": id,
+          "رقم": code,
+          "دائن": formatDecimalNumberWithCommas(credit!),
+          "المستحق":formatDecimalNumberWithCommas(balance!),
+          "نوع الفاتورة":getPatNameFromId(accountRecordType??''),
+          "تاريخ الاستحقاق": date.toString().split(" ")[0],
+          "القيمة": double.parse(total!).toStringAsFixed(2),
+        };
+      default:
+        return {
+          "id": id,
+          "رقم": code,
+          "مدين": debit?.toStringAsFixed(2),
+          "دائن": credit?.toStringAsFixed(2),
+          "المستحق":balance,
+          // "الحساب": getAccountNameFromId(account).toString(),
+          "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :getBondTypeFromEnum(accountRecordType??''),
+          "التاريخ": date.toString().split(" ")[0],
+          "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
+          "القيمة": double.parse(total!).toStringAsFixed(2),
+        };
+    }
+
   }
 }

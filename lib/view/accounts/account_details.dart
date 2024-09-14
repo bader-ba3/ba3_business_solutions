@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../Const/const.dart';
-import '../../../Widgets/Bond_Record_Pluto_View_Model.dart';
-import '../../../Widgets/Discount_Pluto_Edit_View_Model.dart';
-import '../../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
-import '../../../Widgets/new_Pluto.dart';
-import '../../../controller/account_view_model.dart';
-import '../../bonds/bond_details_view.dart';
-import '../../invoices/New_Invoice_View.dart';
+import '../../Const/const.dart';
+import '../../Widgets/Bond_Record_Pluto_View_Model.dart';
+import '../../Widgets/Discount_Pluto_Edit_View_Model.dart';
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
+import '../../Widgets/new_Pluto.dart';
+import '../../controller/account_view_model.dart';
+import '../bonds/bond_details_view.dart';
+import '../invoices/New_Invoice_View.dart';
 
 class AccountDetails extends StatelessWidget {
   // final String modelKey;
@@ -22,6 +22,7 @@ class AccountDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<AccountViewModel>(initState: (state) {
       Get.find<AccountViewModel>().getAllBondForAccount(modelKey, listDate);
+      // Get.find<AccountViewModel>().getAllDusAccount(modelKey, /*listDate*/);
     }, builder: (controller) {
       return Scaffold(
         body: Column(
@@ -29,7 +30,7 @@ class AccountDetails extends StatelessWidget {
             Expanded(
               child: CustomPlutoGridWithAppBar(
                 title: "حركات ${getAccountNameFromId(modelKey.last)} من تاريخ  ${listDate.first}  إلى تاريخ  ${listDate.last}",
-                // type: Const.globalTypeInvoice,
+                type: Const.typeAccountView,
                 onLoaded: (e) {},
                 onSelected: (p0) {
                   if (!(p0.row?.cells["id"]?.value.toString().startsWith("inv") ?? true)) {
