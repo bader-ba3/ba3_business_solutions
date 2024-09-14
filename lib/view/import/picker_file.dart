@@ -83,7 +83,7 @@ class FilePickerWidget extends StatelessWidget {
                     Get.snackbar("error", "plz select separator");
                   }
                 },
-                child: const Text("سندات القيد"),
+                child: const Text("تصحيح الفواتير"),
               ),
               const SizedBox(height: 30,),
               ElevatedButton(
@@ -92,6 +92,13 @@ class FilePickerWidget extends StatelessWidget {
                     // importViewModel.pickNewType(separator);
                 },
                 child: const Text("مزامنة"),
+              ),
+              const SizedBox(height: 30,),
+              ElevatedButton(
+                onPressed: () {
+                  importViewModel.pickStarterBondFile(separator);
+                },
+                child: const Text("سندات القيد"),
               ),
             ],
           ),

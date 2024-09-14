@@ -158,7 +158,8 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    formatDecimalNumberWithCommas( accountController.getBalance(model.accId)),
+                                    // formatDecimalNumberWithCommas( accountController.getBalance(model.accId)),
+                                    model.accId!,
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),

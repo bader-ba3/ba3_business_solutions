@@ -41,7 +41,7 @@ class AllDueAccount extends StatelessWidget {
 
                 },
                 // modelList: controller.currentViewAccount,
-                modelList: controller.accountList[modelKey.last]?.accRecord ?? [],
+                modelList: controller.accountList[modelKey.last]?.accRecord.where((element) => element.balance!>0,).toList() ?? [],
               ),
             ),
             Padding(

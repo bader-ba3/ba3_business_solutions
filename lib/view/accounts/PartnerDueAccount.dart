@@ -3,7 +3,9 @@ import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
+import '../invoices/New_Invoice_View.dart';
 
 class AllPartnerDueAccount extends StatelessWidget {
   const AllPartnerDueAccount({super.key});
@@ -24,10 +26,11 @@ class AllPartnerDueAccount extends StatelessWidget {
               // Get.to(() => AccountDetails(
               //   modelKey: p0.row?.cells["accId"]?.value,
               // ));
-              // Get.to(() => InvoiceView(
-              //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
-              //   patternId: "",
-              // ));
+              Get.to(() => InvoiceView(
+                billId:p0.row?.cells["الرقم التسلسلي"]?.value,
+                patternId: "",
+                
+              ),binding: BindingsBuilder(() =>Get.lazyPut(()=>InvoicePlutoViewModel()) ,));
             },
             modelList: controller.invoiceModel.values.where((element){
               return element.invIsPaid==false&&element.invType==Const.invoiceTypeSalesWithPartner;

@@ -341,9 +341,10 @@ class GlobalViewModel extends GetxController {
     // });
     // await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
     await Future.delayed(const Duration(milliseconds: 100));
-    await HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
+    await HiveDataBase.globalModelBox.put(globalModel.bondId??globalModel.entryBondId, globalModel);
     Get.find<ImportViewModel>().addedBond++;
     print("end ${globalModel.bondId}");
+    print("end ${globalModel.entryBondRecord}");
     print("----------------------------------------");
   }
 

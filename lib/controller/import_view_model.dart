@@ -23,6 +23,7 @@ import '../model/bond_record_model.dart';
 import '../model/global_model.dart';
 import '../utils/hive.dart';
 import '../view/import/bond_list_view.dart';
+import '../view/import/entry_bond_list_view.dart';
 import '../view/import/invoice_list_view.dart';
 import '../view/import/preview_list_view.dart';
 
@@ -65,11 +66,13 @@ class ImportViewModel extends GetxController {
     }
   }
 
+
+
+
   int addedBond = 0;
 
   Future<void> addBond(List<GlobalModel> bondList) async {
     addedBond = 0;
-    BondViewModel bondController = Get.find<BondViewModel>();
 
     await showLoadingDialog(
         total: bondList.length,
@@ -317,6 +320,154 @@ class ImportViewModel extends GetxController {
         ));
   }
 
+  void pickStarterBondFile(separator) async {
+    List row = [];
+    List row2 = [];
+    var indexOfDate;
+    var indexOfType;
+    var indexOfDetails;
+    var indexOfNumber;
+    var indexOfAccount;
+    var indexOfCredit;
+    var indexOfDebit;
+    var indexOfTotal;
+    var indexOfSmallDes;
+
+    int codeBond = 0;
+    List<GlobalModel> bondList = [];
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+    var result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv', "tsv"],
+    );
+    if (result == null) {
+    } else {
+      File _ = File(result.files.single.path!);
+      List<String> file = await _.readAsLines();
+      row = file[0].split(separator);
+      row2 = file[2].split(separator);
+      file.removeAt(0);
+
+      if (row.length == 1) {
+        Get.snackbar("error", "plz check if the file separeted ");
+        return;
+      }
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
+      row.forEach((element) {
+        indexOfDate = row.indexOf("التاريخ");
+        indexOfType = row.indexOf("أصل السند");
+        indexOfTotal = row.indexOf("مدين");
+        indexOfDetails = row.indexOf("البيان");
+        indexOfNumber = row.indexOf("رقم السند");
+      });
+
+      row2.forEach((element) {
+        indexOfAccount = row2.indexOf("الحساب");
+        indexOfCredit = row2.indexOf("دائن");
+        indexOfDebit = row2.indexOf("مدين");
+        indexOfSmallDes = row2.indexOf("البيان");
+      });
+
+      List<List<String>> accountList = [];
+      List<List<String>> creditList = [];
+      List<List<String>> debitList = [];
+      List<List<String>> smallDesList = [];
+      List<String> oreginCode = [];
+      List<String> dateList = [];
+      List<String> codeList = [];
+      List<String> typeList = [];
+      List<String> totalList = [];
+      List<String> desList = [];
+      List<String> numberList = [];
+      List<String> accountTemp = [];
+      List<String> creditTemp = [];
+      List<String> debitTemp = [];
+      List<String> smallDesTemp = [];
+
+      for (var element in dataList) {
+        // print(element[indexOfAccount]);
+        if (element[indexOfAccount] == "الحساب") {
+          if (accountTemp.isNotEmpty) {
+            accountList.add(accountTemp.toList());
+            creditList.add(creditTemp.toList());
+            debitList.add(debitTemp.toList());
+            smallDesList.add(smallDesTemp.toList());
+            accountTemp.clear();
+            debitTemp.clear();
+            creditTemp.clear();
+            smallDesTemp.clear();
+          }
+        } else if (element[indexOfAccount] == "") {
+          dateList.add(element[indexOfDate]);
+          desList.add(element[indexOfDetails]);
+          numberList.add(element[indexOfNumber]);
+          totalList.add(element[indexOfTotal]);
+          print(element[indexOfType].split(":"));
+          // if (element[indexOfType] == "" || element[indexOfType].split(":")[0].removeAllWhitespace == "يومية".removeAllWhitespace) {
+            codeBond++;
+          // }
+          codeList.add(codeBond.toString());
+          oreginCode.add(codeBond.toString());
+          typeList.add("سند يومية");
+        } else {
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
+          creditTemp.add(element[indexOfCredit].toString());
+          debitTemp.add(element[indexOfDebit].toString());
+          smallDesTemp.add(element[indexOfSmallDes].toString());
+        }
+        if (dataList.indexOf(element) + 1 == dataList.length) {
+          accountList.add(accountTemp.toList());
+          creditList.add(creditTemp.toList());
+          debitList.add(debitTemp.toList());
+          smallDesList.add(smallDesTemp.toList());
+          accountTemp.clear();
+          debitTemp.clear();
+          smallDesTemp.clear();
+          creditTemp.clear();
+        }
+      }
+
+      for (var i = 0; i < accountList.length; i++) {
+        List<EntryBondRecordModel> recordTemp = [];
+        for (var j = 0; j < accountList[i].length; j++) {
+          int pad = 2;
+          if (accountList[i][j] != '') {
+            if (accountList[i].length > 99) {
+              pad = 3;
+            }
+            String name = getAccountIdFromText(accountList[i][j]);
+
+            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
+          }
+        }
+
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
+
+        GlobalModel model = GlobalModel(
+            bondDescription: desList[i],
+            entryBondCode: "E-${codeList[i]}" ,
+            entryBondId: generateId(RecordType.entryBond),
+            bondDate: date.toString(),
+            entryBondRecord:recordTemp.toList() ,
+            bondTotal: totalList[i].replaceAll(",", ""),
+            bondType:  Const.bondTypeStart
+        );
+        // print(model.toFullJson());
+        bondList.add(GlobalModel.fromJson(model.toFullJson()));
+        recordTemp.clear();
+      }
+      print(bondList.length);
+      correctDebitAndCredit(bondList);
+      print(bondList.length);
+
+
+    }
+    print("---------" * 10);
+
+    Get.to(() => EntryBondListView(
+      bondList: bondList,
+    ));
+  }
   void pickBondFileFree(separator) async {
     List row = [];
     List row2 = [];

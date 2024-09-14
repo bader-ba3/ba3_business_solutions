@@ -929,7 +929,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          (controller.computeWithVatTotal() * 0.05).toStringAsFixed(2),
+                                          (controller.computeWithVatTotal()-controller.computeWithoutVatTotal()).toStringAsFixed(2),
                                           style: const TextStyle(fontSize: 30, color: Colors.white),
                                         ),
                                         const Text(

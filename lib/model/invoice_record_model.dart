@@ -166,7 +166,7 @@ class InvoiceRecordModel {
         checkReadOnly: (row, cell) {
           return cell.row.cells['invRecProduct']?.value == '';
         },
-      ): (((invRecSubTotal??0)+(invRecVat??0)).toInt())*(invRecQuantity??1),
+      ): invRecTotal,
       PlutoColumn(
         title: 'الهدايا',
         field: "invRecGift",
