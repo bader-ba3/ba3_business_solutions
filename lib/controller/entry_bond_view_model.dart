@@ -109,7 +109,7 @@ class EntryBondViewModel extends GetxController {
     allEntryBonds[globalModel.entryBondId!]?.entryBondRecord = globalModel.entryBondRecord;
     allEntryBonds[globalModel.entryBondId!]?.originId = globalModel.invId;
     allEntryBonds[globalModel.entryBondId!]?.bondType = Const.globalTypeBond;
-    allEntryBonds[globalModel.entryBondId!]?.bondDate ??= globalModel.invDate;
+    allEntryBonds[globalModel.entryBondId!]?.bondDate= globalModel.invDate??globalModel.bondDate;
 
     if (allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == true || allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == null) {
       allEntryBonds[globalModel.entryBondId!]?.entryBondRecord = [];
@@ -216,7 +216,7 @@ class EntryBondViewModel extends GetxController {
     tempBondModel.originId = globalModel.originId;
     tempBondModel.cheqId = globalModel.cheqId;
     if (globalModel.entryBondId == null) {
-      tempBondModel.entryBondId = generateId(RecordType.bond);
+      tempBondModel.entryBondId = generateId(RecordType.entryBond);
     } else {
       tempBondModel.entryBondId = globalModel.entryBondId;
     }

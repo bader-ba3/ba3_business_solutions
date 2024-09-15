@@ -44,7 +44,7 @@ class AccountRecordModel {
           "مدين": debit?.toStringAsFixed(2),
           "دائن": credit?.toStringAsFixed(2),
           "الحساب": getAccountNameFromId(account).toString(),
-          "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :getBondTypeFromEnum(accountRecordType??''),
+          "نوع السند":accountRecordType?.startsWith("pat")==true?getPatNameFromId(accountRecordType??'') :accountRecordType?.startsWith("cheq")==true?getChequeTypeFromEnum(accountRecordType!):getBondTypeFromEnum(accountRecordType??''),
           "التاريخ": date.toString().split(" ")[0],
           "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
           "القيمة": double.parse(total!).toStringAsFixed(2),

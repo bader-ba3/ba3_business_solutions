@@ -387,8 +387,10 @@ class BondViewModel extends GetxController {
     // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
     //
     // }
+WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+  update();
 
-    update();
+},);
   }
 
   void initTotal() {

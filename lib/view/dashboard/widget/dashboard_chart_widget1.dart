@@ -78,11 +78,10 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
         if(value.sellerRecord!.isNotEmpty){
           List<SellerRecModel> _ = value.sellerRecord!.where((element) {
            //  print(element.selleRecInvDate);2024-09-02 00:00:00
-           // String date =  element.selleRecInvDate.toString().split(" ")[0];
-           // String year = DateTime.now().toString().split("-")[0];
-           // String month = DateTime.now().toString().split("-")[1];
-
-           return element.selleRecInvDate.toString().split(" ")[0] ==  DateTime.now().toString()[0];
+           String date =  element.selleRecInvDate.toString().split(" ")[0];
+           String year = DateTime.now().toString().split("-")[0];
+           String month = DateTime.now().toString().split("-")[1];
+           return date.split("-")[1] == month;
           },).toList();
           if(_.isNotEmpty) {
 

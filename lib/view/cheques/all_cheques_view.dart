@@ -29,7 +29,7 @@ class AllCheques extends StatelessWidget {
                   onLoaded: (e){
                   },
                   onSelected: (p0) {
-
+                    Get.to(() => AddCheque( modelKey: p0.row?.cells["cheqId"]?.value,));
                     // Get.to(() =>  AddAccount(  modelKey: p0.row?.cells["accId"]?.value,oldParent:(p0.row?.cells["حساب الاب"]?.value) ,));
                     // Get.to(() => AccountDetails(
                     //   modelKey: p0.row?.cells["accId"]?.value,

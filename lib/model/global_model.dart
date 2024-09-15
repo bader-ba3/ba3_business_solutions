@@ -534,7 +534,7 @@ class GlobalModel {
         'الحساب المقابل': getAccountNameFromId(cheqSecoundryAccount),
 
         'حالة الشيك': getChequeStatusfromEnum(cheqStatus.toString()),
-        'نوع الشيك': getChequeTypefromEnum(cheqType.toString()),
+        'نوع الشيك': getChequeTypeFromEnum(cheqType.toString()),
         'اسم البنك': getAccountNameFromId(cheqBankAccount),
       };
     } else if (type == Const.globalTypeAccountDue) {
@@ -554,7 +554,31 @@ class GlobalModel {
         'النوع': getInvTypeFromEnum(invType ?? ""),
         'وصف': invComment ?? '',
       };
-    } else {
+    } else if (type == Const.globalTypeStartersBond) {
+      return {
+        'bondId': entryBondId,
+        'رقم السند': entryBondCode??0,
+        // 'AmenCode': originAmenId,
+        'تاريخ السند': bondDate??invDate,
+        'القيمة': bondRecord
+            ?.map(
+              (e) => e.bondRecDebitAmount!,
+        )
+            .toList()
+            .fold(
+          0.0,
+              (previousValue, element) => previousValue + element,
+        ) ??
+            '',
+        'البيان': bondDescription,
+        "الحسابات المتأثرة": entryBondRecord
+            ?.map(
+              (e) => getAccountNameFromId(e.bondRecAccount),
+        )
+            .toList() ??
+            ''
+      };
+    }else {
       return toFullJson();
     }
   }

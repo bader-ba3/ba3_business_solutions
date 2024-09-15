@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/view/entry_bond/entry_bond_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +23,6 @@ class AccountDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<AccountViewModel>(initState: (state) {
       Get.find<AccountViewModel>().getAllBondForAccount(modelKey, listDate);
-      // Get.find<AccountViewModel>().getAllDusAccount(modelKey, /*listDate*/);
     }, builder: (controller) {
       return Scaffold(
         body: Column(
@@ -33,7 +33,7 @@ class AccountDetails extends StatelessWidget {
                 type: Const.typeAccountView,
                 onLoaded: (e) {},
                 onSelected: (p0) {
-                  if (!(p0.row?.cells["id"]?.value.toString().startsWith("inv") ?? true)) {
+                  if ((p0.row?.cells["id"]?.value.toString().startsWith("bon") ?? false)) {
                     Get.to(
                       () => BondDetailsView(
                         oldId: p0.row?.cells["id"]?.value,
@@ -43,7 +43,7 @@ class AccountDetails extends StatelessWidget {
                         Get.lazyPut(() => BondRecordPlutoViewModel(getBondEnumFromType(p0.row?.cells["نوع السند"]?.value)));
                       }),
                     );
-                  } else {
+                  }   if ((p0.row?.cells["id"]?.value.toString().startsWith("inv") ?? false)) {
                     Get.to(
                       () => InvoiceView(
                         billId: p0.row?.cells["id"]?.value,
@@ -51,9 +51,22 @@ class AccountDetails extends StatelessWidget {
                       ),
                       binding: BindingsBuilder(() {
                         Get.lazyPut(() => InvoicePlutoViewModel());
-                        Get.lazyPut(() => DiscountPlutoViewModel());
                       }),
                     );
+                  }
+                  if ((p0.row?.cells["id"]?.value.toString().startsWith("entry") ?? false)) {
+                    // Get.to(
+                    //       () => EntryBondDetailsView(
+                    //     oldId: p0.row?.cells["id"]?.value,
+                    //   ),
+                    // );
+                  }
+                  if ((p0.row?.cells["id"]?.value.toString().startsWith("chuq") ?? false)) {
+                    // Get.to(
+                    //       () => Cheque(
+                    //     oldId: p0.row?.cells["id"]?.value,
+                    //   ),
+                    // );
                   }
                 },
                 // modelList: controller.currentViewAccount,

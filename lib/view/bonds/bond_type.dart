@@ -82,23 +82,18 @@ class _BondTypeState extends State<BondType> {
                 }),
               );
             }),
-            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
+/*            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
               Item("عرض جميع السندات", () {
                 checkPermissionForOperation(Const.roleUserRead, Const.roleViewBond).then((value) {
                   if (value) Get.to(() => const AllBonds());
                 });
-              }),
-            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
-              Item("عرض تقرير السندات", () {
-                checkPermissionForOperation(Const.roleUserRead, Const.roleViewBond).then((value) {
-                  if (value) Get.to(() => const BondReport());
-                });
-              }),
-            Item("عرض سندات القيد ", () {
+              }),*/
+
+ /*           Item("عرض سندات القيد ", () {
               checkPermissionForOperation(Const.roleUserRead, Const.roleViewBond).then((value) {
                 if (value) Get.to(() => const AllEntryBonds());
               });
-            }),
+            }),*/
           ],
         ),
       ),

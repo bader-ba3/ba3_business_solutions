@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
@@ -8,6 +9,7 @@ import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,8 +60,6 @@ class BondDebitDialog extends StatelessWidget {
                     // controller.update();
                   },
                 ),
-
-
                 if (controller.invoiceForSearch != null)
                   Container(
                     decoration: BoxDecoration(
@@ -211,10 +211,18 @@ class BondDebitDialog extends StatelessWidget {
 
                       GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
                       // print(GlobalModel(bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit), bondDate: DateTime.now().toIso8601String(), bondRecord: bondRecord, entryBondRecord: entryBondRecord, bondDescription: des, bondType: Const.bondTypeDebit, bondTotal: "0")
-                      //     .toFullJson());
+                      //     .toFullJson());bon1726403858683038
                       globalViewModel.updateGlobalInvoice(controller.invoiceForSearch!..invIsPaid = true);
                       await globalViewModel.addGlobalBond(
-                          GlobalModel(bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit), bondDate: DateTime.now().toIso8601String(), bondRecord: bondRecord, entryBondRecord: entryBondRecord, bondDescription: des, bondType: Const.bondTypeDebit, bondTotal: "0"));
+                        GlobalModel(
+                          bondRecord: bondRecord,
+                          bondCode: Get.find<BondViewModel>().getNextBondCode(),
+                          entryBondRecord: entryBondRecord,
+                          bondDescription: des,
+                          bondType: Const.bondTypeDebit,
+                          bondTotal: "0",
+                        ),
+                      );
                       Get.back();
 
                       // controller.invoiceForSearch!.entryBondRecord!.add(EntryBondRecordModel(controller.invoiceForSearch!.entryBondRecord.length + 1, bondRecCreditAmount, bondRecDebitAmount, bondRecAccount, bondRecDescription))

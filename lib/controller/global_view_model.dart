@@ -138,7 +138,7 @@ class GlobalViewModel extends GetxController {
 
   /////-Add
   addGlobalBond(GlobalModel globalModel) async {
-    globalModel.bondDate ??= DateTime.now().toString();
+    globalModel.bondDate = DateTime.now().toString();
     globalModel.globalType = Const.globalTypeBond;
     globalModel.bondId = generateId(RecordType.bond);
     globalModel.entryBondId = generateId(RecordType.entryBond);
@@ -339,12 +339,12 @@ class GlobalViewModel extends GetxController {
     // globalModel.bondRecord?.forEach((element) async {
     //   await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).collection(Const.bondRecordCollection).doc(element.bondRecId).set(element.toJson());
     // });
-    // await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
+    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
     await Future.delayed(const Duration(milliseconds: 100));
     await HiveDataBase.globalModelBox.put(globalModel.bondId??globalModel.entryBondId, globalModel);
     Get.find<ImportViewModel>().addedBond++;
     print("end ${globalModel.bondId}");
-    print("end ${globalModel.entryBondRecord}");
+    print("end ${globalModel.entryBondId}");
     print("----------------------------------------");
   }
 
@@ -448,17 +448,11 @@ class GlobalViewModel extends GetxController {
   updateDataInAll(GlobalModel globalModel) async {
 
     if (globalModel.globalType == Const.globalTypeInvoice) {
-      // GlobalModel? filteredGlobalModel = checkFreeZoneProduct(globalModel);
-      // if (filteredGlobalModel == null) {
-      //   return;
-      // }
+
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
-
           entryBondViewModel.initGlobalInvoiceBond(globalModel);
-
           if (getPatModelFromPatternId(globalModel.patternId).patType == Const.invoiceTypeSales||getPatModelFromPatternId(globalModel.patternId).patType==Const.invoiceTypeSalesWithPartner) {
-
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }

@@ -46,7 +46,7 @@ class AccountViewModel extends GetxController {
       type = globalModel.patternId!;
       date = globalModel.invDate!;
     } else if (globalModel.globalType == Const.globalTypeCheque) {
-      type = globalModel.cheqType! ;
+      type = globalModel.cheqType!;
       date = globalModel.cheqDate!;
       if (accountsId!.contains(globalModel.cheqPrimeryAccount)) {
         accountList[accountsId.last]!.accRecord.add(
@@ -54,10 +54,9 @@ class AccountViewModel extends GetxController {
                   globalModel.cheqId, globalModel.cheqPrimeryAccount, globalModel.cheqAllAmount, 0, type, date, globalModel.cheqCode, (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0.0) + double.parse(globalModel.cheqAllAmount!), double.tryParse(globalModel.cheqAllAmount!), 0),
             );
       }
-    }else{
-      type = Const.bondTypeStart ;
+    } else {
+      type = Const.bondTypeStart;
       date = globalModel.invDueDate;
-
     }
     List<EntryBondRecordModel>? currentEntry = globalModel.entryBondRecord!
         .where(
@@ -68,7 +67,7 @@ class AccountViewModel extends GetxController {
     for (int i = 0; i < currentEntry.length; i++) {
       var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
       accountList[accountsId!.last]!.accRecord.add(
-            AccountRecordModel(type.startsWith("pat") ? globalModel.invId : globalModel.bondId, currentEntry[i].bondRecAccount!, recCredit.toString(), 0, type, date, type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
+            AccountRecordModel(globalModel.invId ?? globalModel.bondId ?? globalModel.entryBondId, currentEntry[i].bondRecAccount!, recCredit.toString(), 0, type, date, type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
                 (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0) + recCredit, currentEntry[i].bondRecDebitAmount, currentEntry[i].bondRecCreditAmount!),
           );
     }
@@ -190,7 +189,7 @@ class AccountViewModel extends GetxController {
     accountList[modeKey.last]!.finalBalance = 0;
     accountList[modeKey.last]?.accRecord.clear();
     GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    List<GlobalModel> globalBondAndCheck = globalViewModel.allGlobalModel.values.where((element) => element.globalType != Const.globalTypeInvoice ).toList();
+    List<GlobalModel> globalBondAndCheck = globalViewModel.allGlobalModel.values.where((element) => element.globalType != Const.globalTypeInvoice).toList();
     List<GlobalModel> globalInvoice = globalViewModel.allGlobalModel.values.where((element) => element.invPayType == Const.invPayTypeDue).toList();
     for (var globalModel in globalBondAndCheck) {
       initAccBalanceFromBond(globalModel, accountsId: modeKey);

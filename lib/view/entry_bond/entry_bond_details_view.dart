@@ -7,6 +7,7 @@ import 'package:ba3_business_solutions/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/bonds/custom_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/cheques/add_cheque.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -43,9 +44,10 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
 
   void initPage() {
     entryBondController.initCodeList();
-    print(entryBondController.allEntryBonds[widget.oldId]?.toFullJson());
+
     entryBondController.tempBondModel = entryBondController.allEntryBonds[widget.oldId]!;
     entryBondController.initPage();
+
   }
 
   @override
@@ -55,18 +57,23 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
       child: GetBuilder<EntryBondViewModel>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(centerTitle: true, title: Text("سند قيد"), leading: BackButton(), actions: [
-            Row(
-              children: [
-                const Text("تاريخ السند : ", style: TextStyle()),
-                DatePicker(
-                  initDate: controller.tempBondModel.bondDate,
-                  onSubmit: (_) {
-                    controller.tempBondModel.bondDate = _.toString().split(".")[0];
-                    controller.update();
-                  },
-                ),
-                SizedBox(width: 50),
-              ],
+            SizedBox(
+              width: 300,
+              child: Row(
+                children: [
+                  const Text("تاريخ السند : ", style: TextStyle()),
+                  Expanded(
+                    child: DatePicker(
+                      initDate: (controller.tempBondModel.bondDate??controller.tempBondModel.invDate).toString(),
+                      onSubmit: (_) {
+                        controller.tempBondModel.bondDate = _.toString().split(".")[0];
+                        controller.update();
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                ],
+              ),
             ),
             if (controller.allEntryBonds.values.toList().firstOrNull?.entryBondId != controller.tempBondModel.entryBondId)
               TextButton(
@@ -177,38 +184,35 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                     SizedBox(width: 50),
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      if (controller.tempBondModel.globalType == Const.globalTypeInvoice) {
-                        Get.to(() => InvoiceView(
-                              billId: controller.tempBondModel.invId!,
-                              patternId: controller.tempBondModel.patternId!,
+                if(controller.tempBondModel.invId!=null||controller.tempBondModel.bondId!=null)
+                AppButton(title:  "الأصل",       onPressed: () {
+                  if (controller.tempBondModel.globalType == Const.globalTypeInvoice) {
+                    Get.to(() => InvoiceView(
+                      billId: controller.tempBondModel.invId!,
+                      patternId: controller.tempBondModel.patternId!,
 
-                            ),
-                          binding: BindingsBuilder(() {
-                            Get.lazyPut(() => InvoicePlutoViewModel());
-                            Get.lazyPut(() => DiscountPlutoViewModel());
-                          }),);
-                      } else if (controller.tempBondModel.globalType == Const.globalTypeCheque) {
-                        Get.to(() => AddCheque(
-                              modelKey: controller.tempBondModel.cheqId,
-                            ));
-                      } else if (controller.tempBondModel.bondType == Const.bondTypeDaily || controller.tempBondModel.bondType == Const.bondTypeStart) {
-                        Get.to(() => BondDetailsView(
-                              oldId: controller.tempBondModel.bondId,
-                              bondType: controller.tempBondModel.bondType!,
-                            ));
-                      } else if (controller.tempBondModel.bondType == Const.bondTypeDebit || controller.tempBondModel.bondType == Const.bondTypeCredit) {
-                        Get.to(() => CustomBondDetailsView(
-                              oldId: controller.tempBondModel.bondId,
-                              isDebit: controller.tempBondModel.bondType == Const.bondTypeDebit,
-                            ));
-                      }
-                    },
-                    child: Text(
-                      "ذهاب للتفاصيل",
-                      maxLines: 1,
-                    )),
+                    ),
+                      binding: BindingsBuilder(() {
+                        Get.lazyPut(() => InvoicePlutoViewModel());
+                        Get.lazyPut(() => DiscountPlutoViewModel());
+                      }),);
+                  } else if (controller.tempBondModel.globalType == Const.globalTypeCheque) {
+                    Get.to(() => AddCheque(
+                      modelKey: controller.tempBondModel.cheqId,
+                    ));
+                  } else if (controller.tempBondModel.bondType == Const.bondTypeDaily || controller.tempBondModel.bondType == Const.bondTypeStart) {
+                    Get.to(() => BondDetailsView(
+                      oldId: controller.tempBondModel.bondId,
+                      bondType: controller.tempBondModel.bondType!,
+                    ));
+                  } else if (controller.tempBondModel.bondType == Const.bondTypeDebit || controller.tempBondModel.bondType == Const.bondTypeCredit) {
+                    Get.to(() => CustomBondDetailsView(
+                      oldId: controller.tempBondModel.bondId,
+                      isDebit: controller.tempBondModel.bondType == Const.bondTypeDebit,
+                    ));
+                  }
+                }, iconData: CupertinoIcons.share)
+      ,
                 const SizedBox(height: 50),
               ],
             ),

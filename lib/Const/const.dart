@@ -247,6 +247,7 @@ abstract class Const {
   static const globalTypeBond = "globalTypeBond";
   static const globalTypeCheque = "globalTypeCheque";
   static const globalTypeAccountDue = "globalAccountDue";
+  static const globalTypeStartersBond = "globalTypeStartersBond";
 
   ////////////---------------------------------------------------
   static const invoiceRecordCollection = "invoiceRecord";
@@ -349,14 +350,14 @@ String getInvTypeFromEnum(String type) {
   return type;
 }
 
-String getChequeTypefromEnum(String type) {
+String getChequeTypeFromEnum(String type) {
   switch (type) {
     case Const.chequeTypeCatch:
       return "شيك قبض";
     case Const.chequeTypePay:
       return "شيك دفع";
   }
-  return "error";
+  return type;
 }
 
 List<String> getDatesBetween(DateTime startDate, DateTime endDate) {

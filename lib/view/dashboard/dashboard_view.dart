@@ -2,6 +2,7 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,8 +52,12 @@ class _DashboardViewState extends State<DashboardView> {
                           ),
                         ),
                         const Spacer(),
-                        ElevatedButton(
-                            onPressed: () async {
+                        AppButton(
+                            title: "إضافة",
+                      onPressed: (){
+                              print(HiveDataBase.globalModelBox.values.where((element) => element.bondId=="bon1726402978500277",).first.toJson());
+                      },
+                      /*      onPressed: () async {
                               TextEditingController nameController = TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
@@ -116,16 +121,8 @@ class _DashboardViewState extends State<DashboardView> {
 
                               ///رفع الرصيد النهائي للحسابات
                               print(accountController.accountList.length);
-                              // accountController.accountList.forEach(
-                              //   (key, value) async{
-                              //
-                              //     print(getAccountNameFromId(key));
-                              //     print(getAccountBalanceFromId(key));
-                              //    await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).set({"finalBalance": getAccountBalanceFromId(key)}, SetOptions(merge: true));
-                              //   },
-                              // );
-                            },
-                            child: const Text("إضافة حساب ")),
+                            },*/
+                            iconData: Icons.add),
                         const SizedBox(
                           width: 20,
                         ),
@@ -158,8 +155,8 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    // formatDecimalNumberWithCommas( accountController.getBalance(model.accId)),
-                                    model.accId!,
+                                    formatDecimalNumberWithCommas(accountController.getBalance(model.accId)),
+                                    // model.accId!,
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
                                   ),

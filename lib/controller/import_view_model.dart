@@ -448,9 +448,10 @@ class ImportViewModel extends GetxController {
             entryBondCode: "E-${codeList[i]}" ,
             entryBondId: generateId(RecordType.entryBond),
             bondDate: date.toString(),
+            invDate:  date.toString(),
             entryBondRecord:recordTemp.toList() ,
             bondTotal: totalList[i].replaceAll(",", ""),
-            bondType:  Const.bondTypeStart
+            bondType:  Const.globalTypeStartersBond
         );
         // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));

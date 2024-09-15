@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/controller/bond_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/Bond_Record_Pluto_View_Model.dart';
 import '../../Widgets/new_Pluto.dart';
 
 import '../../utils/hive.dart';
@@ -20,22 +21,12 @@ class AllBonds extends StatelessWidget {
         onLoaded: (e) {},
         type: Const.globalTypeBond,
         onSelected: (p0) {
-          print(p0.row?.cells["bondId"]?.value);
-          if (p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDaily) ||
-              p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeStart) ||
-              p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeInvoice) ||
-              p0.row?.cells["نوع السند"]?.value == (Const.bondTypeStart) ||
-              p0.row?.cells["نوع السند"]?.value == (Const.bondTypeInvoice)) {
-            Get.to(() => BondDetailsView(
-                  oldId: p0.row?.cells["bondId"]?.value,
-                  bondType: p0.row?.cells["نوع السند"]?.value,
-                ));
-          } else {
-            Get.to(() => CustomBondDetailsView(
-                  oldId: p0.row?.cells["bondId"]?.value,
-                  isDebit: p0.row?.cells["نوع السند"]?.value == Const.bondTypeDebit || p0.row?.cells["نوع السند"]?.value == getBondTypeFromEnum(Const.bondTypeDebit),
-                ));
-          }
+          Get.to(() => BondDetailsView(
+            oldId: p0.row?.cells["bondId"]?.value,
+            bondType: p0.row?.cells["نوع السند"]?.value,
+          ),
+          binding: BindingsBuilder(() => Get.lazyPut(() =>BondRecordPlutoViewModel(getBondEnumFromType( p0.row?.cells["نوع السند"]?.value)) ,),)
+          );
         },
         modelList: controller.allBondsItem.values.where(
           (element) {

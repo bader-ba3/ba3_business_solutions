@@ -14,12 +14,12 @@ class AllEntryBonds extends StatelessWidget {
     return GetBuilder<EntryBondViewModel>(
         builder: (controller) {
           return  CustomPlutoGridWithAppBar(
-            title: "جميع الفواتير",
-           type:Const.globalTypeBond,
+            title: "جميع سندات القيد",
+           type:Const.globalTypeStartersBond,
             onLoaded: (e){
             },
             onSelected: (p0) {
-              print(p0.row?.cells["bondId"]?.value);
+
               if(p0.row?.cells["bondId"]?.value!='') {
                 Get.to(() => EntryBondDetailsView(
                 oldId: p0.row?.cells["bondId"]?.value,
@@ -27,7 +27,7 @@ class AllEntryBonds extends StatelessWidget {
               }
 
             },
-            modelList: controller.allEntryBonds.values/*.where((element) => element.invRecords?.where((e) => e.invRecId==null,).isEmpty??false,)*/.toList(),
+            modelList: controller.allEntryBonds.values.toList(),
 
           );
         }
