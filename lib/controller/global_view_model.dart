@@ -443,8 +443,7 @@ class GlobalViewModel extends GetxController {
     if (globalModel.firstPay != null && globalModel.firstPay! > 0) {
       if (globalModel.invPayType == Const.invPayTypeDue) {
         if(globalModel.invCode!.contains("F")) {
-          print(getAccountIdFromText("F-حساب التسديد"));
-          print(getAccountIdFromText("F-الصندوق"));
+
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), globalModel.firstPay, 0, getAccountIdFromText("F-حساب التسديد"), "الدفعة الاولى مبيعات ${globalModel.invCode}"));
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, globalModel.firstPay, getAccountIdFromText("F-الصندوق"), "الدفعة الاولى مبيعات ${globalModel.invCode}"));
         }else{
