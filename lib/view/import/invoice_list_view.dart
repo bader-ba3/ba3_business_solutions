@@ -49,9 +49,9 @@ class InvoiceListView extends StatelessWidget {
                   Text("رقم السند: "+invoiceList[index].bondCode.toString()),
                 ],
               ),
-              SizedBox(height: 15,),
+              const SizedBox(height: 15,),
               // Container(height: 2,width: double.infinity,color: Colors.grey.shade300,),
-              SizedBox(height: 15,),
+              const SizedBox(height: 15,),
                const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Row(

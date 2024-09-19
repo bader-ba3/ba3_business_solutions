@@ -96,7 +96,9 @@ class FilePickerWidget extends StatelessWidget {
               const SizedBox(height: 30,),
               ElevatedButton(
                 onPressed: () {
-                  importViewModel.pickStarterBondFile(separator);
+                  print("free");
+                  // importViewModel.pickStarterBondFile(separator);
+                  importViewModel.pickStarterBondFileFree(separator);
                 },
                 child: const Text("سندات القيد"),
               ),

@@ -1,6 +1,8 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/model/global_model.dart';
+import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Dialogs/Account_Option_Dialog.dart';
 import '../../controller/account_view_model.dart';
+import '../../controller/bond_view_model.dart';
+import '../../controller/product_view_model.dart';
 import '../../model/account_model.dart';
+import '../../model/bond_record_model.dart';
+import '../../model/entry_bond_record_model.dart';
 import '../../utils/hive.dart';
 import '../accounts/account_details.dart';
 import '../invoices/Controller/Search_View_Controller.dart';
@@ -53,11 +59,76 @@ class _DashboardViewState extends State<DashboardView> {
                         ),
                         const Spacer(),
                         AppButton(
+                            title: "تحديث",
+                            ///this for pay all check
+                        
+                          onPressed: (){
+                              // print(HiveDataBase.globalModelBox.toMap().entries.where((element) => element.value.bondId=="bon1726453481733905",).first.key);
+                              accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
+                              accountController.update();
+                              //  HiveDataBase.accountModelBox.deleteFromDisk();
+                              //  HiveDataBase.accountCustomerBox.deleteFromDisk();
+                              //  HiveDataBase.globalModelBox.deleteFromDisk();
+                              //  HiveDataBase.productModelBox.deleteFromDisk();
+
+                              // print();
+                              // print(getAccountIdFromText("الصندوق"));
+                              // HiveDataBase.accountModelBox.delete("acc1725319300175064");
+                          },
+                            iconData: Icons.add),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        AppButton(
                             title: "إضافة",
-                      onPressed: (){
-                              print(HiveDataBase.globalModelBox.values.where((element) => element.bondId=="bon1726402978500277",).first.toJson());
-                      },
-                      /*      onPressed: () async {
+           ///this for pay all check
+                /*      onPressed: ()async{
+                              List<dynamic> global=HiveDataBase.globalModelBox.toMap().entries.where((element)=> element.value.globalType==Const.globalTypeCheque).map((e) => e.value).toList();
+                              print(global.length);
+                              print(global);
+                              // print(HiveDataBase.globalModelBox.values.last.toFullJson());
+
+                              // HiveDataBase.globalModelBox.deleteAll(global);
+                              // print(global.where((element) => element.cheqStatus==Const.chequeStatusPaid,).length);
+                              for(GlobalModel element in global){
+
+                                if(element.cheqStatus==Const.chequeStatusPaid){
+
+                                  String des = element.cheqStatus != Const.chequeStatusNotPaid?"سند دفع شيك رقم ${element.cheqName}":"سند ارجاع قيمة شيك برقم ${element.cheqName}";
+                                  List<BondRecordModel> bondRecord = [];
+                                  List<EntryBondRecordModel> entryBondRecord = [];
+
+                                  if (element.cheqStatus==Const.chequeStatusPaid) {
+
+                                    bondRecord.add(BondRecordModel("00", 0, double.tryParse(element.cheqAllAmount!) ?? 0, getAccountIdFromText("اوراق الدفع"), des));
+                                    bondRecord.add(BondRecordModel("01", double.tryParse(element.cheqAllAmount!) ?? 0, 0, getAccountIdFromText("المصرف"), des));
+                                  }
+
+                                  // bondRecord.add(BondRecordModel("03", controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
+
+                                  for (var element in bondRecord) {
+                                    entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
+                                  }
+                                  GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+                                  String entryBond=generateId(RecordType.entryBond);
+                                  await Future.delayed(Durations.short1);
+                                  element.entryBondId=entryBond;
+                                  await     HiveDataBase.globalModelBox.put(element.cheqId, element);
+                                  await globalViewModel.addGlobalBond(
+                                    GlobalModel(
+                                      bondRecord: bondRecord,
+                                      entryBondId: entryBond,
+                                      bondCode: Get.find<BondViewModel>().getNextBondCode(type:Const.bondTypeDebit ),
+                                      entryBondRecord: entryBondRecord,
+                                      bondDescription: des,
+                                      bondType: Const.bondTypeDebit,
+                                      bondTotal: "0",
+                                    ),
+                                  );
+                                }
+                              }
+                      },*/
+                            onPressed: () async {
                               TextEditingController nameController = TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
@@ -118,10 +189,9 @@ class _DashboardViewState extends State<DashboardView> {
                                     );
                                   }));
                               accountController.update();
-
-                              ///رفع الرصيد النهائي للحسابات
+                              
                               print(accountController.accountList.length);
-                            },*/
+                            },
                             iconData: Icons.add),
                         const SizedBox(
                           width: 20,
@@ -155,7 +225,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    formatDecimalNumberWithCommas(accountController.getBalance(model.accId)),
+                                    formatDecimalNumberWithCommas(model.finalBalance??0),
                                     // model.accId!,
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,

@@ -42,15 +42,12 @@ class PatternViewModel extends GetxController {
     primaryController.text = getAccountNameFromId(editPatternModel?.patPrimary);
     patPartnerAccountFee.text = getAccountNameFromId(editPatternModel?.patPartnerFeeAccount);
     typeController.text = editPatternModel?.patType ?? "";
-    vatAccountController.text = getAccountNameFromId(editPatternModel?.patVatAccount);
     giftAccountController.text = getAccountNameFromId(editPatternModel?.patGiftAccount);
     secgiftAccountController.text = getAccountNameFromId(editPatternModel?.patSecGiftAccount);
     secondaryController.text = getAccountNameFromId(editPatternModel?.patSecondary);
     storeEditController.text = getStoreNameFromId(editPatternModel?.patStore);
     storeNewController.text = getStoreNameFromId(editPatternModel?.patNewStore);
     // storeController.text=getStoreNameFromId("store1702230185210544");
-    hasVatController = editPatternModel?.patHasVat ?? false;
-    editPatternModel?.patHasVat ??= false;
   }
 
   RxMap<String, PatternModel> patternModel = <String, PatternModel>{}.obs;
@@ -88,7 +85,6 @@ class PatternViewModel extends GetxController {
     PatternModel _ = PatternModel.fromJson(editPatternModel?.toJson());
     _.patPrimary = getAccountIdFromText(_.patPrimary);
     _.patSecondary = getAccountIdFromText(_.patSecondary);
-    _.patVatAccount = getAccountIdFromText(_.patVatAccount);
     _.patGiftAccount = getAccountIdFromText(_.patGiftAccount);
     _.patSecGiftAccount = getAccountIdFromText(_.patSecGiftAccount);
     _.patPartnerFeeAccount = getAccountIdFromText(_.patPartnerFeeAccount);
@@ -102,7 +98,6 @@ class PatternViewModel extends GetxController {
     // print(editPatternModel?.toJson());
     PatternModel _ = PatternModel.fromJson(editPatternModel?.toJson());
     if (!(_.patPrimary?.contains("acc") ?? false)) _.patPrimary = getAccountIdFromText(_.patPrimary);
-    if (!(_.patVatAccount?.contains("acc") ?? false)) _.patVatAccount = getAccountIdFromText(_.patVatAccount);
     if (!(_.patSecondary?.contains("acc") ?? false)) _.patSecondary = getAccountIdFromText(_.patSecondary);
     if (!(_.patGiftAccount?.contains("acc") ?? false)) _.patGiftAccount = getAccountIdFromText(_.patGiftAccount);
     if (!(_.patSecGiftAccount?.contains("acc") ?? false)) _.patSecGiftAccount = getAccountIdFromText(_.patSecGiftAccount);
@@ -173,7 +168,6 @@ class PatternViewModel extends GetxController {
   clearController() {
     editPatternModel = null;
     editPatternModel = PatternModel();
-    editPatternModel?.patHasVat ??= false;
     codeController.text = ((int.tryParse(patternModel.values.map((e) => e.patCode).last.toString()) ?? 0) + 1).toString();
     editPatternModel!.patCode = codeController.text;
     editPatternModel?.patColor = 4294198070;
@@ -208,13 +202,7 @@ class PatternViewModel extends GetxController {
 // }
 }
 
-String? getVatAccountFromPatternId(id) {
-  if (id != null && id != " " && id != "") {
-    return Get.find<PatternViewModel>().patternModel[id]?.patVatAccount!;
-  } else {
-    return null;
-  }
-}
+
 
 PatternModel getPatModelFromPatternId(id) {
   if (id != null && id != " " && id != "") {

@@ -22,6 +22,7 @@ class AccountDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AccountViewModel>(initState: (state) {
+      print(modelKey);
       Get.find<AccountViewModel>().getAllBondForAccount(modelKey, listDate);
     }, builder: (controller) {
       return Scaffold(

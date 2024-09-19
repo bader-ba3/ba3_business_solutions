@@ -43,6 +43,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
   @override
   void initState() {
     super.initState();
+    print(widget.oldId);
     bondController.initPage(oldId: widget.oldId, type: widget.bondType);
     bondController.lastBondOpened = widget.oldId;
     isDebitOrCredit = widget.bondType == Const.bondTypeCredit || widget.bondType == Const.bondTypeDebit;
@@ -410,6 +411,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                     if (value) {
                                       checkPermissionForOperation(Const.roleUserDelete, Const.roleViewBond).then((value) async {
                                         if (value) {
+                                          //entryBond1726453481733976
+                                          //entryBond1726453481733976
+                                          // print(bondController.tempBondModel.entryBondId);
                                           globalController.deleteGlobal(bondController.tempBondModel);
                                           Get.back();
                                           controller.update();

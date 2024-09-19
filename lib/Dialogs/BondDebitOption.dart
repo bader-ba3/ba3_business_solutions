@@ -216,7 +216,7 @@ class BondDebitDialog extends StatelessWidget {
                       await globalViewModel.addGlobalBond(
                         GlobalModel(
                           bondRecord: bondRecord,
-                          bondCode: Get.find<BondViewModel>().getNextBondCode(),
+                          bondCode: Get.find<BondViewModel>().getNextBondCode(type:Const.bondTypeDebit ),
                           entryBondRecord: entryBondRecord,
                           bondDescription: des,
                           bondType: Const.bondTypeDebit,

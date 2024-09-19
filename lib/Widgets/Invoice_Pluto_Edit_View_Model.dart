@@ -28,6 +28,17 @@ class InvoicePlutoViewModel extends GetxController {
     update();
 
   }
+  String typeBile='';
+  String  customerName='';
+
+ bool getIfHaveVAT(){
+    if(typeBile!=Const.invoiceTypeBuy){
+      return true;
+    }else{
+
+      return   getCustomerHaveVAT( customerName);
+    }
+  }
 
   getRows(List<InvoiceRecordModel> modelList) {
     stateManager.removeAllRows();
@@ -58,9 +69,7 @@ class InvoicePlutoViewModel extends GetxController {
 
   List<PlutoRow> rows = [];
   late PlutoGridStateManager stateManager = PlutoGridStateManager(columns: [], rows: [], gridFocusNode: FocusNode(), scroll: PlutoGridScrollController());
-
   List<PlutoColumn> columns = [];
-
   double computeWithoutVatTotal() {
     int invRecQuantity = 0;
     double subtotals = 0.0;
@@ -259,7 +268,8 @@ class InvoicePlutoViewModel extends GetxController {
   }*/
 
   void updateInvoiceValues(double subTotal, int quantity) {
-    double vat = (subTotal * 0.05);
+
+    double vat =getIfHaveVAT()? (subTotal * 0.05):0;
     double total = (subTotal + vat) * quantity;
 
     updateCellValue("invRecVat", vat.toStringAsFixed(2));
@@ -269,25 +279,14 @@ class InvoicePlutoViewModel extends GetxController {
 
   void updateInvoiceValuesByTotal(double total, int quantity) {
 
-    double subTotal = (total  / quantity)-((total *0.05) / quantity);
-    double vat = ((total/ quantity) - subTotal);
+    double subTotal =getIfHaveVAT()? (total  / quantity)-((total *0.05) / quantity):total  / quantity;
+    double vat = getIfHaveVAT()?((total/ quantity) - subTotal):0;
 
     updateCellValue("invRecVat", vat.toStringAsFixed(2));
     updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
     updateCellValue("invRecTotal", total.toStringAsFixed(2));
   }
 
-  void updateInvoiceValuesByDiscount(double total, int quantity, double discount) {
-    total =   total-(total * (discount / 100));
-    double subTotal = (total / 1.05) / quantity;
-
-    double vat = ((total/quantity) - subTotal);
-
-    updateCellValue("invRecVat", vat.toStringAsFixed(2));
-    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
-    updateCellValue("invRecTotal", total.toStringAsFixed(2));
-
-  }
   void updateInvoiceValuesByQuantity( int quantity,subtotal,double vat) {
 
    double total =  (subtotal+vat)*quantity;
@@ -334,31 +333,30 @@ class InvoicePlutoViewModel extends GetxController {
     ).toList();
 
     for (var record in invRecord) {
-      if (getProductModelFromId(record.invRecProduct)?.prodIsLocal == true) {
         record.invRecGiftTotal=(record.invRecGift??0)*(double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice??"0")??0);
         invoiceRecord.add(record);
-      } else {
-        invoiceRecord.add(InvoiceRecordModel(
-          invRecGift: record.invRecGift,
-          invRecGiftTotal: (record.invRecGift??0)*(double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice??"0")??0),
-          invRecId: record.invRecId,
-          invRecIsLocal: record.invRecIsLocal,
-          invRecProduct: record.invRecProduct,
-          invRecQuantity: record.invRecQuantity,
-          invRecSubTotal: record.invRecSubTotal! + record.invRecVat!,
-          invRecTotal: (record.invRecSubTotal! + record.invRecVat!) * (record.invRecQuantity??0),
-          invRecVat: 0,
-        ));
-      }
     }
     stateManager.setShowLoading(false);
-    // print(invoiceRecord
-    //     .map(
-    //       (e) => e.toJson(),
-    //     )
-    //     .toList());
 
-    // print(invRecord.map((e) => e.toJson(),));
     return invRecord;
   }
+
+   changeVat() {
+     handleSaveAll();
+    if(!getIfHaveVAT()){
+
+
+     for (var element in invoiceRecord) {
+       element.invRecSubTotal=(element.invRecSubTotal??0)+(  element.invRecVat??0);
+       element.invRecVat=0;
+     }}else{
+      for (var element in invoiceRecord) {
+        element.invRecVat=(element.invRecSubTotal??0)*0.05;
+        element.invRecSubTotal=((element.invRecTotal??0)/(element.invRecQuantity??0))-( element.invRecVat!);
+        element.invRecTotal= (element.invRecSubTotal!+element.invRecVat!)*(element.invRecQuantity??0);
+      }
+    }
+    getRows(invoiceRecord);
+    update();
+   }
 }

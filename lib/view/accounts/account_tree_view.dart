@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/Widgets/CustomerPlutoEditView.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,11 @@ class AccountTreeView extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Get.to(() => const AddAccount());
+                        Get.to(() => const AddAccount(),binding: BindingsBuilder(
+
+                              () => Get.lazyPut(()=>CustomerPlutoEditViewModel()),
+                        ));
+
                       },
                       child: const Text("اضافة حساب")),
                   const SizedBox(
@@ -171,7 +176,10 @@ class AccountTreeView extends StatelessWidget {
       } else if (value == 'rename') {
         controller.startRenameChild(entry.node.id);
       } else if (value == "add") {
-        Get.to(AddAccount(oldParent: entry.node.id));
+        Get.to(AddAccount(oldParent: entry.node.id),binding: BindingsBuilder(
+
+              () => Get.lazyPut(()=>CustomerPlutoEditViewModel()),
+        ));
       }
     });
   }

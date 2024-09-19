@@ -19,6 +19,7 @@ import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Mode
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:get/get.dart';
 import '../Widgets/Pluto_View_Model.dart';
+import '../controller/Account_Customer_View_Model.dart';
 import '../controller/changes_view_model.dart';
 import '../controller/database_view_model.dart';
 
@@ -44,6 +45,7 @@ class GetBinding extends Bindings {
     Get.put(ChequeViewModel());
     Get.put(CostCenterViewModel());
     Get.put(InventoryViewModel());
+    Get.put(AccountCustomerViewModel());
 
 
     // Get.put(IsolateViewModel());

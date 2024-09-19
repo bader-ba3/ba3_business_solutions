@@ -1,7 +1,10 @@
 import 'dart:ui';
 
+import 'package:ba3_business_solutions/controller/Account_Customer_View_Model.dart';
+import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
+import 'package:ba3_business_solutions/model/AccountCustomer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -274,8 +277,44 @@ abstract class Const {
   static const taskTypeProduct = 'taskTypeProduct';
   static const taskTypeInventory = 'taskTypeInventory';
 
-  static const typeAccountView="typeAccountView";
-  static const typeAccountDueView="typeAccountDueView";
+  static const typeAccountView = "typeAccountView";
+  static const typeAccountDueView = "typeAccountDueView";
+
+/////////////---------------------------------------------------
+  static const mainVATCategory = "SR-التصنيف الأساسي";
+  static const withoutVAT = "EX-معفى";
+  static String vatAccountId = getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة");
+  static String returnVatAccountId = getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة");
+
+
+}
+
+
+bool  getIfAccountHaveCustomers(String accId){
+  if(accId.startsWith("acc")) {
+    return getAccountModelFromId(accId)?.accCustomer?.firstOrNull!=null;
+  }
+  else{
+    return getAccountModelFromName(accId)?.accCustomer?.firstOrNull!=null;
+  }
+
+}
+bool  getCustomerHaveVAT(String customerName){
+bool withVAT=true;
+withVAT= Get.find<AccountCustomerViewModel>().customerMap.values.where((element) => element.customerAccountName==customerName&&element.customerVAT==Const.mainVATCategory,).firstOrNull!=null;
+return withVAT;
+}
+
+List<AccountCustomer>  getAccountCustomers(String accId){
+
+  if(accId.startsWith("acc")) {
+    return getAccountModelFromId(accId)!.accCustomer!;
+  }
+  else{
+    return getAccountModelFromName(accId)!.accCustomer!;
+  }
+
+
 }
 
 String getInvPayTypeFromEnum(String type) {

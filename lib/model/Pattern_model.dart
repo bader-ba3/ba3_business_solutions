@@ -2,9 +2,8 @@ import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 
 class PatternModel {
-  String? patName, patCode, patType, patPrimary, patId, patVatAccount, patSecondary, patStore, patNewStore, patGiftAccount, patSecGiftAccount, patFullName, patPartnerFeeAccount;
+  String? patName, patCode, patType, patPrimary, patId, patSecondary, patStore, patNewStore, patGiftAccount, patSecGiftAccount, patFullName, patPartnerFeeAccount;
   int? patColor;
-  bool? patHasVat;
   double? patPartnerRatio, patPartnerCommission;
 
   PatternModel({
@@ -14,8 +13,8 @@ class PatternModel {
     this.patType,
     this.patPrimary,
     this.patId,
-    this.patHasVat,
-    this.patVatAccount,
+    // this.patHasVat,
+    // this.patVatAccount,
     this.patSecondary,
     this.patStore,
     this.patColor,
@@ -34,8 +33,6 @@ class PatternModel {
     patCode = json['patCode'];
     patType = json['patType'];
     patPrimary = json['patPrimary'];
-    patHasVat = json['patHasVat'];
-    patVatAccount = json['patVatAccount'];
     patSecondary = json['patSecondary'];
     patStore = json['patStore'];
     patId = json['patId'];
@@ -56,8 +53,6 @@ class PatternModel {
       'patType': patType,
       'patPrimary': patPrimary,
       'patId': patId,
-      'patVatAccount': patVatAccount,
-      'patHasVat': patHasVat,
       'patSecondary': patSecondary,
       'patStore': patStore,
       'patColor': patColor,
@@ -73,7 +68,7 @@ class PatternModel {
       'id': patId,
       'الرمز': patCode,
       'الاسم': patFullName,
-      'الاخصار': patFullName,
+      'الاختصار': patName,
       'النوع': getInvTypeFromEnum(patType??''),
       'patPrimary': getAccountNameFromId(patPrimary),
       'patSecondary': getAccountNameFromId(patSecondary),

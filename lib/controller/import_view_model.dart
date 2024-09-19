@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../model/bond_record_model.dart';
 import '../model/global_model.dart';
+import '../model/invoice_discount_record_model.dart';
 import '../utils/hive.dart';
 import '../view/import/bond_list_view.dart';
 import '../view/import/entry_bond_list_view.dart';
@@ -66,9 +67,6 @@ class ImportViewModel extends GetxController {
     }
   }
 
-
-
-
   int addedBond = 0;
 
   Future<void> addBond(List<GlobalModel> bondList) async {
@@ -78,23 +76,22 @@ class ImportViewModel extends GetxController {
         total: bondList.length,
         fun: (index) async {
           GlobalModel element = bondList[index];
-               await  Get.find<GlobalViewModel>().addBondToFirebase(element);
+          await Get.find<GlobalViewModel>().addBondToFirebase(element);
 
-        //   await bondController.fastAddBondToFirebase(
-        //       entryBondId: element.entryBondId ?? "",
-        //
-        //       // bondId:a,
-        //       oldBondCode: element.bondCode,
-        //       amenCode: element.originAmenId,
-        //       bondId: element.bondId,
-        //       bondDes: element.bondDescription,
-        //       originId: null,
-        //       total: double.parse("0.00"),
-        //       record: element.bondRecord!,
-        //       bondDate: element.bondDate,
-        //       bondType: element.bondType);
+          //   await bondController.fastAddBondToFirebase(
+          //       entryBondId: element.entryBondId ?? "",
+          //
+          //       // bondId:a,
+          //       oldBondCode: element.bondCode,
+          //       amenCode: element.originAmenId,
+          //       bondId: element.bondId,
+          //       bondDes: element.bondDescription,
+          //       originId: null,
+          //       total: double.parse("0.00"),
+          //       record: element.bondRecord!,
+          //       bondDate: element.bondDate,
+          //       bondType: element.bondType);
         });
-
   }
 
   Future<void> addInvoice(List<GlobalModel> invList) async {
@@ -203,7 +200,7 @@ class ImportViewModel extends GetxController {
             smallDesTemp.clear();
           }
         } else if (element[indexOfAccount] == "") {
-          dateList.add(element[indexOfDate]);
+          dateList.add(element[0]);
           desList.add(element[indexOfDetails]);
           numberList.add(element[indexOfNumber]);
           totalList.add(element[indexOfTotal]);
@@ -212,7 +209,7 @@ class ImportViewModel extends GetxController {
           //   // codeBond++;
           // }
           print(element[indexOfType]);
-          codeList.add( element[indexOfType].split(":")[1].removeAllWhitespace);
+          codeList.add(element[indexOfType].split(":")[1].removeAllWhitespace);
           oreginCode.add(element[indexOfNumber]);
           typeList.add(element[indexOfType].split(":")[0]);
         } else {
@@ -233,8 +230,6 @@ class ImportViewModel extends GetxController {
         }
       }
 
-
-
       for (var i = 0; i < accountList.length; i++) {
         List<BondRecordModel> recordTemp = [];
         for (var j = 0; j < accountList[i].length; j++) {
@@ -243,18 +238,19 @@ class ImportViewModel extends GetxController {
             if (accountList[i].length > 99) {
               pad = 3;
             }
-            // print("---------");
-            String name = getAccountIdFromText(accountList[i][j].replaceAll("-", ""));
-            // if (name == "") {
-            //   print(accountList[i][j]);
-            //   print(codeList[i]);
-            // }
-            //
+
+            String name = getAccountIdFromText(accountList[i][j].replaceAll("-", " "));
+            if (name == '') {
+              print(name);
+              print(accountList[i][j].replaceAll("-", ""));
+              name = getAccountIdFromText(accountList[i][j]);
+
+              print(name);
+            }
             recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
           }
         }
-        // print(typeList[i].removeAllWhitespace);
-        // print(typeList[i].removeAllWhitespace=="دفع");
+
         String type = typeList[i].removeAllWhitespace == "دفع"
             ? Const.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
@@ -266,55 +262,30 @@ class ImportViewModel extends GetxController {
         DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
-          globalType: Const.globalTypeBond,
+            globalType: Const.globalTypeBond,
             bondDescription: desList[i],
             bondRecord: recordTemp.toList(),
             bondId: generateId(RecordType.bond),
             entryBondId: generateId(RecordType.entryBond),
             entryBondCode: numberList[i],
             bondDate: date.toString(),
-
             bondCode: codeList[i],
-            entryBondRecord: recordTemp.map((e) => EntryBondRecordModel.fromJson(e.toJson()),).toList() ,
+            entryBondRecord: recordTemp
+                .map(
+                  (e) => EntryBondRecordModel.fromJson(e.toJson()),
+                )
+                .toList(),
             originAmenId: oreginCode[i],
-            //  originAmenId:numberList[i].replaceAll(",", "") ,
             bondTotal: totalList[i].replaceAll(",", ""),
-
             bondType: type);
-        // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
       }
       print(bondList.length);
       correctDebitAndCredit(bondList);
       print(bondList.length);
-
-      /*bondList.removeWhere((element) {
-        //  {
-        //    if(allbond.where((e) => e.bondCode==element.bondCode&& e.bondType== element.bondType&& e.bondDate== element.bondDate,).firstOrNull?.toFullJson()!=null) {
-        //     print(element.toJson());
-        //     print("--------*-*-*-*-*-*" * 2);
-        //     print(allbond
-        //         .where(
-        //           (e) => e.bondCode == element.bondCode && e.bondType == element.bondType&& e.bondDate== element.bondDate,
-        //         )
-        //         .firstOrNull
-        //         ?.toJson());
-        //   }
-        // }
-        return allbond.contains(
-          (bondCode: element.bondCode, bondType: element.bondType, bondDate: element.bondDate),
-        );
-      });*/
-      print(bondList.length);
-
-      // Get.to(() => ProductListView(
-      //   productList: dataList,
-      //   rows: row as List<String>,
-      // ));
     }
     print("---------" * 10);
-    // print(codeBond);
     Get.to(() => BondListView(
           bondList: bondList,
         ));
@@ -404,7 +375,7 @@ class ImportViewModel extends GetxController {
           totalList.add(element[indexOfTotal]);
           print(element[indexOfType].split(":"));
           // if (element[indexOfType] == "" || element[indexOfType].split(":")[0].removeAllWhitespace == "يومية".removeAllWhitespace) {
-            codeBond++;
+          codeBond++;
           // }
           codeList.add(codeBond.toString());
           oreginCode.add(codeBond.toString());
@@ -444,15 +415,7 @@ class ImportViewModel extends GetxController {
         DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
-            bondDescription: desList[i],
-            entryBondCode: "E-${codeList[i]}" ,
-            entryBondId: generateId(RecordType.entryBond),
-            bondDate: date.toString(),
-            invDate:  date.toString(),
-            entryBondRecord:recordTemp.toList() ,
-            bondTotal: totalList[i].replaceAll(",", ""),
-            bondType:  Const.globalTypeStartersBond
-        );
+            bondDescription: desList[i], entryBondCode: "E-${codeList[i]}", entryBondId: generateId(RecordType.entryBond), bondDate: date.toString(), invDate: date.toString(), entryBondRecord: recordTemp.toList(), bondTotal: totalList[i].replaceAll(",", ""), bondType: Const.globalTypeStartersBond);
         // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
@@ -460,15 +423,159 @@ class ImportViewModel extends GetxController {
       print(bondList.length);
       correctDebitAndCredit(bondList);
       print(bondList.length);
-
-
     }
     print("---------" * 10);
 
     Get.to(() => EntryBondListView(
-      bondList: bondList,
-    ));
+          bondList: bondList,
+        ));
   }
+  void pickStarterBondFileFree(separator) async {
+    List row = [];
+    List row2 = [];
+    var indexOfDate;
+    var indexOfType;
+    var indexOfDetails;
+    var indexOfNumber;
+    var indexOfAccount;
+    var indexOfCredit;
+    var indexOfDebit;
+    var indexOfTotal;
+    var indexOfSmallDes;
+
+    int codeBond = 0;
+    List<GlobalModel> bondList = [];
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+    var result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv', "tsv"],
+    );
+    if (result == null) {
+    } else {
+      File _ = File(result.files.single.path!);
+      List<String> file = await _.readAsLines();
+      row = file[0].split(separator);
+      row2 = file[2].split(separator);
+      file.removeAt(0);
+
+      if (row.length == 1) {
+        Get.snackbar("error", "plz check if the file separeted ");
+        return;
+      }
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
+      row.forEach((element) {
+        indexOfDate = row.indexOf("التاريخ");
+        indexOfType = row.indexOf("أصل السند");
+        indexOfTotal = row.indexOf("مدين");
+        indexOfDetails = row.indexOf("البيان");
+        indexOfNumber = row.indexOf("رقم السند");
+      });
+
+      row2.forEach((element) {
+        indexOfAccount = row2.indexOf("الحساب");
+        indexOfCredit = row2.indexOf("دائن");
+        indexOfDebit = row2.indexOf("مدين");
+        indexOfSmallDes = row2.indexOf("البيان");
+      });
+
+      List<List<String>> accountList = [];
+      List<List<String>> creditList = [];
+      List<List<String>> debitList = [];
+      List<List<String>> smallDesList = [];
+      List<String> oreginCode = [];
+      List<String> dateList = [];
+      List<String> codeList = [];
+      List<String> typeList = [];
+      List<String> totalList = [];
+      List<String> desList = [];
+      List<String> numberList = [];
+      List<String> accountTemp = [];
+      List<String> creditTemp = [];
+      List<String> debitTemp = [];
+      List<String> smallDesTemp = [];
+
+      for (var element in dataList) {
+        // print(element[indexOfAccount]);
+        if (element[indexOfAccount] == "الحساب") {
+          if (accountTemp.isNotEmpty) {
+            accountList.add(accountTemp.toList());
+            creditList.add(creditTemp.toList());
+            debitList.add(debitTemp.toList());
+            smallDesList.add(smallDesTemp.toList());
+            accountTemp.clear();
+            debitTemp.clear();
+            creditTemp.clear();
+            smallDesTemp.clear();
+          }
+        } else if (element[indexOfAccount] == "") {
+          dateList.add(element[indexOfDate]);
+          desList.add(element[indexOfDetails]);
+          numberList.add(element[indexOfNumber]);
+          totalList.add(element[indexOfTotal]);
+          print(element[indexOfType].split(":"));
+          // if (element[indexOfType] == "" || element[indexOfType].split(":")[0].removeAllWhitespace == "يومية".removeAllWhitespace) {
+          codeBond++;
+          // }
+          codeList.add("F-"+codeBond.toString());
+          oreginCode.add("F-"+codeBond.toString());
+          typeList.add("سند يومية");
+        } else {
+
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
+          creditTemp.add(element[indexOfCredit].toString());
+          debitTemp.add(element[indexOfDebit].toString());
+          smallDesTemp.add(element[indexOfSmallDes].toString());
+        }
+        if (dataList.indexOf(element) + 1 == dataList.length) {
+          accountList.add(accountTemp.toList());
+          creditList.add(creditTemp.toList());
+          debitList.add(debitTemp.toList());
+          smallDesList.add(smallDesTemp.toList());
+          accountTemp.clear();
+          debitTemp.clear();
+          smallDesTemp.clear();
+          creditTemp.clear();
+        }
+      }
+// "F-ليفيل فون -كودات"
+//       "طلبية - البرق"
+      for (var i = 0; i < accountList.length; i++) {
+        List<EntryBondRecordModel> recordTemp = [];
+        for (var j = 0; j < accountList[i].length; j++) {
+          int pad = 2;
+          if (accountList[i][j] != '') {
+            if (accountList[i].length > 99) {
+              pad = 3;
+            }
+            String name = getAccountIdFromText("F-${accountList[i][j]}");
+            if(name=='') {
+              print("F-${accountList[i][j]}");
+              print(name);
+            }
+
+            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
+          }
+        }
+
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
+
+        GlobalModel model = GlobalModel(
+            bondDescription: desList[i], entryBondCode: "E-${codeList[i]}", entryBondId: generateId(RecordType.entryBond), bondDate: date.toString(), invDate: date.toString(), entryBondRecord: recordTemp.toList(), bondTotal: totalList[i].replaceAll(",", ""), bondType: Const.globalTypeStartersBond);
+        // print(model.toFullJson());
+        bondList.add(GlobalModel.fromJson(model.toFullJson()));
+        recordTemp.clear();
+      }
+      print(bondList.length);
+      correctDebitAndCredit(bondList);
+      print(bondList.length);
+    }
+    print("---------" * 10);
+
+    Get.to(() => EntryBondListView(
+          bondList: bondList,
+        ));
+  }
+
   void pickBondFileFree(separator) async {
     List row = [];
     List row2 = [];
@@ -591,6 +698,7 @@ class ImportViewModel extends GetxController {
             print(accountList[i][j]);
             print(name);
             if (name == "") {
+              print("*"*30);
               // print(codeList[i]);
             }
             print("---------");
@@ -631,8 +739,12 @@ class ImportViewModel extends GetxController {
             bondId: generateId(RecordType.bond),
             entryBondId: generateId(RecordType.entryBond),
             bondDate: date.toString(),
-            entryBondRecord: recordTemp.map((e) => EntryBondRecordModel.fromJson(e.toJson()),).toList() ,
-            entryBondCode:"F-${numberList[i].replaceAll(",", "")}",
+            entryBondRecord: recordTemp
+                .map(
+                  (e) => EntryBondRecordModel.fromJson(e.toJson()),
+                )
+                .toList(),
+            entryBondCode: "F-${numberList[i].replaceAll(",", "")}",
             // originAmenId: int.parse(codeList[i]).toString(),
             originAmenId: numberList[i].replaceAll(",", ""),
             bondTotal: totalList[i].replaceAll(",", ""),
@@ -766,7 +878,7 @@ class ImportViewModel extends GetxController {
         // }
         var seller = '';
         if (element[indexOfSeller] != "") {
-          seller = getSellerIdFromText(element[indexOfSeller])??'';
+          seller = getSellerIdFromText(element[indexOfSeller]) ?? '';
           if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
             notFoundSeller.add(element[indexOfSeller]);
           }
@@ -818,6 +930,7 @@ class ImportViewModel extends GetxController {
         if (secoundry == '' && !notFoundAccount.contains(element[indexOfSecoundry]) && !isAdd) {
           print("secoundry: |" + element[indexOfSecoundry] + "| From " + element[indexOfInvCode]);
           notFoundAccount.add(element[indexOfSecoundry]);
+          return;
         }
         var product = getProductIdFromName("F-" + element[indexOfProductName]);
         if (product == '' && !notFoundProduct.contains("F-" + element[indexOfProductName])) {
@@ -861,8 +974,9 @@ class ImportViewModel extends GetxController {
               invStorehouse: patternModel.patType != Const.invoiceTypeChange ? store : allChanges[_[1]]!.strart,
               invSecStorehouse: allChanges[_[1]]?.end,
               invDate: date.toString().split(".")[0],
+              invCustomerAccount: element[indexOfSecoundry],
               bondDate: date.toString().split(".")[0],
-              invVatAccount: patternModel.patVatAccount,
+              invVatAccount: patternModel.patType == Const.invoiceTypeBuy ? Const.returnVatAccountId : Const.vatAccountId,
               invDiscountRecord: [],
               invTotal: double.parse(element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
               // invType:  element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="مبيع"?Const.invoiceTypeSales:Const.invoiceTypeBuy,
@@ -983,6 +1097,7 @@ class ImportViewModel extends GetxController {
       // ));
     }
   }
+
   // WIRED MONO HEADSET WITH LIGHTNING CONNECTOR
   Future<void> pickInvoiceFile(separator) async {
     try {
@@ -1010,6 +1125,7 @@ class ImportViewModel extends GetxController {
           var indexOfStore;
           var indexOfSeller;
           var indexOfPayType;
+          var indexOfComment;
           var indexOfGift;
 
           List nunProd = [];
@@ -1034,26 +1150,25 @@ class ImportViewModel extends GetxController {
 
             List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
             row.forEach((element) {
-              indexOfDate = row.indexOf("التاريخ");//1
-              indexOfInvCode = row.indexOf("الفاتورة");//2
-              indexOfProductName = row.indexOf("اسم المادة");//3
-              indexOfQuantity = row.indexOf("الكمية");//4
-              indexOfGift = row.indexOf("الهدايا");//5
-              indexOfSubTotal = row.indexOf("السعر");//6
-              indexOfTotalDiscount = row.indexOf("مجموع الحسم");//7
-              indexOfTotalAdded = row.indexOf("مجموع الإضافات");//8
-              indexOfTotalWithVat = row.indexOf("صافي القيمة بعد الضريبة");//9
-              indexOfSecoundry = row.indexOf("حساب العميل في الفاتورة");//10
-              indexOfPayType = row.indexOf("طريقة الدفع");//11
-              indexOfSeller = row.indexOf("مركز الكلفة");//12
-              indexOfStore = row.indexOf("المستودع");//13
-              indexOfFirstPay = row.indexOf("الدفعة الأولى");//14
+              indexOfDate = row.indexOf("التاريخ"); //1
+              indexOfInvCode = row.indexOf("الفاتورة"); //2
+              indexOfProductName = row.indexOf("اسم المادة"); //3
+              indexOfQuantity = row.indexOf("الكمية"); //4
+              indexOfGift = row.indexOf("الهدايا"); //5
+              indexOfSubTotal = row.indexOf("السعر"); //6
+              indexOfTotalDiscount = row.indexOf("مجموع الحسم"); //7
+              indexOfTotalAdded = row.indexOf("مجموع الإضافات"); //8
+              indexOfTotalWithVat = row.indexOf("صافي القيمة بعد الضريبة"); //9
+              indexOfSecoundry = row.indexOf("حساب العميل في الفاتورة"); //10
+              indexOfPayType = row.indexOf("طريقة الدفع"); //11
+              indexOfSeller = row.indexOf("مركز الكلفة"); //12
+              indexOfStore = row.indexOf("المستودع"); //13
+              indexOfFirstPay = row.indexOf("الدفعة الأولى"); //14
+              indexOfComment = row.indexOf("البيان"); //15
               // indexOfInvType = row.indexOf("نوع الفاتورة");
               // indexOfPrimary = row.indexOf("اسم الزبون"); // BAD
               //indexOfTotalVat = row.indexOf("القيمة المضافة");
               // indexOfTotalWithoutVat = row.indexOf("القيمة");
-
-
             });
 
             //  List<String> dateList=[];
@@ -1077,7 +1192,7 @@ class ImportViewModel extends GetxController {
               }
               var seller = '';
               if (element[indexOfSeller] != "") {
-                seller = getSellerIdFromText(element[indexOfSeller])??'';
+                seller = getSellerIdFromText(element[indexOfSeller]) ?? '';
                 if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
                   notFoundSeller.add(element[indexOfSeller]);
                 }
@@ -1101,45 +1216,26 @@ class ImportViewModel extends GetxController {
               bool isAdd = (patternModel.patType == Const.invoiceTypeAdd);
               var primery;
               var secoundry;
-///acc1725319448170681
-              // if( element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "") == "ت ادخال".replaceAll(" ", "") ||element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "") == 'ت خ'.replaceAll(" ", "") ){
-              //   secoundry = patternModel.patSecondary;
-              // }else{
-              // //  primery = isAdd?'':getAccountIdFromText(element[indexOfPrimery]);
-              //   secoundry=  isAdd?'':getAccountIdFromText(element[indexOfSecoundry]);
-              // }
-              // if (primery == '' && !notFoundAccount.contains(element[indexOfPrimery])&&!isAdd) {
-              //   print("primery: |"+element[indexOfPrimery]);
-              //   notFoundAccount.add(element[indexOfPrimery]);
-              // }WIRED MONO HEADSET WITH LIGHTNING CONNECTOR - BLACK
+
               if (patternModel.patType == Const.invoiceTypeSales) {
-                // primery = patternModel.patPrimary;
                 primery = getAccountIdFromText(getAccountModelFromId(patternModel.patPrimary)!.accName!);
                 secoundry = getAccountIdFromText(element[indexOfSecoundry]);
               } else if (patternModel.patType == Const.invoiceTypeBuy) {
                 primery = getAccountIdFromText(element[indexOfSecoundry]);
-                // secoundry = patternModel.patSecondary;
 
                 secoundry = getAccountIdFromText(getAccountModelFromId(patternModel.patSecondary)!.accName!);
-              }/*WIRED MONO HEADSET WITH LIGHTNING CONNECTOR
-              WIWU NYLON LOOP WATCH BAND
-              WIWU EARBUDS 302
-              */
+              }
 
               if (secoundry == '' && !notFoundAccount.contains(element[indexOfSecoundry]) && !isAdd) {
-                print("secoundry: |" + element[indexOfSecoundry] + "| From " + element[indexOfInvCode]);
+                print("secoundry: |${element[indexOfSecoundry]}| From ${element[indexOfInvCode]}");
                 notFoundAccount.add(element[indexOfSecoundry]);
               }
               var product = getProductIdFromName(element[indexOfProductName]);
               if (product == '' && !notFoundProduct.contains(element[indexOfProductName])) {
-                print("product: |" + element[indexOfProductName] + "| From " + element[indexOfInvCode]);
+                print("product: |${element[indexOfProductName]}| From ${element[indexOfInvCode]}");
                 notFoundProduct.add(element[indexOfProductName]);
               }
-              // if(primery ==""||primery ==null||secoundry ==null||secoundry == ""){
-              //   print("------------------");
-              //   print(primery.toString()+"|"+secoundry.toString()+"|"+element[indexOfInvCode]);
-              //   print("------------------");
-              // }
+
               if (patternModel.patType == Const.invoiceTypeChange) {
                 print("-----------");
                 print(allChanges[_[1]]);
@@ -1159,7 +1255,7 @@ class ImportViewModel extends GetxController {
                 else {
                   DateTime date = DateTime(int.parse(element[indexOfDate].split("-")[2]), int.parse(element[indexOfDate].split("-")[1]), int.parse(element[indexOfDate].split("-")[0]));
                   invMap[element[indexOfInvCode]] = GlobalModel(
-                    invId: generateId(RecordType.invoice),
+                      invId: generateId(RecordType.invoice),
                       entryBondId: generateId(RecordType.entryBond),
 
                       // invReturnCode: ,
@@ -1167,7 +1263,7 @@ class ImportViewModel extends GetxController {
                       // bondType: Const.bondTypeInvoice,
                       invIsPending: false,
                       invPayType: element[indexOfPayType].removeAllWhitespace == "نقداً".removeAllWhitespace ? Const.invPayTypeCash : Const.invPayTypeDue,
-                      invComment: "",
+                      invComment: element[indexOfComment],
                       discountTotal: double.parse(element[indexOfTotalDiscount].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
                       firstPay: double.parse(element[indexOfFirstPay].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
                       addedTotal: double.parse(element[indexOfTotalAdded].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
@@ -1184,10 +1280,11 @@ class ImportViewModel extends GetxController {
                       invStorehouse: patternModel.patType != Const.invoiceTypeChange ? store : allChanges[_[1]]!.strart,
                       invSecStorehouse: allChanges[_[1]]?.end,
                       invDate: date.toString().split(".")[0],
-
+                      invCustomerAccount: element[indexOfSecoundry],
                       // bondDate: date.toString().split(".")[0],
-                      invVatAccount: patternModel.patVatAccount,
+                      invVatAccount: patternModel.patType == Const.invoiceTypeBuy ? Const.returnVatAccountId : Const.vatAccountId,
                       invDiscountRecord: [],
+
                       invTotal: double.parse(element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
                       invType: patternModel.patType,
                       invCode: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
@@ -1662,17 +1759,16 @@ class ImportViewModel extends GetxController {
         }
       }
 
-      print("End" * 100);
       var entry = Get.find<InvoiceViewModel>().invoiceModel.entries;
       for (var i = 0; i < numberList.length; i++) {
-        var typeAndCode = "${typeList[i]} : F-${codeList[i]}";
+        var typeAndCode = "${typeList[i]} : ${codeList[i]}";
         var matchedEntries = entry.where((element) => getInvoicePatternFromInvId(element.key) == typeAndCode);
 
         if (matchedEntries.isNotEmpty) {
           GlobalModel globalModel = matchedEntries.first.value;
           globalModel.entryBondCode = numberList[i];
 
-  /*        if (globalModel.firstPay != 0) {
+          /*if (globalModel.firstPay != 0) {
             print(globalModel.toFullJson());
             print("--*---" * 30);
             globalModel.bondRecord!.add(
@@ -1684,13 +1780,13 @@ class ImportViewModel extends GetxController {
                 "${desList[i]} هي دفعة",
               ),
             );
-          }
+          }*/
 
-          List<String> discountedAccount = [];
+          /*    List<String> discountedAccount = [];
           double discountTotal = 0;
           double addedTotal = 0;
 
-          if ((globalModel.discountTotal ?? 0) > 0 || (globalModel.addedTotal ?? 0) > 0) {
+       if ((globalModel.discountTotal ?? 0) > 0 || (globalModel.addedTotal ?? 0) > 0) {
             print("--F---" * 30);
             print(globalModel.toFullJson());
 

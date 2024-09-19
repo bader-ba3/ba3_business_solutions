@@ -67,11 +67,6 @@ class SellersViewModel extends GetxController {
       allSellers[userId]?.sellerRecord?.removeWhere((element) => element.selleRecInvId==invId);
       allSellers[userId]?.sellerRecord?.add(seller);
     }
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then((value) {
-      update();
-    });
   }
 
   void deleteGlobalSeller(GlobalModel globalModel){

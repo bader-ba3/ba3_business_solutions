@@ -1,21 +1,17 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/store_view_model.dart';
-import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:ba3_business_solutions/view/widget/CustomWindowTitleBar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:get/get.dart';
 import '../../controller/user_management_model.dart';
 
 class PatternDetails extends StatefulWidget {
-  final oldKey;
+  final String? oldKey;
 
   const PatternDetails({super.key, this.oldKey});
 
@@ -31,7 +27,7 @@ class _PatternDetailsState extends State<PatternDetails> {
     if (widget.oldKey == null) {
       patternController.clearController();
     } else {
-      patternController.initPage(widget.oldKey);
+      patternController.initPage(widget.oldKey!);
     }
 
     super.initState();
@@ -226,37 +222,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                               ],
                             ),
                           ),
-                          if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                            SizedBox(
-                              width: Get.width * 0.45,
-                              child: Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 100,
-                                    child: Text("حساب الضريبة "),
-                                  ),
-                                  Expanded(
-                                    child: CustomTextFieldWithIcon(
-                                      controller: patternController.vatAccountController,
-                                      onSubmitted: (text) async {
-                                        var a = await getAccountComplete(text);
-                                        patternController.update();
-                                        if (a.isNotEmpty) {
-                                          patternController.editPatternModel?.patVatAccount = a;
-                                          patternController.vatAccountController.text = a;
-                                          setState(() {});
-                                        }
-                                      },
-                                      onChanged: (_) {
-                                        // patternController.editPatternModel?.patVatAccount = _;
-                                      },
-                                    ),
-                                  ),
-                                  // if (patternController.editPatternModel?.patVatAccount != null && (patternController.editPatternModel?.patHasVat ?? false)) Icon(Icons.check)
-                                ],
-                              ),
-                            )
-                          else
+                          if (patternController.editPatternModel?.patType == Const.invoiceTypeChange)
                             SizedBox(
                               width: Get.width * 0.45,
                               child: Row(
@@ -419,18 +385,6 @@ class _PatternDetailsState extends State<PatternDetails> {
                               ],
                             ),
                           ],
-                          if (patternController.editPatternModel?.patType != Const.invoiceTypeChange)
-                            Row(
-                              children: [
-                                Checkbox(
-                                    value: patternController.editPatternModel?.patHasVat ?? false,
-                                    onChanged: (_) {
-                                      setState(() {});
-                                      patternController.editPatternModel?.patHasVat = _;
-                                    }),
-                                const Text("هل بخضع للضريبة"),
-                              ],
-                            ),
                         ]),
                         const SizedBox(
                           height: 40,
@@ -469,9 +423,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                   Get.snackbar("خطأ", "يرجى كتابة الحساب الاساسي");
                                 } else if ((patternController.editPatternModel?.patSecondary?.isEmpty ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
                                   Get.snackbar("خطأ", "يرجى كتابة الحساب الثانوي");
-                                } else if (patternController.editPatternModel?.patVatAccount?.isEmpty ?? true && (patternController.editPatternModel?.patHasVat ?? true) && patternController.editPatternModel?.patType != Const.invoiceTypeChange) {
-                                  Get.snackbar("خطأ", "يرجى كتابة حساب الضريبة");
-                                } else if (patternController.editPatternModel?.patType?.isEmpty ?? true) {
+                                }  else if (patternController.editPatternModel?.patType?.isEmpty ?? true) {
                                   Get.snackbar("خطأ", "يرجى كتابة نوع النمط");
                                 } else if (patternController.editPatternModel?.patStore?.isEmpty ?? true) {
                                   Get.snackbar("خطأ", "يرجى كتابة المستودع");

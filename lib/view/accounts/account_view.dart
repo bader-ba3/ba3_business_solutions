@@ -3,6 +3,7 @@ import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/CustomerPlutoEditView.dart';
 import '../../Widgets/new_Pluto.dart';
 import '../../utils/hive.dart';
 
@@ -11,35 +12,38 @@ class AllAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return GetBuilder<AccountViewModel>(
-        builder: (controller) {
-          return  CustomPlutoGridWithAppBar(
-            title: "جميع الحسابات",
-            onLoaded: (e){
-            },
-            onSelected: (p0) {
-
-              Get.to(() =>  AddAccount(  modelKey: p0.row?.cells["accId"]?.value,oldParent:(p0.row?.cells["حساب الاب"]?.value) ,));
-              // Get.to(() => AccountDetails(
-              //   modelKey: p0.row?.cells["accId"]?.value,
-              // ));
-              // Get.to(() => InvoiceView(
-              //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
-              //   patternId: "",
-              // ));
-            },
-            modelList: controller.accountList.values.where((element) {
-              if( HiveDataBase.getIsNunFree()) {
-                return  !(element.accName?.startsWith("F")??true);
-              } else {
-                return true;
-              }
-            },).toList(),
-
-          );
-        }
-    );
+    return GetBuilder<AccountViewModel>(builder: (controller) {
+      return CustomPlutoGridWithAppBar(
+        title: "جميع الحسابات",
+        onLoaded: (e) {},
+        onSelected: (p0) {
+          Get.to(
+              () => AddAccount(
+                    modelKey: p0.row?.cells["accId"]?.value,
+                    oldParent: (p0.row?.cells["حساب الاب"]?.value),
+                  ),
+              binding: BindingsBuilder(
+                    () => Get.lazyPut(()=>CustomerPlutoEditViewModel()),
+              ));
+          // Get.to(() => AccountDetails(
+          //   modelKey: p0.row?.cells["accId"]?.value,
+          // ));
+          // Get.to(() => InvoiceView(
+          //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
+          //   patternId: "",
+          // ));
+        },
+        modelList: controller.accountList.values.where(
+          (element) {
+            if (HiveDataBase.getIsNunFree()) {
+              return !(element.accName?.startsWith("F") ?? true);
+            } else {
+              return true;
+            }
+          },
+        ).toList(),
+      );
+    });
 /*    return Scaffold(
       body: FilteringDataGrid<AccountModel>(
         title: "الحسابات",

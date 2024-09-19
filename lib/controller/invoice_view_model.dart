@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import '../Dialogs/CustomerDialog.dart';
+import '../model/AccountCustomer.dart';
 import '../model/global_model.dart';
 import '../view/invoices/Controller/Screen_View_Model.dart';
 import 'account_view_model.dart';
@@ -66,6 +68,7 @@ class InvoiceViewModel extends GetxController {
   TextEditingController invReturnCodeController = TextEditingController();
   TextEditingController invReturnDateController = TextEditingController();
   TextEditingController totalPaidFromPartner = TextEditingController();
+
   // TextEditingController invDueDateController = TextEditingController();
   final DataGridController dataGridController = DataGridController();
   late GlobalModel initModel;
@@ -75,6 +78,7 @@ class InvoiceViewModel extends GetxController {
 
   late List<InvoiceRecordModel> records;
   late List<InvoiceDiscountRecordModel> discountRecords;
+
   // late InvoiceRecordSource invoiceRecordSource;
   // late InvoiceDiscountRecordSource invoiceDiscountRecordSource;
 
@@ -84,9 +88,42 @@ class InvoiceViewModel extends GetxController {
 
   List<GlobalModel> allInvoiceForPluto = [];
 
+  changeCustomer() async {
+    InvoicePlutoViewModel plutoInvController = Get.find<InvoicePlutoViewModel>();
+    AccountCustomer customer = AccountCustomer();
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
+    if (patternModel.patType != Const.invoiceTypeBuy) {
+      if (getIfAccountHaveCustomers(secondaryAccountController.text)) {
+        customer = await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
+        invCustomerAccountController.text = customer.customerAccountName!;
+      } else {
+        customer = await accountCustomerDialog(text: invCustomerAccountController.text);
+        invCustomerAccountController.text = customer.customerAccountName!;
+        secondaryAccountController.text = getAccountNameFromId(customer.mainAccount);
+      }
+    } else {
+      if (getIfAccountHaveCustomers(primaryAccountController.text)) {
+        customer = await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
+        invCustomerAccountController.text = customer.customerAccountName!;
+      } else {
+        customer = await accountCustomerDialog(text: invCustomerAccountController.text);
+        invCustomerAccountController.text = customer.customerAccountName!;
+        primaryAccountController.text = getAccountNameFromId(customer.mainAccount);
+      }
+    }
+    plutoInvController.customerName = customer.customerAccountName!;
 
-  searchInvoice(String invPartnerId){
-    invoiceForSearch=invoiceModel.values.where((element) => element.invPartnerCode==invPartnerId,).firstOrNull;
+    plutoInvController.changeVat();
+    update();
+    // invoiceController.invCustomerAccountController.text = await getAccountComplete(invoiceController.invCustomerAccountController.text);
+  }
+
+  searchInvoice(String invPartnerId) {
+    invoiceForSearch = invoiceModel.values
+        .where(
+          (element) => element.invPartnerCode == invPartnerId,
+        )
+        .firstOrNull;
   }
 
 /*  /// we don't need this
@@ -157,12 +194,6 @@ class InvoiceViewModel extends GetxController {
 
   initGlobalInvoice(GlobalModel globalModel) {
     invoiceModel[globalModel.invId!] = globalModel;
-    initModel = GlobalModel.fromJson(globalModel.toFullJson());
-
-    /// todo : edit this.
-    //nextPrevList.assignAll(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => e.invId!));
-
-    // initAllInvoice();
     update();
   }
 
@@ -257,8 +288,6 @@ class InvoiceViewModel extends GetxController {
     return total;
   }
 
-
-
   bool checkInvCode() {
     return nextPrevList.keys.toList().contains(invCodeController.text);
   }
@@ -330,18 +359,20 @@ class InvoiceViewModel extends GetxController {
             .firstOrNull ??
         inv.last);
 
-
     if (isPrev) {
       if (currentPosition != 0) {
-        if(inv.where((element) => element.invCode == invCode,).isNotEmpty) {
+        if (inv
+            .where(
+              (element) => element.invCode == invCode,
+            )
+            .isNotEmpty) {
           buildInvInit(true, inv[currentPosition - 1].invId!);
-        }
-        else{
+        } else {
           buildInvInit(true, inv.last.invId!);
         }
       }
     } else {
-      if (currentPosition < inv.length-1) {
+      if (currentPosition < inv.length - 1) {
         buildInvInit(true, inv[currentPosition + 1].invId!);
       }
     }
@@ -355,33 +386,39 @@ class InvoiceViewModel extends GetxController {
     } else {
       Get.snackbar("خطأ رقم الفاتورة", "رقم الفاتورة غير موجود",
           icon: const Icon(
-            Icons.error, color: Colors.red, textDirection: TextDirection.rtl,
-
+            Icons.error,
+            color: Colors.red,
+            textDirection: TextDirection.rtl,
           ));
-      invCodeController.text=initModel.invCode??"";
+      invCodeController.text = initModel.invCode ?? "";
     }
 
     update();
   }
 
-
   String? selectedPayType;
+
   //init new inv
   getInit(String patternId) {
     initModel = GlobalModel();
     initModel.patternId = patternId;
     initCodeList(patternId);
     PatternModel patternModel = patternController.patternModel[patternId]!;
+    Get.find<InvoicePlutoViewModel>().typeBile = patternModel.patType!;
     invCodeController.text = getNextCodeInv();
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
-    invPartnerCodeController.text='';
 
-    // var vat = "a";
+    invPartnerCodeController.text = '';
+    if (patternModel.patType != Const.invoiceTypeBuy) {
+      invCustomerAccountController.text = getAccountModelFromId(patternModel.patSecondary)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    } else {
+      invCustomerAccountController.text = getAccountModelFromId(patternModel.patPrimary)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    }
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     if (patternModel.patType != Const.invoiceTypeChange) {
       primaryAccountController.text = getAccountNameFromId(patternModel.patPrimary!);
       secondaryAccountController.text = getAccountNameFromId(patternModel.patSecondary!);
-      // vat = accountController.accountList[patternModel.patSecondary!]!.accVat!;
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
@@ -389,20 +426,16 @@ class InvoiceViewModel extends GetxController {
     }
     storeController.text = getStoreNameFromId(patternModel.patStore!);
     entryBondIdController.clear();
-    if (patternModel.patColor != null) {
-      colorInvoice = patternModel.patColor!;
-    }
-    invCustomerAccountController.clear();
     noteController.clear();
     billIDController.clear();
     mobileNumberController.clear();
     if (getMyUserSellerId() != null) {
-      sellerController.text = getSellerNameFromId(getMyUserSellerId())??'';
+      sellerController.text = getSellerNameFromId(getMyUserSellerId()) ?? '';
     }
     dateController = DateTime.now().toString().split(".")[0];
     invDueDateController = DateTime.now().toString().split(".")[0];
-    records = [...List.generate(5, (index) => InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault))];
-    discountRecords = List.generate(3, (index) => InvoiceDiscountRecordModel());
+    // records = [...List.generate(5, (index) => InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault))];
+    // discountRecords = List.generate(3, (index) => InvoiceDiscountRecordModel());
     // invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat);
     // invoiceDiscountRecordSource = InvoiceDiscountRecordSource(
     //   records: discountRecords,
@@ -436,18 +469,18 @@ class InvoiceViewModel extends GetxController {
 
   //int old inv
   buildInvInit(bool bool, String invId) {
-
     if (bool) {
       initModel = invoiceModel[invId]!;
     }
-    invPartnerCodeController.text=initModel.invPartnerCode??'';
-    invReturnCodeController.text=initModel.invReturnCode??'';
-    invReturnDateController.text=initModel.invReturnDate??'';
+    invPartnerCodeController.text = initModel.invPartnerCode ?? '';
+    invReturnCodeController.text = initModel.invReturnCode ?? '';
+    invReturnDateController.text = initModel.invReturnDate ?? '';
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
-    invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
     PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
+    Get.find<InvoicePlutoViewModel>().typeBile = patternModel.patType!;
+
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
     if (patternController.patternModel[initModel.patternId]!.patColor != null) {
@@ -457,12 +490,19 @@ class InvoiceViewModel extends GetxController {
     if (patternModel.patType != Const.invoiceTypeChange && patternModel.patType != Const.invoiceTypeAdd) {
       secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
-      sellerController.text = getSellerNameFromId(initModel.invSeller)??'';
+      sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
       storeNewController.text = getStoreNameFromId(initModel.invSecStorehouse);
     }
+
+    if (patternModel.patType != Const.invoiceTypeBuy) {
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invSecondaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    } else {
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invPrimaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    }
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     mobileNumberController.text = initModel.invMobileNumber ?? "";
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
@@ -482,29 +522,35 @@ class InvoiceViewModel extends GetxController {
       update();
     }
     selectedPayType = initModel.invPayType;
-
   }
 
   buildInvInitRecent(GlobalModel model) {
     initModel = model;
-    invReturnCodeController.text=initModel.invReturnCode??'';
-    invReturnDateController.text=initModel.invReturnDate??'';
-    invPartnerCodeController.text=model.invPartnerCode??'';
-    // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
-    invCustomerAccountController.text = initModel.invCustomerAccount != null ? getAccountNameFromId(initModel.invCustomerAccount) : "";
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
+    Get.find<InvoicePlutoViewModel>().typeBile = patternModel.patType!;
+    invReturnCodeController.text = initModel.invReturnCode ?? '';
+    invReturnDateController.text = initModel.invReturnDate ?? '';
+    invPartnerCodeController.text = model.invPartnerCode ?? '';
+    secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount);
+    primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount);
+    invCustomerAccountController.text = getAccountModelFromId(initModel.invCustomerAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
-    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
+    if (patternModel.patType != Const.invoiceTypeBuy) {
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invSecondaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    } else {
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invPrimaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    }
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
     if (patternController.patternModel[initModel.patternId]!.patColor != null) {
       colorInvoice = patternController.patternModel[initModel.patternId]!.patColor!;
     }
-
     if (patternModel.patType != Const.invoiceTypeChange && patternModel.patType != Const.invoiceTypeAdd) {
       secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
-      sellerController.text = getSellerNameFromId(initModel.invSeller)??'';
+      sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
@@ -554,14 +600,7 @@ class InvoiceViewModel extends GetxController {
     return false;
   }
 
-  bool checkAllRecordPrice() {
-    for (var element in records) {
-      if (element.invRecId != null && element.invRecQuantity! > 0) {
-        return (double.parse(getProductModelFromId(element)!.prodMinPrice ?? "0")) > element.invRecTotal!;
-      }
-    }
-    return false;
-  }
+
 
   getStoreComplete() async {
     storePickList = [];
@@ -633,8 +672,6 @@ class InvoiceViewModel extends GetxController {
       patternList.add(value.patternId!);
     });
   }
-
-
 
 /*  void addProductToInvoice(List<ProductModel> result) {
     double vat = getVatFromName(getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);

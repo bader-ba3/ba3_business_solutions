@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 import '../../Const/const.dart';
 import '../../Dialogs/AccountDueOption.dart';
+import '../../Widgets/CustomerPlutoEditView.dart';
 import '../invoices/Controller/Search_View_Controller.dart';
 import 'All_Due_Account.dart';
 import 'PartnerDueAccount.dart';
@@ -34,7 +35,10 @@ class _AccountTypeState extends State<AccountType> {
         body: Column(
           children: [
             item("إنشاء حساب", () {
-              Get.to(() => const AddAccount());
+              Get.to(() => const AddAccount(),binding: BindingsBuilder(
+
+                    () => Get.lazyPut(()=>CustomerPlutoEditViewModel()),
+              ));
             }),
             // item("معاينة الحسابات", () {
             //   checkPermissionForOperation(Const.roleUserRead, Const.roleViewAccount).then((value) {

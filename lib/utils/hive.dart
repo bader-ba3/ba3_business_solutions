@@ -4,12 +4,14 @@ import 'package:ba3_business_solutions/adapter/global_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/product_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/product_record_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/store_model_adapter.dart';
+import 'package:ba3_business_solutions/model/AccountCustomer.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/model/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../adapter/Account_Customer_adapter.dart';
 import '../adapter/account_model_adapter.dart';
 import '../adapter/inventory_model_adapter.dart';
 import '../model/store_model.dart';
@@ -18,6 +20,7 @@ class HiveDataBase {
   static late Box<GlobalModel> globalModelBox;
   static late Box<ProductModel> productModelBox;
   static late Box<AccountModel> accountModelBox;
+  static late Box<AccountCustomer> accountCustomerBox;
   static late Box<AccountModel> mainAccountModelBox;
   static late Box<Map> statisticBox;
   static late Box<StoreModel> storeModelBox;
@@ -41,12 +44,14 @@ class HiveDataBase {
     // }
     Hive.registerAdapter(GlobalModelAdapter());
     Hive.registerAdapter(ProductModelAdapter());
+      Hive.registerAdapter(AccountCustomerAdapter());
     Hive.registerAdapter(AccountModelAdapter());
     Hive.registerAdapter(StoreModelAdapter());
     Hive.registerAdapter(AccountRecordAdapter());
     Hive.registerAdapter(ProductRecordModelAdapter());
     Hive.registerAdapter(InventoryModelAdapter());
     productModelBox=await Hive.openBox<ProductModel>("AllProduct");
+    accountCustomerBox=await Hive.openBox<AccountCustomer>("AllCustomerAccount");
     accountModelBox=await Hive.openBox<AccountModel>("AllAccount");
     storeModelBox=await Hive.openBox<StoreModel>("AllStore");
     lastChangesIndexBox=await Hive.openBox<int>("lastChangesIndex");
@@ -97,6 +102,7 @@ static deleteAllLocal() {
     HiveDataBase.constBox.deleteFromDisk();
     HiveDataBase.isNewUser.deleteFromDisk();
     HiveDataBase.isFree.deleteFromDisk();
+    HiveDataBase.accountCustomerBox.deleteFromDisk();
   }
 
 }

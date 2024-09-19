@@ -1,8 +1,11 @@
+import 'package:ba3_business_solutions/Dialogs/CustomerDialog.dart';
 import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/Widgets/GetProductEnterShortCut.dart';
 import 'package:ba3_business_solutions/Widgets/Custom_Pluto_With_Edite.dart';
 import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/main.dart';
+import 'package:ba3_business_solutions/model/AccountCustomer.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -283,7 +286,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
-                                if (widget.patternModel?.patType != Const.invoiceTypeSalesWithPartner&&invoiceController.selectedPayType == Const.invPayTypeDue)
+                                if (widget.patternModel?.patType != Const.invoiceTypeSalesWithPartner && invoiceController.selectedPayType == Const.invPayTypeDue)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -322,6 +325,10 @@ class _InvoiceViewState extends State<InvoiceView> {
                                                 controller: invoiceController.secondaryAccountController,
                                                 onSubmitted: (text) async {
                                                   invoiceController.secondaryAccountController.text = await getAccountComplete(invoiceController.secondaryAccountController.text);
+                                                  if (getIfAccountHaveCustomers(invoiceController.secondaryAccountController.text)) {
+                                                    invoiceController.invCustomerAccountController.text=getAccountCustomers(invoiceController.secondaryAccountController.text).first.customerAccountName!;
+                                                    invoiceController.changeCustomer();
+                                                  }
                                                   // invoiceController.getAccountComplete();
                                                   // invoiceController.changeSecAccount();
                                                 },
@@ -353,6 +360,10 @@ class _InvoiceViewState extends State<InvoiceView> {
                                               controller: invoiceController.primaryAccountController,
                                               onSubmitted: (text) async {
                                                 invoiceController.primaryAccountController.text = await getAccountComplete(invoiceController.primaryAccountController.text);
+                                                if (getIfAccountHaveCustomers(invoiceController.primaryAccountController.text)) {
+                                                  invoiceController.invCustomerAccountController.text=getAccountCustomers(invoiceController.primaryAccountController.text).first.customerAccountName!;
+                                                  invoiceController.changeCustomer();
+                                                }
                                                 // invoiceController.getAccountComplete();
                                                 // invoiceController.changeSecAccount();
                                               },
@@ -410,7 +421,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         child: CustomTextFieldWithIcon(
                                             controller: invoiceController.invCustomerAccountController,
                                             onSubmitted: (text) async {
-                                              invoiceController.invCustomerAccountController.text = await getAccountComplete(invoiceController.invCustomerAccountController.text);
+                                              invoiceController.changeCustomer();
                                             },
                                             onIconPressed: () {
                                               AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.invCustomerAccountController.text);
@@ -479,115 +490,6 @@ class _InvoiceViewState extends State<InvoiceView> {
                               ],
                             ),
                           ),
-
-                          // const SizedBox(height: 40,),
-                          // Wrap(
-                          //   spacing: 40,
-                          //   alignment: WrapAlignment.spaceBetween,
-                          //   runSpacing: 40,
-                          //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-
-                          //
-                          //     Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //       children: [
-                          //         const Text("رقم الجوال : "),
-                          //         SizedBox(
-                          //           width: Get.width * 0.15,
-                          //
-                          //           child: customTextFieldWithoutIcon(invoiceController.mobileNumberController, true),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //
-                          //     Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //
-                          //       children: [
-                          //
-                          //         const Text("حساب العميل : "),
-                          //         SizedBox(
-                          //           width: Get.width * 0.15,
-                          //           child: customTextFieldWithIcon(invoiceController.invCustomerAccountController, (text) async {
-                          //             invoiceController.invCustomerAccountController.text = await getAccountComplete(invoiceController.invCustomerAccountController.text);
-                          //           }, onIconPressed: () {
-                          //             AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.invCustomerAccountController.text);
-                          //             if (_ != null) {
-                          //               Get.to(AccountDetails(modelKey: _.accId!));
-                          //             }
-                          //           }),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //
-                          //     Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //
-                          //       children: [
-                          //         const Text(
-                          //           "البائع : ",
-                          //         ),
-                          //         SizedBox(
-                          //           width: Get.width * 0.15,
-                          //           child: customTextFieldWithIcon(invoiceController.sellerController, (text) async {
-                          //             //   globalController.getAccountComplete();
-                          //             var seller = await getSellerComplete(text);
-                          //             // globalController.changeSecAccount();
-                          //             invoiceController.initModel.invSeller = seller;
-                          //             invoiceController.sellerController.text = seller;
-                          //           }, onIconPressed: () {
-                          //             AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
-                          //             if (_ != null) {
-                          //               Get.to(AddSeller(oldKey: _.accId!));
-                          //             }
-                          //           }),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     Row(
-                          //       mainAxisSize: MainAxisSize.min,
-                          //
-                          //       children: [
-                          //         const Text(
-                          //           "نوع الفاتورة" + ": ",
-                          //           textDirection: TextDirection.rtl,
-                          //         ),
-                          //         Container(
-                          //             height: 50,
-                          //             width: Get.width * 0.15,
-                          //             decoration: BoxDecoration(
-                          //                 color: Colors.white,
-                          //                 border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
-                          //             child: DropdownButton(
-                          //               padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //               underline: const SizedBox(),
-                          //               value: selectedPayType,
-                          //               isExpanded: true,
-                          //               onChanged: (_) {
-                          //                 selectedPayType = _!;
-                          //                 setState(() {});
-                          //               },
-                          //               items: [ Const.invPayTypeDue,Const.invPayTypeCash]
-                          //                   .map((e) => DropdownMenuItem(
-                          //                         value: e,
-                          //                         child: SizedBox(
-                          //                             width: double.infinity,
-                          //                             child: Text(
-                          //                               getInvPayTypeFromEnum(e),
-                          //                               textDirection: TextDirection.rtl,
-                          //                             )),
-                          //                       ))
-                          //                   .toList(),
-                          //             )),
-                          //       ],
-                          //     ),
-                          //
-                          //   ],
-                          // ),
-                          // const SizedBox(
-                          //   height: 40,
-                          // ),
                         ],
                       )
                     else
@@ -734,134 +636,6 @@ class _InvoiceViewState extends State<InvoiceView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    /*      if (widget.patternModel!.patType != Const.invoiceTypeChange)
-                      Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          child: SizedBox(
-                            height: 150,
-                            width: Get.width / 1.3,
-                            child: GetBuilder<DiscountPlutoViewModel>(builder: (controller) {
-                              return CustomPlutoWithEdite(
-                                controller: controller,
-                                shortCut: customPlutoShortcut( GetAccountEnterPlutoGridAction(controller,"accountId")),
-                                onRowSecondaryTap: (event) {},
-                                onChanged: (PlutoGridOnChangedEvent event) async {},
-                              );
-                            }),
-                            */ /*   child: SfDataGrid(
-                              horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
-                              verticalScrollPhysics: const ClampingScrollPhysics(),
-                              source: invoiceController.invoiceDiscountRecordSource,
-                              // tableSummaryRows: [
-                              //   GridTableSummaryRow(color: Colors.blueGrey, showSummaryInRow: true, title: 'Total : {Total} AED', columns: [const GridSummaryColumn(name: 'Total', columnName: Const.rowInvTotal, summaryType: GridSummaryType.sum)], position: GridTableSummaryRowPosition.bottom),
-                              // ],
-                              columns: [
-                                GridColumn(
-                                    allowEditing: false,
-                                    width: 50,
-                                    columnName: Const.rowInvDiscountId,
-                                    label: Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
-                                        color: Colors.grey,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'الرقم',
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                                GridColumn(
-                                    width: columnWidths['product']!,
-                                    columnWidthMode: ColumnWidthMode.fill,
-                                    columnName: Const.rowInvDiscountAccount,
-                                    label: Container(
-                                      color: Colors.grey,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'الحساب',
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                                GridColumn(
-                                    width: columnWidths['quantity']!,
-                                    columnName: Const.rowInvDisAddedTotal,
-                                    label: Container(
-                                      color: Colors.grey,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "الإضافات",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                                GridColumn(
-                                    width: columnWidths['subTotal']!,
-                                    columnName: Const.rowInvDisAddedPercentage,
-                                    label: Container(
-                                      color: Colors.grey,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "النسبة المئوية للاضافات",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                                GridColumn(
-                                    width: columnWidths['quantity']!,
-                                    columnName: Const.rowInvDisDiscountTotal,
-                                    label: Container(
-                                      color: Colors.grey,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "الحسميات",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                                GridColumn(
-                                    width: columnWidths['subTotal']!,
-                                    columnName: Const.rowInvDisDiscountPercentage,
-                                    label: Container(
-                                      color: Colors.grey,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "النسبة المئوية للحسميات",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    )),
-                              ],
-                              // controller: invoiceController.dataGridController,
-                              columnWidthMode: ColumnWidthMode.none,
-                              allowColumnsResizing: true,
-                              onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
-                                // setState(() {
-                                //   columnWidths[details.column.columnName] =
-                                //       details.width;
-                                // });
-                                return true;
-                              },
-                              // showColumnHeaderIconOnHover: true,
-                              gridLinesVisibility: GridLinesVisibility.both,
-                              headerGridLinesVisibility: GridLinesVisibility.both,
-                              allowEditing: true,
-                              navigationMode: GridNavigationMode.cell,
-                              selectionMode: SelectionMode.singleDeselect,
-                              editingGestureType: EditingGestureType.tap,
-                              // onCellTap: (DataGridCellTapDetails details) {
-                              //   globalController.onCellTap(details);
-                              // },
-
-                              allowSwiping: false,
-                              swipeMaxOffset: Get.width / 2,
-                              startSwipeActionsBuilder: (BuildContext context, DataGridRow row, int rowIndex) {
-                                return GestureDetector(
-                                    onTap: () {
-                                      invoiceController.invoiceRecordSource.dataGridRows.removeAt(rowIndex);
-                                      plutoEditViewModel.invoiceRecord.removeAt(rowIndex);
-                                      invoiceController.invoiceRecordSource.updateDataGridSource();
-                                    },
-                                    child: Container(color: Colors.red, padding: const EdgeInsets.only(left: 30.0), alignment: Alignment.centerLeft, child: const Text('Delete', style: TextStyle(color: Colors.white))));
-                              },
-                            ),*/ /*
-                          )),*/
                     if (widget.patternModel!.patType != Const.invoiceTypeChange) ...[
                       const Divider(),
                       GetBuilder<InvoicePlutoViewModel>(builder: (controller) {
@@ -929,7 +703,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          (controller.computeWithVatTotal()-controller.computeWithoutVatTotal()).toStringAsFixed(2),
+                                          (controller.computeWithVatTotal() - controller.computeWithoutVatTotal()).toStringAsFixed(2),
                                           style: const TextStyle(fontSize: 30, color: Colors.white),
                                         ),
                                         const Text(
@@ -1034,9 +808,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى إضافة مواد الى الفاتورة");
-                                  } else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
-                                    Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
-                                  } else if (invoiceController.checkAllDiscountRecords()) {
+                                  }  else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
                                   } else if (widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
@@ -1048,6 +820,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         );
                                         // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
+                                        // invoiceController.initModel=_updateData(plutoEditViewModel.invoiceRecord);
                                         screenViewModel.update();
                                       }
                                     });
@@ -1059,6 +832,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               AppButton(
                                   title: 'السند',
                                   onPressed: () async {
+                                    print(controller.initModel.entryBondCode);
                                     Get.to(() => EntryBondDetailsView(
                                           oldId: controller.initModel.entryBondId,
                                         ));
@@ -1136,11 +910,13 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("خطأ ", "يرجى إضافة مواد الى الفاتورة+");
                                   } else if (plutoEditViewModel.invoiceRecord.isEmpty) {
                                     Get.snackbar("خطأ ", "بعض المنتجات فارغة");
-                                  } else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
+                                  }
+                                  /* else if (invoiceController.checkAllRecordPrice() && widget.patternModel!.patType == Const.invoiceTypeSales) {
                                     Get.snackbar("خطأ ", "تم البيع بأقل من الحد المسموح");
                                   } else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
-                                  } else {
+                                  } */
+                                  else {
                                     checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewInvoice).then((value) async {
                                       if (value) {
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
@@ -1190,7 +966,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 )
                             ]
                           ],
-                          if (widget.patternModel!.patName == Const.invoiceTypeSalesWithPartner)
+                          if (widget.patternModel!.patName == Const.invoiceTypeSalesWithPartner || controller.selectedPayType == Const.invPayTypeDue)
                             AppButton(
                               iconData: Icons.more_horiz_outlined,
                               title: 'المزيد',
@@ -1320,13 +1096,15 @@ class _InvoiceViewState extends State<InvoiceView> {
         invReturnDate: invoiceController.invReturnDateController.text,
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
+        invVatAccount: widget.patternModel?.patType==Const.invoiceTypeBuy?getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة"):getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة"),
         invPayType: invoiceController.selectedPayType,
-        invIsPaid:invoiceController.selectedPayType == Const.invPayTypeDue? getInvIsPay(widget.patternModel!.patType!):true,
+        invIsPaid: invoiceController.selectedPayType == Const.invPayTypeDue ? getInvIsPay(widget.patternModel!.patType!) : true,
         invPartnerCode: invoiceController.invPartnerCodeController.text,
         invDueDate: widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],
         invIsPending: invoiceController.initModel.invIsPending,
-        invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
+        // invVatAccount: getVatAccountFromPatternId(widget.patternModel!.patId!),
+
         entryBondId: invoiceController.initModel.invId == null ? generateId(RecordType.entryBond) : invoiceController.initModel.entryBondId,
         entryBondCode: invoiceController.initModel.invId == null ? getNextEntryBondCode().toString() : invoiceController.initModel.entryBondCode,
         invRecords: record,

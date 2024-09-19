@@ -120,11 +120,11 @@ class ChangesViewModel extends GetxController{
   }
 
   addChangeToChanges(Map json,changeType) async {
-    String _lastChangesIndex = getLastChangesIndexWithPad();
-    print(_lastChangesIndex);
-   await FirebaseFirestore.instance.collection(Const.changesCollection).doc(_lastChangesIndex).set({
+    String lastChangesIndex = getLastChangesIndexWithPad();
+    print(lastChangesIndex);
+   await FirebaseFirestore.instance.collection(Const.changesCollection).doc(lastChangesIndex).set({
       "changeType":changeType,
-      "changeId":int.parse(_lastChangesIndex),
+      "changeId":int.parse(lastChangesIndex),
       ...json,
     });
     await FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex":Random.secure().nextInt(999999999)});

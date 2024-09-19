@@ -7,14 +7,14 @@ class CustomPlutoWithEdite extends StatelessWidget {
   const CustomPlutoWithEdite({
     super.key,
     required this.controller,
-    required this.shortCut,
+     this.shortCut,
     this.onChanged,
     required this.onRowSecondaryTap,
     this.evenRowColor=Colors.blueAccent,
   });
 
   final dynamic controller;
-  final PlutoGridShortcut shortCut;
+  final PlutoGridShortcut? shortCut;
   final Function(PlutoGridOnChangedEvent)? onChanged;
   final Function(PlutoGridOnRowSecondaryTapEvent) onRowSecondaryTap;
   final Color evenRowColor;
@@ -29,7 +29,7 @@ class CustomPlutoWithEdite extends StatelessWidget {
         onRowSecondaryTap: onRowSecondaryTap,
         onChanged: onChanged,
         configuration: PlutoGridConfiguration(
-          shortcut: shortCut,
+          shortcut: shortCut??const PlutoGridShortcut(),
           style: buildGridStyleConfig(evenRowColor:evenRowColor),
           localeText: const PlutoGridLocaleText.arabic(),
         ),

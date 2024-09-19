@@ -24,10 +24,10 @@ class BondViewModel extends GetxController {
   final TextEditingController codeController = TextEditingController();
   final TextEditingController debitOrCreditController = TextEditingController();
   String? lastBondOpened;
-  late GlobalModel bondModel;
+   GlobalModel bondModel=GlobalModel();
   RxMap<String, GlobalModel> allBondsItem = <String, GlobalModel>{}.obs;
   bool isEdit = false;
-  late GlobalModel tempBondModel;
+   GlobalModel tempBondModel=GlobalModel();
   Map<String, String> codeList = {};
   TextEditingController userAccountController = TextEditingController();
 
@@ -59,11 +59,11 @@ class BondViewModel extends GetxController {
     // tempBondModel=GlobalModel.fromJson(globalModel.toFullJson());
     // initPage();
 
-    if (lastBondOpened != null) {
+/*    if (lastBondOpened != null) {
       tempBondModel = GlobalModel.fromJson(allBondsItem[lastBondOpened]?.toFullJson());
       // initPage(tempBondModel.bondType);
     }
-    update();
+    update();*/
     // if(oldBondModel!=null){
     //   tempBondModel = GlobalModel.fromJson(globalModel.toFullJson());
     //   initPage();
@@ -356,7 +356,7 @@ class BondViewModel extends GetxController {
                 [],
             type!);
       } else if (tempBondModel.bondType == Const.bondTypeDebit) {
-        print("object");
+
         debitOrCreditController.text = getAccountNameFromId(tempBondModel.bondRecord?.last.bondRecAccount);
         plutoEditViewModel.getRows(
             tempBondModel.bondRecord

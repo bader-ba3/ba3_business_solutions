@@ -1,4 +1,6 @@
+import 'package:ba3_business_solutions/Widgets/CustomerPlutoEditView.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
+import 'package:ba3_business_solutions/model/AccountCustomer.dart';
 import 'package:ba3_business_solutions/model/account_model.dart';
 import 'package:ba3_business_solutions/model/account_tree.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
@@ -48,12 +50,6 @@ class AccountViewModel extends GetxController {
     } else if (globalModel.globalType == Const.globalTypeCheque) {
       type = globalModel.cheqType!;
       date = globalModel.cheqDate!;
-      if (accountsId!.contains(globalModel.cheqPrimeryAccount)) {
-        accountList[accountsId.last]!.accRecord.add(
-              AccountRecordModel(
-                  globalModel.cheqId, globalModel.cheqPrimeryAccount, globalModel.cheqAllAmount, 0, type, date, globalModel.cheqCode, (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0.0) + double.parse(globalModel.cheqAllAmount!), double.tryParse(globalModel.cheqAllAmount!), 0),
-            );
-      }
     } else {
       type = Const.bondTypeStart;
       date = globalModel.invDueDate;
@@ -210,15 +206,15 @@ class AccountViewModel extends GetxController {
 
   void deleteGlobalAccount(GlobalModel globalModel) {
     globalModel.bondRecord?.forEach((element) {
-      accountList[element.bondRecAccount]?.accRecord.removeWhere((e) => e.id == globalModel.entryBondId);
+      accountList[element.bondRecAccount]?.accRecord.removeWhere((e) => e.id == globalModel.entryBondId || e.id == globalModel.invId || e.id == globalModel.bondId);
       // calculateBalance(element.bondRecAccount!);
     });
-    initAccountViewPage();
-    update();
-    if (lastAccountOpened != null) {
-      initAccountPage(lastAccountOpened!);
-      update();
-    }
+    // initAccountViewPage();
+    // update();
+    // if (lastAccountOpened != null) {
+    //   initAccountPage(lastAccountOpened!);
+    //   update();
+    // }
   }
 
   initAccountViewPage() {
@@ -333,6 +329,8 @@ class AccountViewModel extends GetxController {
     String id = generateId(RecordType.account);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     accountModel.accId ??= id;
+    accountModel.accCustomer = Get.find<CustomerPlutoEditViewModel>().handleSaveAll(accountModel.accId!);
+
     if (accountModel.accParentId == null) {
       accountModel.accIsParent = true;
     } else {
@@ -345,24 +343,21 @@ class AccountViewModel extends GetxController {
       }
       accountModel.accIsParent = false;
     }
-    // for (var i = 0; i < accountModel.accAggregateList.length; i++) {
-    //   if (!accountModel.accAggregateList[i].toString().startsWith('acc') ) {
-    //     accountModel.accAggregateList[i] = accountList.values.toList().firstWhere((e) => e.accName == accountModel.accAggregateList[i]).accId;
-    //   }
-    // }
+    for (var i = 0; i < accountModel.accAggregateList.length; i++) {
+      if (!accountModel.accAggregateList[i].toString().startsWith('acc')) {
+        accountModel.accAggregateList[i] = accountList.values.toList().firstWhere((e) => e.accName == accountModel.accAggregateList[i]).accId;
+      }
+    }
     accountModel.accAggregateList.assignAll(aggregateList.map((e) => e.accId));
-    if (withLogger) logger(newData: accountModel);
+    // if (withLogger) logger(newData: accountModel);
     await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountModel.accId).set(accountModel.toJson());
 
     await changesViewModel.addChangeToChanges(accountModel.toFullJson(), Const.accountsCollection);
-    accountList[accountModel.accId!] = AccountModel();
     accountList[accountModel.accId!] = accountModel;
     Get.snackbar("", " تم اضافة الحساب");
     // recordViewDataSource.updateDataGridSource();
     // accountRecordDataSource.updateDataGridSource();
-    update();
-    initModel();
-    initPage();
+    saveToHive(accountModel);
     go(lastIndex);
   }
 
@@ -385,18 +380,21 @@ class AccountViewModel extends GetxController {
   //   }
   //   update();
   // }
+  getBalanceForPrimary(List<String> accounts) {
+    for (var account in accounts) {
+      getBalance(account);
+    }
+    update();
+  }
 
-  double getBalance(userId) {
+  double getBalance(String userId) {
     double total = 0;
-    // List<AccountRecordModel> currentViewAccount = [];
     accountList[userId]?.accRecord.clear();
     GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    // List<GlobalModel> globalModels = globalViewModel.allGlobalModel.values.where((element) => (allDate.contains(element.bondDate?.split(" ")[0]) || allDate.contains(element.invDate?.split(" ")[0])) || allDate.contains(element.cheqDate?.split(" ")[0])).toList();
     for (var globalModel in globalViewModel.allGlobalModel.values.toList()) {
       initGlobalAccount(globalModel, accountsId: [userId]);
     }
 
-    // searchValue = accountList[modeKey.last]?.accRecord.lastOrNull?.subBalance ?? 0;
     debitValue = accountList[userId]?.accRecord.fold(
               0.0,
               (previousValue, element) => element.debit! + previousValue!,
@@ -407,7 +405,8 @@ class AccountViewModel extends GetxController {
               (previousValue, element) => element.credit! + previousValue!,
             ) ??
         0;
-    total = creditValue;
+
+    total = debitValue - creditValue;
     return total;
   }
 
@@ -479,7 +478,9 @@ class AccountViewModel extends GetxController {
   }
 
   Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
-    if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
+    // if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
+    editProductModel.accCustomer = Get.find<CustomerPlutoEditViewModel>().handleSaveAll(editProductModel.accId!);
+
     if (accountList[editProductModel.accId]?.accParentId != null) {
       await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
         'accChild': FieldValue.arrayRemove([editProductModel.accId]),
@@ -511,12 +512,8 @@ class AccountViewModel extends GetxController {
     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(editProductModel.accId).update(editProductModel.toJson());
 
     changesViewModel.addChangeToChanges(editProductModel.toFullJson(), Const.accountsCollection);
-    // IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
-    // isolateViewModel.init();
+    saveToHive(editProductModel);
     update();
-    initModel();
-    initPage();
-    go(lastIndex);
   }
 
   Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) async {
@@ -677,7 +674,14 @@ class AccountViewModel extends GetxController {
 
   void setBalance(List<AccountModel> currentPageData) {
     for (var element in currentPageData) {
-      HiveDataBase.accountModelBox.put(element.accId, element..finalBalance = getBalance(element.accId));
+      HiveDataBase.accountModelBox.put(element.accId, element..finalBalance = getBalance(element.accId!));
+    }
+  }
+
+  saveToHive(AccountModel editProductModel) {
+    HiveDataBase.accountModelBox.put(editProductModel.accId, editProductModel);
+    for (AccountCustomer element in editProductModel.accCustomer ?? []) {
+      HiveDataBase.accountCustomerBox.put(element.customerAccountId, element);
     }
   }
 }

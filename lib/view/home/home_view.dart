@@ -136,7 +136,7 @@ class HomeView extends StatelessWidget {
                                               children: [
                                                 Text(model.accName.toString(), style: TextStyle(fontSize: 22),),
                                                 Spacer(),
-                                                Text(accountController.getBalance(model.accId).toStringAsFixed(2), style: TextStyle(fontSize: 22),),
+                                                Text(accountController.getBalance(model.accId!).toStringAsFixed(2), style: TextStyle(fontSize: 22),),
                                               ],
                                             ),
                                           ),

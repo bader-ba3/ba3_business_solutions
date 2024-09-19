@@ -64,10 +64,9 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                   const Text("تاريخ السند : ", style: TextStyle()),
                   Expanded(
                     child: DatePicker(
-                      initDate: (controller.tempBondModel.bondDate??controller.tempBondModel.invDate).toString(),
+                      initDate: (controller.tempBondModel.bondDate??controller.tempBondModel.invDate??controller.tempBondModel.cheqDate).toString(),
                       onSubmit: (_) {
-                        controller.tempBondModel.bondDate = _.toString().split(".")[0];
-                        controller.update();
+
                       },
                     ),
                   ),

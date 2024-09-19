@@ -10,6 +10,8 @@ import 'package:ba3_business_solutions/view/entry_bond/widget/bond_record_data_s
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import 'account_view_model.dart';
+
 class EntryBondViewModel extends GetxController {
   RxMap<String, GlobalModel> allEntryBonds = <String, GlobalModel>{}.obs;
   late EntryBondRecordDataSource recordDataSource;
@@ -104,14 +106,14 @@ class EntryBondViewModel extends GetxController {
     }
   }
 
-  initGlobalInvoiceBond(GlobalModel globalModel) async {
+/*  initGlobalInvoiceBond(GlobalModel globalModel) async {
     allEntryBonds[globalModel.entryBondId!] = globalModel;
+    allEntryBonds[globalModel.entryBondId!]?.entryBondCode=globalModel.entryBondCode;
     allEntryBonds[globalModel.entryBondId!]?.entryBondRecord = globalModel.entryBondRecord;
     allEntryBonds[globalModel.entryBondId!]?.originId = globalModel.invId;
     allEntryBonds[globalModel.entryBondId!]?.bondType = Const.globalTypeBond;
     allEntryBonds[globalModel.entryBondId!]?.bondDate= globalModel.invDate??globalModel.bondDate;
-
-    if (allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == true || allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == null) {
+    if (*//*allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == true || allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.isEmpty == null*//*true) {
       allEntryBonds[globalModel.entryBondId!]?.entryBondRecord = [];
       allEntryBonds[globalModel.entryBondId!]?.bondDescription = "${getGlobalTypeFromEnum(globalModel.patternId!)} تم التوليد بشكل تلقائي";
       int bondRecId = 0;
@@ -141,8 +143,8 @@ class EntryBondViewModel extends GetxController {
         if (globalModel.invType == Const.invoiceTypeSales) {
           if ((element.invRecQuantity ?? 0) > 0) {
             //  allEntryBonds[globalModel.bondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100)))+((element.invRecSubTotal!*(element.invRecGift??0))*(totalAdded==0?0:(totalAdded/100)))).abs(), 0, allEntryBonds[globalModel.bondId!]?.invPrimaryAccount,dse ));
-            allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal! * element.invRecQuantity!).abs(), 0, allEntryBonds[globalModel.entryBondId!]?.invPrimaryAccount, dse));
-            allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal! * element.invRecQuantity!, allEntryBonds[globalModel.entryBondId!]?.invSecondaryAccount, dse));
+            allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecSubTotal! * element.invRecQuantity!).abs(), 0, globalModel.invPrimaryAccount, dse));
+            allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal! * element.invRecQuantity!, globalModel.invSecondaryAccount, dse));
           }
           if ((element.invRecGift ?? 0) > 0) {
             String giftDse = "هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
@@ -186,27 +188,28 @@ class EntryBondViewModel extends GetxController {
 
       if (globalModel.firstPay != null && globalModel.firstPay! > 0) {
         if (globalModel.invPayType == Const.invPayTypeDue) {
-          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), globalModel.firstPay, 0, globalModel.invPrimaryAccount, "الدفعة الاولى مبيعات ${globalModel.invCode}"));
+          allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), globalModel.firstPay, 0, ""*//*getAccountIdFromText("الصندوق")*//*, "الدفعة الاولى مبيعات ${globalModel.invCode}"));
           allEntryBonds[globalModel.entryBondId!]?.entryBondRecord?.add(EntryBondRecordModel((bondRecId++).toString(), 0, globalModel.firstPay, globalModel.invSecondaryAccount, "الدفعة الاولى مبيعات ${globalModel.invCode}"));
         }
       }
     }
-  }
+  }*/
 
   initGlobalBond(GlobalModel globalModel) {
-    GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
-    _.entryBondRecord = _.bondRecord?.map((e) => EntryBondRecordModel(e.bondRecId, e.bondRecCreditAmount, e.bondRecDebitAmount, e.bondRecAccount, e.bondRecDescription, invId: e.invId)).toList();
-    _.bondDescription = "تم التوليد من ${getBondTypeFromEnum(globalModel.bondType!)} رقم ${globalModel.bondCode}";
-    allEntryBonds[globalModel.entryBondId!] = _;
+    // GlobalModel _ = GlobalModel.fromJson(globalModel.toFullJson());
+    // _.entryBondRecord = _.bondRecord?.map((e) => EntryBondRecordModel(e.bondRecId, e.bondRecCreditAmount, e.bondRecDebitAmount, e.bondRecAccount, e.bondRecDescription, invId: e.invId)).toList();
+    // _.bondDescription = "تم التوليد من ${getBondTypeFromEnum(globalModel.bondType!)} رقم ${globalModel.bondCode}";
+    allEntryBonds[globalModel.entryBondId!] = globalModel;
   }
 
   initGlobalChequeBond(GlobalModel globalModel) {
-    globalModel.cheqRecords?.forEach((element) {
-      fastAddBondAddToModel(globalModel: globalModel, record: [
-        EntryBondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
-        EntryBondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
-      ]);
-    });
+    allEntryBonds[globalModel.entryBondId!]=globalModel;
+    // globalModel.cheqRecords?.forEach((element) {
+    //   fastAddBondAddToModel(globalModel: globalModel, record: [
+    //     EntryBondRecordModel("00", double.parse(element.cheqRecAmount!), 0, globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecPrimeryAccount! : element.cheqRecSecoundryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
+    //     EntryBondRecordModel("01", 0, double.parse(element.cheqRecAmount!), globalModel.cheqType == Const.chequeTypeCatch ? element.cheqRecSecoundryAccount! : element.cheqRecPrimeryAccount!, "تم التوليد من الشيكات", invId: globalModel.cheqId),
+    //   ]);
+    // });
   }
 
   void fastAddBondAddToModel({required GlobalModel globalModel, required List<EntryBondRecordModel> record}) {
