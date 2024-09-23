@@ -186,12 +186,12 @@ class GlobalViewModel extends GetxController {
     }
 
     allGlobalModel[correctedModel.invId!] = correctedModel;
-
+    initGlobalInvoiceBond(correctedModel);
     updateDataInAll(correctedModel);
     addInvoiceToFirebase(correctedModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addChangeToChanges(correctedModel.toFullJson(), Const.invoicesCollection);
-    initGlobalInvoiceBond(correctedModel);
+
     // invoiceViewModel.updateCodeList();
     invoiceViewModel.initModel=correctedModel;
     invoiceViewModel.update();
@@ -452,6 +452,7 @@ class GlobalViewModel extends GetxController {
         }
       }
     }
+    Get.find<EntryBondViewModel>().allEntryBonds[globalModel.entryBondId!]=globalModel;
   }
 
   updateDataInAll(GlobalModel globalModel) async {
