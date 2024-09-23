@@ -320,12 +320,12 @@ class GlobalViewModel extends GetxController {
     });*/
 
     ///This for add to firebase
-/*    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.invId).set(globalModel.toFullJson());
+    await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.invId).set(globalModel.toFullJson());
     if (globalModel.invMobileNumber != null && globalModel.invMobileNumber != '') {
       await FirebaseFirestore.instance.collection(Const.ba3Invoice).doc(globalModel.invMobileNumber).set({
         "listUrl": FieldValue.arrayUnion(['https://ba3-business-solutions.firebaseapp.com/?id=${globalModel.invId}&year=${Const.dataName}'])
       });
-    }*/
+    }
     await Future.delayed(const Duration(milliseconds: 100));
     await HiveDataBase.globalModelBox.put(globalModel.invId, globalModel);
     print("end ${globalModel.entryBondId}  ${globalModel.invId}");
