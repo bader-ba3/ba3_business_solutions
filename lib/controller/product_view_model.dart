@@ -115,7 +115,7 @@ class ProductViewModel extends GetxController {
       query2 = query;
     }
     productsForSearch = productDataMap.values.where((element) {
-      if( HiveDataBase.getIsNunFree()) {
+      if( HiveDataBase.getWithFree()) {
         return  !(element.prodName?.startsWith("F")??true);
       } else {
         return true;

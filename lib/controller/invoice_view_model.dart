@@ -9,6 +9,7 @@ import 'package:ba3_business_solutions/controller/user_management_model.dart';
 import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
+import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -339,6 +340,19 @@ class InvoiceViewModel extends GetxController {
 
   invNextOrPrev(String patId, invCode, bool isPrev) {
     List<GlobalModel> inv = invoiceModel.values.where((element) => element.patternId == patId).toList().reversed.toList();
+    if ((!HiveDataBase.getWithFree()) && patternController.patternModel[patId]?.patType == Const.invoiceTypeBuy) {
+      inv = invoiceModel.values
+          .where((element) =>
+              element.patternId == patId &&
+              element.invRecords!.where(
+                    (element) {
+                      return productController.productDataMap[element.invRecProduct]?.prodIsLocal == false;
+                    },
+                  ).isEmpty )
+          .toList()
+          .reversed
+          .toList();
+    }
     inv.sort(
       (a, b) {
         if (a.invCode!.startsWith("F") && b.invCode!.startsWith("F")) {
@@ -599,8 +613,6 @@ class InvoiceViewModel extends GetxController {
     // }
     return false;
   }
-
-
 
   getStoreComplete() async {
     storePickList = [];

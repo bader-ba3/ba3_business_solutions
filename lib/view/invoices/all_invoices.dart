@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,8 +25,8 @@ class AllInvoice extends StatelessWidget {
         onSelected: (p0) {
           print(p0.row?.cells["الرقم التسلسلي"]?.value);
           Get.to(
-                () => InvoiceView(
-              billId:  p0.row?.cells["الرقم التسلسلي"]?.value,
+            () => InvoiceView(
+              billId: p0.row?.cells["الرقم التسلسلي"]?.value,
               patternId: p0.row?.cells["النمط"]?.value,
             ),
             binding: BindingsBuilder(() {
@@ -33,21 +34,26 @@ class AllInvoice extends StatelessWidget {
               Get.lazyPut(() => DiscountPlutoViewModel());
             }),
           );
-       /*   Get.to(() => InvoiceView(
+          /*   Get.to(() => InvoiceView(
                 billId: p0.row?.cells["الرقم التسلسلي"]?.value,
                 patternId: "",
               ));*/
         },
-        modelList: controller.invoiceModel.values.where((element) {
-
-         if( HiveDataBase.getIsNunFree()) {
-         return  !(element.invCode?.startsWith("F")??true);
-         } else {
-           return true;
-         }
-        },).where(
+        modelList: controller.invoiceModel.values.where(
           (element) {
-            if (productName != null&&productName != "") {
+            if (!HiveDataBase.getWithFree() && getPatTypeFromId(element.patternId!) == Const.invoiceTypeBuy) {
+              return element.invRecords!.where(
+                (element) {
+                  return getProductModelFromId(element.invRecProduct)?.prodIsLocal == false;
+                },
+              ).isEmpty;
+            } else {
+              return true;
+            }
+          },
+        ).where(
+          (element) {
+            if (productName != null && productName != "") {
               return listDate.contains((element.invDate?.split(" ")[0] ?? "")) &&
                   (element.invRecords
                           ?.where(

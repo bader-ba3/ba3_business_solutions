@@ -53,7 +53,7 @@ void main() async {
           HardwareKeyboard.instance.isShiftPressed &&
           HardwareKeyboard.instance
               .isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
-        HiveDataBase.setIsFree(!HiveDataBase.getIsNunFree());
+        HiveDataBase.setIsFree(!HiveDataBase.getWithFree());
 
       return true;
       }

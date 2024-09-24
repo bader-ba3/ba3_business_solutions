@@ -35,7 +35,7 @@ class AllAccount extends StatelessWidget {
         },
         modelList: controller.accountList.values.where(
           (element) {
-            if (HiveDataBase.getIsNunFree()) {
+            if (HiveDataBase.getWithFree()) {
               return !(element.accName?.startsWith("F") ?? true);
             } else {
               return true;

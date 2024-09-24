@@ -459,6 +459,10 @@ String getPatNameFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
   return Get.find<PatternViewModel>().patternModel[id]?.patName ?? "";
 }
+String getPatTypeFromId(String id) {
+// return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
+  return Get.find<PatternViewModel>().patternModel[id]?.patType ?? "";
+}
 
 String getAccountTypeFromEnum(String type) {
   switch (type) {

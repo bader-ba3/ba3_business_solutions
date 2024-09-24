@@ -80,7 +80,7 @@ class HiveDataBase {
   static String getMyReadFlag(){
     return constBox.get("myReadFlag")!;
   }
-  static bool getIsNunFree(){
+  static bool getWithFree(){
     return  isFree.get("isFree")??false;
   }
 

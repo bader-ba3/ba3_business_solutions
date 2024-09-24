@@ -811,7 +811,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   }  else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
                                   } else if (widget.patternModel?.patType == Const.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
-                                    Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
+                                    Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في رقم فاتورة الشريك");
                                   } else {
                                     checkPermissionForOperation(Const.roleUserWrite, Const.roleViewInvoice).then((value) async {
                                       if (value) {
