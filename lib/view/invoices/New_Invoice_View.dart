@@ -1,11 +1,8 @@
-import 'package:ba3_business_solutions/Dialogs/CustomerDialog.dart';
-import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
+
 import 'package:ba3_business_solutions/Widgets/GetProductEnterShortCut.dart';
 import 'package:ba3_business_solutions/Widgets/Custom_Pluto_With_Edite.dart';
 import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/main.dart';
-import 'package:ba3_business_solutions/model/AccountCustomer.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,12 +11,10 @@ import '../../Const/const.dart';
 import '../../Dialogs/Widgets/Option_Text_Widget.dart';
 import '../../Services/Get_Date_From_String.dart';
 import '../../Widgets/CustomPlutoShortCut.dart';
-import '../../Widgets/GetAccountEnterPlutoAction.dart';
 import '../../controller/account_view_model.dart';
 import '../../controller/entry_bond_view_model.dart';
 import '../../controller/global_view_model.dart';
 import '../../controller/invoice_view_model.dart';
-import '../../controller/pattern_model_view.dart';
 import '../../controller/print_view_model.dart';
 import '../../controller/product_view_model.dart';
 import '../../controller/sellers_view_model.dart';

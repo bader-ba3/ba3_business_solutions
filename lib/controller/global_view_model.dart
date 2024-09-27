@@ -483,9 +483,7 @@ class GlobalViewModel extends GetxController {
   }
 
   initUpdateDataInAll(GlobalModel globalModel) async {
-    if(globalModel.cheqId!=null){
-      print(globalModel.toFullJson());
-    }
+
     if (globalModel.globalType == Const.globalTypeInvoice) {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {

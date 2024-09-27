@@ -66,7 +66,7 @@ class _DashboardViewState extends State<DashboardView> {
                               // print(HiveDataBase.globalModelBox.toMap().entries.where((element) => element.value.bondId=="bon1726453481733905",).first.key);
                               accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
                               accountController.update();
-                              //  HiveDataBase.accountModelBox.deleteFromDisk();
+                               HiveDataBase.warrantyModelBox.deleteFromDisk();
                               //  HiveDataBase.accountCustomerBox.deleteFromDisk();
                               //  HiveDataBase.globalModelBox.deleteFromDisk();
                               //  HiveDataBase.productModelBox.deleteFromDisk();

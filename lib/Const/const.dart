@@ -57,6 +57,7 @@ abstract class Const {
   static String accountsCollection = 'Accounts';
   static String tasksCollection = 'Tasks';
   static String invoicesCollection = 'Invoices';
+  static String warrantyCollection = 'Warranty';
   static String productsCollection = "Products";
   static String logsCollection = "Logs";
   static String patternCollection = "Patterns";

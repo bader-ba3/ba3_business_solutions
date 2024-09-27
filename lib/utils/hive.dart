@@ -1,4 +1,5 @@
 
+import 'package:ba3_business_solutions/adapter/Warranty_adapter.dart';
 import 'package:ba3_business_solutions/adapter/account_record_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/global_model_adapter.dart';
 import 'package:ba3_business_solutions/adapter/product_model_adapter.dart';
@@ -14,6 +15,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../adapter/Account_Customer_adapter.dart';
 import '../adapter/account_model_adapter.dart';
 import '../adapter/inventory_model_adapter.dart';
+import '../model/Warranty_Model.dart';
 import '../model/store_model.dart';
 
 class HiveDataBase {
@@ -21,6 +23,7 @@ class HiveDataBase {
   static late Box<ProductModel> productModelBox;
   static late Box<AccountModel> accountModelBox;
   static late Box<AccountCustomer> accountCustomerBox;
+  static late Box<WarrantyModel> warrantyModelBox;
   static late Box<AccountModel> mainAccountModelBox;
   static late Box<Map> statisticBox;
   static late Box<StoreModel> storeModelBox;
@@ -43,6 +46,7 @@ class HiveDataBase {
 
     // }
     Hive.registerAdapter(GlobalModelAdapter());
+    Hive.registerAdapter(WarrantyAdapter());
     Hive.registerAdapter(ProductModelAdapter());
       Hive.registerAdapter(AccountCustomerAdapter());
     Hive.registerAdapter(AccountModelAdapter());
@@ -51,6 +55,7 @@ class HiveDataBase {
     Hive.registerAdapter(ProductRecordModelAdapter());
     Hive.registerAdapter(InventoryModelAdapter());
     productModelBox=await Hive.openBox<ProductModel>("AllProduct");
+    warrantyModelBox=await Hive.openBox<WarrantyModel>("AllWarranty");
     accountCustomerBox=await Hive.openBox<AccountCustomer>("AllCustomerAccount");
     accountModelBox=await Hive.openBox<AccountModel>("AllAccount");
     storeModelBox=await Hive.openBox<StoreModel>("AllStore");

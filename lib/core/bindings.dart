@@ -15,6 +15,7 @@ import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/target_view_model.dart';
+import 'package:ba3_business_solutions/view/Warranty/Controller/warranty_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,8 @@ class GetBinding extends Bindings {
     Get.put(CostCenterViewModel());
     Get.put(InventoryViewModel());
     Get.put(AccountCustomerViewModel());
+    Get.put(WarrantyViewModel());
+
 
 
     // Get.put(IsolateViewModel());

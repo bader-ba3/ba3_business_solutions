@@ -95,14 +95,27 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction  {
       return;
     }
 
-    if (enterKeyAction.isEditingAndMoveDown) {
+    // تحقق مما إذا كان في الخلية الأخيرة
+    bool isLastCellInRow = stateManager.currentColumn?.field == stateManager.columns.last.field;
+    bool isLastRow = stateManager.currentRowIdx == stateManager.rows.length - 1;
+
+    if (enterKeyAction.isEditingAndMoveDown || enterKeyAction.isEditingAndMoveRight) {
       if (HardwareKeyboard.instance.isShiftPressed) {
+        // الانتقال للأعلى إذا كان Shift مضغوط
         stateManager.moveCurrentCell(
           PlutoMoveDirection.up,
           force: true,
           notify: true,
         );
+      } else if (isLastCellInRow && !isLastRow) {
+        // إذا كانت الخلية الأخيرة في السطر الحالي، انتقل إلى بداية السطر التالي
+        stateManager.setCurrentCell(
+          stateManager.rows[stateManager.currentRowIdx! + 1].cells[stateManager.columns.first.field],
+          stateManager.currentRowIdx! + 1,
+          notify: true,
+        );
       } else {
+        // إذا لم تكن في آخر خلية، انتقل إلى الخلية التالية
         stateManager.moveCurrentCell(
           PlutoMoveDirection.right,
           force: true,
@@ -111,12 +124,21 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction  {
       }
     } else if (enterKeyAction.isEditingAndMoveRight) {
       if (HardwareKeyboard.instance.isShiftPressed) {
+        // الانتقال لليمين إذا كان Shift مضغوط
         stateManager.moveCurrentCell(
           PlutoMoveDirection.right,
           force: true,
           notify: false,
         );
+      } else if (isLastCellInRow && !isLastRow) {
+        // إذا كانت الخلية الأخيرة في السطر، انتقل إلى بداية السطر التالي
+        stateManager.setCurrentCell(
+          stateManager.rows[stateManager.currentRowIdx! + 1].cells[stateManager.columns.first.field],
+          stateManager.currentRowIdx! + 1,
+          notify: true,
+        );
       } else {
+        // الانتقال لليمين إذا لم تكن في آخر خلية
         stateManager.moveCurrentCell(
           PlutoMoveDirection.right,
           force: true,

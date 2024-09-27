@@ -1,7 +1,9 @@
 import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
 import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
+import 'package:ba3_business_solutions/Widgets/warranty_pluto_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user_management_model.dart';
+import 'package:ba3_business_solutions/view/Warranty/Warranty_View.dart';
 
 import 'package:ba3_business_solutions/view/invoices/Controller/Screen_View_Model.dart';
 import 'package:ba3_business_solutions/view/invoices/Controller/Search_View_Controller.dart';
@@ -12,6 +14,7 @@ import 'package:get/get.dart';
 import '../../Const/const.dart';
 import '../../Dialogs/Invoice_Option_Dialog.dart';
 import '../../model/Pattern_model.dart';
+import '../Warranty/all_warranty_invoices.dart';
 import 'all_pending_invoices.dart';
 
 class InvoiceType extends StatefulWidget {
@@ -41,42 +44,103 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 spacing: 20.0,
                 runSpacing: 15.0,
                 children: patternController.patternModel.entries.toList().map((MapEntry<String, PatternModel> i) {
-                  return InkWell(
-                    onTap: () {
-                      Get.to(
-                        () => InvoiceView(
-                          billId: '1',
-                          patternId: i.key,
+                      return InkWell(
+                        onTap: () {
+                          Get.to(
+                            () => InvoiceView(
+                              billId: '1',
+                              patternId: i.key,
+                            ),
+                            binding: BindingsBuilder(() {
+                              Get.lazyPut(() => InvoicePlutoViewModel());
+                              Get.lazyPut(() => DiscountPlutoViewModel());
+                            }),
+                          );
+                        },
+                        child: Container(
+                          width: Get.width * 0.19,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Color(i.value.patColor!).withOpacity(0.5),
+                              width: 1.0,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(30.0),
+                          child: Center(
+                            child: Text(
+                              i.value.patFullName ?? "error",
+                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-                        binding: BindingsBuilder(() {
-                          Get.lazyPut(() => InvoicePlutoViewModel());
-                          Get.lazyPut(() => DiscountPlutoViewModel());
-                        }),
                       );
-                    },
-                    child: Container(
-                      width: Get.width*0.19,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Color(i.value.patColor!).withOpacity(0.5),
-                          width: 1.0,
+                    }).toList() +
+                    [
+                      InkWell(
+                        onTap: () {
+                          Get.to(
+                              () => WarrantyInvoiceView(
+                                    billId: "1",
+                                  ),
+                              binding: BindingsBuilder(
+                                () => Get.lazyPut(
+                                  () => WarrantyPlutoViewModel(),
+                                ),
+                              ));
+                        },
+                        child: Container(
+                          width: Get.width * 0.19,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.redAccent,
+                              width: 1.0,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(30.0),
+                          child: const Center(
+                            child: Text(
+                              "فاتورة ضمان",
+                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
+                      )
+                    ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: InkWell(
+                onTap: () {
+                  checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
+                    if (value) {
+                      Get.to(
+                        () => const AllWarrantyInvoices(),
+                      );
+                    }
+                  });
+                },
+                child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.all(30.0),
+                    child: const Center(
+                      child: Text(
+                        "عرض فواتير ضمان",
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        textDirection: TextDirection.rtl,
                       ),
-                      padding: const EdgeInsets.all(30.0),
-                      child: Center(
-                        child: Text(
-                          i.value.patFullName ?? "error",
-                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                          textDirection: TextDirection.rtl,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                    )),
               ),
             ),
             if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
@@ -163,7 +227,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                     Get.lazyPut(() => DiscountPlutoViewModel());
                                   }),
                                 );
-                 /*               Get.to(() => InvoiceView(
+                                /*               Get.to(() => InvoiceView(
                                       billId: i.key,
                                       patternId: i.value.patternId!,
                                       recentScreen: true,
