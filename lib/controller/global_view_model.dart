@@ -41,7 +41,7 @@ class GlobalViewModel extends GetxController {
   }
 
   RxInt count = 0.obs;
-  int allcountOfInvoice = 0;
+  int allCountOfInvoice = 0;
 
   /// forEach on all item it's [SoSlow].
   Future<void> initFromLocal() async {
@@ -54,7 +54,7 @@ class GlobalViewModel extends GetxController {
       await FirebaseFirestore.instance.collection(Const.globalCollection).get().then((value) async {
         print("start Firebase");
         count = 0.obs;
-        allcountOfInvoice = value.docs.length;
+        allCountOfInvoice = value.docs.length;
         update();
         print(value.docs.length);
         for (var element in value.docs) {
@@ -96,7 +96,7 @@ class GlobalViewModel extends GetxController {
     } else {
       print("start");
       count = 0.obs;
-      allcountOfInvoice = allGlobalModel.length;
+      allCountOfInvoice = allGlobalModel.length;
       update();
       allGlobalModel.forEach((key, value) async {
         count.value++;
@@ -176,24 +176,24 @@ class GlobalViewModel extends GetxController {
   }
 
   void addGlobalInvoice(GlobalModel globalModel) {
-    GlobalModel correctedModel = correctInvRecord(globalModel);
+    // GlobalModel correctedModel = correctInvRecord(globalModel);
 
     UserManagementViewModel myUser = Get.find<UserManagementViewModel>();
     if ((myUser.allRole[getMyUserRole()]?.roles[Const.roleViewInvoice]?.contains(Const.roleUserAdmin)) ?? false) {
-      correctedModel.invIsPending = false;
+      globalModel.invIsPending = false;
     } else {
-      correctedModel.invIsPending = true;
+      globalModel.invIsPending = true;
     }
 
-    allGlobalModel[correctedModel.invId!] = correctedModel;
-    initGlobalInvoiceBond(correctedModel);
-    updateDataInAll(correctedModel);
-    addInvoiceToFirebase(correctedModel);
+    allGlobalModel[globalModel.invId!] = globalModel;
+    initGlobalInvoiceBond(globalModel);
+    updateDataInAll(globalModel);
+    addInvoiceToFirebase(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(correctedModel.toFullJson(), Const.invoicesCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), Const.invoicesCollection);
 
     // invoiceViewModel.updateCodeList();
-    invoiceViewModel.initModel=correctedModel;
+    invoiceViewModel.initModel=globalModel;
     invoiceViewModel.update();
     update();
   }
@@ -218,15 +218,15 @@ class GlobalViewModel extends GetxController {
 
   ////-Update
   void updateGlobalInvoice(GlobalModel globalModel) {
-    GlobalModel correctedModel = correctInvRecord(globalModel);
+    // GlobalModel correctedModel = correctInvRecord(globalModel);
 
 
-    addInvoiceToFirebase(correctedModel);
-    allGlobalModel[correctedModel.invId!] = correctedModel;
-    updateDataInAll(correctedModel);
+    addInvoiceToFirebase(globalModel);
+    allGlobalModel[globalModel.invId!] = globalModel;
+    updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(correctedModel.toFullJson(), Const.invoicesCollection);
-    initGlobalInvoiceBond(correctedModel);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), Const.invoicesCollection);
+    initGlobalInvoiceBond(globalModel);
     update();
   }
 
@@ -483,6 +483,9 @@ class GlobalViewModel extends GetxController {
   }
 
   initUpdateDataInAll(GlobalModel globalModel) async {
+    if(globalModel.cheqId!=null){
+      print(globalModel.toFullJson());
+    }
     if (globalModel.globalType == Const.globalTypeInvoice) {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != Const.invoiceTypeAdd && globalModel.invType != Const.invoiceTypeChange) {
@@ -498,6 +501,7 @@ class GlobalViewModel extends GetxController {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
     } else if (globalModel.globalType == Const.globalTypeCheque) {
+
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
     }

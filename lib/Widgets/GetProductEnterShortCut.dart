@@ -67,21 +67,11 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction  {
           notify: true,
         );
         controller.updateInvoiceValuesByTotal(controller.getPrice(prodName: newValue, type: Const.invoiceChoosePriceMethodeCustomerPrice), 1);
-        // stateManager.changeCellValue(
-        //   stateManager.currentRow!.cells["invRecQuantity"]!,
-        //   1,
-        //
-        //   callOnChangedEvent: false,
-        //   force: true,
-        //   notify: true,
-        // );
-        // stateManager.moveCurrentCell(PlutoMoveDirection.right,force: true,notify: true);
 
-        // stateManager.moveSelectingCell(PlutoMoveDirection.left,);
       } else {
         stateManager.changeCellValue(
           stateManager.currentRow!.cells["invRecProduct"]!,
-          '',
+          stateManager.currentCell?.value,
           callOnChangedEvent: false,
           notify: true,
         );

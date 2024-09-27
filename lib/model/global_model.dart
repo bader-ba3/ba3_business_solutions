@@ -54,7 +54,7 @@ class GlobalModel {
   List<InvoiceDiscountRecordModel>? invDiscountRecord = [];
   bool? invIsPending, invIsPaid;
 
-  String? cheqId, cheqName, cheqAllAmount, cheqRemainingAmount, cheqPrimeryAccount, cheqSecoundryAccount, cheqCode, cheqDate, cheqStatus, cheqType, cheqBankAccount,cheqDeuDate;
+  String? cheqId, cheqName, cheqAllAmount, cheqRemainingAmount, cheqPrimeryAccount, cheqSecoundryAccount, cheqCode, cheqDate, cheqStatus, cheqType, cheqBankAccount,cheqDeuDate,cheqPaidEntryBond;
 
   String? entryBondId, entryBondCode;
 
@@ -67,7 +67,9 @@ class GlobalModel {
       if (globalId != null) 'globalId': globalId,
       if (invTotalPartner != null) 'invTotalPartner': invTotalPartner,
       if (invDueDate != null) 'invDueDate': invDueDate,
-      if (invDueDate != null) 'cheqDeuDate': cheqDeuDate,
+      if (cheqDeuDate != null) 'cheqDeuDate': cheqDeuDate,
+      if (cheqPaidEntryBond != null) 'cheqPaidEntryBond': cheqPaidEntryBond,
+
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (invReturnCode != null) 'invReturnCode': invReturnCode,
@@ -134,7 +136,8 @@ class GlobalModel {
       if (globalId != null) 'globalId': globalId,
       if (invTotalPartner != null) 'invTotalPartner': invTotalPartner,
       if (invDueDate != null) 'invDueDate': invDueDate,
-      if (invDueDate != null) 'cheqDeuDate': cheqDeuDate,
+      if (cheqDeuDate != null) 'cheqDeuDate': cheqDeuDate,
+      if (cheqPaidEntryBond != null) 'cheqPaidEntryBond': cheqPaidEntryBond,
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (addedTotal != null) 'addedTotal': addedTotal,
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
@@ -217,6 +220,7 @@ class GlobalModel {
       invPartnerCode: json['invPartnerCode'],
       discountTotal: json['discountTotal'],
       cheqDeuDate: json['cheqDeuDate'],
+      cheqPaidEntryBond: json['cheqPaidEntryBond'],
       firstPay: json['firstPay'],
       addedTotal: json['addedTotal'],
       invIsPaid: json['invIsPaid'] ?? json['invPayType']== Const.invPayTypeCash?true:false,
@@ -425,6 +429,7 @@ class GlobalModel {
     this.invTotalPartner,
     this.invReturnDate,
     this.cheqDeuDate,
+    this.cheqPaidEntryBond,
     this.invReturnCode,
     this.invIsPaid,
     this.originAmenId,
@@ -533,12 +538,13 @@ class GlobalModel {
 
         // 'نوع الشيك ورقمه': cheqName,
         'القيمة': cheqAllAmount,
-        'تاريخ الاستحقاق': cheqDate!.split(" ")[0],
+        'تاريخ التحرير': cheqDate!.split(" ")[0],
+        'تاريخ الاستحقاق': cheqDeuDate?.split(" ")[0]??'',
         // 'cheqRemainingAmount': cheqRemainingAmount,
         'حساب الورقة': getAccountNameFromId(cheqPrimeryAccount),
         'الحساب المقابل': getAccountNameFromId(cheqSecoundryAccount),
 
-        'حالة الشيك': cheqStatus.toString(),
+        'حالة الشيك':getChequeStatusFromEnum(cheqStatus.toString()) ,
         'نوع الشيك': getChequeTypeFromEnum(cheqType.toString()),
         'اسم البنك': getAccountNameFromId(cheqBankAccount),
       };

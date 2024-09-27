@@ -137,7 +137,7 @@ class _LoginViewState extends State<LoginView> {
                       GlobalViewModel globalModel = Get.find<GlobalViewModel>();
                       return Obx(
                         () {
-                          return Text("${globalModel.count} / ${globalModel.allcountOfInvoice}");
+                          return Text("${globalModel.count} / ${globalModel.allCountOfInvoice}");
                         },
                       );
                     }

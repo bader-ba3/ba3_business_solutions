@@ -41,7 +41,7 @@ class _InventoryTypeState extends State<InventoryType> {
           textDirection: TextDirection.rtl,
           child: Scaffold(
             appBar: AppBar(
-              title: Text("الجرد"),
+              title: const Text("الجرد"),
             ),
             body: Column(
               children: [

@@ -58,11 +58,11 @@ class _DashboardViewState extends State<DashboardView> {
                           ),
                         ),
                         const Spacer(),
-                        AppButton(
-                            title: "تحديث",
+                        IconButton(
+
                             ///this for pay all check
-                        
-                          onPressed: (){
+
+                            onPressed: () {
                               // print(HiveDataBase.globalModelBox.toMap().entries.where((element) => element.value.bondId=="bon1726453481733905",).first.key);
                               accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
                               accountController.update();
@@ -74,15 +74,12 @@ class _DashboardViewState extends State<DashboardView> {
                               // print();
                               // print(getAccountIdFromText("الصندوق"));
                               // HiveDataBase.accountModelBox.delete("acc1725319300175064");
-                          },
-                            iconData: Icons.add),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        AppButton(
-                            title: "إضافة",
-           ///this for pay all check
-                /*      onPressed: ()async{
+                            },
+                            icon: const Icon(Icons.refresh)),
+                        IconButton(
+
+                            ///this for pay all check
+                            /*      onPressed: ()async{
                               List<dynamic> global=HiveDataBase.globalModelBox.toMap().entries.where((element)=> element.value.globalType==Const.globalTypeCheque).map((e) => e.value).toList();
                               print(global.length);
                               print(global);
@@ -189,10 +186,8 @@ class _DashboardViewState extends State<DashboardView> {
                                     );
                                   }));
                               accountController.update();
-                              
-                              print(accountController.accountList.length);
                             },
-                            iconData: Icons.add),
+                            icon: const Icon(Icons.add)),
                         const SizedBox(
                           width: 20,
                         ),
@@ -225,7 +220,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    formatDecimalNumberWithCommas(model.finalBalance??0),
+                                    formatDecimalNumberWithCommas(model.finalBalance ?? 0),
                                     // model.accId!,
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,

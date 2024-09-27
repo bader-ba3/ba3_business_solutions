@@ -21,7 +21,7 @@ class AllChequesViewDataGridSource extends DataGridSource {
         GlobalModel cheque = entry.value;
         return DataGridRow(cells: [
           DataGridCell<String>(columnName: Const.rowViewCheqId, value: cheqId),
-          DataGridCell<String>(columnName: Const.rowViewChequeStatus, value: getChequeStatusfromEnum(cheque.cheqStatus ?? "")),
+          DataGridCell<String>(columnName: Const.rowViewChequeStatus, value: getChequeStatusFromEnum(cheque.cheqStatus ?? "")),
           DataGridCell<String>(columnName: Const.rowViewChequePrimeryAccount, value: getAccountNameFromId(cheque.cheqPrimeryAccount)),
           DataGridCell<String>(columnName: Const.rowViewChequeSecoundryAccount, value: getAccountNameFromId(cheque.cheqSecoundryAccount)),
           DataGridCell<String>(columnName: Const.rowViewChequeAllAmount, value: cheque.cheqAllAmount),

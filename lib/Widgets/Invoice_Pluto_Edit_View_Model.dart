@@ -20,23 +20,22 @@ class InvoicePlutoViewModel extends GetxController {
     return columns;
   }
 
-  clearRowIndex(int rowIdx){
+  clearRowIndex(int rowIdx) {
     final rowToRemove = stateManager.rows[rowIdx];
 
     stateManager.removeRows([rowToRemove]);
     Get.back();
     update();
-
   }
-  String typeBile='';
-  String  customerName='';
 
- bool getIfHaveVAT(){
-    if(typeBile!=Const.invoiceTypeBuy){
+  String typeBile = '';
+  String customerName = '';
+
+  bool getIfHaveVAT() {
+    if (typeBile != Const.invoiceTypeBuy) {
       return true;
-    }else{
-
-      return   getCustomerHaveVAT( customerName);
+    } else {
+      return getCustomerHaveVAT(customerName);
     }
   }
 
@@ -70,6 +69,7 @@ class InvoicePlutoViewModel extends GetxController {
   List<PlutoRow> rows = [];
   late PlutoGridStateManager stateManager = PlutoGridStateManager(columns: [], rows: [], gridFocusNode: FocusNode(), scroll: PlutoGridScrollController());
   List<PlutoColumn> columns = [];
+
   double computeWithoutVatTotal() {
     int invRecQuantity = 0;
     double subtotals = 0.0;
@@ -77,7 +77,7 @@ class InvoicePlutoViewModel extends GetxController {
 
     stateManager.setShowLoading(true);
     for (var record in stateManager.rows) {
-      if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != ''&&(record.toJson()["invRecGift"] == ''||(int.tryParse(record.toJson()["invRecGift"]??"0")??0) >= 0)) {
+      if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != '' && (record.toJson()["invRecGift"] == '' || (int.tryParse(record.toJson()["invRecGift"] ?? "0") ?? 0) >= 0)) {
         invRecQuantity = int.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecQuantity"].toString())) ?? 0;
         subtotals = double.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecSubTotal"].toString())) ?? 0;
 
@@ -103,14 +103,12 @@ class InvoicePlutoViewModel extends GetxController {
   }
 
   int computeGiftsTotal() {
-
     int total = 0;
 
     stateManager.setShowLoading(true);
     for (var record in stateManager.rows) {
-      if (record.toJson()["invRecGift"] != null&&record.toJson()["invRecGift"] != '') {
-
-        total =int.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecQuantity"].toString())) ?? 0;
+      if (record.toJson()["invRecGift"] != null && record.toJson()["invRecGift"] != '') {
+        total = int.tryParse(replaceArabicNumbersWithEnglish(record.toJson()["invRecQuantity"].toString())) ?? 0;
       }
     }
     stateManager.setShowLoading(false);
@@ -119,21 +117,14 @@ class InvoicePlutoViewModel extends GetxController {
   }
 
   double computeWithVatTotal() {
-
     double total = 0.0;
     for (var record in stateManager.rows) {
       if (record.toJson()["invRecQuantity"] != '' && record.toJson()["invRecSubTotal"] != '') {
-
         total += double.tryParse(record.toJson()["invRecTotal"].toString()) ?? 0;
-
       }
     }
     stateManager.setShowLoading(false);
-    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
-          (value) {
-        // update();
-      },
-    );
+
     return total;
   }
 
@@ -253,7 +244,6 @@ class InvoicePlutoViewModel extends GetxController {
       notify: true,
       force: true,
     );
-
   }
 
   double parseExpression(String expression) {
@@ -268,8 +258,7 @@ class InvoicePlutoViewModel extends GetxController {
   }*/
 
   void updateInvoiceValues(double subTotal, int quantity) {
-
-    double vat =getIfHaveVAT()? (subTotal * 0.05):0;
+    double vat = getIfHaveVAT() ? (subTotal * 0.05) : 0;
     double total = (subTotal + vat) * quantity;
 
     updateCellValue("invRecVat", vat.toStringAsFixed(2));
@@ -278,30 +267,26 @@ class InvoicePlutoViewModel extends GetxController {
   }
 
   void updateInvoiceValuesByTotal(double total, int quantity) {
-
-    double subTotal =getIfHaveVAT()? (total  / quantity)-((total *0.05) / quantity):total  / quantity;
-    double vat = getIfHaveVAT()?((total/ quantity) - subTotal):0;
+    double subTotal = getIfHaveVAT() ? (total / quantity) - ((total * 0.05) / quantity) : total / quantity;
+    double vat = getIfHaveVAT() ? ((total / quantity) - subTotal) : 0;
 
     updateCellValue("invRecVat", vat.toStringAsFixed(2));
     updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
     updateCellValue("invRecTotal", total.toStringAsFixed(2));
   }
 
-  void updateInvoiceValuesByQuantity( int quantity,subtotal,double vat) {
-
-   double total =  (subtotal+vat)*quantity;
+  void updateInvoiceValuesByQuantity(int quantity, subtotal, double vat) {
+    double total = (subtotal + vat) * quantity;
 
     updateCellValue("invRecTotal", total.toStringAsFixed(2));
-
   }
 
   PopupMenuItem showContextMenuItem(int index, ProductModel productModel, text, method) {
     return PopupMenuItem(
       onTap: () {
         updateInvoiceValuesByTotal(
-          getPrice(prodName: productModel.prodName, type: method) ,
-          int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value.toString()??"0") ?? 0,
-
+          getPrice(prodName: productModel.prodName, type: method),
+          int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value.toString() ?? "0") ?? 0,
         );
         update();
       },
@@ -317,46 +302,55 @@ class InvoicePlutoViewModel extends GetxController {
 
   List<InvoiceRecordModel> invoiceRecord = [];
 
-  List<InvoiceRecordModel> handleSaveAll() {
+  List<InvoiceRecordModel> handleSaveAll({required bool withOutProud}) {
     stateManager.setShowLoading(true);
     List<InvoiceRecordModel> invRecord = [];
 
     invoiceRecord.clear();
-
-    invRecord = stateManager.rows.where((element) {
-      return getProductIdFromName(element.cells['invRecProduct']!.value) != null;
-    }).map(
-      (e) {
-        // e.cells['invRecProduct']!.value=getProductIdFromName(e.cells['invRecProduct']!.value)??e.cells['invRecProduct']!.value;
-        return InvoiceRecordModel.fromJsonPluto(e.toJson());
-      },
-    ).toList();
+    if (withOutProud) {
+      invRecord = stateManager.rows.where((element) {
+        return element.cells['invRecProduct']!.value != '';
+      }).map(
+        (e) {
+          // e.cells['invRecProduct']!.value=getProductIdFromName(e.cells['invRecProduct']!.value)??e.cells['invRecProduct']!.value;
+          return InvoiceRecordModel.fromJsonPluto(e.toJson());
+        },
+      ).toList();
+    } else {
+      invRecord = stateManager.rows.where((element) {
+        return getProductIdFromName(element.cells['invRecProduct']!.value) != null;
+      }).map(
+        (e) {
+          // e.cells['invRecProduct']!.value=getProductIdFromName(e.cells['invRecProduct']!.value)??e.cells['invRecProduct']!.value;
+          return InvoiceRecordModel.fromJsonPluto(e.toJson());
+        },
+      ).toList();
+    }
 
     for (var record in invRecord) {
-        record.invRecGiftTotal=(record.invRecGift??0)*(double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice??"0")??0);
-        invoiceRecord.add(record);
+      record.invRecGiftTotal = (record.invRecGift ?? 0) * (double.tryParse(getProductModelFromId(record.invRecProduct)?.prodCostPrice ?? "0") ?? 0);
+      invoiceRecord.add(record);
     }
     stateManager.setShowLoading(false);
 
     return invRecord;
   }
 
-   changeVat() {
-     handleSaveAll();
-    if(!getIfHaveVAT()){
-
-
-     for (var element in invoiceRecord) {
-       element.invRecSubTotal=(element.invRecSubTotal??0)+(  element.invRecVat??0);
-       element.invRecVat=0;
-     }}else{
+  changeVat() {
+    handleSaveAll(withOutProud: false);
+    if (!getIfHaveVAT()) {
       for (var element in invoiceRecord) {
-        element.invRecVat=(element.invRecSubTotal??0)*0.05;
-        element.invRecSubTotal=((element.invRecTotal??0)/(element.invRecQuantity??0))-( element.invRecVat!);
-        element.invRecTotal= (element.invRecSubTotal!+element.invRecVat!)*(element.invRecQuantity??0);
+        element.invRecSubTotal = (element.invRecSubTotal ?? 0) + (element.invRecVat ?? 0);
+        element.invRecVat = 0;
+      }
+    } else {
+      for (var element in invoiceRecord) {
+        element.invRecVat = (element.invRecSubTotal ?? 0) * 0.05;
+        element.invRecSubTotal = ((element.invRecTotal ?? 0) / (element.invRecQuantity ?? 0)) - (element.invRecVat!);
+        element.invRecTotal = (element.invRecSubTotal! + element.invRecVat!) * (element.invRecQuantity ?? 0);
       }
     }
     getRows(invoiceRecord);
     update();
-   }
+  }
 }

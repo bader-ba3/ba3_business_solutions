@@ -13,8 +13,8 @@ import '../../model/global_model.dart';
 import '../../utils/hive.dart';
 
 class AllCheques extends StatelessWidget {
-  const AllCheques({super.key});
-
+  const AllCheques({super.key, required this. isAll});
+final bool isAll;
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChequeViewModel>(
@@ -24,22 +24,22 @@ class AllCheques extends StatelessWidget {
               const CustomWindowTitleBar(),
               Expanded(
                 child: CustomPlutoGridWithAppBar(
-                  title: "جميع الشيكات",
+                  title:isAll? "جميع الشيكات":"الشيكات المستحقة",
                   type: Const.globalTypeCheque,
                   onLoaded: (e){
                   },
                   onSelected: (p0) {
                     Get.to(() => AddCheque( modelKey: p0.row?.cells["cheqId"]?.value,));
-                    // Get.to(() =>  AddAccount(  modelKey: p0.row?.cells["accId"]?.value,oldParent:(p0.row?.cells["حساب الاب"]?.value) ,));
-                    // Get.to(() => AccountDetails(
-                    //   modelKey: p0.row?.cells["accId"]?.value,
-                    // ));
-                    // Get.to(() => InvoiceView(
-                    //   billId:p0.row?.cells["الرقم التسلسلي"]?.value,
-                    //   patternId: "",
-                    // ));
+
                   },
-                  modelList: controller.allCheques.values.toList(),
+                  modelList: controller.allCheques.values.where((element) {
+                    if(isAll){
+                      return true;
+                    }
+                    else{
+                     return element.cheqStatus!=Const.chequeStatusPaid;
+                    }
+                  },).toList(),
 
                 ),
               ),

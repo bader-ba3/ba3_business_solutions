@@ -151,7 +151,7 @@ class _AddChequeState extends State<AddCheque> {
                           const SizedBox(
                             width: 20,
                           ),
-                          Text(getChequeStatusfromEnum(controller.initModel!.cheqStatus ?? Const.chequeStatusNotPaid)),
+                          Text(getChequeStatusFromEnum(controller.initModel!.cheqStatus ?? Const.chequeStatusNotPaid)),
                         ],
                       ),
                     ),

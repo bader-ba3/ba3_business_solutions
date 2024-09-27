@@ -37,7 +37,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Wrap(
-                spacing: 15.0,
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 20.0,
                 runSpacing: 15.0,
                 children: patternController.patternModel.entries.toList().map((MapEntry<String, PatternModel> i) {
                   return InkWell(
@@ -54,7 +55,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       );
                     },
                     child: Container(
-                      width: 250,
+                      width: Get.width*0.19,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -70,6 +71,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                           i.value.patFullName ?? "error",
                           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),

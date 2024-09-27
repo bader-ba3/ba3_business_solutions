@@ -280,41 +280,50 @@ abstract class Const {
   static const typeAccountView = "typeAccountView";
   static const typeAccountDueView = "typeAccountDueView";
 
-/////////////---------------------------------------------------
+
+  static const salleTypeId = "pat1706468132863249";
+
+  /////////////---------------------------------------------------
   static const mainVATCategory = "SR-التصنيف الأساسي";
   static const withoutVAT = "EX-معفى";
   static String vatAccountId = getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة");
   static String returnVatAccountId = getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة");
 
-
+  /////////////---------------------------------------------------
+  static const firstTimeEnter = "FirstTimeEnter";
+  static const secondTimeEnter = "secondTimeEnter";
+  static const firstTimeOut = "secondTimeEnter";
+  static const secondTimeOut = "secondTimeEnter";
+  static const breakTime = "secondTimeEnter";
 }
 
-
-bool  getIfAccountHaveCustomers(String accId){
-  if(accId.startsWith("acc")) {
-    return getAccountModelFromId(accId)?.accCustomer?.firstOrNull!=null;
+bool getIfAccountHaveCustomers(String accId) {
+  if (accId.startsWith("acc")) {
+    return getAccountModelFromId(accId)?.accCustomer?.firstOrNull != null;
+  } else {
+    return getAccountModelFromName(accId)?.accCustomer?.firstOrNull != null;
   }
-  else{
-    return getAccountModelFromName(accId)?.accCustomer?.firstOrNull!=null;
-  }
-
-}
-bool  getCustomerHaveVAT(String customerName){
-bool withVAT=true;
-withVAT= Get.find<AccountCustomerViewModel>().customerMap.values.where((element) => element.customerAccountName==customerName&&element.customerVAT==Const.mainVATCategory,).firstOrNull!=null;
-return withVAT;
 }
 
-List<AccountCustomer>  getAccountCustomers(String accId){
+bool getCustomerHaveVAT(String customerName) {
+  bool withVAT = true;
+  withVAT = Get.find<AccountCustomerViewModel>()
+          .customerMap
+          .values
+          .where(
+            (element) => element.customerAccountName == customerName && element.customerVAT == Const.mainVATCategory,
+          )
+          .firstOrNull !=
+      null;
+  return withVAT;
+}
 
-  if(accId.startsWith("acc")) {
+List<AccountCustomer> getAccountCustomers(String accId) {
+  if (accId.startsWith("acc")) {
     return getAccountModelFromId(accId)!.accCustomer!;
-  }
-  else{
+  } else {
     return getAccountModelFromName(accId)!.accCustomer!;
   }
-
-
 }
 
 String getInvPayTypeFromEnum(String type) {
@@ -459,6 +468,7 @@ String getPatNameFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
   return Get.find<PatternViewModel>().patternModel[id]?.patName ?? "";
 }
+
 String getPatTypeFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
   return Get.find<PatternViewModel>().patternModel[id]?.patType ?? "";
@@ -482,7 +492,7 @@ String getAccountTypeFromEnum(String type) {
   return "error";
 }
 
-String getChequeStatusfromEnum(String type) {
+String getChequeStatusFromEnum(String type) {
   switch (type) {
     case Const.chequeStatusPaid:
       return "تم الدفع";

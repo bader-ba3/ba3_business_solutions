@@ -30,9 +30,14 @@ class _ChequeTypeState extends State<ChequeType> {
             Item("إضافة شيك",(){
               Get.to(() => const AddCheque());
             }),
+            Item("الشيكات المستحقة",(){
+              checkPermissionForOperation(Const.roleUserRead , Const.roleViewCheques).then((value) {
+                if(value) Get.to(()=>const AllCheques(isAll:false));
+              });
+            }),
             Item("معاينة الشيكات",(){
               checkPermissionForOperation(Const.roleUserRead , Const.roleViewCheques).then((value) {
-                if(value) Get.to(()=>AllCheques());
+                if(value) Get.to(()=>const AllCheques(isAll:true));
               });
             }),
           ],

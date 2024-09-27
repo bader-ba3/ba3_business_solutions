@@ -136,7 +136,7 @@ class InvoiceRecordModel {
         checkReadOnly: (row, cell) {
           return false;
         },
-      ): getProductModelFromId(invRecProduct)?.prodName,
+      ): getProductModelFromId(invRecProduct)?.prodName??invRecProduct,
 
       PlutoColumn(
         title: 'الكمية',
