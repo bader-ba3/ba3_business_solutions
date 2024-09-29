@@ -60,11 +60,11 @@ class UserManagementViewModel extends GetxController {
           Get.offAll(() => const LoginView());
         } else if (value.docs.isNotEmpty) {
           if(userStatus != UserManagementStatus.login){
-          myUserModel = UserModel.fromJson(value.docs.first.data());
-          userStatus = UserManagementStatus.login;
-          Get.put(GlobalViewModel(), permanent: true);
-          Get.put(ChangesViewModel(), permanent: true);
-           update();
+            myUserModel = UserModel.fromJson(value.docs.first.data());
+            userStatus = UserManagementStatus.login;
+            Get.put(GlobalViewModel(), permanent: true);
+            Get.put(ChangesViewModel(), permanent: true);
+            update();
           }
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
@@ -95,7 +95,7 @@ class UserManagementViewModel extends GetxController {
             userStatus = UserManagementStatus.login;
             Get.put(GlobalViewModel(), permanent: true);
             Get.put(ChangesViewModel(), permanent: true);
-             update();
+            update();
           });
         } else if (value.docs.isEmpty) {
           if (Get.currentRoute != "/LoginView") {
@@ -146,9 +146,9 @@ class UserManagementViewModel extends GetxController {
 
   void startTimeReport({required String userId , DateTime? customDate}) {
     customDate??=DateTime.now();
-   // UserTimeRecord model = UserTimeRecord(date: date, time: time.toString(), timestamp: startTime,totalTime:0);
+    // UserTimeRecord model = UserTimeRecord(date: date, time: time.toString(), timestamp: startTime,totalTime:0);
     FirebaseFirestore.instance.collection(Const.usersCollection).doc(userId).set({
-    "userDateList": FieldValue.arrayUnion([customDate],),
+      "userDateList": FieldValue.arrayUnion([customDate],),
     }, SetOptions(merge: true));
     FirebaseFirestore.instance.collection(Const.usersCollection).doc(userId).set({
       "userStatus": Const.userStatusAway,
@@ -156,15 +156,34 @@ class UserManagementViewModel extends GetxController {
   }
 
   void sendTimeReport({required String userId ,int? customTime}) {
-   DateTime model = allUserList[userId]!.userDateList!.last;
-   customTime ??=DateTime.now().difference(model).inSeconds;
-   // Get.snackbar("title", DateTime.now().difference(model).inSeconds.toString());
+    DateTime model = allUserList[userId]!.userDateList!.last;
+    customTime ??=DateTime.now().difference(model).inSeconds;
+    // Get.snackbar("title", DateTime.now().difference(model).inSeconds.toString());
     FirebaseFirestore.instance.collection(Const.usersCollection).doc(userId).update({
       "userTimeList": [...?allUserList[userId]!.userTimeList,customTime],
     });
     FirebaseFirestore.instance.collection(Const.usersCollection).doc(userId).set({
       "userStatus": Const.userStatusOnline,
     }, SetOptions(merge: true));
+  }
+  void logInTime() {
+
+    try {
+      FirebaseFirestore.instance.collection(Const.usersCollection).doc(myUserModel!.userId).update({
+        "logInDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]), "userStatus": Const.userStatusOnline,
+      });
+    } on Exception catch (e) {
+      Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  $e \n");
+    }
+  }
+  void logOutTime() {
+    try {
+      FirebaseFirestore.instance.collection(Const.usersCollection).doc(myUserModel!.userId).update({
+        "logOutDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]), "userStatus": Const.userStatusOnline,
+      });
+    } on Exception catch (e) {
+      Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  $e \n");
+    }
   }
 }
 
@@ -277,6 +296,8 @@ Future<bool> checkPermissionForOperation(role, page) async {
                       keyboardType: TextInputType.number,
                       defaultPinTheme: PinTheme(width: 50, height: 50, decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
                       length: 6,
+                      obscureText: true,
+
                       onCompleted: (_) {
 
                         UserModel? user = userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin == _);

@@ -732,3 +732,19 @@ DateTime getNextMonday() {
   // إضافة الأيام المتبقية إلى التاريخ الحالي للحصول على الاثنين القادم
   return now.add(Duration(days: daysUntilMonday));
 }
+String formatDateTimeFromString(String isoString) {
+  DateTime dateTime = DateTime.parse(isoString);
+
+  // تحديد الفترة (AM/PM)
+  String period = dateTime.hour >= 12 ? "PM" : "AM";
+
+  // تحويل الساعة إلى تنسيق 12 ساعة
+  int hour = dateTime.hour % 12;
+  if (hour == 0) hour = 12; // تحويل الساعة 0 إلى 12
+
+  // تنسيق التاريخ والوقت
+  String formattedDateTime = "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} \n"
+      "${hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} $period";
+
+  return formattedDateTime;
+}
