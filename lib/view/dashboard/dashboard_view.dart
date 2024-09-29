@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/Const/const.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/model/Warranty_Model.dart';
 import 'package:ba3_business_solutions/model/global_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
@@ -66,7 +67,7 @@ class _DashboardViewState extends State<DashboardView> {
                               // print(HiveDataBase.globalModelBox.toMap().entries.where((element) => element.value.bondId=="bon1726453481733905",).first.key);
                               accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
                               accountController.update();
-                               HiveDataBase.warrantyModelBox.deleteFromDisk();
+                            // HiveDataBase.warrantyModelBox.deleteFromDisk();
                               //  HiveDataBase.accountCustomerBox.deleteFromDisk();
                               //  HiveDataBase.globalModelBox.deleteFromDisk();
                               //  HiveDataBase.productModelBox.deleteFromDisk();
@@ -77,8 +78,7 @@ class _DashboardViewState extends State<DashboardView> {
                             },
                             icon: const Icon(Icons.refresh)),
                         IconButton(
-
-                            ///this for pay all check
+                            /// this for pay all check
                             /*      onPressed: ()async{
                               List<dynamic> global=HiveDataBase.globalModelBox.toMap().entries.where((element)=> element.value.globalType==Const.globalTypeCheque).map((e) => e.value).toList();
                               print(global.length);

@@ -37,13 +37,10 @@ import '../../utils/date_picker.dart';
 import '../../utils/generate_id.dart';
 import '../entry_bond/entry_bond_details_view.dart';
 import '../invoices/New_Invoice_View.dart';
-import '../sellers/add_seller.dart';
-import '../stores/add_store.dart';
 import '../widget/CustomWindowTitleBar.dart';
-import '../invoices/Controller/Screen_View_Model.dart';
 
 class WarrantyInvoiceView extends StatefulWidget {
-  WarrantyInvoiceView({Key? key, required this.billId}) : super(key: key);
+  const WarrantyInvoiceView({super.key, required this.billId});
   final String billId;
 
   @override
@@ -332,7 +329,7 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                 checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewInvoice).then((value) async {
                                   if (value) {
                                     PrintViewModel printViewModel = Get.find<PrintViewModel>();
-                                    // printViewModel.printFunction(invoiceController.initModel);
+                                    printViewModel.printFunction(GlobalModel(),warrantyModel:  controller.initModel);
                                   }
                                 });
                               },
