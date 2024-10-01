@@ -1,41 +1,21 @@
-import 'package:ba3_business_solutions/Dialogs/CustomerDialog.dart';
-import 'package:ba3_business_solutions/Widgets/Discount_Pluto_Edit_View_Model.dart';
+
 import 'package:ba3_business_solutions/Widgets/GetProductEnterShortCut.dart';
 import 'package:ba3_business_solutions/Widgets/Custom_Pluto_With_Edite.dart';
-import 'package:ba3_business_solutions/Widgets/Invoice_Pluto_Edit_View_Model.dart';
-import 'package:ba3_business_solutions/main.dart';
-import 'package:ba3_business_solutions/model/AccountCustomer.dart';
-import 'package:ba3_business_solutions/utils/hive.dart';
+
 import 'package:ba3_business_solutions/view/Warranty/Controller/warranty_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import '../../Const/const.dart';
-import '../../Dialogs/Widgets/Option_Text_Widget.dart';
-import '../../Services/Get_Date_From_String.dart';
 import '../../Widgets/CustomPlutoShortCut.dart';
-import '../../Widgets/GetAccountEnterPlutoAction.dart';
 import '../../Widgets/warranty_pluto_view_model.dart';
-import '../../controller/account_view_model.dart';
-import '../../controller/entry_bond_view_model.dart';
-import '../../controller/global_view_model.dart';
 import '../../controller/invoice_view_model.dart';
-import '../../controller/pattern_model_view.dart';
 import '../../controller/print_view_model.dart';
-import '../../controller/product_view_model.dart';
-import '../../controller/sellers_view_model.dart';
-import '../../controller/store_view_model.dart';
 import '../../controller/user_management_model.dart';
-import '../../model/Pattern_model.dart';
-import '../../model/account_model.dart';
 import '../../model/global_model.dart';
-import '../../model/invoice_record_model.dart';
-import '../../model/store_model.dart';
 import '../../utils/confirm_delete_dialog.dart';
 import '../../utils/date_picker.dart';
-import '../../utils/generate_id.dart';
-import '../entry_bond/entry_bond_details_view.dart';
 import '../invoices/New_Invoice_View.dart';
 import '../widget/CustomWindowTitleBar.dart';
 
@@ -285,11 +265,8 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                 title: "إضافة",
                                 onPressed: () async {
                                   plutoEditViewModel.handleSaveAll();
-                                  checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewInvoice).then((value) async {
-                                    if (value) {
                                       controller.updateInvoice(isAdd: true,done: false);
-                                    }
-                                  });
+
                                 },
                                 iconData: Icons.add_chart_outlined),
                           if(controller.isNew ==false)
@@ -326,19 +303,17 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                               onPressed: () async {
                                 plutoEditViewModel.handleSaveAll();
 
-                                checkPermissionForOperation(Const.roleUserAdmin, Const.roleViewInvoice).then((value) async {
-                                  if (value) {
+
                                     PrintViewModel printViewModel = Get.find<PrintViewModel>();
                                     printViewModel.printFunction(GlobalModel(),warrantyModel:  controller.initModel);
-                                  }
-                                });
+
                               },
                             ),
 
                             AppButton(
                                 title: "E-Invoice",
                                 onPressed: () {
-                                  showEIknvoiceDialog(mobileNumber: controller.initModel.customerPhone ?? "", invId: controller.initModel.invId!);
+                                  showEInvoiceDialog(mobileNumber: controller.initModel.customerPhone ?? "", invId: controller.initModel.invId!);
                                 },
                                 iconData: Icons.link),
                             AppButton(

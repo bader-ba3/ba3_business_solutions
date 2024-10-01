@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/Const/const.dart';
+import 'package:ba3_business_solutions/controller/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
 import 'package:ba3_business_solutions/model/Warranty_Model.dart';
@@ -28,6 +29,13 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   Get.find<ChangesViewModel>(). listenChanges();
+  }
   @override
   Widget build(BuildContext context) {
     return ListView(

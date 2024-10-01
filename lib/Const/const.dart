@@ -5,8 +5,11 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/model/AccountCustomer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 
 import '../utils/hive.dart';
 
@@ -747,4 +750,30 @@ String formatDateTimeFromString(String isoString) {
       "${hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} $period";
 
   return formattedDateTime;
+}
+
+void sendEmail(String url,String userEmail) async {
+
+  String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
+  String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
+
+  final smtpServer = gmail(username, password);
+
+
+  final message = Message()
+    ..from = Address(username, 'اسم المرسل')
+    ..recipients.add(userEmail) // البريد الإلكتروني للمستلم
+    ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
+  // ..text = 'هذا هو نص الرسالة.'
+    ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n $url</p>";
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('تم إرسال البريد الإلكتروني بنجاح: $sendReport');
+  } on MailerException catch (e) {
+    print('حدث خطأ أثناء الإرسال: ${e.toString()}');
+    for (var p in e.problems) {
+      print('مشكلة: ${p.code}: ${p.msg}');
+    }
+  }
 }

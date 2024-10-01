@@ -71,6 +71,11 @@ dependencies:
   dio: ^5.5.0+1
   path:
   bitsdojo_window: ^0.1.6
+  mailer: ^6.2.0
+  barcode_widget: ^2.0.4
+  printing: ^5.13.3
+
+
 
 
 

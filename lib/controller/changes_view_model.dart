@@ -12,12 +12,14 @@ import 'package:get/get.dart';
 
 import '../Const/const.dart';
 import '../model/Warranty_Model.dart';
+import '../utils/generate_id.dart';
 
 class ChangesViewModel extends GetxController {
   int padWidth = 8;
   List allReadFlags = [];
 
   ChangesViewModel() {
+
     FirebaseFirestore.instance.collection(Const.readFlagsCollection).doc("0").snapshots().listen((event) {
       allReadFlags.clear();
       print(event.data());
@@ -33,7 +35,7 @@ class ChangesViewModel extends GetxController {
           HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(value.docs.lastOrNull?.id ?? "1"));
         });
       }
-      listenChanges();
+
     });
   }
 
@@ -46,16 +48,18 @@ class ChangesViewModel extends GetxController {
   // }
 
   listenChanges() {
-    FirebaseFirestore.instance.collection(Const.settingCollection).snapshots().listen((event) {
+    FirebaseFirestore.instance.collection(Const.settingCollection).get().then((event) {
+
+    });
+    FirebaseFirestore.instance.collection(Const.changesCollection)/*.where("changeId", isGreaterThan: HiveDataBase.lastChangesIndexBox.get("lastChangesIndex"))*/.snapshots().listen((value) async {
+      // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
-      FirebaseFirestore.instance.collection(Const.changesCollection).where("changeId", isGreaterThan: HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")).get().then((value) async {
-        print("The Number Of Changes: " + value.docs.length.toString());
         for (var element in value.docs) {
           print(element['changeType']);
           if (element['changeType'] == Const.productsCollection) {
             ProductViewModel productViewModel = Get.find<ProductViewModel>();
             productViewModel.addProductToMemory(element.data());
-          } else if (element['changeType'] == "remove_" + Const.productsCollection) {
+          } else if (element['changeType'] == "remove_${Const.productsCollection}") {
             ProductViewModel productViewModel = Get.find<ProductViewModel>();
             //enter this function
             print("enter a delete function");
@@ -63,7 +67,7 @@ class ChangesViewModel extends GetxController {
           } else if (element['changeType'] == Const.accountsCollection) {
             AccountViewModel accountViewModel = Get.find<AccountViewModel>();
             accountViewModel.addAccountToMemory(element.data());
-          } else if (element['changeType'] == "remove_" + Const.accountsCollection) {
+          } else if (element['changeType'] == "remove_${Const.accountsCollection}") {
             AccountViewModel accountViewModel = Get.find<AccountViewModel>();
             accountViewModel.removeAccountFromMemory(element.data());
           } else if (element['changeType'] == Const.storeCollection) {
@@ -93,7 +97,8 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          List readFlag = [];
+          FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).delete();
+     /*     List readFlag = [];
           await element.reference.set({
             "allFlags": FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
           }, SetOptions(merge: true));
@@ -117,17 +122,19 @@ class ChangesViewModel extends GetxController {
               print("deleted");
               value.reference.delete();
             } else {}
-          });
+          });*/
 
-          print(int.parse(element.data()['changeId'].toString()));
-          HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(element.data()['changeId'].toString()));
+          // print(int.parse(element.data()['changeId'].toString()));
+          // print("------"*30);
+          // HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(element.data()['changeId'].toString()));
+
         }
-      });
+
     });
   }
 
   String getLastChangesIndexWithPad() {
-    return (HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0");
+    return generateId(RecordType.changes) /*(HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0")*/;
   }
 
   addChangeToChanges(Map json, changeType) async {
@@ -135,16 +142,16 @@ class ChangesViewModel extends GetxController {
     print(lastChangesIndex);
     await FirebaseFirestore.instance.collection(Const.changesCollection).doc(lastChangesIndex).set({
       "changeType": changeType,
-      "changeId": int.parse(lastChangesIndex),
+      "changeId": lastChangesIndex,
       ...json,
     });
-    await FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
+    // await FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
   }
 
   addRemoveChangeToChanges(Map json, changeType) async {
     String _lastChangesIndex = getLastChangesIndexWithPad();
     print(_lastChangesIndex);
-    await FirebaseFirestore.instance.collection(Const.changesCollection).doc(_lastChangesIndex).set({"changeType": "remove_" + changeType, "changeId": int.parse(_lastChangesIndex), ...json});
-    FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
+    await FirebaseFirestore.instance.collection(Const.changesCollection).doc(_lastChangesIndex).set({"changeType": "remove_" + changeType, "changeId": _lastChangesIndex, ...json});
+    // FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
   }
 }

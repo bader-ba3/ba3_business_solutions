@@ -2,6 +2,7 @@ import 'package:ba3_business_solutions/controller/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/product_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/products/parcodeView.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -256,18 +257,16 @@ class _AddProductState extends State<AddProduct> {
                         children: [
                           const SizedBox(width: 100, child: Text("الحساب الاب")),
                           SizedBox(
-                            width: (Get.width * .45)-100,
+                            width: (Get.width * .45) - 100,
                             child: IgnorePointer(
                               ignoring: editedProduct.prodIsParent ?? false,
                               child: Container(
                                   decoration: BoxDecoration(color: editedProduct.prodIsParent ?? false ? Colors.grey.shade700 : Colors.white, borderRadius: BorderRadius.circular(5)),
                                   child: CustomTextFieldWithoutIcon(
-                                    controller: TextEditingController()..text=getProductNameFromId(editedProduct.prodParentId),
+                                    controller: TextEditingController()..text = getProductNameFromId(editedProduct.prodParentId),
                                     onSubmitted: (productText) async {
                                       editedProduct.prodParentId = await searchProductGroupTextDialog(productText);
-                                      setState(() {
-
-                                      });
+                                      setState(() {});
                                     },
                                   )
                                   /* DropdownButton(
@@ -317,36 +316,56 @@ class _AddProductState extends State<AddProduct> {
                 ),
                 Container(
                     alignment: Alignment.center,
-                    child: AppButton(
-                      color: editedProduct.prodId == null ? null : Colors.green,
-                      title: editedProduct.prodId == null ? "إضافة" : "تعديل",
-                      onPressed: () {
-                        if (checkInput()) {
-                          if (editedProduct.prodId == null) {
-                            checkPermissionForOperation(Const.roleUserWrite, Const.roleViewProduct).then((value) {
-                              if (value) {
-                                print("object");
-                                productController.createProduct(editedProduct, withLogger: true);
-                                isEdit = false;
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AppButton(
+                          color: editedProduct.prodId == null ? null : Colors.green,
+                          title: editedProduct.prodId == null ? "إضافة" : "تعديل",
+                          onPressed: () {
+                            if (checkInput()) {
+                              if (editedProduct.prodId == null) {
+                                checkPermissionForOperation(Const.roleUserWrite, Const.roleViewProduct).then((value) {
+                                  if (value) {
+                                    print("object");
+                                    productController.createProduct(editedProduct, withLogger: true);
+                                    isEdit = false;
+                                  }
+                                });
+                              } else {
+                                checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewProduct).then((value) {
+                                  if (value) {
+                                    productController.updateProduct(editedProduct, withLogger: true);
+                                    isEdit = false;
+                                  }
+                                });
                               }
-                            });
-                          } else {
-                            checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewProduct).then((value) {
-                              if (value) {
-                                productController.updateProduct(editedProduct, withLogger: true);
-                                isEdit = false;
-                              }
-                            });
-                          }
-                        }
-                      },
-                      iconData: editedProduct.prodId == null ? Icons.add : Icons.edit,
+                            }
+                          },
+                          iconData: editedProduct.prodId == null ? Icons.add : Icons.edit,
+                        ),
+                        if (editedProduct.prodId != null)
+                          AppButton(
+                              title: "طباعة",
+                              onPressed: () {
+                                if (editedProduct.prodName != null && editedProduct.prodCustomerPrice != null && editedProduct.prodBarcode != null) {
+                                  Get.to(() {
+                                    return ProductBarcodeView(
+                                      name: editedProduct.prodName!,
+                                      price: editedProduct.prodCustomerPrice!,
+                                      barcode: editedProduct.prodBarcode!,
+                                    );
+                                  });
+                                }
+                              },
+                              iconData: Icons.print)
+                      ],
                     )
 
                     /*  ElevatedButton(
 
                       child: Text(editedProduct.prodId == null ? "إضافة" : "تعديل")),*/
-                    )
+                    ),
               ],
             ),
           ),

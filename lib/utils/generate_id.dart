@@ -1,4 +1,4 @@
-enum RecordType { bond, invoice, product, account, pattern, undefined, store, cheque, costCenter, sellers, user, role, task, inventory, entryBond ,accCustomer,warrantyInv,}
+enum RecordType { bond, invoice, product, account, pattern, undefined, store, cheque, costCenter, sellers, user, role, task, inventory, entryBond ,accCustomer,warrantyInv,changes}
 
 String generateId(RecordType recordType) {
   var epoch = DateTime.now().microsecondsSinceEpoch.toString();
@@ -31,10 +31,12 @@ String generateId(RecordType recordType) {
       return "inventory$epoch";
     case RecordType.entryBond:
       return "entryBond$epoch";
-      case RecordType.accCustomer:
+    case RecordType.accCustomer:
       return "accCustomer$epoch";
     case RecordType.warrantyInv:
       return "warrantyInv$epoch";
+    case RecordType.changes:
+      return "changes$epoch";
     case RecordType.undefined:
       return epoch;
   }

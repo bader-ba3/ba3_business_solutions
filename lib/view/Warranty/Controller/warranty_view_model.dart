@@ -121,6 +121,7 @@ class WarrantyViewModel extends GetxController {
     await addInvoiceToFirebase();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addChangeToChanges(initModel.toJson(), Const.warrantyCollection);
+     isNew = false;
     update();
   }
 

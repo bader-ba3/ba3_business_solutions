@@ -10,7 +10,9 @@ import 'package:ba3_business_solutions/model/Pattern_model.dart';
 import 'package:ba3_business_solutions/model/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice_record_model.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
+import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -345,10 +347,10 @@ class InvoiceViewModel extends GetxController {
           .where((element) =>
               element.patternId == patId &&
               element.invRecords!.where(
-                    (element) {
-                      return productController.productDataMap[element.invRecProduct]?.prodIsLocal == false;
-                    },
-                  ).isEmpty )
+                (element) {
+                  return productController.productDataMap[element.invRecProduct]?.prodIsLocal == false;
+                },
+              ).isEmpty)
           .toList()
           .reversed
           .toList();
@@ -520,7 +522,12 @@ class InvoiceViewModel extends GetxController {
     mobileNumberController.text = initModel.invMobileNumber ?? "";
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
-    invCodeController.text = initModel.invCode!;
+    if(initModel.invCode!="0") {
+      invCodeController.text = initModel.invCode!;
+    }
+    else{
+      invCodeController.text=getNextCodeInv();
+    }
     dateController = initModel.invDate;
     invDueDateController = initModel.invDueDate;
     firstPayController.text = initModel.firstPay.toString();
@@ -573,7 +580,12 @@ class InvoiceViewModel extends GetxController {
     mobileNumberController.text = initModel.invMobileNumber ?? "";
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
-    invCodeController.text = initModel.invCode!;
+    if(initModel.invCode!="0") {
+      invCodeController.text = initModel.invCode!;
+    }
+    else{
+      invCodeController.text=getNextCodeInv();
+    }
     firstPayController.text = initModel.firstPay.toString();
     dateController = initModel.invDate;
     invDueDateController = initModel.invDueDate;
@@ -742,47 +754,57 @@ class InvoiceViewModel extends GetxController {
   }
 }
 
-void showEIknvoiceDialog({required String mobileNumber, required String invId}) {
+void showEInvoiceDialog({required String mobileNumber, required String invId}) {
   Get.defaultDialog(
       title: "فاتورتك الرقمية",
       content: SizedBox(
         height: Get.height / 1.8,
         width: Get.height / 1.8,
-        child: Column(
-          children: [
-            QrImageView(
-              data: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
-              version: QrVersions.auto,
-              size: Get.height / 2.5,
+        child: ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          children: <Widget>[
+            Center(
+              child: QrImageView(
+                data: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
+                version: QrVersions.auto,
+                size: Get.height / 2.5,
+              ),
             ),
-            //SizedBox(height: 20,),
-            const Text(
-              "مشاركة عبر",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const SizedBox(
+              height: 20,
             ),
-            //SizedBox(height: 20,),
+            const Center(
+              child: Text(
+                "مشاركة عبر",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20,),
             Row(
               children: [
-                InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(
-                        text: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
-                      ));
-                    },
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey,
-                      child: Icon(
-                        Icons.copy,
-                        color: Colors.grey.shade300,
-                      ),
-                    )),
+                const Text("البريد الألكتروني:"),
                 const SizedBox(
-                  width: 20,
+                  width: 5,
                 ),
-                const CircleAvatar(
-                  radius: 30,
-                  child: Icon(Icons.chat_bubble),
+                Expanded(
+                    child: CustomTextFieldWithoutIcon(
+                  controller: TextEditingController(),
+                  onSubmitted: (p0) {
+                    sendEmail('https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}', p0);
+                  },
+                )),
+                IconButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(
+                      text: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${Const.dataName}',
+                    ));
+                  },
+                  // backgroundColor: Colors.grey,
+                  icon: const Icon(
+                    Icons.copy,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             )
@@ -790,11 +812,13 @@ void showEIknvoiceDialog({required String mobileNumber, required String invId}) 
         ),
       ),
       actions: [
-        ElevatedButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: Text("موافق"))
+        AppButton(
+          onPressed: () {
+            Get.back();
+          },
+          title: "موافق",
+          iconData: Icons.done,
+        )
       ]);
 }
 

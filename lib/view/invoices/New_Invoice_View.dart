@@ -994,7 +994,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               AppButton(
                                   title: "E-Invoice",
                                   onPressed: () {
-                                    showEIknvoiceDialog(mobileNumber: controller.initModel.invMobileNumber ?? "", invId: controller.initModel.invId!);
+                                    showEInvoiceDialog(mobileNumber: controller.initModel.invMobileNumber ?? "", invId: controller.initModel.invId!);
                                   },
                                   iconData: Icons.link),
                               if (screenViewModel.openedScreen[widget.billId] == null)

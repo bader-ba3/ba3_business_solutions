@@ -55,7 +55,7 @@ class TargetViewModel extends GetxController {
         .where(
           ///get invoice just for one seller and on month
           (element) {
-            return element.invSeller == sellerId && element.invDate?.split("-")[1] == Timestamp.now().toDate().month.toString().padLeft(2,"0");
+            return element.globalType==Const.globalTypeInvoice&&element.invType!=Const.invoiceTypeBuy&&element.invSeller == sellerId && element.invDate?.split("-")[1] == "09"/*Timestamp.now().toDate().month.toString().padLeft(2,"0")*/;
           },
         )
         .map(

@@ -12,6 +12,7 @@
 #include <firebase_core/firebase_core_plugin_c_api.h>
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
 #include <flutter_window_close/flutter_window_close_plugin.h>
+#include <printing/printing_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   AudioplayersWindowsPluginRegisterWithRegistrar(
@@ -26,4 +27,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterPlatformAlertPlugin"));
   FlutterWindowClosePluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterWindowClosePlugin"));
+  PrintingPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PrintingPlugin"));
 }
