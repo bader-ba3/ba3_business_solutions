@@ -46,9 +46,9 @@ class StoreViewModel extends GetxController {
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
         if (allRecTotalProduct[globalModel.invRecords![i].invRecProduct] == null) {
-          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( globalModel.invRecords![i].invRecQuantity!);
+          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( (globalModel.invRecords![i].invRecQuantity??1));
         } else {
-          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( globalModel.invRecords![i].invRecQuantity!) +
+          allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ( (globalModel.invRecords![i].invRecQuantity??1)) +
           allRecTotalProduct[globalModel.invRecords![i].invRecProduct!]!;
         }
       }

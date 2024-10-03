@@ -430,11 +430,11 @@ class GlobalViewModel extends GetxController {
       /// الضريبة
       if (element.invRecVat != 0 && element.invRecQuantity != 0/*&&getProductModelFromId(element.invRecProduct)?.prodIsLocal==true*/) {
         if (globalModel.invType == Const.invoiceTypeSales) {
-          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat!) * (element.invRecQuantity!), 0, globalModel.invVatAccount, "ضريبة $dse"));
-          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat!) * (element.invRecQuantity!), globalModel.invSecondaryAccount, "ضريبة $dse"));
+          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat!) * (element.invRecQuantity??1), 0, globalModel.invVatAccount, "ضريبة $dse"));
+          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat!) * (element.invRecQuantity??1), globalModel.invSecondaryAccount, "ضريبة $dse"));
         } else {
-          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat! * element.invRecQuantity!, 0, globalModel.invPrimaryAccount, "ضريبة $dse"));
-          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat! * element.invRecQuantity!, globalModel.invVatAccount, "ضريبة $dse"));
+          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecVat! * (element.invRecQuantity??1), 0, globalModel.invPrimaryAccount, "ضريبة $dse"));
+          globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecVat! * (element.invRecQuantity??1), globalModel.invVatAccount, "ضريبة $dse"));
         }
       }
     }

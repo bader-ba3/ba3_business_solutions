@@ -40,9 +40,9 @@ class ProductViewModel extends GetxController {
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
         if (allRecTotal[globalModel.invRecords![i].invRecProduct] == null) {
-          allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * globalModel.invRecords![i].invRecQuantity!)];
+          allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * (globalModel.invRecords![i].invRecQuantity??1))];
         } else {
-          allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * globalModel.invRecords![i].invRecQuantity!));
+          allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * (globalModel.invRecords![i].invRecQuantity??1)));
         }
       }
     }

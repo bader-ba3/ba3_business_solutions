@@ -97,10 +97,11 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          if(element["count"]==null){
-            element.data()["count"]=1;
-            FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set(element.data());
-          }else{
+          if(element.data()["ali"]==null){
+            FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set({"ali":true,...element.data()});
+          }else if(element.data()["abd"]==null){
+            // FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set({"ali":true,...element.data()});
+          }else if(element.data()["abd"]!=null&&element.data()["ali"]!=null){
             FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).delete();
 
           }
