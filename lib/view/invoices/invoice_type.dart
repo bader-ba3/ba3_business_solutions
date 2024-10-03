@@ -189,35 +189,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       )),
                 ),
               ),
-            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: InkWell(
-                  onTap: () {
-                    checkPermissionForOperation(Const.roleUserRead, Const.roleViewInvoice).then((value) {
-                      // if (value) Get.to(() => const AllInvoice());
-                      if (value) {
-                        Get.find<SearchViewController>().initController();
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => const InvoiceOptionDialog(),
-                        );
-                      }
-                    });
-                  },
-                  child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-                      padding: const EdgeInsets.all(30.0),
-                      child: const Center(
-                        child: Text(
-                          "عرض جميع الفواتير",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                          textDirection: TextDirection.rtl,
-                        ),
-                      )),
-                ),
-              ),
+
             if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice)) ...[
               Padding(
                 padding: const EdgeInsets.all(15.0),
