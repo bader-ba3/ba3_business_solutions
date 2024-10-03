@@ -1170,7 +1170,7 @@ class _InvoiceViewState extends State<InvoiceView> {
         invPrimaryAccount: getAccountIdFromText(invoiceController.primaryAccountController.text),
         invSecondaryAccount: getAccountIdFromText(invoiceController.secondaryAccountController.text),
         invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty ? "" : getAccountIdFromText(invoiceController.invCustomerAccountController.text),
-        invCode: invoiceController.initModel.invId == null ? invoiceController.invCodeController.text : invoiceController.initModel.invCode,
+        invCode:invoiceController.invCodeController.text ,
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
