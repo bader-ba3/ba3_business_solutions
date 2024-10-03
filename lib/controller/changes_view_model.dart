@@ -97,7 +97,13 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).delete();
+          if(element["count"]==null){
+            element.data()["count"]=1;
+            FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set(element.data());
+          }else{
+            FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).delete();
+
+          }
      /*     List readFlag = [];
           await element.reference.set({
             "allFlags": FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
