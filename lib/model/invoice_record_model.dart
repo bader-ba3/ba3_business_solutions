@@ -30,7 +30,7 @@ class InvoiceRecordModel {
     invRecVat = double.tryParse((map['invRecVat']).toString());
     invRecIsLocal = map['invRecIsLocal'];
     invRecGift = int.tryParse(map['invRecGift'].toString());
-    invRecGiftTotal = map['invRecGiftTotal'];
+    invRecGiftTotal = map['invRecGiftTotal']*1.0;
   }
 
   InvoiceRecordModel.fromJsonPluto(Map<dynamic, dynamic> map) {

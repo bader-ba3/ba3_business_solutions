@@ -92,6 +92,7 @@ class AccountDetails extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
+
                         formatDecimalNumberWithCommas(controller.debitValue),
                         style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.w600, fontSize: 32),
                       ),
