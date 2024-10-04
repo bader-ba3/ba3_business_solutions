@@ -213,7 +213,12 @@ class GlobalViewModel extends GetxController {
   }
 
   void addGlobalToLocal(GlobalModel globalModel) {
-    HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
+    if(globalModel.invId!=null) {
+      HiveDataBase.globalModelBox.put(globalModel.invId, globalModel);
+    }else{
+      HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
+
+    }
   }
 
   ////-Update
@@ -232,8 +237,10 @@ class GlobalViewModel extends GetxController {
 
   Future<void> updateGlobalBond(GlobalModel globalModel) async {
     allGlobalModel[globalModel.bondId!] = globalModel;
-    await addBondToFirebase(globalModel);
+    globalModel.entryBondId ??= generateId(RecordType.entryBond);
     bondViewModel.initGlobalBond(globalModel);
+    await addBondToFirebase(globalModel);
+
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), Const.bondsCollection);
