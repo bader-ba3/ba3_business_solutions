@@ -1,18 +1,17 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ba3_business_solutions/controller/product_view_model.dart';
-import 'package:ba3_business_solutions/model/product_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 
 
 class QRScannerView extends StatefulWidget {
-  const QRScannerView({Key? key}) : super(key: key);
+  const QRScannerView({super.key});
 
   @override
   State<StatefulWidget> createState() => _QRScannerViewState();
@@ -51,13 +50,13 @@ class _QRScannerViewState extends State<QRScannerView> {
               _buildQrView(context),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
+                decoration: const BoxDecoration(color: Colors.white,borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))),
                 child: Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   // width: double.infinity,
                   child: Row(
                     children: [
-                      SizedBox(width: 20,),
+                      const SizedBox(width: 20,),
                       Wrap(
                         direction: Axis.vertical,
                         children: <Widget>[
@@ -104,26 +103,26 @@ class _QRScannerViewState extends State<QRScannerView> {
                           //   ],
                           // ),
 
-                          Text("عدد المنتجات "+data.length.toString(),style: TextStyle(fontSize: 24),),
-                          SizedBox(height: 10,),
+                          Text("عدد المنتجات ${data.length}",style: const TextStyle(fontSize: 24),),
+                          const SizedBox(height: 10,),
                           for(var i in data)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Row(
                                 children: [
-                                  Text(i.prodName??"not found",style: TextStyle(fontSize: 22),),
-                                  SizedBox(width: 20,),
-                                  Text("السعر: "),
-                                  Text(i.prodCustomerPrice??"not found",style: TextStyle(fontSize: 22),),
-                                  SizedBox(width: 20,),
+                                  Text(i.prodName??"not found",style: const TextStyle(fontSize: 22),),
+                                  const SizedBox(width: 20,),
+                                  const Text("السعر: "),
+                                  Text(i.prodCustomerPrice??"not found",style: const TextStyle(fontSize: 22),),
+                                  const SizedBox(width: 20,),
                                   InkWell(
                                     onTap: (){
                                       setState(() {
                                         data.remove(i);
                                       });
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
                                       child: Icon(Icons.close,color: Colors.red,),
                                     ),
                                   )
@@ -132,12 +131,12 @@ class _QRScannerViewState extends State<QRScannerView> {
                             )
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       if(data.isNotEmpty)
                       ElevatedButton(onPressed: (){
                         Get.back(result: data);
-                      }, child: Text("إضافة")),
-                      SizedBox(width: 50,),
+                      }, child: const Text("إضافة")),
+                      const SizedBox(width: 50,),
                     ],
                   ),
                 ),
@@ -151,7 +150,7 @@ class _QRScannerViewState extends State<QRScannerView> {
                       child: Padding(
                         padding: const EdgeInsets.all(50.0),
                         child: Container(width: 75,height: 75,decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20)),
-                        child: Icon(Icons.arrow_back),),
+                        child: const Icon(Icons.arrow_back),),
                       ),
                     ))
             ],
@@ -198,7 +197,7 @@ class _QRScannerViewState extends State<QRScannerView> {
 
          var _= productViewController.productDataMap.values.toList().firstWhereOrNull((element) => element.prodBarcode==scanData.code);
          if(_!=null){
-           AudioPlayer().play(AssetSource('barcode.m4a'));
+           // AudioPlayer().play(AssetSource('barcode.m4a'));
            data.add(_);
            setState(() {
 
@@ -211,16 +210,16 @@ class _QRScannerViewState extends State<QRScannerView> {
                 controller.resumeCamera();
                 return true;
               },
-                title: "غير موجود",middleText: "غير موجود "+scanData.code!+"المنتح صاحب الباركود ",actions: [
+                title: "غير موجود",middleText: "غير موجود ${scanData.code!}المنتح صاحب الباركود ",actions: [
               ElevatedButton(onPressed: (){
                 Get.back();
                 controller.resumeCamera();
-                }, child: Text("إلغاء")),
+                }, child: const Text("إلغاء")),
               ElevatedButton(onPressed: ()async{
                 Get.back();
                await Get.to(()=>AddProduct(oldBarcode:scanData.code));
                 controller.resumeCamera();
-                }, child: Text("إضافة المنتح")),
+                }, child: const Text("إضافة المنتح")),
             ]);
 
          }

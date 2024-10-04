@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../controller/user_management_model.dart';
+import '../../../controller/user/user_management_model.dart';
+
 class TimeDetails extends StatefulWidget {
   final String oldKey;
   final String name;
+
   const TimeDetails({super.key, required this.oldKey, required this.name});
 
   @override

@@ -1,6 +1,6 @@
 // import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
 // import 'package:ba3_business_solutions/controller/user_management_model.dart';
-// import 'package:ba3_business_solutions/model/Pattern_model.dart';
+// import 'package:ba3_business_solutions/model/pattern_model.dart';
 // import 'package:ba3_business_solutions/model/account_model.dart';
 // import 'package:ba3_business_solutions/model/product_record_model.dart';
 // import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
@@ -8,7 +8,7 @@
 // import 'package:get/get.dart';
 // import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 //
-// import '../../../Const/const.dart';
+// import '../../../Const/app_strings.dart';
 // import '../../../Dialogs/Search_Product_Text_Dialog.dart';
 // import '../../../controller/invoice_view_model.dart';
 // import '../../../controller/product_view_model.dart';

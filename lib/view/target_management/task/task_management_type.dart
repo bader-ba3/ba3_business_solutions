@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../Const/const.dart';
-import '../../../controller/user_management_model.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../controller/user/user_management_model.dart';
 import 'add_task.dart';
 import 'all_task_view.dart';
 
@@ -24,15 +24,17 @@ class _TaskManagementTypeState extends State<TaskManagementType> {
         ),
         body: Column(
           children: [
-            Item("إضافة مهام بالمواد",(){
-               Get.to(()=>AddTaskView());
+            Item("إضافة مهام بالمواد", () {
+              Get.to(() => const AddTaskView());
             }),
             // Item("إضافة مهام بالجرد",(){
             //   Get.to(()=>AddInventoryTaskView());
             // }),
-            Item("معاينة التاسكات",(){
-              checkPermissionForOperation(Const.roleUserRead , Const.roleViewTask).then((value) {
-                if(value) Get.to(()=>AllTaskView());
+            Item("معاينة التاسكات", () {
+              checkPermissionForOperation(
+                      AppStrings.roleUserRead, AppStrings.roleViewTask)
+                  .then((value) {
+                if (value) Get.to(() => const AllTaskView());
               });
             }),
           ],
@@ -40,16 +42,23 @@ class _TaskManagementTypeState extends State<TaskManagementType> {
       ),
     );
   }
-  Widget Item(text,onTap){
-    return   Padding(
+
+  Widget Item(text, onTap) {
+    return Padding(
       padding: const EdgeInsets.all(15.0),
       child: InkWell(
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
-            child: Center(child: Text(text,style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textDirection: TextDirection.rtl,))),
+            child: Center(
+                child: Text(
+              text,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textDirection: TextDirection.rtl,
+            ))),
       ),
     );
   }

@@ -1,20 +1,17 @@
-import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/Widgets/CustomPlutoGrid.dart';
-import 'package:ba3_business_solutions/Widgets/CustomPlutoShortCut.dart';
-import 'package:ba3_business_solutions/Widgets/Custom_Pluto_With_Edite.dart';
-import 'package:ba3_business_solutions/Widgets/CustomerPlutoEditView.dart';
-import 'package:ba3_business_solutions/controller/Account_Customer_View_Model.dart';
-import 'package:ba3_business_solutions/controller/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/user_management_model.dart';
-import 'package:ba3_business_solutions/model/AccountCustomer.dart';
-import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
+import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
+import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/Custom_Pluto_With_Edite.dart';
+import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
+import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../Widgets/GetProductEnterShortCut.dart';
-import '../../../model/account_model.dart';
+import '../../../core/helper/functions/functions.dart';
+import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../model/account/account_model.dart';
 import '../../invoices/widget/custom_TextField.dart';
-import '../../widget/CustomWindowTitleBar.dart';
 
 class AddAccount extends StatefulWidget {
   final String? modelKey;
@@ -44,16 +41,17 @@ class _AddAccountState extends State<AddAccount> {
   AccountModel accountModel = AccountModel();
   bool isNew = true;
   AccountViewModel accountController = Get.find<AccountViewModel>();
-  CustomerPlutoEditViewModel customerPlutoEditViewModel = Get.find<CustomerPlutoEditViewModel>();
+  CustomerPlutoEditViewModel customerPlutoEditViewModel =
+      Get.find<CustomerPlutoEditViewModel>();
 
   @override
   void initState() {
-
     super.initState();
     accParentId.text = widget.oldParent ?? '';
     if (widget.modelKey != null) {
       isNew = false;
-      accountModel = AccountModel.fromJson(accountController.accountList[widget.modelKey]!.toJson());
+      accountModel = AccountModel.fromJson(
+          accountController.accountList[widget.modelKey]!.toJson());
       nameController.text = accountModel.accName ?? "23232332";
       accountType = accountModel.accType ?? "23232332";
       notesController.text = accountModel.accComment ?? "23232332";
@@ -61,13 +59,13 @@ class _AddAccountState extends State<AddAccount> {
       accVat = accountModel.accVat ?? "GCC";
       accParentId.text = getAccountNameFromId(accountModel.accParentId);
       accIsRoot = accountModel.accParentId == null;
-      customerPlutoEditViewModel.getRows(accountModel.accCustomer??[]);
+      customerPlutoEditViewModel.getRows(accountModel.accCustomer ?? []);
       //accountModel.accAggregateList=accountModel.accAggregateList.map((e) => getAccountNameFromId(e)).toList();
       // idController.text = accountModel.accCode??"23232332";
     } else {
       accVat = "GCC";
       codeController.text = accountController.getLastCode();
-      accountType = Const.accountTypeList[0];
+      accountType = AppConstants.accountTypeList[0];
       if (accParentId.text != '') {
         accIsRoot = false;
       }
@@ -92,7 +90,10 @@ class _AddAccountState extends State<AddAccount> {
                     child: Row(
                       children: [
                         const Flexible(flex: 3, child: Text("رمز الحساب: ")),
-                        Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: codeController)),
+                        Flexible(
+                            flex: 3,
+                            child: CustomTextFieldWithoutIcon(
+                                controller: codeController)),
                       ],
                     ),
                   )
@@ -114,8 +115,12 @@ class _AddAccountState extends State<AddAccount> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const Flexible(flex: 2, child: Text("اسم الحساب :")),
-                                Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: nameController)),
+                                const Flexible(
+                                    flex: 2, child: Text("اسم الحساب :")),
+                                Flexible(
+                                    flex: 3,
+                                    child: CustomTextFieldWithoutIcon(
+                                        controller: nameController)),
                               ],
                             ),
                           ),
@@ -124,16 +129,20 @@ class _AddAccountState extends State<AddAccount> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const Flexible(flex: 2, child: Text("نوع الحساب :")),
+                                const Flexible(
+                                    flex: 2, child: Text("نوع الحساب :")),
                                 Flexible(
                                     flex: 3,
-                                    child: StatefulBuilder(builder: (context, setstae) {
+                                    child: StatefulBuilder(
+                                        builder: (context, setstae) {
                                       return DropdownButton(
                                         value: accountType,
-                                        items: Const.accountTypeList
+                                        items: AppConstants.accountTypeList
                                             .map((e) => DropdownMenuItem(
-                                                  child: Text(getAccountTypeFromEnum(e)),
                                                   value: e,
+                                                  child: Text(
+                                                      getAccountTypeFromEnum(
+                                                          e)),
                                                 ))
                                             .toList(),
                                         onChanged: (value) {
@@ -156,7 +165,10 @@ class _AddAccountState extends State<AddAccount> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           const Flexible(flex: 1, child: Text("ملاحظات:")),
-                          Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: notesController)),
+                          Flexible(
+                              flex: 3,
+                              child: CustomTextFieldWithoutIcon(
+                                  controller: notesController)),
                         ],
                       ),
                       const SizedBox(
@@ -166,11 +178,11 @@ class _AddAccountState extends State<AddAccount> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("الحساب الاب"),
+                          const Text("الحساب الاب"),
                           const SizedBox(
                             width: 30,
                           ),
-                          Container(
+                          SizedBox(
                             width: 300,
                             child: IgnorePointer(
                               ignoring: accIsRoot,
@@ -178,7 +190,8 @@ class _AddAccountState extends State<AddAccount> {
                                 width: 300,
                                 child: TextFormField(
                                   controller: accParentId,
-                                  decoration: const InputDecoration(fillColor: Colors.white, filled: true),
+                                  decoration: const InputDecoration(
+                                      fillColor: Colors.white, filled: true),
                                   onFieldSubmitted: (_) async {
                                     List<String> result = searchText(_);
                                     if (result.isEmpty) {
@@ -196,20 +209,34 @@ class _AddAccountState extends State<AddAccount> {
                                                 itemBuilder: (context, index) {
                                                   return InkWell(
                                                     onTap: () {
-                                                      accParentId.text = result[index];
+                                                      accParentId.text =
+                                                          result[index];
                                                       Get.back();
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           "${index + 1}_ ",
-                                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.blue.shade700),
-                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 24,
+                                                              color: Colors.blue
+                                                                  .shade700),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         ),
                                                         Text(
                                                           result[index],
-                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                                          overflow: TextOverflow.ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 20),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         ),
                                                       ],
                                                     ),
@@ -233,7 +260,7 @@ class _AddAccountState extends State<AddAccount> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("حساب اب"),
+                              const Text("حساب اب"),
                               const SizedBox(
                                 width: 30,
                               ),
@@ -253,32 +280,59 @@ class _AddAccountState extends State<AddAccount> {
                           ),
                           Container(
                             alignment: Alignment.center,
-                            child: GetBuilder<AccountViewModel>(builder: (accountController) {
+                            child: GetBuilder<AccountViewModel>(
+                                builder: (accountController) {
                               return AppButton(
                                 onPressed: () async {
                                   if (checkInput()) {
-                                    await updateData(nameController, accountType!, notesController, idController, accVat!, codeController, accParentId.text, accIsRoot);
+                                    await updateData(
+                                        nameController,
+                                        accountType!,
+                                        notesController,
+                                        idController,
+                                        accVat!,
+                                        codeController,
+                                        accParentId.text,
+                                        accIsRoot);
                                     if (accountModel.accId == null) {
-                                      checkPermissionForOperation(Const.roleUserWrite, Const.roleViewAccount).then((value) {
-                                        if (value) accountController.addNewAccount(accountModel, withLogger: true);
+                                      checkPermissionForOperation(
+                                              AppStrings.roleUserWrite,
+                                              AppStrings.roleViewAccount)
+                                          .then((value) {
+                                        if (value) {
+                                          accountController.addNewAccount(
+                                              accountModel,
+                                              withLogger: true);
+                                        }
                                       });
                                     } else {
-                                      checkPermissionForOperation(Const.roleUserUpdate, Const.roleViewAccount).then((value) {
-                                        if (value) accountController.updateAccount(accountModel, withLogger: true);
+                                      checkPermissionForOperation(
+                                              AppStrings.roleUserUpdate,
+                                              AppStrings.roleViewAccount)
+                                          .then((value) {
+                                        if (value) {
+                                          accountController.updateAccount(
+                                              accountModel,
+                                              withLogger: true);
+                                        }
                                       });
                                     }
-
                                   }
                                 },
-                                title: accountModel.accId == null ? "إضافة " : "تعديل ",
-                                iconData: accountModel.accId == null ? Icons.add : Icons.edit,
+                                title: accountModel.accId == null
+                                    ? "إضافة "
+                                    : "تعديل ",
+                                iconData: accountModel.accId == null
+                                    ? Icons.add
+                                    : Icons.edit,
                               );
                             }),
                           ),
                           if (accountModel.accId != null)
                             Container(
                               alignment: Alignment.center,
-                              child: GetBuilder<AccountViewModel>(builder: (accountController) {
+                              child: GetBuilder<AccountViewModel>(
+                                  builder: (accountController) {
                                 return AppButton(
                                   onPressed: () async {},
                                   title: "الزبائن",
@@ -294,7 +348,8 @@ class _AddAccountState extends State<AddAccount> {
                       ),
                       Expanded(
                         // flex: 3,
-                        child: GetBuilder<CustomerPlutoEditViewModel>(builder: (logic) {
+                        child: GetBuilder<CustomerPlutoEditViewModel>(
+                            builder: (logic) {
                           return SizedBox(
                             height: 400,
                             width: Get.width,
@@ -302,13 +357,12 @@ class _AddAccountState extends State<AddAccount> {
                               controller: logic,
                               evenRowColor: Colors.green.shade200,
                               onChanged: (p0) {},
-                              onRowSecondaryTap: (plutoGridOnRowSecondaryTapEvent) {},
+                              onRowSecondaryTap:
+                                  (plutoGridOnRowSecondaryTapEvent) {},
                             ),
                           );
                         }),
                       ),
-
-
                     ],
                   ),
                 ),
@@ -316,12 +370,19 @@ class _AddAccountState extends State<AddAccount> {
             ),
           ),
         ),
-
       ],
     );
   }
 
-  updateData(TextEditingController nameController, String typeController, TextEditingController notesController, TextEditingController idController, String accVat, TextEditingController codeController, String? accParentId, bool isRoot) {
+  updateData(
+      TextEditingController nameController,
+      String typeController,
+      TextEditingController notesController,
+      TextEditingController idController,
+      String accVat,
+      TextEditingController codeController,
+      String? accParentId,
+      bool isRoot) {
     accountModel.accCode = codeController.text;
     accountModel.accName = nameController.text;
     accountModel.accComment = notesController.text;
@@ -333,7 +394,6 @@ class _AddAccountState extends State<AddAccount> {
     } else {
       accountModel.accParentId = getAccountIdFromText(accParentId);
     }
-
   }
 
   late List<AccountModel> products = <AccountModel>[];
@@ -341,8 +401,10 @@ class _AddAccountState extends State<AddAccount> {
   List<String> searchText(String query) {
     AccountViewModel accountController = Get.find<AccountViewModel>();
     products = accountController.accountList.values.toList().where((item) {
-      var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
-      var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
+      var name =
+          item.accName.toString().toLowerCase().contains(query.toLowerCase());
+      var code =
+          item.accCode.toString().toLowerCase().contains(query.toLowerCase());
       print(item.accCode);
       return name || code;
     }).toList();

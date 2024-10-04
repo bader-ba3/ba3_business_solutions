@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/controller/cost_center_view_model.dart';
-import 'package:ba3_business_solutions/model/cost_center_tree.dart';
+import 'package:ba3_business_solutions/controller/cost/cost_center_view_model.dart';
+import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/model/cost/cost_center_tree.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
@@ -15,57 +15,63 @@ class CostCenterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tree of Truth"),
+        title: const Text("Tree of Truth"),
         actions: [
           ElevatedButton(
               onPressed: () {
                 costCenterController.treeController?.collapseAll();
               },
-              child: Text("-")),
-          SizedBox(
+              child: const Text("-")),
+          const SizedBox(
             width: 20,
           ),
           ElevatedButton(
               onPressed: () {
                 costCenterController.treeController?.expandAll();
               },
-              child: Text("+")),
-          SizedBox(
+              child: const Text("+")),
+          const SizedBox(
             width: 20,
           ),
           ElevatedButton(
               onPressed: () {
                 var con = TextEditingController();
-                Get.defaultDialog(content: TextFormField(controller: con), actions: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                        costCenterController.addChild(name: con.text);
-                      },
-                      child: Text("yes"))
-                ]);
+                Get.defaultDialog(
+                    content: TextFormField(controller: con),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            costCenterController.addChild(name: con.text);
+                          },
+                          child: const Text("yes"))
+                    ]);
               },
-              child: Text("add root children")),
-          SizedBox(
+              child: const Text("add root children")),
+          const SizedBox(
             width: 20,
           ),
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection(Const.costCenterCollection).snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection(AppStrings.costCenterCollection)
+              .snapshots(),
           builder: (context, snapshot) {
             return GetBuilder<CostCenterViewModel>(builder: (controller) {
               return costCenterController.allCost.isEmpty
                   ? const CircularProgressIndicator()
                   : TreeView<CostCenterTree>(
                       treeController: costCenterController.treeController!,
-                      nodeBuilder: (BuildContext context, TreeEntry<CostCenterTree> entry) {
+                      nodeBuilder: (BuildContext context,
+                          TreeEntry<CostCenterTree> entry) {
                         return MyTreeTile(
                           key: ValueKey(entry.node),
                           entry: entry,
                           onTap: () {
                             controller.lastIndex = entry.node.id;
-                            costCenterController.treeController?.toggleExpansion(entry.node);
+                            costCenterController.treeController
+                                ?.toggleExpansion(entry.node);
                           },
                         );
                       },
@@ -98,7 +104,8 @@ class MyTreeTile extends StatelessWidget {
           height: 50,
           child: GestureDetector(
             onSecondaryTapDown: (details) {
-              showContextMenu(context, details.globalPosition, costCenterController);
+              showContextMenu(
+                  context, details.globalPosition, costCenterController);
             },
             onTap: onTap,
             child: Row(
@@ -128,7 +135,8 @@ class MyTreeTile extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition, CostCenterViewModel controller) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition,
+      CostCenterViewModel controller) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
@@ -164,7 +172,8 @@ class MyTreeTile extends StatelessWidget {
       if (value == 'rename') {
         controller.startRenameChild(entry.node.id);
       } else if (value == 'delete') {
-        controller.removeChild(parent: entry.parent?.node.id, id: entry.node.id);
+        controller.removeChild(
+            parent: entry.parent?.node.id, id: entry.node.id);
       } else if (value == "add") {
         var con = TextEditingController();
         Get.defaultDialog(content: TextFormField(controller: con), actions: [
@@ -173,7 +182,7 @@ class MyTreeTile extends StatelessWidget {
                 Get.back();
                 controller.addChild(parent: entry.node.id, name: con.text);
               },
-              child: Text("yes"))
+              child: const Text("yes"))
         ]);
       }
     });

@@ -1,9 +1,9 @@
-import 'package:ba3_business_solutions/controller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../model/seller_model.dart';
+import '../../../model/seller/seller_model.dart';
 
 class DashboardChartWidget1 extends StatefulWidget {
   DashboardChartWidget1({super.key,});
@@ -99,7 +99,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             const SizedBox(height: 10),
-            Text(
+            const Text(
               "المبيعات حسب الموظف",
               style: TextStyle(
                 color: Colors.black,
@@ -121,7 +121,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                 child: Container(
                   width: Get.width*2,
                   height: 700,
-                  padding: EdgeInsets.symmetric(vertical: 70),
+                  padding: const EdgeInsets.symmetric(vertical: 70),
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0, left: 12),
                     child: LineChart(
@@ -343,7 +343,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                           rightTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          leftTitles: AxisTitles(
+                          leftTitles: const AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
                               reservedSize: 46,

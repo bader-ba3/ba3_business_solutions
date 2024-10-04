@@ -1,25 +1,13 @@
-import 'package:ba3_business_solutions/Const/const.dart';
-import 'package:ba3_business_solutions/controller/changes_view_model.dart';
-import 'package:ba3_business_solutions/controller/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
-import 'package:ba3_business_solutions/model/Warranty_Model.dart';
-import 'package:ba3_business_solutions/model/global_model.dart';
-import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/dashboard/widget/dashboard_chart_widget1.dart';
-import 'package:ba3_business_solutions/view/invoices/New_Invoice_View.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../Dialogs/Account_Option_Dialog.dart';
-import '../../controller/account_view_model.dart';
-import '../../controller/bond_view_model.dart';
-import '../../controller/product_view_model.dart';
-import '../../model/account_model.dart';
-import '../../model/bond_record_model.dart';
-import '../../model/entry_bond_record_model.dart';
-import '../../utils/hive.dart';
-import '../accounts/account_details.dart';
-import '../invoices/Controller/Search_View_Controller.dart';
+
+import '../../controller/account/account_view_model.dart';
+import '../../controller/invoice/search_view_controller.dart';
+import '../../core/helper/functions/functions.dart';
+import '../../core/shared/dialogs/Account_Option_Dialog.dart';
+import '../../core/utils/hive.dart';
+import '../../model/account/account_model.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -29,13 +17,13 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   Get.find<ChangesViewModel>(). listenChanges();
+    // Get.find<ChangesViewModel>(). listenChanges();
   }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -47,7 +35,9 @@ class _DashboardViewState extends State<DashboardView> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -63,7 +53,8 @@ class _DashboardViewState extends State<DashboardView> {
                           onTap: () {},
                           child: const Text(
                             "الحسابات الرئيسية",
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold),
                           ),
                         ),
                         const Spacer(),
@@ -73,9 +64,11 @@ class _DashboardViewState extends State<DashboardView> {
 
                             onPressed: () {
                               // print(HiveDataBase.globalModelBox.toMap().entries.where((element) => element.value.bondId=="bon1726453481733905",).first.key);
-                              accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
+                              accountController.setBalance(HiveDataBase
+                                  .mainAccountModelBox.values
+                                  .toList());
                               accountController.update();
-                            // HiveDataBase.warrantyModelBox.deleteFromDisk();
+                              // HiveDataBase.warrantyModelBox.deleteFromDisk();
                               //  HiveDataBase.accountCustomerBox.deleteFromDisk();
                               //  HiveDataBase.globalModelBox.deleteFromDisk();
                               //  HiveDataBase.productModelBox.deleteFromDisk();
@@ -86,6 +79,7 @@ class _DashboardViewState extends State<DashboardView> {
                             },
                             icon: const Icon(Icons.refresh)),
                         IconButton(
+
                             /// this for pay all check
                             /*      onPressed: ()async{
                               List<dynamic> global=HiveDataBase.globalModelBox.toMap().entries.where((element)=> element.value.globalType==Const.globalTypeCheque).map((e) => e.value).toList();
@@ -134,14 +128,18 @@ class _DashboardViewState extends State<DashboardView> {
                               }
                       },*/
                             onPressed: () async {
-                              TextEditingController nameController = TextEditingController();
+                              TextEditingController nameController =
+                                  TextEditingController();
                               List<AccountModel> accountList = [];
                               await Get.defaultDialog(
                                   title: "اكتب اسم الحساب",
-                                  content: StatefulBuilder(builder: (context, setstate) {
+                                  content: StatefulBuilder(
+                                      builder: (context, setstate) {
                                     return SizedBox(
-                                      height: MediaQuery.sizeOf(context).width / 4,
-                                      width: MediaQuery.sizeOf(context).width / 4,
+                                      height:
+                                          MediaQuery.sizeOf(context).width / 4,
+                                      width:
+                                          MediaQuery.sizeOf(context).width / 4,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -149,10 +147,17 @@ class _DashboardViewState extends State<DashboardView> {
                                             SizedBox(
                                               height: 40,
                                               child: TextFormField(
-                                                textDirection: TextDirection.rtl,
-                                                decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
+                                                textDirection:
+                                                    TextDirection.rtl,
+                                                decoration: const InputDecoration(
+                                                    hintText:
+                                                        "اكتب اسم الحساب او رقمه",
+                                                    hintTextDirection:
+                                                        TextDirection.rtl),
                                                 onChanged: (_) {
-                                                  accountList = getAccountModelsFromName(_);
+                                                  accountList =
+                                                      getAccountModelsFromName(
+                                                          _);
                                                   // print(accountList);
                                                   setstate(() {});
                                                 },
@@ -165,24 +170,41 @@ class _DashboardViewState extends State<DashboardView> {
                                             Expanded(
                                                 child: accountList.isEmpty
                                                     ? const Center(
-                                                        child: Text("لا يوجد نتائج"),
+                                                        child: Text(
+                                                            "لا يوجد نتائج"),
                                                       )
                                                     : ListView.builder(
-                                                        itemCount: accountList.length,
-                                                        itemBuilder: (context, index) {
-                                                          AccountModel model = accountList[index];
+                                                        itemCount:
+                                                            accountList.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          AccountModel model =
+                                                              accountList[
+                                                                  index];
                                                           return Padding(
-                                                            padding: const EdgeInsets.all(8.0),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
                                                             child: InkWell(
                                                                 onTap: () {
-                                                                  HiveDataBase.mainAccountModelBox.put(model.accId, model);
+                                                                  HiveDataBase
+                                                                      .mainAccountModelBox
+                                                                      .put(
+                                                                          model
+                                                                              .accId,
+                                                                          model);
                                                                   Get.back();
                                                                 },
                                                                 child: Padding(
-                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8.0),
                                                                   child: Text(
                                                                     "${model.accName}   ${model.accCode}",
-                                                                    textDirection: TextDirection.rtl,
+                                                                    textDirection:
+                                                                        TextDirection
+                                                                            .rtl,
                                                                   ),
                                                                 )),
                                                           );
@@ -203,18 +225,24 @@ class _DashboardViewState extends State<DashboardView> {
                     ),
                     Expanded(
                         child: ListView.builder(
-                      itemCount: HiveDataBase.mainAccountModelBox.values.toList().length,
+                      itemCount: HiveDataBase.mainAccountModelBox.values
+                          .toList()
+                          .length,
                       itemBuilder: (context, index) {
-                        AccountModel model = HiveDataBase.mainAccountModelBox.values.toList()[index];
+                        AccountModel model = HiveDataBase
+                            .mainAccountModelBox.values
+                            .toList()[index];
 
                         return Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: GestureDetector(
                             onSecondaryTapDown: (details) {
-                              showContextMenu(context, details.globalPosition, model.accId!, accountController);
+                              showContextMenu(context, details.globalPosition,
+                                  model.accId!, accountController);
                             },
                             onLongPressStart: (details) {
-                              showContextMenu(context, details.globalPosition, model.accId!, accountController);
+                              showContextMenu(context, details.globalPosition,
+                                  model.accId!, accountController);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -229,7 +257,8 @@ class _DashboardViewState extends State<DashboardView> {
                                 SizedBox(
                                   width: Get.width / 4,
                                   child: Text(
-                                    formatDecimalNumberWithCommas(model.finalBalance ?? 0),
+                                    formatDecimalNumberWithCommas(
+                                        model.finalBalance ?? 0),
                                     // model.accId!,
                                     style: const TextStyle(fontSize: 22),
                                     overflow: TextOverflow.ellipsis,
@@ -249,13 +278,17 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ClipRRect(clipBehavior: Clip.hardEdge, borderRadius: BorderRadius.circular(25), child: DashboardChartWidget1()),
+          child: ClipRRect(
+              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.circular(25),
+              child: DashboardChartWidget1()),
         ),
       ],
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition, String id, AccountViewModel accountController) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition,
+      String id, AccountViewModel accountController) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
@@ -267,7 +300,8 @@ class _DashboardViewState extends State<DashboardView> {
       items: [
         PopupMenuItem(
           onTap: () {
-            Get.find<SearchViewController>().initController(accountForSearch: getAccountNameFromId(id));
+            Get.find<SearchViewController>()
+                .initController(accountForSearch: getAccountNameFromId(id));
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => const AccountOptionDialog(),
@@ -279,7 +313,7 @@ class _DashboardViewState extends State<DashboardView> {
               Icons.search,
               color: Colors.blue.shade300,
             ),
-            title: Text('عرض الحركات'),
+            title: const Text('عرض الحركات'),
           ),
         ),
         PopupMenuItem(
@@ -293,7 +327,7 @@ class _DashboardViewState extends State<DashboardView> {
               Icons.remove_circle_outline,
               color: Colors.red.shade700,
             ),
-            title: Text('حذف'),
+            title: const Text('حذف'),
           ),
         ),
       ],

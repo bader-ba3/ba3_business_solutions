@@ -18,7 +18,7 @@ class LineChartWidget2 extends StatelessWidget {
             getTooltipColor: (touchedSpot) => Colors.black,
           ),
         ),
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: titlesData1,
         borderData: FlBorderData(
           show: true,
@@ -85,7 +85,7 @@ class LineChartWidget2 extends StatelessWidget {
     leftTitles: AxisTitles(
       sideTitles: SideTitles(
         getTitlesWidget: (value, meta) {
-          return Text(value.toInt().toString(), style:  TextStyle(
+          return Text(value.toInt().toString(), style:  const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
               color: Colors.black
