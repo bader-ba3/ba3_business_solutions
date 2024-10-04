@@ -10,6 +10,7 @@ import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:ba3_business_solutions/utils/generate_id.dart';
 import 'package:ba3_business_solutions/utils/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,9 +34,10 @@ class ImportConfigurationView extends StatefulWidget {
 //     };
 class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Map<String, RecordType> typeMap = {
-    "حسابات": RecordType.account,
+    "حسابات": RecordType.accCustomer,
     "مواد": RecordType.product,
     "شيكات": RecordType.cheque,
+    "حسابات بدون زبائن": RecordType.account,
   };
 
   Map configProduct = {
@@ -59,6 +61,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     "اسم حساب الزبون": 'customerAccountName',
     "رقم البطاقة": 'customerCardNumber',
     "الترميز الضريبي": 'customerVAT',
+  };
+  Map configAccountWitOut = {
+    "الحساب": "accName",
+    "رمز الحساب": "accCode",
+    "الحساب الرئيسي": 'accParentId',
+
   };
 
   Map configCheque = {
@@ -98,7 +106,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                     if (_ == RecordType.product) {
                       config = configProduct;
                     } else if (_ == RecordType.account) {
-                      config = configAccount;
+                      config = configAccountWitOut;
                     } else if (_ == RecordType.cheque) {
                       config = configCheque;
                     }
@@ -156,11 +164,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           ElevatedButton(
               onPressed: () async {
                 if (type == RecordType.product) {
-                  await addProductFree();
+                  await addProduct();
                 } else if (type == RecordType.account) {
-                  await addAccount();
+                  await addAccountWithOutCustomer();
                 } else if (type == RecordType.cheque) {
                   await addCheque();
+                }else if(type == RecordType.accCustomer){
+                  // await addAccountWithCustomer();
                 }
                 // Get.offAll(() => HomeView());
               },
@@ -410,39 +420,55 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     // }
   }
 
-  Future<void> addAccount() async {
+  Future<void> addAccountWithCustomer() async {
     // AccountViewModel accountViewModel = Get.find<AccountViewModel>();
     List<AccountModel> finalData = [];
     for (var element in widget.productList) {
       if (element[setting["accCode"]] != '') {
         bool accIsParent = element[setting['accParentId']].isEmpty;
+
         if (accIsParent) {
           finalData.add(AccountModel(
-            accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+
+            // accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+            accId: generateId(RecordType.account),
             accName: (element[setting["accName"]].replaceAll("-", "")),
             accCode: element[setting["accCode"]].replaceAll("-", ""),
             accComment: '',
             accType: Const.accountTypeDefault,
             accVat: 'GCC',
-            accParentId: accIsParent ? null : getAccountIdFromText(element[setting['accParentId']]),
-            accIsParent: accIsParent,
+            accParentId: null ,
+            accIsParent: true,
           ));
         } else {
+          String accIds=generateId(RecordType.account);
           finalData
               .where(
-                (e) => e.accId == getAccountIdFromText(element[setting['accParentId']]),
+                (e) => e.accName ==element[setting["accParentId"]].replaceAll("-", ""),
               )
               .first
               .accChild
-              .add(getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")));
+              .add(accIds);
+          // finalData
+          //     .where(
+          //       (e) => e.accId == getAccountIdFromText(element[setting['accParentId']]),
+          // )
+          //     .first
+          //     .accChild
+          //     .add(getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")));
           finalData.add(AccountModel(
-            accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+            accId: accIds,
             accName: (element[setting["accName"]].replaceAll("-", "")),
             accCode: element[setting["accCode"]].replaceAll("-", ""),
             accComment: '',
             accType: Const.accountTypeDefault,
             accVat: 'GCC',
-            accParentId: getAccountIdFromText(element[setting['accParentId']]),
+            accParentId: finalData
+                .where(
+                  (e) => e.accName ==element[setting["accParentId"]].replaceAll("-", ""),
+            )
+                .first
+                .accId,
             accIsParent: accIsParent,
           ));
         }
@@ -475,7 +501,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     for (var element in finalData) {
       i++;
 
-      print( i);
+      // print(element.toJson());
+      print(i);
 
       await HiveDataBase.accountModelBox.put(element.accId, element);
       for(AccountCustomer customer in element.accCustomer??[]){
@@ -493,6 +520,126 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       //   "accParentId":getAccountIdFromText(element.accParentId)
       // });
       // }
+    }
+  }
+  Future<void> addAccountWithOutCustomer() async {
+    // AccountViewModel accountViewModel = Get.find<AccountViewModel>();
+    List<AccountModel> finalData = [];
+    for (var element in widget.productList) {
+      if(getAccountIdFromName(element[setting["accName"]])==null) {
+        // print(element[setting["accName"]]);
+        if (element[setting["accCode"]] != '') {
+          bool accIsParent = element[setting['accParentId']].isEmpty;
+
+          if (accIsParent) {
+            finalData.add(AccountModel(
+
+              // accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+              accId: generateId(RecordType.account),
+              accName: (element[setting["accName"]]/*.replaceAll("-", "")*/),
+              accCode: element[setting["accCode"]]/*.replaceAll("-", "")*/,
+              accComment: '',
+              accType: Const.accountTypeDefault,
+              accVat: 'GCC',
+              accParentId: null,
+              accIsParent: true,
+            ));
+          } else {
+            String accIds = generateId(RecordType.account);
+            if(
+            finalData
+                .where(
+                  (e) => e.accName == element[setting["accParentId"]]/*.replaceAll("-", "")*/,
+            )
+                .firstOrNull!=null
+            ) {
+
+              finalData
+                  .where(
+                    (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
+                  )
+                  .firstOrNull
+                  ?.accChild
+                  .add(accIds);
+              finalData.add(AccountModel(
+                accId: accIds,
+                accName: (element[setting["accName"]]/*.replaceAll("-", "")*/),
+                accCode: element[setting["accCode"]]/*.replaceAll("-", "")*/,
+                accComment: '',
+                accType: Const.accountTypeDefault,
+                accVat: 'GCC',
+                accParentId: finalData
+                    .where(
+                      (e) => e.accName == element[setting["accParentId"]]/*.replaceAll("-", "")*/,
+                )
+                    .first
+                    .accId,
+                accIsParent: accIsParent,
+              ));
+            }
+            else{
+              AccountModel parent=getAccountIdFromName(element[setting["accParentId"]])!;
+              HiveDataBase.accountModelBox.put(parent.accId, parent..accChild.add(accIds));
+              FirebaseFirestore.instance.collection(Const.accountsCollection).doc(parent.accId).set({"accChild":FieldValue.arrayUnion([accIds])},SetOptions(merge: true));
+              finalData.add(AccountModel(
+                accId: accIds,
+                accName: (element[setting["accName"]]/*.replaceAll("-", "")*/),
+                accCode: element[setting["accCode"]]/*.replaceAll("-", "")*/,
+                accComment: '',
+                accType: Const.accountTypeDefault,
+                accVat: 'GCC',
+                accParentId: parent.accId,
+                accIsParent: accIsParent,
+              ));
+            }
+            // finalData
+            //     .where(
+            //       (e) => e.accId == getAccountIdFromText(element[setting['accParentId']]),
+            // )
+            //     .first
+            //     .accChild
+            //     .add(getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")));
+
+          }
+        } else {
+          // print(element[setting["accName"]]);
+          if (finalData.last.accCustomer == null) {
+            finalData.last.accCustomer = [
+              AccountCustomer(
+                customerAccountId: generateId(RecordType.accCustomer),
+                customerAccountName: element[setting["accName"]],
+                customerCardNumber: element[setting["customerCardNumber"]],
+                customerVAT: element[setting["customerVAT"]],
+                mainAccount: finalData.last.accId,
+              )
+            ];
+          } else {
+            finalData.last.accCustomer!.add(AccountCustomer(
+              customerAccountId: generateId(RecordType.accCustomer),
+              customerAccountName: element[setting["accName"]],
+              customerCardNumber: element[setting["customerCardNumber"]],
+              customerVAT: element[setting["customerVAT"]],
+              mainAccount: finalData.last.accId,
+            ));
+          }
+        }
+      }
+    }
+    print(finalData.length);
+    int i = 0;
+    // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc("set").set({"s":"s"});
+    for (var element in finalData) {
+      i++;
+
+      // print(element.toJson());
+      print(i);
+
+      await HiveDataBase.accountModelBox.put(element.accId, element);
+
+      await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(element.accId).set(element.toJson(), SetOptions(merge: true));
+
+
+
     }
   }
 

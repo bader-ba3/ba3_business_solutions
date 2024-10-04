@@ -206,8 +206,7 @@ class _DashboardViewState extends State<DashboardView> {
                       itemCount: HiveDataBase.mainAccountModelBox.values.toList().length,
                       itemBuilder: (context, index) {
                         AccountModel model = HiveDataBase.mainAccountModelBox.values.toList()[index];
-                        print(HiveDataBase.mainAccountModelBox.values.toList().length);
-                        print(model.finalBalance);
+
                         return Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: GestureDetector(

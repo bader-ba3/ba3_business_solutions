@@ -589,16 +589,20 @@ class AccountViewModel extends GetxController {
   void initModel() {
     allCost.clear();
     List<AccountModel> rootList = accountList.values.toList().where((element) => element.accIsParent ?? false).toList();
-    for (var element in rootList) {
+/*    for (var element in rootList) {
       allCost.add(addToModel(element));
-    }
+    }*/
   }
 
-  AccountTree addToModel(AccountModel element) {
-    var list = element.accChild.map((e) => addToModel(accountList[e]!)).toList();
+/*  AccountTree addToModel(AccountModel element) {
+
+    var list = element.accChild.map((e) {
+      print(e);
+      return addToModel(accountList[e]!);
+    }).toList();
     AccountTree model = AccountTree.fromJson({"name": element.accName}, element.accId, list);
     return model;
-  }
+  }*/
 
   initPage() {
     treeController = TreeController<AccountTree>(

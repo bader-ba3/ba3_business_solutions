@@ -65,9 +65,9 @@ class FilePickerWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if(separator!=null){
-                    print("free");
-                    importViewModel.pickInvoiceFileFree(separator);
-                    // importViewModel.pickInvoiceFile(separator);
+                    // print("free");
+                    // importViewModel.pickInvoiceFileFree(separator);
+                    importViewModel.pickInvoiceFile(separator);
                   }else{
                     Get.snackbar("error", "plz select separator");
                   }
