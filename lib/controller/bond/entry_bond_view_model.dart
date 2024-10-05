@@ -249,12 +249,12 @@ class EntryBondViewModel extends GetxController {
 }
 
 int getNextEntryBondCode() {
-  int _ = 0;
+  int nextIndex = 0;
   EntryBondViewModel entryBondViewModel = Get.find<EntryBondViewModel>();
   if (entryBondViewModel.allEntryBonds.isNotEmpty) {
-    _ = int.parse(
+    nextIndex = int.parse(
             entryBondViewModel.allEntryBonds.values.last.entryBondCode ?? "0") +
         1;
   }
-  return _;
+  return nextIndex;
 }

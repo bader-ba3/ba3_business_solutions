@@ -53,9 +53,9 @@ dependencies:
   hive_flutter:
   flutter_material_color_picker:
   nfc_manager:
-#  audioplayers: ^6.1.0
-#  audioplayers_android: ^5.0.0
-#  audioplayers_darwin: ^6.0.0
+  audioplayers: ^6.1.0
+  audioplayers_android: ^5.0.0
+  audioplayers_darwin: ^6.0.0
   syncfusion_flutter_gauges:
   stop_watch_timer:
   infinite_scroll_pagination:

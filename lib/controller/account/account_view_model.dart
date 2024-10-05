@@ -174,23 +174,23 @@ class AccountViewModel extends GetxController {
               AppStrings.paidStatusFullUsed;
         }
       } else if (accountBalance < 0) {
-        double _ = 0;
+        double total = 0;
         bool isFound = false;
         for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
           AccountRecordModel element =
               accountList[accountKey]!.accRecord.reversed.toList()[i];
           element.isPaidStatus = null;
           if (double.parse(element.total!) < 0) {
-            _ = double.parse(element.total!).abs() + _;
+            total = double.parse(element.total!).abs() + total;
           }
           if (double.parse(element.total!) > 0) {
             element.isPaidStatus = AppStrings.paidStatusFullUsed;
             element.paid = double.parse(element.total!);
           } else {
-            if (accountBalance.abs() <= _ && !isFound) {
-              if (_ - accountBalance.abs() > 0) {
+            if (accountBalance.abs() <= total && !isFound) {
+              if (total - accountBalance.abs() > 0) {
                 element.isPaidStatus = AppStrings.paidStatusSemiUsed;
-                element.paid = _ - accountBalance.abs();
+                element.paid = total - accountBalance.abs();
               } else {
                 element.isPaidStatus = AppStrings.paidStatusNotUsed;
               }
@@ -513,11 +513,11 @@ class AccountViewModel extends GetxController {
   }
 
   int getCount(userId) {
-    int _ = 0;
+    int count = 0;
     if (accountList[userId]!.accRecord.isNotEmpty) {
-      _ = accountList[userId]!.accRecord.length;
+      count = accountList[userId]!.accRecord.length;
     }
-    return _;
+    return count;
   }
 
   String getLastCode() {
@@ -527,15 +527,15 @@ class AccountViewModel extends GetxController {
         )
         .map((e) => int.parse(e.accCode!))
         .toList();
-    int _ = 0;
+    int lastCode = 0;
     if (accountList.isEmpty) {
       return "0";
     } else {
-      _ = int.parse(accountList.values.last.accCode!.replaceAll("F-", "")) + 1;
-      while (allCode.contains(_)) {
-        _++;
+      lastCode = int.parse(accountList.values.last.accCode!.replaceAll("F-", "")) + 1;
+      while (allCode.contains(lastCode)) {
+        lastCode++;
       }
-      return _.toString();
+      return lastCode.toString();
     }
   }
 
@@ -716,7 +716,7 @@ class AccountViewModel extends GetxController {
   String? editItem;
   TextEditingController? editCon;
 
-  var lastIndex;
+  dynamic lastIndex;
   List<AccountTree> allCost = [];
 
   TreeController<AccountTree>? treeController;
@@ -779,12 +779,12 @@ class AccountViewModel extends GetxController {
       allPer.clear();
       setupParentList(parent);
       var allper = allPer.reversed.toList();
-      List<AccountTree> _ = treeController!.roots.toList();
+      List<AccountTree> listAcc = treeController!.roots.toList();
       for (var i = 0; i < allper.length; i++) {
-        if (_.isNotEmpty) {
+        if (listAcc.isNotEmpty) {
           treeController
-              ?.expand(_.firstWhere((element) => element.id == allper[i]));
-          _ = _.firstWhereOrNull((element) => element.id == allper[i])?.list ??
+              ?.expand(listAcc.firstWhere((element) => element.id == allper[i]));
+          listAcc = listAcc.firstWhereOrNull((element) => element.id == allper[i])?.list ??
               [];
         }
       }
@@ -854,14 +854,14 @@ class AccountViewModel extends GetxController {
 String getAccountIdFromText(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? _ = accountController.accountList.values
+    AccountModel? acc = accountController.accountList.values
         .toList()
         .firstWhereOrNull(
             (element) => element.accName == text || element.accCode == text);
-    if (_ == null) {
+    if (acc == null) {
       return '';
     } else {
-      return _.accId!;
+      return acc.accId!;
     }
   } else {
     return '';
@@ -871,10 +871,10 @@ String getAccountIdFromText(text) {
 AccountModel? getAccountIdFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? _ = accountController.accountList.values
+    AccountModel? acc = accountController.accountList.values
         .toList()
         .firstWhereOrNull((element) => element.accName == text);
-    return _;
+    return acc;
   } else {
     print("empty");
     return null;
@@ -884,16 +884,16 @@ AccountModel? getAccountIdFromName(text) {
 List<AccountModel> getAccountModelsFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    List<AccountModel> _ = accountController.accountList.values
+    List<AccountModel> acc = accountController.accountList.values
         .toList()
         .where((element) =>
             element.accName!.contains(text) || element.accCode!.contains(text))
         .toList();
-    if (_.isEmpty) {
+    if (acc.isEmpty) {
       print("empty");
       return [];
     } else {
-      return _;
+      return acc;
     }
   } else {
     print("empty");
@@ -989,10 +989,10 @@ Future<String> getAccountComplete(text) async {
   return _;
 }
 
-Future<AccountModel?> getAccountCompleteID(_text) async {
-  AccountModel? _;
+Future<AccountModel?> getAccountCompleteID(thisText) async {
+  AccountModel? choses;
   List<AccountModel> accountPickList = [];
-  String text = _text ?? "";
+  String text = thisText ?? "";
   Get.find<AccountViewModel>().accountList.forEach((key, value) {
     accountPickList.addIf(
         value.accType == AppStrings.accountTypeDefault &&
@@ -1012,7 +1012,7 @@ Future<AccountModel?> getAccountCompleteID(_text) async {
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                _ = accountPickList[index];
+                choses = accountPickList[index];
                 Get.back();
               },
               child: Container(
@@ -1031,9 +1031,9 @@ Future<AccountModel?> getAccountCompleteID(_text) async {
       ),
     );
   } else if (accountPickList.length == 1) {
-    _ = accountPickList[0];
+    choses = accountPickList[0];
   } else {
     Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
   }
-  return _;
+  return choses;
 }

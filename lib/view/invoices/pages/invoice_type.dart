@@ -80,10 +80,10 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       MapEntry<String, PatternModel> i = entry.value;
 
                       // Only display the first and last item
-                      if (index == 0 ||
+                     /* if (index == 0 ||
                           index ==
                               patternController.patternModel.entries.length -
-                                  1) {
+                                  1)*/ {
                         return InkWell(
                           onTap: () {
                             SystemChrome.setPreferredOrientations([
@@ -101,7 +101,9 @@ class _InvoiceTypeState extends State<InvoiceType> {
                             );
                           },
                           child: Container(
-                            width: Get.width,
+                            width: Get.width/5.2,
+                            margin: const EdgeInsets.all(2),
+
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),

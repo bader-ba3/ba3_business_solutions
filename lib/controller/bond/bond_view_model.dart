@@ -753,24 +753,24 @@ class BondViewModel extends GetxController {
 
   String getNextBondCode({String? type}) {
     initCodeList(type ?? (tempBondModel.bondType!));
-    int _ = 0;
+    int nextIndex = 0;
     if (codeList.isEmpty) {
       return "0";
     } else {
       if (codeList.keys.last.startsWith("F")) {
-        _ = int.parse(codeList.keys.last.split("F-")[1]);
+        nextIndex = int.parse(codeList.keys.last.split("F-")[1]);
       } else {
-        _ = int.parse(codeList.keys.last);
+        nextIndex = int.parse(codeList.keys.last);
       }
-      while (codeList.containsKey(_.toString())) {
-        _++;
+      while (codeList.containsKey(nextIndex.toString())) {
+        nextIndex++;
       }
     }
-    return _.toString();
+    return nextIndex.toString();
   }
 
   String? checkValidate() {
-    var _;
+    String? text;
     tempBondModel.bondRecord?.forEach((element) {
       if (element.bondRecAccount == '' ||
           element.bondRecAccount == null ||
@@ -778,12 +778,12 @@ class BondViewModel extends GetxController {
           (element.bondRecCreditAmount == 0 &&
               element.bondRecDebitAmount == 0)) {
         // print("empty");
-        _ = "الحقول فارغة";
+        text = "الحقول فارغة";
       } else {
         // print("ok");
       }
     });
-    if (_ != null) return _;
+    if (text != null) return text;
     if ((tempBondModel.bondType == AppStrings.bondTypeDaily ||
             tempBondModel.bondType == AppStrings.bondTypeStart) &&
         double.parse(tempBondModel.bondTotal!) != 0) {
