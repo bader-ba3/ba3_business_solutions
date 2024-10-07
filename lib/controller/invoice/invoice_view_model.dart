@@ -524,6 +524,7 @@ class InvoiceViewModel extends GetxController {
         _++;
       }
     }
+
     return _.toString();
   }
 

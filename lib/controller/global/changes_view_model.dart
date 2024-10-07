@@ -17,8 +17,8 @@ class ChangesViewModel extends GetxController {
   List allReadFlags = [];
 
   ChangesViewModel() {
-
-    FirebaseFirestore.instance.collection(AppStrings.readFlagsCollection).doc("0").snapshots().listen((event) {
+    listenChanges();
+  /*  FirebaseFirestore.instance.collection(AppStrings.readFlagsCollection).doc("0").snapshots().listen((event) {
       allReadFlags.clear();
       print(event.data());
       allReadFlags = (event.data()?['allFlags'] ?? []).map((e) => e.toString()).toList();
@@ -34,7 +34,7 @@ class ChangesViewModel extends GetxController {
         });
       }
 
-    });
+    });*/
   }
 
   getLastIndexChanges(){
@@ -96,7 +96,7 @@ class ChangesViewModel extends GetxController {
           if(element.data()["ali"]==null){
             FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"ali":true,...element.data()});
           }else if(element.data()["abd"]==null){
-            // FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set({"ali":true,...element.data()});
+            // FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set({"abd":true,...element.data()});
           }else if(element.data()["abd"]!=null&&element.data()["ali"]!=null){
             FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
 

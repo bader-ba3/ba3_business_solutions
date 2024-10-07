@@ -65,7 +65,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
   Widget build(BuildContext context) {
     return GetBuilder<SellersViewModel>(builder: (controller) {
       listStop.clear();
-      List<SellerModel> allSellers= controller.allSellers.values.toList();
+      List<SellerModel> allSellers= controller.allSellers.values.where((element) => element.sellerRecord?.firstOrNull!=null,).toList();
       listData = Map.fromEntries(List.generate(allSellers.length+1, (index){
         if(index == 0){
           return  MapEntry(0, SellerModel(sellerName: "",sellerRecord: []));

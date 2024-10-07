@@ -54,6 +54,8 @@ class GlobalViewModel extends GetxController {
     allGlobalModel = Map.fromEntries(HiveDataBase.globalModelBox.values
         .map((e) => MapEntry(e.entryBondId ?? e.bondId!, e))
         .toList());
+
+    ///TODo: خليها اذا رح نجيب شي من الفيربيز
     if (false) {
       await FirebaseFirestore.instance
           .collection(AppStrings.globalCollection)
@@ -718,6 +720,10 @@ class GlobalViewModel extends GetxController {
         }
       }
       invoiceViewModel.initGlobalInvoice(globalModel);
+    }
+    if (globalModel.invType != AppStrings.invoiceTypeChange) {
+      // accountViewModel.initGlobalAccount(globalModel);
+      productController.initGlobalProduct(globalModel);
     }
     if (globalModel.globalType == AppStrings.globalTypeBond) {
       bondViewModel.initGlobalBond(globalModel);

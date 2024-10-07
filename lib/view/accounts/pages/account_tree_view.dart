@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
+import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -25,31 +26,41 @@ class AccountTreeView extends StatelessWidget {
               appBar: AppBar(
                 title: const Text("شجرة الحسابات"),
                 actions: [
-                  ElevatedButton(
+                  IconButton(
+                      // iconSize: 15,
+                      style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.blue)),
                       onPressed: () {
                         accountController.treeController?.collapseAll();
                       },
-                      child: const Text("-")),
+                      icon: const Icon(
+                        Icons.remove,
+                        color: Colors.white,
+                      )),
                   const SizedBox(
                     width: 20,
                   ),
-                  ElevatedButton(
+                  IconButton(
+                      style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.blue)),
                       onPressed: () {
                         accountController.treeController?.expandAll();
                       },
-                      child: const Text("+")),
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      )),
                   const SizedBox(
                     width: 20,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => const AddAccount(),
-                            binding: BindingsBuilder(
-                              () => Get.lazyPut(
-                                  () => CustomerPlutoEditViewModel()),
-                            ));
-                      },
-                      child: const Text("اضافة حساب")),
+                  AppButton(
+                    onPressed: () {
+                      Get.to(() => const AddAccount(),
+                          binding: BindingsBuilder(
+                            () => Get.lazyPut(() => CustomerPlutoEditViewModel()),
+                          ));
+                    },
+                    title: ("اضافة"),
+                    iconData: Icons.add,
+                  ),
                   const SizedBox(
                     width: 20,
                   ),
@@ -63,16 +74,14 @@ class AccountTreeView extends StatelessWidget {
                           ? const CircularProgressIndicator()
                           : TreeView<AccountTree>(
                               treeController: accountController.treeController!,
-                              nodeBuilder: (BuildContext context,
-                                  TreeEntry<AccountTree> entry) {
+                              nodeBuilder: (BuildContext context, TreeEntry<AccountTree> entry) {
                                 return myTreeTile(
                                   context: context,
                                   key: ValueKey(entry.node),
                                   entry: entry,
                                   onTap: () {
                                     controller.lastIndex = entry.node.id;
-                                    accountController.treeController
-                                        ?.toggleExpansion(entry.node);
+                                    accountController.treeController?.toggleExpansion(entry.node);
                                   },
                                 );
                               },
@@ -86,11 +95,7 @@ class AccountTreeView extends StatelessWidget {
     );
   }
 
-  myTreeTile(
-      {context,
-      required ValueKey<AccountTree> key,
-      required VoidCallback onTap,
-      required TreeEntry<AccountTree> entry}) {
+  myTreeTile({context, required ValueKey<AccountTree> key, required VoidCallback onTap, required TreeEntry<AccountTree> entry}) {
     return TreeIndentation(
       key: key,
       entry: entry,
@@ -102,12 +107,10 @@ class AccountTreeView extends StatelessWidget {
           height: 50,
           child: GestureDetector(
             onSecondaryTapDown: (details) {
-              showContextMenu(
-                  context, details.globalPosition, accountController, entry);
+              showContextMenu(context, details.globalPosition, accountController, entry);
             },
             onLongPressStart: (details) {
-              showContextMenu(
-                  context, details.globalPosition, accountController, entry);
+              showContextMenu(context, details.globalPosition, accountController, entry);
             },
             onTap: onTap,
             child: Row(
@@ -124,9 +127,7 @@ class AccountTreeView extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(getAccountModelFromId(entry.node.id)!
-                          .accCode
-                          .toString()),
+                      Text(getAccountModelFromId(entry.node.id)!.accCode.toString()),
                     ],
                   )
                 else
@@ -147,8 +148,7 @@ class AccountTreeView extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition,
-      AccountViewModel controller, entry) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, AccountViewModel controller, TreeEntry<AccountTree> entry) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
@@ -158,29 +158,21 @@ class AccountTreeView extends StatelessWidget {
         tapPosition.dy + 1.0,
       ),
       items: [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'seeDetails',
           child: ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('عرض تفاصيل'),
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'add',
-          child: ListTile(
-            leading: Icon(Icons.copy),
-            title: Text('إضافة ابن'),
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'rename',
-          child: ListTile(
-            leading: Icon(Icons.copy),
-            title: Text('اعادة تسمية'),
+            onTap: () {
+              Get.to(AddAccount(modelKey: entry.node.id),
+                  binding: BindingsBuilder(
+                    () => Get.lazyPut(() => CustomerPlutoEditViewModel()),
+                  ));
+            },
+            leading: const Icon(Icons.info_outline),
+            title: const Text('عرض '),
           ),
         ),
       ],
-    ).then((value) {
+    ); /*.then((value) {
       if (value == 'seeDetails') {
         ///ToDO
         // Get.to(() => AccountDetails(modelKey: entry.node.id!));
@@ -192,6 +184,6 @@ class AccountTreeView extends StatelessWidget {
               () => Get.lazyPut(() => CustomerPlutoEditViewModel()),
             ));
       }
-    });
+    });*/
   }
 }

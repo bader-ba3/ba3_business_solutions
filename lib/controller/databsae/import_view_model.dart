@@ -1335,7 +1335,7 @@ class ImportViewModel extends GetxController {
             // indexOfInvType = row.indexOf("نوع الفاتورة");
             // indexOfPrimary = row.indexOf("اسم الزبون"); // BAD
             //indexOfTotalVat = row.indexOf("القيمة المضافة");
-            // indexOfTotalWithoutVat = row.indexOf("القيمة");
+            // indexOfTotalWithoutVat = row.indexOf("القيمة");AIRPODS4 ANC مستعمل
           });
 
           //  List<String> dateList=[];
@@ -1446,9 +1446,9 @@ class ImportViewModel extends GetxController {
                 nunProd.add(element[indexOfProductName]);
                 print(element[indexOfProductName]);
                 Get.snackbar("error", "plz check if the file separeted ");
-                return;
+                // return;
               }
-              // var invId = generateId(RecordType.invoice);
+              // var invId = generateId(RecordType.invoice);IPHONE 16 PRO 512G مستعمل
               else {
                 DateTime date = DateTime(
                     int.parse(element[indexOfDate].split("-")[2]),
@@ -1672,7 +1672,7 @@ class ImportViewModel extends GetxController {
             }
             return;
           }
-
+          print( invMap.values.length);
           invMap.removeWhere(
                 (key, value) =>
                 allInvoice.contains(
