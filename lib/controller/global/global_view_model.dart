@@ -182,13 +182,12 @@ class GlobalViewModel extends GetxController {
     globalModel.entryBondCode = getNextEntryBondCode().toString();
     allGlobalModel[globalModel.bondId!] = globalModel;
     // addGlobalToLocal(globalModel);
-
-    addBondToFirebase(globalModel);
     updateDataInAll(globalModel);
+    addBondToFirebase(globalModel);
     bondViewModel.tempBondModel = globalModel;
     bondViewModel.update();
-    // ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    // changesViewModel.addChangeToChanges(globalModel.toFullJson(), Const.bondsCollection);
+    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.bondsCollection);
     update();
   }
 
@@ -409,7 +408,7 @@ class GlobalViewModel extends GetxController {
     // });
 
     ///this for add to firebase
-    // await FirebaseFirestore.instance.collection(Const.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
+    await FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
     await Future.delayed(const Duration(milliseconds: 100));
 
     ///?? globalModel.entryBondId

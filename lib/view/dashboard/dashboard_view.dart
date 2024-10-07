@@ -67,6 +67,7 @@ class _DashboardViewState extends State<DashboardView> {
                               accountController.setBalance(HiveDataBase
                                   .mainAccountModelBox.values
                                   .toList());
+
                               accountController.update();
                               // HiveDataBase.warrantyModelBox.deleteFromDisk();
                               //  HiveDataBase.accountCustomerBox.deleteFromDisk();

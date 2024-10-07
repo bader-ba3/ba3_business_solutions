@@ -17,7 +17,7 @@ class ChangesViewModel extends GetxController {
   List allReadFlags = [];
 
   ChangesViewModel() {
-    listenChanges();
+
   /*  FirebaseFirestore.instance.collection(AppStrings.readFlagsCollection).doc("0").snapshots().listen((event) {
       allReadFlags.clear();
       print(event.data());
@@ -47,7 +47,7 @@ class ChangesViewModel extends GetxController {
 
   listenChanges() {
 
-    FirebaseFirestore.instance.collection(AppStrings.changesCollection)/*.where("changeId", isGreaterThan: HiveDataBase.lastChangesIndexBox.get("lastChangesIndex"))*/.snapshots().listen((value) async {
+    FirebaseFirestore.instance.collection(AppStrings.changesCollection).where("abd", isEqualTo: null).snapshots().listen((value) async {
       // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
         for (var element in value.docs) {
@@ -93,13 +93,10 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          if(element.data()["ali"]==null){
-            FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"ali":true,...element.data()});
-          }else if(element.data()["abd"]==null){
-            // FirebaseFirestore.instance.collection(Const.changesCollection).doc(element.id).set({"abd":true,...element.data()});
-          }else if(element.data()["abd"]!=null&&element.data()["ali"]!=null){
+          if(element.data()["ali"]==null&&element.data()["abd"]==null){
+            FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"abd":true,...element.data()});
+          }else if(element.data()["ali"]!=null){
             FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
-
           }
      /*     List readFlag = [];
           await element.reference.set({
@@ -148,6 +145,7 @@ class ChangesViewModel extends GetxController {
         .collection(AppStrings.changesCollection)
         .doc(lastChangesIndex)
         .set({
+      "ali":true,
       "changeType": changeType,
       "changeId": lastChangesIndex,
       ...json,
@@ -170,5 +168,3 @@ class ChangesViewModel extends GetxController {
   }
 }
 
-class Const {
-}

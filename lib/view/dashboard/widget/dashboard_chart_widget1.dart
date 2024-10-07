@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/controller/global/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,9 @@ import 'package:get/get.dart';
 import '../../../model/seller/seller_model.dart';
 
 class DashboardChartWidget1 extends StatefulWidget {
-  DashboardChartWidget1({super.key,});
-
+  DashboardChartWidget1({
+    super.key,
+  });
 
   final Color lineColor = Colors.red;
   final Color indicatorLineColor = Colors.yellow;
@@ -20,7 +22,6 @@ class DashboardChartWidget1 extends StatefulWidget {
   final Color tooltipBgColor = Colors.grey;
   final Color tooltipTextColor = Colors.black;
 
-
   // List<double> get yValues => const [1.3, 1.5, 1.8, 1.5, 2.2, 1.8, 3];
 
   @override
@@ -29,7 +30,7 @@ class DashboardChartWidget1 extends StatefulWidget {
 
 class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
   late double touchedValue;
-  Map<int,SellerModel> listData = {};
+  Map<int, SellerModel> listData = {};
   List<FlSpot> listStop = [];
 
   bool fitInsideBottomTitle = true;
@@ -39,6 +40,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
   void initState() {
     touchedValue = -1;
     super.initState();
+    Get.find<ChangesViewModel>().listenChanges();
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
@@ -51,48 +53,61 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
     return SideTitleWidget(
       space: 4,
       axisSide: meta.axisSide,
-      fitInside: fitInsideBottomTitle
-          ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
-          : SideTitleFitInsideData.disable(),
+      fitInside: fitInsideBottomTitle ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0) : SideTitleFitInsideData.disable(),
       child: Text(
-       ( listData[value.toInt()]?.sellerName)??"",
+        (listData[value.toInt()]?.sellerName) ?? "",
         style: style,
       ),
     );
   }
+
   ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SellersViewModel>(builder: (controller) {
       listStop.clear();
-      List<SellerModel> allSellers= controller.allSellers.values.where((element) => element.sellerRecord?.firstOrNull!=null,).toList();
-      listData = Map.fromEntries(List.generate(allSellers.length+1, (index){
-        if(index == 0){
-          return  MapEntry(0, SellerModel(sellerName: "",sellerRecord: []));
-        }else{
-         return MapEntry(index,allSellers[index-1]);
+      List<SellerModel> allSellers = controller.allSellers.values
+          .where(
+            (element) => element.sellerRecord?.firstOrNull != null,
+          )
+          .toList();
+      listData = Map.fromEntries(List.generate(allSellers.length + 1, (index) {
+        if (index == 0) {
+          return MapEntry(0, SellerModel(sellerName: "", sellerRecord: []));
+        } else {
+          return MapEntry(index, allSellers[index - 1]);
         }
       }));
-      listData[allSellers.length+1]=SellerModel(sellerName: "",sellerRecord: []);
-      listData.forEach((key, value) {
-        if(value.sellerRecord!.isNotEmpty){
-          List<SellerRecModel> _ = value.sellerRecord!.where((element) {
-           //  print(element.selleRecInvDate);2024-09-02 00:00:00
-           String date =  element.selleRecInvDate.toString().split(" ")[0];
-           String year = DateTime.now().toString().split("-")[0];
-           String month = DateTime.now().toString().split("-")[1];
-           return date.split("-")[1] == month;
-          },).toList();
-          if(_.isNotEmpty) {
-
-            listStop.add(
-            FlSpot(key.toDouble(),_.map((e) => double.parse(e.selleRecAmount??"0"),).reduce((value, element) => value+element,))
-          );
+      listData[allSellers.length + 1] = SellerModel(sellerName: "", sellerRecord: []);
+      listData.forEach(
+        (key, value) {
+          if (value.sellerRecord!.isNotEmpty) {
+            List<SellerRecModel> _ = value.sellerRecord!.where(
+              (element) {
+                //  print(element.selleRecInvDate);2024-09-02 00:00:00
+                String date = element.selleRecInvDate.toString().split(" ")[0];
+                String year = DateTime.now().toString().split("-")[0];
+                String month = DateTime.now().toString().split("-")[1];
+                return date.split("-")[1] == month;
+              },
+            ).toList();
+            if (_.isNotEmpty) {
+              listStop.add(FlSpot(
+                  key.toDouble(),
+                  _
+                      .map(
+                        (e) => double.parse(e.selleRecAmount ?? "0"),
+                      )
+                      .reduce(
+                        (value, element) => value + element,
+                      )));
+            }
+          } else {
+            listStop.add(FlSpot(key.toDouble(), 0));
           }
-        }else{
-          listStop.add(FlSpot(key.toDouble(),0));
-        }
-      },);
+        },
+      );
       return Container(
         color: Colors.white,
         child: Column(
@@ -119,7 +134,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                 interactive: true,
                 scrollbarOrientation: ScrollbarOrientation.bottom,
                 child: Container(
-                  width: Get.width*2,
+                  width: Get.width * 2,
                   height: 700,
                   padding: const EdgeInsets.symmetric(vertical: 70),
                   child: Padding(
@@ -127,7 +142,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                     child: LineChart(
                       LineChartData(
                         lineTouchData: LineTouchData(
-                          getTouchedSpotIndicator:(LineChartBarData barData, List<int> spotIndexes) {
+                          getTouchedSpotIndicator: (LineChartBarData barData, List<int> spotIndexes) {
                             return spotIndexes.map((spotIndex) {
                               final spot = barData.spots[spotIndex];
                               if (spot.x == 0 || spot.x == 6) {
@@ -145,16 +160,14 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                                         radius: 8,
                                         color: Colors.white,
                                         strokeWidth: 5,
-                                        strokeColor:
-                                        widget.indicatorTouchedSpotStrokeColor,
+                                        strokeColor: widget.indicatorTouchedSpotStrokeColor,
                                       );
                                     } else {
                                       return FlDotSquarePainter(
                                         size: 16,
                                         color: Colors.white,
                                         strokeWidth: 5,
-                                        strokeColor:
-                                        widget.indicatorTouchedSpotStrokeColor,
+                                        strokeColor: widget.indicatorTouchedSpotStrokeColor,
                                       );
                                     }
                                   },
@@ -196,7 +209,6 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                                         fontWeight: FontWeight.w900,
                                       ),
                                     ),
-
                                   ],
                                   textAlign: textAlign,
                                 );

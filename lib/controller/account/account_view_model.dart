@@ -61,7 +61,7 @@ class AccountViewModel extends GetxController {
           (element) => accountsId?.contains(element.bondRecAccount) ?? false,
         )
         .toList();
-
+print(currentEntry.map((e) => e.toJson(),).toList());
     for (int i = 0; i < currentEntry.length; i++) {
       var recCredit = currentEntry[i].bondRecDebitAmount! -
           currentEntry[i].bondRecCreditAmount!;
@@ -494,6 +494,7 @@ class AccountViewModel extends GetxController {
     accountList[userId]?.accRecord.clear();
     GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
     for (var globalModel in globalViewModel.allGlobalModel.values.toList()) {
+      
       initGlobalAccount(globalModel, accountsId: [userId]);
     }
 
