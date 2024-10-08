@@ -56,7 +56,7 @@ class GlobalViewModel extends GetxController {
         .toList());
 
     ///TODo: خليها اذا رح نجيب شي من الفيربيز
-    if (false) {
+  /*  if (false) {
       await FirebaseFirestore.instance
           .collection(AppStrings.globalCollection)
           .get()
@@ -130,7 +130,7 @@ class GlobalViewModel extends GetxController {
           });
         }
       });
-    } else {
+    } else*/ {
       print("start");
       count = 0.obs;
       allCountOfInvoice = allGlobalModel.length;
@@ -271,14 +271,15 @@ class GlobalViewModel extends GetxController {
   ////-Update
   void updateGlobalInvoice(GlobalModel globalModel) {
     // GlobalModel correctedModel = correctInvRecord(globalModel);
+    initGlobalInvoiceBond(globalModel);
 
-    addInvoiceToFirebase(globalModel);
     allGlobalModel[globalModel.invId!] = globalModel;
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    addInvoiceToFirebase(globalModel);
     changesViewModel.addChangeToChanges(
         globalModel.toFullJson(), AppStrings.invoicesCollection);
-    initGlobalInvoiceBond(globalModel);
+
     update();
   }
 
@@ -678,7 +679,7 @@ class GlobalViewModel extends GetxController {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != AppStrings.invoiceTypeAdd &&
             globalModel.invType != AppStrings.invoiceTypeChange) {
-          initGlobalInvoiceBond(globalModel);
+          // initGlobalInvoiceBond(globalModel);
           if (getPatModelFromPatternId(globalModel.patternId).patType ==
                   AppStrings.invoiceTypeSales ||
               getPatModelFromPatternId(globalModel.patternId).patType ==
@@ -713,7 +714,7 @@ class GlobalViewModel extends GetxController {
       if (!globalModel.invIsPending!) {
         if (globalModel.invType != AppStrings.invoiceTypeAdd &&
             globalModel.invType != AppStrings.invoiceTypeChange) {
-          initGlobalInvoiceBond(globalModel);
+          // initGlobalInvoiceBond(globalModel);
           if (getPatModelFromPatternId(globalModel.patternId).patName ==
                   "مبيع" ||
               getPatModelFromPatternId(globalModel.patternId).patType ==

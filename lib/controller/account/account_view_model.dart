@@ -61,7 +61,6 @@ class AccountViewModel extends GetxController {
           (element) => accountsId?.contains(element.bondRecAccount) ?? false,
         )
         .toList();
-print(currentEntry.map((e) => e.toJson(),).toList());
     for (int i = 0; i < currentEntry.length; i++) {
       var recCredit = currentEntry[i].bondRecDebitAmount! -
           currentEntry[i].bondRecCreditAmount!;
@@ -837,9 +836,9 @@ print(currentEntry.map((e) => e.toJson(),).toList());
     return accountFound;
   }
 
-  void setBalance(List<AccountModel> currentPageData) {
+  void setBalance(List<AccountModel> currentPageData)async {
     for (var element in currentPageData) {
-      HiveDataBase.accountModelBox.put(
+    await  HiveDataBase.accountModelBox.put(
           element.accId, element..finalBalance = getBalance(element.accId!));
     }
   }
