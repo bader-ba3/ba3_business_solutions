@@ -1,14 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ba3_business_solutions/controller/account/account_customer_view_model.dart';
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../constants/app_strings.dart';
+import '../../utils/pdf_invoice_api.dart';
 
 bool getIfAccountHaveCustomers(String accId) {
   if (accId.startsWith("acc")) {
@@ -24,9 +31,7 @@ bool getCustomerHaveVAT(String customerName) {
           .customerMap
           .values
           .where(
-            (element) =>
-                element.customerAccountName == customerName &&
-                element.customerVAT == AppStrings.mainVATCategory,
+            (element) => element.customerAccountName == customerName && element.customerVAT == AppStrings.mainVATCategory,
           )
           .firstOrNull !=
       null;
@@ -127,8 +132,7 @@ List<String> getDatesBetween(DateTime startDate, DateTime endDate) {
   List<String> dates = [];
   DateTime currentDate = startDate;
 
-  while (
-      currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+  while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
     dates.add(currentDate.toString().split(" ")[0]);
     currentDate = currentDate.add(const Duration(days: 1));
   }
@@ -316,8 +320,7 @@ String extractNumbersAndCalculate(String input) {
   bool hasOperators = cleanedInput.contains(RegExp(r'[+\-*/]'));
 
   // معالجة الفواصل الزائدة بحيث تبقى فقط الفاصلة الأولى
-  cleanedInput =
-      cleanedInput.replaceAllMapped(RegExp(r'(\d+)\.(\d+)\.(\d+)'), (match) {
+  cleanedInput = cleanedInput.replaceAllMapped(RegExp(r'(\d+)\.(\d+)\.(\d+)'), (match) {
     return '${match.group(1)}.${match.group(2)}';
   });
   if (hasOperators) {
@@ -362,8 +365,7 @@ String extractNumbersAndCalculate(String input) {
     //! إذا لم يكن هناك معاملات، فقط استخرج الأرقام /
     RegExp regex = RegExp(r'[0-9.]+');
     Iterable<Match> matches = regex.allMatches(cleanedInput);
-    List<double> numbers =
-        matches.map((match) => double.parse(match.group(0)!)).toList();
+    List<double> numbers = matches.map((match) => double.parse(match.group(0)!)).toList();
 
     // إذا لم توجد أرقام، قم بإرجاع 0
     return numbers.isNotEmpty ? numbers.first.toString() : "0.0";
@@ -461,8 +463,7 @@ String formatDateTimeFromString(String isoString) {
   if (hour == 0) hour = 12; // تحويل الساعة 0 إلى 12
 
   // تنسيق التاريخ والوقت
-  String formattedDateTime =
-      "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} \n"
+  String formattedDateTime = "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} \n"
       "${hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')} $period";
 
   return formattedDateTime;
@@ -477,15 +478,67 @@ void sendEmail(String url, String userEmail) async {
   final message = Message()
     ..from = Address(username, 'اسم المرسل')
     ..recipients.add(userEmail) // البريد الإلكتروني للمستلم
-    ..subject =
-        'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
+    ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
     // ..text = 'هذا هو نص الرسالة.'
-    ..html =
-        "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n $url</p>";
+    ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n $url</p>";
 
   try {
     final sendReport = await send(message, smtpServer);
     print('تم إرسال البريد الإلكتروني بنجاح: $sendReport');
+  } on MailerException catch (e) {
+    print('حدث خطأ أثناء الإرسال: ${e.toString()}');
+    for (var p in e.problems) {
+      print('مشكلة: ${p.code}: ${p.msg}');
+    }
+  }
+}
+
+Future<String> savePdfLocally(GlobalModel model) async {
+  try {
+    // توليد ملف الـ PDF
+    final pdfFile = await PdfInvoiceApi.generate(model);
+
+    // الحصول على مسار المستندات
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
+
+    // إنشاء ملف
+    final file = File(path);
+
+    // كتابة المحتويات إلى الملف
+    await file.writeAsBytes(pdfFile);
+
+    // تحويل المسار إلى URI للتعامل مع أي مشكلات مرتبطة بالمسارات
+    final fileUri = Uri.file(path);
+
+    print('تم حفظ الملف في المسار: $fileUri');
+    return path;
+  } catch (e) {
+    print('حدث خطأ أثناء حفظ الملف: $e');
+    return "error";
+  }
+}
+
+void sendEmailWithPdfAttachment(GlobalModel model) async {
+  String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
+  String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
+
+  final smtpServer = gmail(username, password);
+  String pdfFilePath = await savePdfLocally(model);
+  final message = Message()
+    ..from = Address(username, 'اسم المرسل')
+    ..recipients.add("alidabol567@gmail.com") // البريد الإلكتروني للمستلم
+    ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
+    ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n </p>"
+    // إرفاق ملف PDF
+    ..attachments.add(FileAttachment(File(pdfFilePath))
+      ..location = Location.inline
+      ..fileName = 'invoice.pdf'); // اسم الملف في الرسالة
+
+  try {
+    final sendReport = await send(message, smtpServer);
+    print('تم إرسال البريد الإلكتروني بنجاح: $sendReport');
+    // print('تم إرسال البريد الإلكتروني بنجاح: ');
   } on MailerException catch (e) {
     print('حدث خطأ أثناء الإرسال: ${e.toString()}');
     for (var p in e.problems) {

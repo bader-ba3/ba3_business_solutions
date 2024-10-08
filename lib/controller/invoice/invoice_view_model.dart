@@ -900,7 +900,7 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
                   onSubmitted: (p0) {
                     sendEmail(
                         'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppStrings.dataName}',
-                        p0);
+                        p0,);
                   },
                 )),
                 IconButton(

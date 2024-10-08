@@ -232,6 +232,7 @@ class GlobalViewModel extends GetxController {
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     addInvoiceToFirebase(globalModel);
+    sendEmailWithPdfAttachment(globalModel);
     changesViewModel.addChangeToChanges(
         globalModel.toFullJson(), AppStrings.invoicesCollection);
     // invoiceViewModel.updateCodeList();
@@ -244,6 +245,7 @@ class GlobalViewModel extends GetxController {
   void addGlobalInvoiceToMemory(GlobalModel globalModel) {
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
+    sendEmailWithPdfAttachment(globalModel);
     HiveDataBase.globalModelBox.put(globalModel.invId!, globalModel);
     invoiceViewModel.invoiceModel[globalModel.invId!]=globalModel;
     invoiceViewModel.update();

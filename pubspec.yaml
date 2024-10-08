@@ -124,6 +124,10 @@ flutter:
        fonts:
          - asset: assets/fonts/Almarai-Regular.ttf
          - asset: assets/fonts/Almarai-Bold.ttf
+
+     - family: NotoSansArabic
+       fonts:
+         - asset: assets/NotoSansArabic-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -76,6 +76,7 @@ class ChangesViewModel extends GetxController {
             globalViewModel.addGlobalBondToMemory(GlobalModel.fromJson(element.data()));
           } else if (element['changeType'] == AppStrings.invoicesCollection) {
             GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+
             globalViewModel.addGlobalInvoiceToMemory(GlobalModel.fromJson(element.data()));
           } else if (element['changeType'] == AppStrings.chequesCollection) {
             GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
