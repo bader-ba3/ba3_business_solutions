@@ -24,6 +24,7 @@ class CustomPlutoWithEdite extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: PlutoGrid(
+
         columns: controller.columns,
         rows: controller.rows,
         onRowSecondaryTap: onRowSecondaryTap,
@@ -37,6 +38,14 @@ class CustomPlutoWithEdite extends StatelessWidget {
           controller.stateManager = event.stateManager;
           final newRows = controller.stateManager.getNewRows(count: 30);
           controller.stateManager.appendRows(newRows);
+
+          if (controller.stateManager.rows.isNotEmpty && controller.stateManager.rows.first.cells.length > 1) {
+            final secondCell = controller.stateManager.rows.first.cells.entries.elementAt(1).value;
+            controller.stateManager.setCurrentCell(secondCell, 0);
+
+            FocusScope.of(event.stateManager.gridFocusNode.context!).requestFocus(event.stateManager.gridFocusNode);
+
+          }
         },
       ),
     );

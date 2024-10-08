@@ -73,7 +73,7 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction {
           callOnChangedEvent: true,
           notify: true,
         );
-        controller.updateInvoiceValuesByTotal(
+        controller.updateInvoiceValues(
             controller.getPrice(
                 prodName: newValue,
                 type: AppStrings.invoiceChoosePriceMethodeCustomerPrice),

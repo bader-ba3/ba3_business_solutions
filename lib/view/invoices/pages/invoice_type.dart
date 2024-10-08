@@ -135,9 +135,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                         width: Get.width,
                         child: InkWell(
                           onTap: () {
-                            SystemChrome.setPreferredOrientations([
-                              DeviceOrientation.landscapeLeft,
-                            ]);
+
                             Get.to(
                                 () => const WarrantyInvoiceView(
                                       billId: "1",

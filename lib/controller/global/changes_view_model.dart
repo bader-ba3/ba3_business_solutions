@@ -17,8 +17,7 @@ class ChangesViewModel extends GetxController {
   List allReadFlags = [];
 
   ChangesViewModel() {
-
-  /*  FirebaseFirestore.instance.collection(AppStrings.readFlagsCollection).doc("0").snapshots().listen((event) {
+    /*  FirebaseFirestore.instance.collection(AppStrings.readFlagsCollection).doc("0").snapshots().listen((event) {
       allReadFlags.clear();
       print(event.data());
       allReadFlags = (event.data()?['allFlags'] ?? []).map((e) => e.toString()).toList();
@@ -37,7 +36,7 @@ class ChangesViewModel extends GetxController {
     });*/
   }
 
-  getLastIndexChanges(){
+  getLastIndexChanges() {
 /*    FirebaseFirestore.instance.collection(AppStrings.changesCollection).get().then((value) {
       AppStrings lastChangesIndex = int.parse(value.docs.last.id);
       print(lastChangesIndex);
@@ -46,18 +45,18 @@ class ChangesViewModel extends GetxController {
   }
 
   listenChanges() {
-
-    FirebaseFirestore.instance.collection(AppStrings.changesCollection).where("abd", isEqualTo: null).snapshots().listen((value) async {
+    FirebaseFirestore.instance.collection(AppStrings.changesCollection).where("ali", isEqualTo: null).snapshots().listen((value) async {
       // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
-        for (var element in value.docs) {
+      for (var element in value.docs) {
+        if (element.data()["ali"] == null) {
           print(element['changeType']);
           if (element['changeType'] == AppStrings.productsCollection) {
             ProductViewModel productViewModel = Get.find<ProductViewModel>();
             productViewModel.addProductToMemory(element.data());
           } else if (element['changeType'] == "remove_${AppStrings.productsCollection}") {
             ProductViewModel productViewModel = Get.find<ProductViewModel>();
-            //enter this function
+            // enter this function
             print("enter a delete function");
             productViewModel.removeProductFromMemory(element.data());
           } else if (element['changeType'] == AppStrings.accountsCollection) {
@@ -93,59 +92,25 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          if(element.data()["ali"]==null&&element.data()["abd"]==null){
-            FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"abd":true,...element.data()});
-          }else if(element.data()["ali"]!=null){
-            FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
+          if (element.data()["ali"] == null && element.data()["abd"] == null) {
+            FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"ali": true, ...element.data()});
+          } else if (element.data()["abd"] != null) {
+            // FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
           }
-     /*     List readFlag = [];
-          await element.reference.set({
-            "allFlags": FieldValue.arrayUnion([HiveDataBase.getMyReadFlag()]),
-          }, SetOptions(merge: true));
-          element.reference.get().then((value) {
-            if (value.data()!['allFlags'] != null && value.data()!['allFlags'] != []) {
-              readFlag = value.data()!['allFlags'];
-              //readFlag.add(HiveDataBase.getMyReadFlag());
-              readFlag.sort(
-                (a, b) => a.compareTo(b),
-              );
-            } else {
-              // readFlag = [HiveDataBase.getMyReadFlag()];
-            }
-            allReadFlags.sort(
-              (a, b) => a.compareTo(b),
-            );
-            print(allReadFlags.join(","));
-            print(readFlag.join(","));
-            print(allReadFlags.join(",").removeAllWhitespace == readFlag.join(",").removeAllWhitespace);
-            if (allReadFlags.join(",").removeAllWhitespace == readFlag.join(",").removeAllWhitespace) {
-              print("deleted");
-              value.reference.delete();
-            } else {}
-          });*/
-
-          // print(int.parse(element.data()['changeId'].toString()));
-          // print("------"*30);
-          // HiveDataBase.lastChangesIndexBox.put("lastChangesIndex", int.parse(element.data()['changeId'].toString()));
-
         }
-
+      }
     });
   }
 
   String getLastChangesIndexWithPad() {
-    return generateId(RecordType
-        .changes) /*(HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0")*/;
+    return generateId(RecordType.changes) /*(HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0")*/;
   }
 
   addChangeToChanges(Map json, changeType) async {
     String lastChangesIndex = getLastChangesIndexWithPad();
     print(lastChangesIndex);
-    await FirebaseFirestore.instance
-        .collection(AppStrings.changesCollection)
-        .doc(lastChangesIndex)
-        .set({
-      "ali":true,
+    await FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(lastChangesIndex).set({
+      "ali": true,
       "changeType": changeType,
       "changeId": lastChangesIndex,
       ...json,
@@ -156,15 +121,7 @@ class ChangesViewModel extends GetxController {
   addRemoveChangeToChanges(Map json, changeType) async {
     String lastChangesIndex = getLastChangesIndexWithPad();
     print(lastChangesIndex);
-    await FirebaseFirestore.instance
-        .collection(AppStrings.changesCollection)
-        .doc(lastChangesIndex)
-        .set({
-      "changeType": "remove_" + changeType,
-      "changeId": lastChangesIndex,
-      ...json
-    });
+    await FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(lastChangesIndex).set({"changeType": "remove_" + changeType, "changeId": lastChangesIndex, ...json});
     // FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
   }
 }
-

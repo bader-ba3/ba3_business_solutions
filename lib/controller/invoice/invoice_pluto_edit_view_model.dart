@@ -319,11 +319,11 @@ class InvoicePlutoViewModel extends GetxController {
 
   void updateInvoiceValues(double subTotal, int quantity) {
     double vat = getIfHaveVAT() ? (subTotal * 0.05) : 0;
-    double total = (subTotal + vat) * quantity;
-
+    double total = (subTotal) * quantity;
     updateCellValue("invRecVat", vat.toStringAsFixed(2));
-    updateCellValue("invRecSubTotal", subTotal.toStringAsFixed(2));
+    updateCellValue("invRecSubTotal", (subTotal-vat).toStringAsFixed(2));
     updateCellValue("invRecTotal", total.toStringAsFixed(2));
+    updateCellValue("invRecQuantity",quantity);
   }
 
   void updateInvoiceValuesByTotal(double total, int quantity) {
@@ -347,12 +347,12 @@ class InvoicePlutoViewModel extends GetxController {
       int index, ProductModel productModel, text, method) {
     return PopupMenuItem(
       onTap: () {
-        updateInvoiceValuesByTotal(
+        updateInvoiceValues(
           getPrice(prodName: productModel.prodName, type: method),
           int.tryParse(stateManager.rows[index].cells["invRecQuantity"]?.value
                       .toString() ??
-                  "0") ??
-              0,
+                  "1") ??
+              1,
         );
         update();
       },
