@@ -192,8 +192,10 @@ class GlobalViewModel extends GetxController {
   }
 
   void addGlobalBondToMemory(GlobalModel globalModel) {
-    addGlobalToLocal(globalModel);
-    updateDataInAll(globalModel);
+    // addGlobalToLocal(globalModel);
+    // updateDataInAll(globalModel);
+    HiveDataBase.globalModelBox.put(globalModel.bondId!, globalModel);
+    bondViewModel.allBondsItem[globalModel.cheqId!]=globalModel;
     bondViewModel.update();
     update();
   }
@@ -203,10 +205,11 @@ class GlobalViewModel extends GetxController {
     // globalModel.bondId = generateId(RecordType.bond);
     // globalModel.entryBondId = generateId(RecordType.entryBond);
     allGlobalModel[globalModel.entryBondCode!] = globalModel;
-    addChequeToFirebase(globalModel);
+
     updateDataInAll(globalModel);
     chequeViewModel.update();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    addChequeToFirebase(globalModel);
     changesViewModel.addChangeToChanges(
         globalModel.toFullJson(), AppStrings.chequesCollection);
     update();
@@ -227,38 +230,43 @@ class GlobalViewModel extends GetxController {
     allGlobalModel[globalModel.invId!] = globalModel;
     initGlobalInvoiceBond(globalModel);
     updateDataInAll(globalModel);
-    addInvoiceToFirebase(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    addInvoiceToFirebase(globalModel);
     changesViewModel.addChangeToChanges(
         globalModel.toFullJson(), AppStrings.invoicesCollection);
-
     // invoiceViewModel.updateCodeList();
     invoiceViewModel.initModel = globalModel;
+    invoiceViewModel.invoiceModel[globalModel.invId!] = globalModel;
     invoiceViewModel.update();
-    update();
+
   }
 
   void addGlobalInvoiceToMemory(GlobalModel globalModel) {
-    addGlobalToLocal(globalModel);
-    updateDataInAll(globalModel);
+    // addGlobalToLocal(globalModel);
+    // updateDataInAll(globalModel);
+    HiveDataBase.globalModelBox.put(globalModel.invId!, globalModel);
+    invoiceViewModel.invoiceModel[globalModel.invId!]=globalModel;
     invoiceViewModel.update();
     update();
   }
 
   void addGlobalChequeToMemory(GlobalModel globalModel) {
-    addGlobalToLocal(globalModel);
-    updateDataInAll(globalModel);
+    // addGlobalToLocal(globalModel);
+    // updateDataInAll(globalModel);
+    HiveDataBase.globalModelBox.put(globalModel.cheqId!, globalModel);
+    chequeViewModel.allCheques[globalModel.cheqId!]=globalModel;
     chequeViewModel.update();
+
     update();
   }
 
-  void addGlobalToLocal(GlobalModel globalModel) {
+/*  void addGlobalToLocal(GlobalModel globalModel) {
     if (globalModel.invId != null) {
       HiveDataBase.globalModelBox.put(globalModel.invId, globalModel);
     } else {
       HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
     }
-  }
+  }*/
 
   ////-Update
   void updateGlobalInvoice(GlobalModel globalModel) {
@@ -492,7 +500,7 @@ class GlobalViewModel extends GetxController {
         if ((element.invRecQuantity ?? 0) > 0) {
           globalModel.entryBondRecord!.add(EntryBondRecordModel(
               (bondRecId++).toString(),
-              (element.invRecSubTotal! * element.invRecQuantity!).abs(),
+              ((element.invRecSubTotal??0) * (element.invRecQuantity??0)).abs(),
               0,
               globalModel.invPrimaryAccount,
               dse));
