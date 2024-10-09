@@ -53,7 +53,7 @@ class GlobalModel {
   List<BondRecordModel>? bondRecord = [];
   List<InvoiceRecordModel>? invRecords = [];
   List<InvoiceDiscountRecordModel>? invDiscountRecord = [];
-  bool? invIsPending, invIsPaid;
+  bool? invIsPending, invIsPaid ,isDeleted;
 
   String? cheqId,
       cheqName,
@@ -84,6 +84,7 @@ class GlobalModel {
       if (cheqPaidEntryBond != null) 'cheqPaidEntryBond': cheqPaidEntryBond,
 
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
+      if (isDeleted != null) 'isDeleted': isDeleted,
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (invReturnCode != null) 'invReturnCode': invReturnCode,
       if (invReturnDate != null) 'invReturnDate': invReturnDate,
@@ -159,6 +160,7 @@ class GlobalModel {
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (addedTotal != null) 'addedTotal': addedTotal,
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
+      if (isDeleted != null) 'isDeleted': isDeleted,
       if (firstPay != null) 'firstPay': firstPay,
       if (invId != null) 'invId': invId,
       if (originAmenId != null) 'originAmenId': originAmenId,
@@ -276,6 +278,7 @@ class GlobalModel {
       cheqPaidEntryBond: json['cheqPaidEntryBond'],
       firstPay: json['firstPay'],
       addedTotal: json['addedTotal'],
+      isDeleted: json['isDeleted'],
       invIsPaid:
           json['invIsPaid'] ?? json['invPayType'] == AppStrings.invPayTypeCash
               ? true
@@ -543,6 +546,7 @@ class GlobalModel {
     this.discountTotal,
     this.firstPay,
     this.addedTotal,
+    this.isDeleted,
   });
 
   Map<String, dynamic> toMap({String? type}) {

@@ -41,51 +41,34 @@ class AccountViewModel extends GetxController {
 
   initGlobalAccount(GlobalModel globalModel,
       {String? oldAccountKey, List<String>? accountsId}) async {
-    String? type;
-    String? date;
-    if (globalModel.globalType == AppStrings.globalTypeBond) {
-      type = globalModel.bondType!;
-      date = globalModel.bondDate!;
-    } else if (globalModel.globalType == AppStrings.globalTypeInvoice) {
-      type = globalModel.patternId!;
-      date = globalModel.invDate!;
-    } else if (globalModel.globalType == AppStrings.globalTypeCheque) {
-      type = globalModel.cheqType!;
-      date = globalModel.cheqDate!;
-    } else {
-      type = AppStrings.bondTypeStart;
-      date = globalModel.invDueDate;
-    }
-    List<EntryBondRecordModel>? currentEntry = globalModel.entryBondRecord!
-        .where(
-          (element) => accountsId?.contains(element.bondRecAccount) ?? false,
-        )
-        .toList();
-    for (int i = 0; i < currentEntry.length; i++) {
-      var recCredit = currentEntry[i].bondRecDebitAmount! -
-          currentEntry[i].bondRecCreditAmount!;
-      accountList[accountsId!.last]!.accRecord.add(
-            AccountRecordModel(
-                globalModel.invId ??
-                    globalModel.bondId ??
-                    globalModel.entryBondId,
-                currentEntry[i].bondRecAccount!,
-                recCredit.toString(),
-                0,
-                type,
-                date,
-                type.startsWith("pat")
-                    ? globalModel.invCode
-                    : globalModel.bondCode,
-                (accountList[accountsId.last]!
-                            .accRecord
-                            .lastOrNull
-                            ?.subBalance ??
-                        0) +
-                    recCredit,
-                currentEntry[i].bondRecDebitAmount,
-                currentEntry[i].bondRecCreditAmount!),
-          );
+   if(globalModel.isDeleted!=true&&globalModel.invIsPending!=true) {
+      String? type;
+      String? date;
+      if (globalModel.globalType == AppStrings.globalTypeBond) {
+        type = globalModel.bondType!;
+        date = globalModel.bondDate!;
+      } else if (globalModel.globalType == AppStrings.globalTypeInvoice) {
+        type = globalModel.patternId!;
+        date = globalModel.invDate!;
+      } else if (globalModel.globalType == AppStrings.globalTypeCheque) {
+        type = globalModel.cheqType!;
+        date = globalModel.cheqDate!;
+      } else {
+        type = AppStrings.bondTypeStart;
+        date = globalModel.invDueDate;
+      }
+      List<EntryBondRecordModel>? currentEntry = globalModel.entryBondRecord!
+          .where(
+            (element) => accountsId?.contains(element.bondRecAccount) ?? false,
+          )
+          .toList();
+      for (int i = 0; i < currentEntry.length; i++) {
+        var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
+        accountList[accountsId!.last]!.accRecord.add(
+              AccountRecordModel(globalModel.invId ?? globalModel.bondId ?? globalModel.entryBondId, currentEntry[i].bondRecAccount!, recCredit.toString(), 0, type, date, type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
+                  (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0) + recCredit, currentEntry[i].bondRecDebitAmount, currentEntry[i].bondRecCreditAmount!),
+            );
+      }
     }
   }
 

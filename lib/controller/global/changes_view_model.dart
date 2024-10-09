@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/generate_id.dart';
-import '../../core/utils/hive.dart';
 import '../../model/global/global_model.dart';
 import '../../model/warranty/warranty_model.dart';
 import '../account/account_view_model.dart';
@@ -76,7 +75,6 @@ class ChangesViewModel extends GetxController {
             globalViewModel.addGlobalBondToMemory(GlobalModel.fromJson(element.data()));
           } else if (element['changeType'] == AppStrings.invoicesCollection) {
             GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-
             globalViewModel.addGlobalInvoiceToMemory(GlobalModel.fromJson(element.data()));
           } else if (element['changeType'] == AppStrings.chequesCollection) {
             GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
@@ -93,7 +91,7 @@ class ChangesViewModel extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          if (element.data()["ali"] == null && element.data()["abd"] == null) {
+          if (element.data()["ali"] == null || element.data()["abd"] == null) {
             FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).set({"ali": true, ...element.data()});
           } else if (element.data()["abd"] != null) {
             // FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();

@@ -18,9 +18,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../model/bond/bond_record_model.dart';
 import '../../model/bond/entry_bond_record_model.dart';
-import '../../model/cheque/cheque_rec_model.dart';
 import '../../model/invoice/invoice_discount_record_model.dart';
-import '../../model/invoice/invoice_record_model.dart';
 import '../../view/main/main_screen.dart';
 import '../databsae/import_view_model.dart';
 import '../invoice/invoice_view_model.dart';
@@ -232,20 +230,20 @@ class GlobalViewModel extends GetxController {
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     addInvoiceToFirebase(globalModel);
-    sendEmailWithPdfAttachment(globalModel);
     changesViewModel.addChangeToChanges(
         globalModel.toFullJson(), AppStrings.invoicesCollection);
     // invoiceViewModel.updateCodeList();
     invoiceViewModel.initModel = globalModel;
     invoiceViewModel.invoiceModel[globalModel.invId!] = globalModel;
     invoiceViewModel.update();
+    sendEmailWithPdfAttachment(globalModel);
 
   }
 
   void addGlobalInvoiceToMemory(GlobalModel globalModel) {
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
-    sendEmailWithPdfAttachment(globalModel);
+
     HiveDataBase.globalModelBox.put(globalModel.invId!, globalModel);
     invoiceViewModel.invoiceModel[globalModel.invId!]=globalModel;
     invoiceViewModel.update();
@@ -283,6 +281,7 @@ class GlobalViewModel extends GetxController {
         globalModel.toFullJson(), AppStrings.invoicesCollection);
 
     update();
+    sendEmailWithPdfAttachment(globalModel);
   }
 
   Future<void> updateGlobalBond(GlobalModel globalModel) async {
@@ -325,7 +324,7 @@ class GlobalViewModel extends GetxController {
           .set({"isDeleted": true}, SetOptions(merge: true));
     }
     deleteGlobalFromLocal(globalModel);
-    deleteDataInAll(globalModel);
+    // deleteDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addRemoveChangeToChanges(
         globalModel.toFullJson(), AppStrings.globalCollection);
@@ -334,17 +333,17 @@ class GlobalViewModel extends GetxController {
 
   void deleteGlobalMemory(GlobalModel globalModel) {
     deleteGlobalFromLocal(globalModel);
-    deleteDataInAll(globalModel);
+    // deleteDataInAll(globalModel);
     update();
   }
 
   void deleteGlobalFromLocal(GlobalModel globalModel) {
     if (globalModel.invId != null) {
-      HiveDataBase.globalModelBox.delete(globalModel.invId);
+      HiveDataBase.globalModelBox.put(globalModel.invId,globalModel..isDeleted=true);
     }
     if (globalModel.bondId != null) {
-      HiveDataBase.globalModelBox.delete(globalModel.bondId);
-      HiveDataBase.globalModelBox.delete(globalModel.entryBondId);
+      HiveDataBase.globalModelBox.put(globalModel.bondId,globalModel..isDeleted=true);
+
     }
   }
 

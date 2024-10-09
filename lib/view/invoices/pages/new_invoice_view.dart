@@ -826,6 +826,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         );
                                         // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
+
+
                                         // invoiceController.initModel=_updateData(plutoEditViewModel.invoiceRecord);
                                         screenViewModel.update();
                                       }

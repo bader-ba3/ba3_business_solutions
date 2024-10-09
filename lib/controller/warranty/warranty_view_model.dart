@@ -172,7 +172,6 @@ class WarrantyViewModel extends GetxController {
 
   addToLocal({required WarrantyModel warrantyModel}) async {
     await HiveDataBase.warrantyModelBox.put(warrantyModel.invId, warrantyModel);
-
     warrantyMap[warrantyModel.invId!] = warrantyModel;
   }
 
