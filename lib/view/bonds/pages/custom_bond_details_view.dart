@@ -198,7 +198,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     controller.bondModel.bondId)
                                   TextButton(
                                       onPressed: () {
-                                        controller.firstBond();
+                                        // controller.firstBond();
                                       },
                                       child: const Icon(
                                           Icons.keyboard_double_arrow_right))
@@ -213,7 +213,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     controller.bondModel.bondId)
                                   TextButton(
                                       onPressed: () {
-                                        controller.prevBond();
+                                        // controller.prevBond();
                                       },
                                       child: const Icon(
                                           Icons.keyboard_arrow_right))
@@ -258,7 +258,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     controller.bondModel.bondId)
                                   TextButton(
                                       onPressed: () {
-                                        controller.nextBond();
+                                        // controller.nextBond();
                                       },
                                       child:
                                           const Icon(Icons.keyboard_arrow_left))
@@ -273,7 +273,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     controller.bondModel.bondId)
                                   TextButton(
                                       onPressed: () {
-                                        controller.lastBond();
+                                        // controller.lastBond();
                                       },
                                       child: const Icon(
                                           Icons.keyboard_double_arrow_left))

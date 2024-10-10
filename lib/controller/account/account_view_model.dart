@@ -202,8 +202,7 @@ class AccountViewModel extends GetxController {
   Future<void> getAllBondForAccount(
       List<String> modeKey, List<String> allDate) async {
     accountList[modeKey.last]?.accRecord.clear();
-    GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    List<GlobalModel> globalModels = globalViewModel.allGlobalModel.values
+    List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
         .where((element) =>
             (allDate.contains(element.bondDate?.split(" ")[0]) ||
                 allDate.contains(element.invDate?.split(" ")[0])) ||
@@ -231,11 +230,11 @@ class AccountViewModel extends GetxController {
     double dues = 0;
     accountList[modeKey.last]!.finalBalance = 0;
     accountList[modeKey.last]?.accRecord.clear();
-    GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    List<GlobalModel> globalBondAndCheck = globalViewModel.allGlobalModel.values
+
+    List<GlobalModel> globalBondAndCheck = HiveDataBase.globalModelBox.values
         .where((element) => element.globalType != AppStrings.globalTypeInvoice)
         .toList();
-    List<GlobalModel> globalInvoice = globalViewModel.allGlobalModel.values
+    List<GlobalModel> globalInvoice = HiveDataBase.globalModelBox.values
         .where((element) => element.invPayType == AppStrings.invPayTypeDue)
         .toList();
     for (var globalModel in globalBondAndCheck) {
@@ -475,8 +474,8 @@ class AccountViewModel extends GetxController {
   double getBalance(String userId) {
     double total = 0;
     accountList[userId]?.accRecord.clear();
-    GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
-    for (var globalModel in globalViewModel.allGlobalModel.values.toList()) {
+
+    for (var globalModel in HiveDataBase.globalModelBox.values.toList()) {
       
       initGlobalAccount(globalModel, accountsId: [userId]);
     }

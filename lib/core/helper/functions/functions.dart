@@ -525,7 +525,7 @@ void sendEmailWithPdfAttachment(GlobalModel model) async {
   String pdfFilePath = await savePdfLocally(model);
   final message = Message()
     ..from = Address(username, 'اسم المرسل')
-    ..recipients.add("alidabol567@gmail.com") // البريد الإلكتروني للمستلم
+    ..recipients.add("burjalarab000@gmail.com") // البريد الإلكتروني للمستلم
     ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
     ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n </p>"
     // إرفاق ملف PDF

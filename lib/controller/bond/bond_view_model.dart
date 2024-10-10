@@ -30,265 +30,27 @@ class BondViewModel extends GetxController {
   Map<String, String> codeList = {};
   TextEditingController userAccountController = TextEditingController();
 
-  // BondViewModel() {
-  //   getAllBonds();
-  // }
-  // getAllBonds(GlobalModel globalModel) async {
-  //   print("start get bond data");
-  //   FirebaseFirestore.instance.collection(Const.bondsCollection).snapshots().listen((QuerySnapshot querySnapshot) {
-  //     allBondsItem.clear();
-  //     for (var element in querySnapshot.docs) {
-  //       allBondsItem[element.id] = GlobalModel.fromJson(element.data());
-  //       element.reference.collection(Const.recordCollection).snapshots().listen((value) {
-  //         List<BondRecordModel> _ = value.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
-  //         allBondsItem[element.id]?.bondRecord = _;
-  //       });
-  //     }
-  //   });
-  //   WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-  //
-  //     update();
-  //   });
-  // }
+
 
   initGlobalBond(GlobalModel globalModel) {
-    // if(globalModel.bondCode)
+
 
     allBondsItem[globalModel.bondId!] = globalModel;
-    // tempBondModel=GlobalModel.fromJson(globalModel.toFullJson());
-    // initPage();
 
-/*    if (lastBondOpened != null) {
-      tempBondModel = GlobalModel.fromJson(allBondsItem[lastBondOpened]?.toFullJson());
-      // initPage(tempBondModel.bondType);
-    }
-    update();*/
-    // if(oldBondModel!=null){
-    //   tempBondModel = GlobalModel.fromJson(globalModel.toFullJson());
-    //   initPage();
-    //   update();
-    // }
+
   }
 
   deleteGlobalBond(GlobalModel globalModel) {
     allBondsItem.removeWhere((key, value) => key == globalModel.bondId);
   }
 
-  // initGlobalInvoiceBond(GlobalModel globalModel) async {
-  //   // print("start get bond data");
-  //   // FirebaseFirestore.instance.collection(Const.bondsCollection).snapshots().listen((QuerySnapshot querySnapshot) {
-  //   //   allBondsItem.clear();
-  //   //   for (var element in querySnapshot.docs) {
-  //   //     allBondsItem[element.id] = GlobalModel.fromJson(element.data());
-  //   //     element.reference.collection(Const.recordCollection).snapshots().listen((value) {
-  //   //       List<BondRecordModel> _ = value.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
-  //   //       allBondsItem[element.id]?.bondRecord = _;
-  //   //     });
-  //   //   }
-  //   // });
-  //   // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-  //   //
-  //   //   update();
-  //   // });
-  //   allBondsItem[globalModel.bondId!]=globalModel;
-  //   allBondsItem[globalModel.bondId!]?.bondRecord = [];
-  //   allBondsItem[globalModel.bondId!]?.originId = globalModel.invId;
-  //    allBondsItem[globalModel.bondId!]?.bondType = Const.bondTypeInvoice;
-  //   // allBondsItem[globalModel.bondId!]?.bondCode = getNextBondCode(type: Const.bondTypeDaily);
-  //   allBondsItem[globalModel.bondId!]?.bondDate ??= globalModel.invDate;
-  //   allBondsItem[globalModel.bondId!]?.bondDescription =getGlobalTypeFromEnum(globalModel.patternId!)+" تم التوليد بشكل تلقائي";
 
-  //   int bondRecId=0;
-  //   globalModel.invRecords?.forEach((element) {
-  //     String dse="${getInvTypeFromEnum(globalModel.invType!)} عدد ${element.invRecQuantity} من ${getProductNameFromId(element.invRecProduct)}";
-  //     double totalDiscount = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.where((_)=>(_.discountTotal??0)>0).map((e) => e.discountPercentage!,).reduce((value, element) => value+element,);
-  //     double totalAdded = globalModel.invDiscountRecord!.isEmpty?0:globalModel.invDiscountRecord!.where((_)=>(_.addedTotal??0)>0).map((e) => e.addedPercentage!,).reduce((value, element) => value+element,);
-  //     if(globalModel.invType==Const.invoiceTypeSales){
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecSubTotal!*element.invRecQuantity!-((element.invRecSubTotal!*element.invRecQuantity!)*(totalDiscount==0?0:(totalDiscount/100)))+((element.invRecSubTotal!*element.invRecQuantity!)*(totalAdded==0?0:(totalAdded/100))), 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount,dse ));
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount, dse));
-  //     if(totalDiscount!=0){
-  //       for (var model in globalModel.invDiscountRecord!) {
-  //         if((model.discountTotal??0)>0){
-  //          var discountDes = "الخصم المعطى "+(model.isChooseDiscountTotal! ?"بقيمة "+model.discountTotal.toString():"بنسبة "+model.discountPercentage.toString()+"%");
-  //         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!)*(model.discountPercentage==0?1:(model.discountPercentage!/100)), 0, model.accountId, discountDes));
-  //         }else{
-  //          var addedDes = "إضافة المعطى "+(model.isChooseAddedTotal! ?"بقيمة "+model.addedTotal.toString():"بنسبة "+model.addedPercentage.toString()+"%");
-  //         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), (element.invRecSubTotal!*element.invRecQuantity!)*(model.addedPercentage==0?1:(model.addedPercentage!/100)), 0, model.accountId, addedDes));
-  //         }
-  //       }
-  //     }
-  //     }else{
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0,element.invRecSubTotal!*element.invRecQuantity!,  allBondsItem[globalModel.bondId!]?.invSecondaryAccount,dse ));
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(),  element.invRecSubTotal!*element.invRecQuantity!,0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount, dse));
-  //     }
-  //     if(element.invRecVat!=0){
-  //       if(globalModel.invType==Const.invoiceTypeSales){
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invVatAccount, "ضريبة "+dse));
-  //       allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invSecondaryAccount,"ضريبة "+dse));
-  //     }else{
-  //         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), element.invRecVat!*element.invRecQuantity!, 0, allBondsItem[globalModel.bondId!]?.invPrimaryAccount, "ضريبة "+dse));
-  //         allBondsItem[globalModel.bondId!]?.bondRecord?.add(BondRecordModel((bondRecId++).toString(), 0, element.invRecVat!*element.invRecQuantity!, allBondsItem[globalModel.bondId!]?.invVatAccount,"ضريبة "+dse));
-  //       }
-  //     }
-  //   });
-
-  //   if(lastBondOpened!=null){
-  //     tempBondModel = GlobalModel.fromJson(allBondsItem[lastBondOpened]?.toFullJson());
-  //     initPage(tempBondModel.bondType);
-  //   }
-
-  //   update();
-  // }
-
-  // initAllBonds(querySnapshot) async {
-  //   allBondsItem.clear();
-  //   for (var element in querySnapshot.docs) {
-  //     allBondsItem[element['bondId']] = GlobalModel.fromJson(element.data());
-  //     element.reference
-  //         .collection(Const.recordCollection)
-  //         .snapshots()
-  //         .listen((value) {
-  //       List<BondRecordModel> _ =
-  //           value.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
-  //       allBondsItem[element['bondId']]?.bondRecord = _;
-  //     });
-  //   }
-
-  // WidgetsFlutterBinding.ensureInitialized()
-  //     .waitUntilFirstFrameRasterized
-  //     .then((value) {
-  //   update();
-  // });
-  //   //update();
-  // }
-
-  // postOneBond(bool isNew, {bool withLogger = false}) async {
-  //   bondModel = GlobalModel.fromJson(tempBondModel.toFullJson());
-  //   print(tempBondModel.toFullJson());
-  //   final accountController = Get.find<AccountViewModel>();
-  //   for (var i = 0; i < bondModel.bondRecord!.length; i++) {
-  //     if (bondModel.bondRecord?[i].bondRecAccount?.substring(0, 3) != 'acc') {
-  //       bondModel.bondRecord?[i].bondRecAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == bondModel.bondRecord?[i].bondRecAccount).accId;
-  //     }
-  //   }
-  //   if (isNew) {
-  //     bondModel.bondId = generateId(RecordType.bond);
-  //     tempBondModel.bondId = bondModel.bondId;
-  //   }
-  //
-  //   if (double.parse(bondModel.bondTotal!) != 0 && bondModel.bondType == Const.bondTypeDaily) {
-  //     Get.snackbar("خطأ", "خطأ بالمجموع");
-  //     return;
-  //   } else if (double.parse(bondModel.bondTotal!) == 0 && bondModel.bondType == Const.bondTypeDebit || bondModel.bondType == Const.bondTypeCredit) {
-  //     Get.snackbar("خطأ", "فارغ");
-  //     return;
-  //   }
-  //
-  //   FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).set(bondModel.toJson());
-  //   bondModel.bondRecord?.forEach((element) async {
-  //     print(element.toJson());
-  //     FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).collection(Const.recordCollection).doc(element.bondRecId).set(element.toJson());
-  //   });
-  //   if (withLogger) logger(newData: bondModel);
-  //   accountController.updateInAccount(bondModel);
-  //   saveRecordInFirebase(bondModel);
-  //   // _allBondsItem[bondModel.bondId!]=  bondModel;
-  //   // _allBondsItem.entries.toList().sort((e1, e2) => e1.value.bondId!.compareTo(e2.value.bondId!));
-  //   isEdit = false;
-  //   update();
-  // }
-  // updateBond({String? modelKey, bool withLogger = false}) async {
-  //   if (withLogger) logger(oldData: allBondsItem[tempBondModel.bondId!], newData: tempBondModel);
-  //   allBondsItem[tempBondModel.bondId!] = GlobalModel.fromJson(tempBondModel.toFullJson());
-  //   if (bondModel.bondType != Const.bondTypeDaily) {
-  //     tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "0");
-  //   }
-  //   final accountController = Get.find<AccountViewModel>();
-  //   for (var i = 0; i < bondModel.bondRecord!.length; i++) {
-  //     if (bondModel.bondRecord?[i].bondRecAccount?.substring(0, 3) != 'acc') {
-  //       bondModel.bondRecord?[i].bondRecAccount = accountController.accountList.values.toList().firstWhere((e) => e.accName == bondModel.bondRecord?[i].bondRecAccount).accId;
-  //     }
-  //   }
-  //   if (double.parse(bondModel.bondTotal!) != 0 && bondModel.bondType == Const.bondTypeDaily) {
-  //     Get.snackbar("خطأ", "خطأ بالمجموع");
-  //   } else if (double.parse(bondModel.bondTotal!) == 0 && bondModel.bondType == Const.bondTypeDebit || bondModel.bondType == Const.bondTypeCredit) {
-  //     Get.snackbar("خطأ", "فارغ");
-  //   }
-  //   bondModel = GlobalModel.fromJson(allBondsItem[tempBondModel.bondId!]!.toFullJson());
-  //   await FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).collection(Const.recordCollection).get().then((value) {
-  //     for (var e in value.docs) {
-  //       e.reference.delete();
-  //     }
-  //   });
-  //   FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).delete();
-  //   for (BondRecordModel bondRecord in bondModel.bondRecord!) {
-  //     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(bondRecord.bondRecAccount).collection(Const.recordCollection).doc(bondModel.bondId).delete();
-  //   }
-  //   FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).set(bondModel.toJson());
-  //   bondModel.bondRecord?.forEach((element) async {
-  //     print(element.bondRecAccount);
-  //     print(element.bondRecId);
-  //     FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondModel.bondId).collection(Const.recordCollection).doc(element.bondRecId).set(element.toJson());
-  //   });
-  //   saveRecordInFirebase(bondModel);
-  //   accountController.updateInAccount(bondModel, modelKey: modelKey);
-  //   isEdit = false;
-  //   update();
-  // }
-  // deleteOneBonds({String? bondId, bool withLogger = false}) async {
-  //   bondId ??= bondModel.bondId;
-  //   if (bondId != null) {
-  //     bondModel = allBondsItem[bondId]!;
-  //   }
-  //   print(bondId);
-  //   if (withLogger) logger(oldData: bondModel);
-  //   for (BondRecordModel bondRecord in bondModel.bondRecord!) {
-  //     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(bondRecord.bondRecAccount).collection(Const.recordCollection).doc(bondId).delete();
-  //   }
-  //   await FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondId).collection(Const.recordCollection).get().then((value) {
-  //     for (var e in value.docs) {
-  //       e.reference.delete();
-  //     }
-  //   });
-  //   await FirebaseFirestore.instance.collection(Const.bondsCollection).doc(bondId).delete();
-  //
-  //   isEdit = false;
-  //   update();
-  // }
-  // void saveRecordInFirebase(GlobalModel bondModel) async {
-  //   Map<String, List> allRecTotal = {};
-  //   for (int i = 0; i < bondModel.bondRecord!.length; i++) {
-  //     await FirebaseFirestore.instance.collection(Const.accountsCollection).doc(bondModel.bondRecord![i].bondRecAccount).get().then((value) {
-  //       if (allRecTotal[value.id] == null) {
-  //         allRecTotal[value.id] = [bondModel.bondRecord![i].bondRecDebitAmount! - bondModel.bondRecord![i].bondRecCreditAmount!];
-  //       } else {
-  //         allRecTotal[value.id]!.add(bondModel.bondRecord![i].bondRecDebitAmount! - bondModel.bondRecord![i].bondRecCreditAmount!);
-  //       }
-  //     });
-  //   }
-  //   allRecTotal.forEach((key, value) {
-  //     var recCredit = value.reduce((value, element) => value + element);
-  //     FirebaseFirestore.instance.collection(Const.accountsCollection).doc(key).collection(Const.recordCollection).doc(bondModel.bondId).set({
-  //       "total": recCredit.toString(),
-  //       "id": bondModel.bondId,
-  //       "account": key,
-  //     });
-  //   });
-  // }
 
   void restoreOldData() {
     tempBondModel = GlobalModel.fromJson(bondModel.toFullJson());
     update();
 
-    // FirebaseFirestore.instance.collection(ConstRecord.bondsCollection).doc(bondModel.bondId).get().then((value) {
-    //   value.reference.collection(ConstRecord.recordCollection).get().then((value1) {
-    //     List<BondRecordModel> _ = value1.docs.map((e) => BondRecordModel.fromJson(e.data())).toList();
-    //   var newBondModel = GlobalModel.fromJson(value.data()!);
-    //   newBondModel.bondRecord=_;
-    //   _allBondsItem[bondModel.bondId!]=newBondModel;
-    //   update();
-    //   });
-    // });
+
   }
 
   void changeIndexCode({required String code, required String type}) {
@@ -324,17 +86,7 @@ class BondViewModel extends GetxController {
     update();
   }
 
-/*  void deleteOneRecord(int rowIndex) {
-    tempBondModel.bondRecord?.removeAt(rowIndex);
-    // updateBond();
-    for (var i = 0; i < tempBondModel.bondRecord!.length; i++) {
-      tempBondModel.bondRecord?[i].bondRecId = "0$i";
-    }
-    initTotal();
-    initPage(tempBondModel.bondType);
-    isEdit = true;
-    update();
-  }*/
+
   bool isNew = false;
 
   initPage({String? oldId, String? type}) {
@@ -387,10 +139,7 @@ class BondViewModel extends GetxController {
     }
     tempBondModel.bondType = type;
 
-    // newCodeController.text = (int.parse(bondController.allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-    // while (bondController.allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(newCodeController.text)) {
-    //
-    // }
+
     WidgetsFlutterBinding.ensureInitialized()
         .waitUntilFirstFrameRasterized
         .then(
@@ -410,45 +159,6 @@ class BondViewModel extends GetxController {
     tempBondModel.bondTotal = (debit - credit).toStringAsFixed(2);
   }
 
-  // Future<void> fastAddBond({required String entryBondId,String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) async {
-  //   tempBondModel = GlobalModel();
-  //   bondModel = GlobalModel();
-  //   tempBondModel.bondRecord = record;
-  //   tempBondModel.originId = originId;
-  //    if (entryBondId == null) {
-  //     tempBondModel.entryBondId = generateId(RecordType.entryBond);
-  //   } else {
-  //     tempBondModel.entryBondId = entryBondId;
-  //   }
-  //   if (bondId == null) {
-  //     tempBondModel.bondId = generateId(RecordType.bond);
-  //   } else {
-  //     tempBondModel.bondId = bondId;
-  //     bondModel.bondId = bondId;
-  //   }
-  //   tempBondModel.bondTotal = total.toString();
-  //   tempBondModel.bondType = bondType;
-  //   tempBondModel.bondType ??= Const.bondTypeDaily;
-  //   tempBondModel.globalType=Const.globalTypeBond;
-  //   var bondCode = "";
-  //   if (!isEdit) {
-  //     // String bondId = generateId(RecordType.bond);
-  //     bondCode = (int.parse(allBondsItem.values.lastOrNull?.bondCode ?? "0") + 1).toString();
-  //     while (allBondsItem.values.toList().map((e) => e.bondCode).toList().contains(bondCode)) {
-  //       bondCode = (int.parse(bondCode) + 1).toString();
-  //     }
-  //   }
-  //   if(oldBondCode==null){
-  //     tempBondModel.bondCode = bondCode;
-  //   }else{
-  //     tempBondModel.bondCode = oldBondCode;
-  //   }
-  //   tempBondModel.bondDate=bondDate;
-  //   var globalController = Get.find<GlobalViewModel>();
-  //  await globalController.updateGlobalBond(tempBondModel);
-
-  //   // postOneBond(false);
-  // }
 
   Future<void> fastAddBondToFirebase(
       {required String entryBondId,
@@ -507,45 +217,7 @@ class BondViewModel extends GetxController {
     await globalController.addBondToFirebase(tempBondModel);
   }
 
-  // void fastAddBondAddToModel({required String entryBondId,String? bondId,String? oldBondCode, String? originId, required double total, required List<BondRecordModel> record,String? bondDate,String?bondType}) {
-  //   tempBondModel = GlobalModel();
-  //   bondModel = GlobalModel();
-  //   tempBondModel.globalType=Const.globalTypeBond;
-  //   tempBondModel.bondRecord = record;
-  //   tempBondModel.originId = originId;
-  //    if (entryBondId == null) {
-  //     tempBondModel.entryBondId = generateId(RecordType.entryBond);
-  //   } else {
-  //     tempBondModel.entryBondId = entryBondId;
-  //   }
-  //   if (bondId == null) {
-  //     tempBondModel.bondId = generateId(RecordType.bond);
-  //   } else {
-  //     tempBondModel.bondId = bondId;
-  //     bondModel.bondId = bondId;
-  //   }
-  //   tempBondModel.bondTotal = total.toString();
-  //   tempBondModel.bondType = bondType ??Const.bondTypeDaily;
-  //   var bondCode = "";
-  //   if (!isEdit) {
-  //     // String bondId = generateId(RecordType.bond);
-  //    bondCode=getNextBondCode(type:tempBondModel.bondType );
-  //     //TODO add_bondid_to_cheqoe_model_to_save_it_while_edit
-  //     // invoiceModel.bondCode = bondCode;
-  //   }
-  //   if(oldBondCode==null){
-  //     tempBondModel.bondCode = bondCode;
-  //   }else{
-  //     tempBondModel.bondCode = oldBondCode;
-  //   }
-  //   tempBondModel.bondDate=bondDate;
-  //   tempBondModel.bondDate??=DateTime.now().toString().split(" ")[0];
-  //   // var globalController = Get.find<GlobalViewModel>();
-  //   // globalController.updateGlobalBond(tempBondModel);
-  //   allBondsItem[tempBondModel.bondId!]=tempBondModel;
-  //   initPage(tempBondModel.bondType);
-  //   // postOneBond(false);
-  // }
+
 
   initCodeList(type) {
     codeList = {};
@@ -653,103 +325,11 @@ class BondViewModel extends GetxController {
     update();
   }
 
-  prevBond() {
-    /* initCodeList(tempBondModel.bondType!);
-    var index = codeList.values.toList().indexOf(tempBondModel.bondId!);
-    if (codeList.values.toList().first == codeList.values.toList()[index]) {
-    } else {
-      tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index - 1]]?.toFullJson());
-      bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index - 1]]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice) {
-        Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
-              bondType: bondModel.bondType!,
-            ));
-        update();
-        initPage(tempBondModel.bondType);
-      } else {
-        Get.off(() => CustomBondDetailsView(
-              oldId: bondModel.bondId,
-              isDebit: bondModel.bondType == Const.bondTypeDebit,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      }
-    }*/
-  }
 
-  firstBond() {
-    /*   initCodeList(tempBondModel.bondType!);
-    var index = codeList.values.toList().indexOf(tempBondModel.bondId!);
-    if (codeList.values.toList().first == codeList.values.toList()[index]) {
-    } else {
-      tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList().first]?.toFullJson());
-      bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList().first]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice) {
-        Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
-              bondType: bondModel.bondType!,
-            ));
-        update();
-        initPage(tempBondModel.bondType);
-      } else {
-        Get.off(() => CustomBondDetailsView(
-              oldId: bondModel.bondId,
-              isDebit: bondModel.bondType == Const.bondTypeDebit,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      }
-    }*/
-  }
 
-  nextBond() {
-/*    var index = codeList.values.toList().indexOf(tempBondModel.bondId!);
-    if (codeList.values.toList().last == codeList.values.toList()[index]) {
-    } else {
-      tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index + 1]]?.toFullJson());
-      bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList()[index + 1]]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice) {
-        Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
-              bondType: bondModel.bondType!,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      } else {
-        Get.off(() => CustomBondDetailsView(
-              oldId: bondModel.bondId,
-              isDebit: bondModel.bondType == Const.bondTypeDebit,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      }
-    }*/
-  }
 
-  lastBond() {
-    /*  var index = codeList.values.toList().indexOf(tempBondModel.bondId!);
-    if (codeList.values.toList().last == codeList.values.toList()[index]) {
-    } else {
-      tempBondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList().last]?.toFullJson());
-      bondModel = GlobalModel.fromJson(allBondsItem[codeList.values.toList().last]?.toFullJson());
-      if (bondModel.bondType == Const.bondTypeDaily || bondModel.bondType == Const.bondTypeStart || bondModel.bondType == Const.bondTypeInvoice) {
-        Get.off(() => BondDetailsView(
-              oldId: bondModel.bondId,
-              bondType: bondModel.bondType!,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      } else {
-        Get.off(() => CustomBondDetailsView(
-              oldId: bondModel.bondId,
-              isDebit: bondModel.bondType == Const.bondTypeDebit,
-            ));
-        initPage(tempBondModel.bondType);
-        update();
-      }
-    }*/
-  }
+
+
 
   String getNextBondCode({String? type}) {
     initCodeList(type ?? (tempBondModel.bondType!));
