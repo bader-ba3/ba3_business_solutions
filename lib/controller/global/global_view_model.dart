@@ -193,7 +193,7 @@ class GlobalViewModel extends GetxController {
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
     HiveDataBase.globalModelBox.put(globalModel.bondId!, globalModel);
-    bondViewModel.allBondsItem[globalModel.cheqId!]=globalModel;
+    bondViewModel.allBondsItem[globalModel.bondId!]=globalModel;
     bondViewModel.update();
     update();
   }

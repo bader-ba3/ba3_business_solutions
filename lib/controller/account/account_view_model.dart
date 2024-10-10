@@ -41,6 +41,7 @@ class AccountViewModel extends GetxController {
 
   initGlobalAccount(GlobalModel globalModel,
       {String? oldAccountKey, List<String>? accountsId}) async {
+    print(globalModel.toFullJson());
    if(globalModel.isDeleted!=true&&globalModel.invIsPending!=true) {
       String? type;
       String? date;
