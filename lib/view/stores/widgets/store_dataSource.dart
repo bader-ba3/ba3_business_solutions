@@ -2,7 +2,7 @@ import 'package:ba3_business_solutions/model/store/store_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class StoreRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
@@ -15,9 +15,9 @@ class StoreRecordDataSource extends DataGridSource {
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: "stId", value: e.stId),
               DataGridCell<String>(
-                  columnName: AppStrings.stCode, value: e.stCode),
+                  columnName: AppConstants.stCode, value: e.stCode),
               DataGridCell<String>(
-                  columnName: AppStrings.stName, value: e.stName),
+                  columnName: AppConstants.stName, value: e.stName),
             ]))
         .toList();
   }

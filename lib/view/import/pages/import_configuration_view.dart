@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/account/account_view_model.dart';
 import '../../../controller/product/product_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/generate_id.dart';
 import '../../../core/utils/hive.dart';
 import '../../../model/account/account_customer.dart';
@@ -249,8 +249,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             prodMinPrice: element[setting['prodMinPrice']],
             prodType:
                 element[setting['prodType']].removeAllWhitespace == "خدمية"
-                    ? AppStrings.productTypeService
-                    : AppStrings.productTypeStore,
+                    ? AppConstants.productTypeService
+                    : AppConstants.productTypeStore,
             // prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
             // prodIsParent : element[setting['prodParentId']].isBlank,
             prodParentId: parentId.isBlank! ? null : parentId,
@@ -294,7 +294,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
 
       ///FireBse Todo
       await FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(element.prodId)
           .set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
@@ -369,8 +369,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             prodType: element[setting['prodType']].removeAllWhitespace ==
                     "خد"
                         "مية"
-                ? AppStrings.productTypeService
-                : AppStrings.productTypeStore,
+                ? AppConstants.productTypeService
+                : AppConstants.productTypeStore,
             // prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
             // prodIsParent : element[setting['prodParentId']].isBlank,
             prodParentId: parentId.isBlank!
@@ -413,7 +413,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       print("$i OF ${finalData.length}");
       print(element.toJson());
       await FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(element.prodId)
           .set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
@@ -424,7 +424,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
         parentModel.prodChild?.add(element.prodId);
         HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
         FirebaseFirestore.instance
-            .collection(AppStrings.productsCollection)
+            .collection(AppConstants.productsCollection)
             .doc(parentModel.prodId)
             .update({
           'prodChild': FieldValue.arrayUnion([element.prodId]),
@@ -473,7 +473,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             accName: (element[setting["accName"]].replaceAll("-", "")),
             accCode: element[setting["accCode"]].replaceAll("-", ""),
             accComment: '',
-            accType: AppStrings.accountTypeDefault,
+            accType: AppConstants.accountTypeDefault,
             accVat: 'GCC',
             accParentId: null,
             accIsParent: true,
@@ -501,7 +501,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             accName: (element[setting["accName"]].replaceAll("-", "")),
             accCode: element[setting["accCode"]].replaceAll("-", ""),
             accComment: '',
-            accType: AppStrings.accountTypeDefault,
+            accType: AppConstants.accountTypeDefault,
             accVat: 'GCC',
             accParentId: finalData
                 .where(
@@ -552,7 +552,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             .put(customer.customerAccountId, customer);
       }
       await FirebaseFirestore.instance
-          .collection(AppStrings.accountsCollection)
+          .collection(AppConstants.accountsCollection)
           .doc(element.accId)
           .set(element.toJson(), SetOptions(merge: true));
 /*      HiveDataBase.accountModelBox.put(element.accId, element);
@@ -584,7 +584,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
               accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
               accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
               accComment: '',
-              accType: AppStrings.accountTypeDefault,
+              accType: AppConstants.accountTypeDefault,
               accVat: 'GCC',
               accParentId: null,
               accIsParent: true,
@@ -615,7 +615,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
                 accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
                 accComment: '',
-                accType: AppStrings.accountTypeDefault,
+                accType: AppConstants.accountTypeDefault,
                 accVat: 'GCC',
                 accParentId: finalData
                     .where(
@@ -634,7 +634,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
               HiveDataBase.accountModelBox
                   .put(parent.accId, parent..accChild.add(accIds));
               FirebaseFirestore.instance
-                  .collection(AppStrings.accountsCollection)
+                  .collection(AppConstants.accountsCollection)
                   .doc(parent.accId)
                   .set({
                 "accChild": FieldValue.arrayUnion([accIds])
@@ -644,7 +644,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
                 accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
                 accComment: '',
-                accType: AppStrings.accountTypeDefault,
+                accType: AppConstants.accountTypeDefault,
                 accVat: 'GCC',
                 accParentId: parent.accId,
                 accIsParent: accIsParent,
@@ -694,7 +694,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       await HiveDataBase.accountModelBox.put(element.accId, element);
 
       await FirebaseFirestore.instance
-          .collection(AppStrings.accountsCollection)
+          .collection(AppConstants.accountsCollection)
           .doc(element.accId)
           .set(element.toJson(), SetOptions(merge: true));
     }
@@ -711,12 +711,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       await Future.delayed(const Duration(milliseconds: 100));
       String cheqType = element[setting["cheqType"]].removeAllWhitespace ==
               "شيكات مدفوعة".removeAllWhitespace
-          ? AppStrings.chequeTypePay
-          : AppStrings.chequeTypePay;
+          ? AppConstants.chequeTypePay
+          : AppConstants.chequeTypePay;
       String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace ==
               "مدفوعة".removeAllWhitespace
-          ? AppStrings.chequeStatusPaid
-          : AppStrings.chequeStatusNotPaid;
+          ? AppConstants.chequeStatusPaid
+          : AppConstants.chequeStatusNotPaid;
       // print(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""));
       // print(element[setting["cheqPrimeryAccount"]]);
       String cheqPrimeryAccount = getAccountIdFromText("اوراق الدفع");
@@ -766,12 +766,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           EntryBondRecordModel(
               "02", 0, cheqAllAmount, cheqSecoundryAccount, des),
         ],
-        cheqRemainingAmount: cheqStatus == AppStrings.chequeStatusPaid
+        cheqRemainingAmount: cheqStatus == AppConstants.chequeStatusPaid
             ? "0"
             : cheqAllAmount.toString(),
         cheqStatus: cheqStatus,
         cheqType: cheqType,
-        globalType: AppStrings.globalTypeCheque,
+        globalType: AppConstants.globalTypeCheque,
       ));
     }
     print(finalData.length);

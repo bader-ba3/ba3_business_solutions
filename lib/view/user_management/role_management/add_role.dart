@@ -1,13 +1,12 @@
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/user/role_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class AddRoleView extends StatefulWidget {
   const AddRoleView({super.key, this.oldKey});
@@ -100,16 +99,20 @@ class _AddRoleViewState extends State<AddRoleView> {
                                     const EdgeInsets.symmetric(horizontal: 50),
                                 child: Column(
                                   children: [
+                                    checkBoxWidget(i, AppConstants.roleUserRead,
+                                        controller),
+                                    checkBoxWidget(i,
+                                        AppConstants.roleUserWrite, controller),
                                     checkBoxWidget(
-                                        i, AppStrings.roleUserRead, controller),
-                                    checkBoxWidget(i, AppStrings.roleUserWrite,
+                                        i,
+                                        AppConstants.roleUserUpdate,
                                         controller),
-                                    checkBoxWidget(i, AppStrings.roleUserUpdate,
+                                    checkBoxWidget(
+                                        i,
+                                        AppConstants.roleUserDelete,
                                         controller),
-                                    checkBoxWidget(i, AppStrings.roleUserDelete,
-                                        controller),
-                                    checkBoxWidget(i, AppStrings.roleUserAdmin,
-                                        controller),
+                                    checkBoxWidget(i,
+                                        AppConstants.roleUserAdmin, controller),
                                   ],
                                 ),
                               ),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
 class EntryBondRecordDataSource extends DataGridSource {
@@ -24,21 +24,21 @@ class EntryBondRecordDataSource extends DataGridSource {
     dataGridRows = (recordData.entryBondRecord ?? [])
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondId, value: e.bondRecId),
+                  columnName: AppConstants.rowBondId, value: e.bondRecId),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondAccount,
+                  columnName: AppConstants.rowBondAccount,
                   value: accountController.accountList.values
                       .toList()
                       .firstWhereOrNull((_) => _.accId == e.bondRecAccount)
                       ?.accName),
               DataGridCell<double>(
-                  columnName: AppStrings.rowBondDebitAmount,
+                  columnName: AppConstants.rowBondDebitAmount,
                   value: e.bondRecDebitAmount),
               DataGridCell<double>(
-                  columnName: AppStrings.rowBondCreditAmount,
+                  columnName: AppConstants.rowBondCreditAmount,
                   value: e.bondRecCreditAmount),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondDescription,
+                  columnName: AppConstants.rowBondDescription,
                   value: e.bondRecDescription),
             ]))
         .toList();
@@ -46,14 +46,14 @@ class EntryBondRecordDataSource extends DataGridSource {
 
   void addItem() {
     dataGridRows.add(const DataGridRow(cells: [
-      DataGridCell<String>(columnName: AppStrings.rowBondId, value: ""),
-      DataGridCell<String>(columnName: AppStrings.rowBondAccount, value: ''),
+      DataGridCell<String>(columnName: AppConstants.rowBondId, value: ""),
+      DataGridCell<String>(columnName: AppConstants.rowBondAccount, value: ''),
       DataGridCell<double>(
-          columnName: AppStrings.rowBondCreditAmount, value: null),
+          columnName: AppConstants.rowBondCreditAmount, value: null),
       DataGridCell<double>(
-          columnName: AppStrings.rowBondDebitAmount, value: null),
+          columnName: AppConstants.rowBondDebitAmount, value: null),
       DataGridCell<String>(
-          columnName: AppStrings.rowBondDescription, value: ""),
+          columnName: AppConstants.rowBondDescription, value: ""),
     ]));
   }
 

@@ -1,10 +1,10 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 import '../../../core/utils/hive.dart';
 import '../widget/bond_record_pluto_view_model.dart';
 import 'bond_details_view.dart';
@@ -18,7 +18,7 @@ class AllBonds extends StatelessWidget {
       return CustomPlutoGridWithAppBar(
         title: "جميع السندات",
         onLoaded: (e) {},
-        type: AppStrings.globalTypeBond,
+        type: AppConstants.globalTypeBond,
         onSelected: (p0) {
           Get.to(
               () => BondDetailsView(

@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/statistics/pages/statistics_view.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/account/account_view_model.dart';
 import '../../../model/account/account_model.dart';
 
@@ -108,7 +108,7 @@ class _StatisticsTypeState extends State<StatisticsType> {
             for (var i in HiveDataBase.statisticBox.values.toList())
               Item("معاينة ${i["accName"]}", () {
                 checkPermissionForOperation(
-                        AppStrings.roleUserRead, AppStrings.roleViewStore)
+                        AppConstants.roleUserRead, AppConstants.roleViewStore)
                     .then((value) {
                   if (value) {
                     Get.to(() => StatisticsView(accountId: i["accId"]!));

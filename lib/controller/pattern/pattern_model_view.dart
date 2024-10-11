@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
 import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
 import 'package:ba3_business_solutions/view/patterns/widget/pattern_source_code.dart';
@@ -57,7 +57,7 @@ class PatternViewModel extends GetxController {
   RxMap<String, PatternModel> patternModel = <String, PatternModel>{}.obs;
 
   final CollectionReference _patternCollectionRef =
-      FirebaseFirestore.instance.collection(AppStrings.patternCollection);
+      FirebaseFirestore.instance.collection(AppConstants.patternCollection);
 
   List<String> accountPickList = [];
 
@@ -200,7 +200,7 @@ class PatternViewModel extends GetxController {
         .toString();
     editPatternModel!.patCode = codeController.text;
     editPatternModel?.patColor = 4294198070;
-    editPatternModel?.patType = AppStrings.invoiceTypeSales;
+    editPatternModel?.patType = AppConstants.invoiceTypeSales;
     nameController = TextEditingController();
     fullNameController = TextEditingController();
     primaryController = TextEditingController();

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:ba3_business_solutions/controller/global/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
@@ -19,7 +19,7 @@ import '../../model/store/store_record_model.dart';
 
 class StoreViewModel extends GetxController {
   final CollectionReference _storeCollectionRef =
-      FirebaseFirestore.instance.collection(AppStrings.storeCollection);
+      FirebaseFirestore.instance.collection(AppConstants.storeCollection);
 
   RxMap<String, StoreModel> storeMap = <String, StoreModel>{}.obs;
 
@@ -40,9 +40,9 @@ class StoreViewModel extends GetxController {
     Map<String, StoreRecProductModel> allRecTotal = {};
     Map<String, StoreRecProductModel> allRecTotal2 = {};
 
-    if (globalModel.invType != AppStrings.invoiceTypeChange) {
-      bool isPay = globalModel.invType == AppStrings.invoiceTypeBuy ||
-          globalModel.invType == AppStrings.invoiceTypeAdd;
+    if (globalModel.invType != AppConstants.invoiceTypeChange) {
+      bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy ||
+          globalModel.invType == AppConstants.invoiceTypeAdd;
       int correctQuantity = isPay ? 1 : -1;
       Map<String, int> allRecTotalProduct = {};
 
@@ -94,7 +94,7 @@ class StoreViewModel extends GetxController {
           bool isStoreProduct =
               getProductModelFromId(globalModel.invRecords![i].invRecProduct)!
                       .prodType ==
-                  AppStrings.productTypeStore;
+                  AppConstants.productTypeStore;
           if (isStoreProduct) {
             allRecTotal[globalModel.invRecords![i].invRecProduct!] =
                 StoreRecProductModel(
@@ -190,7 +190,7 @@ class StoreViewModel extends GetxController {
   getAllStore() {
     if (HiveDataBase.storeModelBox.isEmpty) {
       FirebaseFirestore.instance
-          .collection(AppStrings.storeCollection)
+          .collection(AppConstants.storeCollection)
           .get()
           .then((value) {
         storeMap.clear();
@@ -252,7 +252,7 @@ class StoreViewModel extends GetxController {
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addChangeToChanges(
-        editStoreModel!.toFullJson(), AppStrings.storeCollection);
+        editStoreModel!.toFullJson(), AppConstants.storeCollection);
     update();
   }
 
@@ -261,7 +261,7 @@ class StoreViewModel extends GetxController {
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addChangeToChanges(
-        editStoreModel!.toFullJson(), AppStrings.storeCollection);
+        editStoreModel!.toFullJson(), AppConstants.storeCollection);
     update();
   }
 
@@ -287,7 +287,7 @@ class StoreViewModel extends GetxController {
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     changesViewModel.addRemoveChangeToChanges(
-        editStoreModel.toFullJson(), AppStrings.storeCollection);
+        editStoreModel.toFullJson(), AppConstants.storeCollection);
     update();
   }
 

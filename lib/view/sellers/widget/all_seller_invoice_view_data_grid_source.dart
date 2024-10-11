@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -12,14 +12,14 @@ class AllSellerInvoiceViewDataGridSource extends DataGridSource {
     dataGridRows = (sellerRecModel)
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(
-                  columnName: AppStrings.rowSellerAllInvoiceInvId,
+                  columnName: AppConstants.rowSellerAllInvoiceInvId,
                   value: e.selleRecInvId),
               DataGridCell<String>(
-                  columnName: AppStrings.rowSellerAllInvoiceAmount,
+                  columnName: AppConstants.rowSellerAllInvoiceAmount,
                   value:
                       double.parse(e.selleRecAmount ?? "0").toStringAsFixed(2)),
               DataGridCell<String>(
-                  columnName: AppStrings.rowSellerAllInvoiceDate,
+                  columnName: AppConstants.rowSellerAllInvoiceDate,
                   value: e.selleRecInvDate),
             ]))
         .toList();

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
@@ -223,7 +223,7 @@ class EntryBondViewModel extends GetxController {
       {required GlobalModel globalModel,
       required List<EntryBondRecordModel> record}) {
     tempBondModel = globalModel;
-    tempBondModel.globalType = AppStrings.globalTypeCheque;
+    tempBondModel.globalType = AppConstants.globalTypeCheque;
     tempBondModel.entryBondRecord = record;
     tempBondModel.originId = globalModel.originId;
     tempBondModel.cheqId = globalModel.cheqId;

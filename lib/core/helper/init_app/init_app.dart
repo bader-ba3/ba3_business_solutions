@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../constants/app_strings.dart';
+import '../../constants/app_constants.dart';
 import '../../../firebase_options.dart';
 import '../../utils/hive.dart';
 
@@ -60,19 +60,19 @@ Future initializeApp() async {
 }
 
 init({String? oldData, bool? isFree}) async {
-  if (AppStrings.dataName == '') {
+  if (AppConstants.dataName == '') {
     // await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
     //   dataName=value.data()?['defaultDataName'];
     // });
-    AppStrings.dataName = "2024";
+    AppConstants.dataName = "2024";
   } else {
-    AppStrings.dataName = oldData!;
+    AppConstants.dataName = oldData!;
   }
-  await HiveDataBase.setDataName(AppStrings.dataName);
-  AppStrings.globalCollection = AppStrings.dataName;
+  await HiveDataBase.setDataName(AppConstants.dataName);
+  AppConstants.globalCollection = AppConstants.dataName;
   if (isFree != null) {
-    AppStrings.isFreeType = isFree;
+    AppConstants.isFreeType = isFree;
   } else {
-    AppStrings.isFreeType = HiveDataBase.isFree.get("isFreeType") ?? false;
+    AppConstants.isFreeType = HiveDataBase.isFree.get("isFreeType") ?? false;
   }
 }

@@ -9,7 +9,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../controller/user/cards_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -78,7 +78,7 @@ class _LoginViewState extends State<LoginView> {
             // ),
             Center(
                 child: Text(
-              "تسجيل الدخول الى ${AppStrings.dataName}",
+              "تسجيل الدخول الى ${AppConstants.dataName}",
               style: const TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
             )),
 

@@ -1,17 +1,15 @@
-import 'dart:ui';
-
 import 'package:ba3_business_solutions/core/bindings/bindings.dart';
+import 'package:ba3_business_solutions/core/constants/app_strings.dart';
 import 'package:ba3_business_solutions/core/styling/app_themes.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/account_management_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'core/constants/app_strings.dart';
 import 'core/helper/init_app/init_app.dart';
+import 'core/shared/widgets/app_scroll_behavior.dart';
 
 void main() async {
   await initializeApp();
-
   runApp(const MyApp());
 }
 
@@ -32,13 +30,4 @@ class MyApp extends StatelessWidget {
       home: const UserManagement(),
     );
   }
-}
-
-class AppScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad
-      };
 }

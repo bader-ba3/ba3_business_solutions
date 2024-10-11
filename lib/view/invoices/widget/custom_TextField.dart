@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class CustomTextFieldWithIcon extends StatefulWidget {
   const CustomTextFieldWithIcon({
@@ -61,7 +61,7 @@ class _CustomTextFieldWithIconState extends State<CustomTextFieldWithIcon> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: AppStrings.constHeightTextField,
+      height: AppConstants.constHeightTextField,
       child: TextFormField(
         // validator: validator,
         onFieldSubmitted: widget.onSubmitted,
@@ -228,7 +228,7 @@ class _CustomTextFieldWithoutIconState
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: AppStrings.constHeightTextField,
+      height: AppConstants.constHeightTextField,
       child: TextFormField(
         onChanged: widget.onChanged,
         enabled: widget.enabled,

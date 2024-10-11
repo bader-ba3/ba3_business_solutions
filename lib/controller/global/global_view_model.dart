@@ -14,7 +14,7 @@ import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../model/bond/bond_record_model.dart';
 import '../../model/bond/entry_bond_record_model.dart';
@@ -174,7 +174,7 @@ class GlobalViewModel extends GetxController {
   /////-Add
   addGlobalBond(GlobalModel globalModel) async {
     globalModel.bondDate = DateTime.now().toString();
-    globalModel.globalType = AppStrings.globalTypeBond;
+    globalModel.globalType = AppConstants.globalTypeBond;
     globalModel.bondId = generateId(RecordType.bond);
     // globalModel.entryBondId = generateId(RecordType.entryBond);
     globalModel.entryBondCode = getNextEntryBondCode().toString();
@@ -185,7 +185,7 @@ class GlobalViewModel extends GetxController {
     bondViewModel.tempBondModel = globalModel;
     bondViewModel.update();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.bondsCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.bondsCollection);
     update();
   }
 
@@ -208,7 +208,7 @@ class GlobalViewModel extends GetxController {
     chequeViewModel.update();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     addChequeToFirebase(globalModel);
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.chequesCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.chequesCollection);
     update();
   }
 
@@ -216,7 +216,7 @@ class GlobalViewModel extends GetxController {
     // GlobalModel correctedModel = correctInvRecord(globalModel);
 
     UserManagementViewModel myUser = Get.find<UserManagementViewModel>();
-    if ((myUser.allRole[getMyUserRole()]?.roles[AppStrings.roleViewInvoice]?.contains(AppStrings.roleUserAdmin)) ?? false) {
+    if ((myUser.allRole[getMyUserRole()]?.roles[AppConstants.roleViewInvoice]?.contains(AppConstants.roleUserAdmin)) ?? false) {
       globalModel.invIsPending = false;
     } else {
       globalModel.invIsPending = true;
@@ -226,7 +226,7 @@ class GlobalViewModel extends GetxController {
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     addInvoiceToFirebase(globalModel);
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.invoicesCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.invoicesCollection);
     // invoiceViewModel.updateCodeList();
     invoiceViewModel.initModel = globalModel;
     invoiceViewModel.invoiceModel[globalModel.invId!] = globalModel;
@@ -273,7 +273,7 @@ class GlobalViewModel extends GetxController {
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     addInvoiceToFirebase(globalModel);
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.invoicesCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.invoicesCollection);
 
     update();
     sendEmailWithPdfAttachment(globalModel);
@@ -286,7 +286,7 @@ class GlobalViewModel extends GetxController {
 
     updateDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.bondsCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.bondsCollection);
     update();
   }
 
@@ -295,7 +295,7 @@ class GlobalViewModel extends GetxController {
     addChequeToFirebase(globalModel);
     chequeViewModel.update();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppStrings.chequesCollection);
+    changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.chequesCollection);
     update();
   }
 
@@ -303,15 +303,15 @@ class GlobalViewModel extends GetxController {
   void deleteGlobal(GlobalModel globalModel) {
     entryBondViewModel.deleteBondById(globalModel.entryBondId);
     if (globalModel.invId != null) {
-      FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.invId).set({"isDeleted": true}, SetOptions(merge: true));
+      FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.invId).set({"isDeleted": true}, SetOptions(merge: true));
     }
     if (globalModel.bondId != null) {
-      FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.bondId).set({"isDeleted": true}, SetOptions(merge: true));
+      FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.bondId).set({"isDeleted": true}, SetOptions(merge: true));
     }
     deleteGlobalFromLocal(globalModel);
     // deleteDataInAll(globalModel);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
-    changesViewModel.addRemoveChangeToChanges(globalModel.toFullJson(), AppStrings.globalCollection);
+    changesViewModel.addRemoveChangeToChanges(globalModel.toFullJson(), AppConstants.globalCollection);
     update();
   }
 
@@ -395,7 +395,7 @@ class GlobalViewModel extends GetxController {
     // });
 
     ///this for add to firebase
-    await FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
+    await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
     await Future.delayed(const Duration(milliseconds: 100));
 
     ///?? globalModel.entryBondId
@@ -410,15 +410,15 @@ class GlobalViewModel extends GetxController {
   }
 
   void addChequeToFirebase(GlobalModel globalModel) async {
-    await FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.entryBondId).collection(AppStrings.chequeRecordCollection).get().then((value) async {
+    await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.entryBondId).collection(AppConstants.chequeRecordCollection).get().then((value) async {
       for (var element in value.docs) {
         await element.reference.delete();
       }
     });
     globalModel.cheqRecords?.forEach((element) async {
-      await FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.entryBondId).collection(AppStrings.chequeRecordCollection).doc(element.cheqRecEntryBondId).set(element.toJson());
+      await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.entryBondId).collection(AppConstants.chequeRecordCollection).doc(element.cheqRecEntryBondId).set(element.toJson());
     });
-    await FirebaseFirestore.instance.collection(AppStrings.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());
+    await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.entryBondId).set(globalModel.toJson());
   }
 
   initGlobalInvoiceBond(GlobalModel globalModel) async {
@@ -447,7 +447,7 @@ class GlobalViewModel extends GetxController {
           );
 
       ///مبيعات
-      if (globalModel.invType == AppStrings.invoiceTypeSalesWithPartner || globalModel.invType == AppStrings.invoiceTypeSales) {
+      if (globalModel.invType == AppConstants.invoiceTypeSalesWithPartner || globalModel.invType == AppConstants.invoiceTypeSales) {
         if ((element.invRecQuantity ?? 0) > 0) {
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), ((element.invRecSubTotal ?? 0) * (element.invRecQuantity ?? 0)).abs(), 0, globalModel.invPrimaryAccount, dse));
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, element.invRecSubTotal! * element.invRecQuantity!, globalModel.invSecondaryAccount, dse));
@@ -458,7 +458,7 @@ class GlobalViewModel extends GetxController {
         globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), element.invRecSubTotal! * element.invRecQuantity!, 0, globalModel.invPrimaryAccount, dse));
       }
 
-      if (globalModel.invType == AppStrings.invoiceTypeSalesWithPartner || globalModel.invType == AppStrings.invoiceTypeSales) {
+      if (globalModel.invType == AppConstants.invoiceTypeSalesWithPartner || globalModel.invType == AppConstants.invoiceTypeSales) {
         /// gifts
         if ((element.invRecGift ?? 0) > 0) {
           String giftDse = "هدية عدد ${element.invRecGift} من ${getProductNameFromId(element.invRecProduct)}";
@@ -485,7 +485,7 @@ class GlobalViewModel extends GetxController {
 
       /// الضريبة
       if (element.invRecVat != 0 && element.invRecQuantity != 0 /*&&getProductModelFromId(element.invRecProduct)?.prodIsLocal==true*/) {
-        if (globalModel.invType == AppStrings.invoiceTypeSales) {
+        if (globalModel.invType == AppConstants.invoiceTypeSales) {
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), (element.invRecVat!) * (element.invRecQuantity ?? 1), 0, globalModel.invVatAccount, "ضريبة $dse"));
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, (element.invRecVat!) * (element.invRecQuantity ?? 1), globalModel.invSecondaryAccount, "ضريبة $dse"));
         } else {
@@ -497,7 +497,7 @@ class GlobalViewModel extends GetxController {
 
     /// الدفعة الاولى
     if (globalModel.firstPay != null && globalModel.firstPay! > 0) {
-      if (globalModel.invPayType == AppStrings.invPayTypeDue) {
+      if (globalModel.invPayType == AppConstants.invPayTypeDue) {
         if (globalModel.invCode!.contains("F")) {
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), globalModel.firstPay, 0, getAccountIdFromText("F-حساب التسديد"), "الدفعة الاولى مبيعات ${globalModel.invCode}"));
           globalModel.entryBondRecord!.add(EntryBondRecordModel((bondRecId++).toString(), 0, globalModel.firstPay, getAccountIdFromText("F-الصندوق"), "الدفعة الاولى مبيعات ${globalModel.invCode}"));
@@ -511,26 +511,26 @@ class GlobalViewModel extends GetxController {
   }
 
   updateDataInAll(GlobalModel globalModel) async {
-    if (globalModel.globalType == AppStrings.globalTypeInvoice) {
+    if (globalModel.globalType == AppConstants.globalTypeInvoice) {
       if (!globalModel.invIsPending!) {
-        if (globalModel.invType != AppStrings.invoiceTypeAdd && globalModel.invType != AppStrings.invoiceTypeChange) {
+        if (globalModel.invType != AppConstants.invoiceTypeAdd && globalModel.invType != AppConstants.invoiceTypeChange) {
           // initGlobalInvoiceBond(globalModel);
-          if (getPatModelFromPatternId(globalModel.patternId).patType == AppStrings.invoiceTypeSales || getPatModelFromPatternId(globalModel.patternId).patType == AppStrings.invoiceTypeSalesWithPartner) {
+          if (getPatModelFromPatternId(globalModel.patternId).patType == AppConstants.invoiceTypeSales || getPatModelFromPatternId(globalModel.patternId).patType == AppConstants.invoiceTypeSalesWithPartner) {
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }
-        if (globalModel.invType != AppStrings.invoiceTypeChange) {
+        if (globalModel.invType != AppConstants.invoiceTypeChange) {
           accountViewModel.initGlobalAccount(globalModel);
           productController.initGlobalProduct(globalModel);
         }
         storeController.initGlobalStore(globalModel);
       }
       invoiceViewModel.initGlobalInvoice(globalModel);
-    } else if (globalModel.globalType == AppStrings.globalTypeCheque) {
+    } else if (globalModel.globalType == AppConstants.globalTypeCheque) {
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
     }
-    if (globalModel.globalType == AppStrings.globalTypeBond) {
+    if (globalModel.globalType == AppConstants.globalTypeBond) {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
       accountViewModel.initGlobalAccount(globalModel);
@@ -538,41 +538,41 @@ class GlobalViewModel extends GetxController {
   }
 
   initUpdateDataInAll(GlobalModel globalModel) async {
-    if (globalModel.globalType == AppStrings.globalTypeInvoice) {
+    if (globalModel.globalType == AppConstants.globalTypeInvoice) {
       if (!globalModel.invIsPending!) {
-        if (globalModel.invType != AppStrings.invoiceTypeAdd && globalModel.invType != AppStrings.invoiceTypeChange) {
+        if (globalModel.invType != AppConstants.invoiceTypeAdd && globalModel.invType != AppConstants.invoiceTypeChange) {
           // initGlobalInvoiceBond(globalModel);
-          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع" || getPatModelFromPatternId(globalModel.patternId).patType == AppStrings.invoiceTypeSalesWithPartner) {
+          if (getPatModelFromPatternId(globalModel.patternId).patName == "مبيع" || getPatModelFromPatternId(globalModel.patternId).patType == AppConstants.invoiceTypeSalesWithPartner) {
             sellerViewModel.postRecord(userId: globalModel.invSeller!, invId: globalModel.invId, amount: globalModel.invTotal!, date: globalModel.invDate);
           }
         }
       }
       invoiceViewModel.initGlobalInvoice(globalModel);
     }
-    if (globalModel.invType != AppStrings.invoiceTypeChange) {
+    if (globalModel.invType != AppConstants.invoiceTypeChange) {
       // accountViewModel.initGlobalAccount(globalModel);
       productController.initGlobalProduct(globalModel);
     }
-    if (globalModel.globalType == AppStrings.globalTypeBond) {
+    if (globalModel.globalType == AppConstants.globalTypeBond) {
       bondViewModel.initGlobalBond(globalModel);
       entryBondViewModel.initGlobalBond(globalModel);
-    } else if (globalModel.globalType == AppStrings.globalTypeCheque) {
+    } else if (globalModel.globalType == AppConstants.globalTypeCheque) {
       entryBondViewModel.initGlobalChequeBond(globalModel);
       chequeViewModel.initGlobalCheque(globalModel);
     }
   }
 
   deleteDataInAll(GlobalModel globalModel) {
-    if (globalModel.globalType == AppStrings.globalTypeInvoice) {
+    if (globalModel.globalType == AppConstants.globalTypeInvoice) {
       invoiceViewModel.deleteGlobalInvoice(globalModel);
       bondViewModel.deleteGlobalBond(globalModel);
       accountViewModel.deleteGlobalAccount(globalModel);
       productController.deleteGlobalProduct(globalModel);
       storeController.deleteGlobalStore(globalModel);
       sellerViewModel.deleteGlobalSeller(globalModel);
-    } else if (globalModel.globalType == AppStrings.globalTypeCheque) {
+    } else if (globalModel.globalType == AppConstants.globalTypeCheque) {
       chequeViewModel.deleteGlobalCheque(globalModel);
-    } else if (globalModel.globalType == AppStrings.globalTypeBond) {
+    } else if (globalModel.globalType == AppConstants.globalTypeBond) {
       bondViewModel.deleteGlobalBond(globalModel);
       accountViewModel.deleteGlobalAccount(globalModel);
     }

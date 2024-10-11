@@ -2,7 +2,7 @@ import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 
 class PatternRecordDataSource extends DataGridSource {
@@ -17,12 +17,12 @@ class PatternRecordDataSource extends DataGridSource {
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: "patId", value: e.patId),
               DataGridCell<String>(
-                  columnName: AppStrings.patCode, value: e.patCode),
+                  columnName: AppConstants.patCode, value: e.patCode),
               //  DataGridCell<String>(columnName: Const.patPrimary, value: getAccountNameFromId(e.patPrimary)),
               DataGridCell<String>(
-                  columnName: AppStrings.patName, value: e.patName),
+                  columnName: AppConstants.patName, value: e.patName),
               DataGridCell<String>(
-                  columnName: AppStrings.patType,
+                  columnName: AppConstants.patType,
                   value: getInvTypeFromEnum(e.patType!)),
             ]))
         .toList();

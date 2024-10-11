@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/cheques/pages/all_cheques_view.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class ChequeType extends StatefulWidget {
   const ChequeType({super.key});
@@ -32,14 +32,14 @@ class _ChequeTypeState extends State<ChequeType> {
             }),
             Item("الشيكات المستحقة", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewCheques)
+                      AppConstants.roleUserRead, AppConstants.roleViewCheques)
                   .then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: false));
               });
             }),
             Item("معاينة الشيكات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewCheques)
+                      AppConstants.roleUserRead, AppConstants.roleViewCheques)
                   .then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: true));
               });

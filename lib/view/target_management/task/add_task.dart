@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
 import '../../../model/seller/seller_model.dart';
 import '../../invoices/widget/custom_TextField.dart';
@@ -35,7 +35,7 @@ class _AddTaskViewState extends State<AddTaskView> {
   @override
   void initState() {
     if (widget.oldKey == null) {
-      taskModel = TaskModel(taskType: AppStrings.taskTypeProduct);
+      taskModel = TaskModel(taskType: AppConstants.taskTypeProduct);
       taskDate = "${DateTime.now().year}-${DateTime.now().month}";
       allUser.clear();
     } else {
@@ -92,7 +92,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                                           allUser.remove(i.sellerId!);
                                         } else {
                                           if (taskModel.taskType ==
-                                              AppStrings.taskTypeProduct) {
+                                              AppConstants.taskTypeProduct) {
                                             allUser.add(i.sellerId!);
                                           } else {
                                             allUser.assign(i.sellerId!);
@@ -252,15 +252,15 @@ class _AddTaskViewState extends State<AddTaskView> {
                               taskModel.taskDate = taskDate;
                               if (taskModel.taskId != null) {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserRead,
-                                        AppStrings.roleViewTask)
+                                        AppConstants.roleUserRead,
+                                        AppConstants.roleViewTask)
                                     .then((value) {
                                   if (value) controller.updateTask(taskModel);
                                 });
                               } else {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserRead,
-                                        AppStrings.roleViewTask)
+                                        AppConstants.roleUserRead,
+                                        AppConstants.roleViewTask)
                                     .then((value) {
                                   if (value) controller.addTask(taskModel);
                                 });

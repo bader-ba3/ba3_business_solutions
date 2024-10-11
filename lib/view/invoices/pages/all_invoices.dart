@@ -4,9 +4,9 @@ import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'new_invoice_view.dart';
@@ -23,7 +23,7 @@ class AllInvoice extends StatelessWidget {
     return GetBuilder<InvoiceViewModel>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع الفواتير",
-        type: AppStrings.globalTypeInvoice,
+        type: AppConstants.globalTypeInvoice,
         onLoaded: (e) {},
         onSelected: (p0) {
           print(p0.row?.cells["الرقم التسلسلي"]?.value);
@@ -46,7 +46,7 @@ class AllInvoice extends StatelessWidget {
           (element) {
             if (!HiveDataBase.getWithFree() &&
                 getPatTypeFromId(element.patternId!) ==
-                    AppStrings.invoiceTypeBuy) {
+                    AppConstants.invoiceTypeBuy) {
               return element.invRecords!.where(
                 (element) {
                   return getProductModelFromId(element.invRecProduct)

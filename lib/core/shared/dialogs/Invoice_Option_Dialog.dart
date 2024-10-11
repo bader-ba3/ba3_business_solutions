@@ -8,7 +8,7 @@ import '../../../view/invoices/pages/all_invoices.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
 import '../../helper/functions/functions.dart';
 import '../../services/Get_Date_From_String.dart';
-import '../widgets/Option_Text_Widget.dart';
+import '../widgets/option_text_widget.dart';
 import 'Search_Product_Text_Dialog.dart';
 
 class InvoiceOptionDialog extends StatelessWidget {

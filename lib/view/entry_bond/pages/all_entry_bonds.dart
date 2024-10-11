@@ -1,9 +1,9 @@
 import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 import 'entry_bond_details_view.dart';
 
 class AllEntryBonds extends StatelessWidget {
@@ -14,7 +14,7 @@ class AllEntryBonds extends StatelessWidget {
     return GetBuilder<EntryBondViewModel>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع سندات القيد",
-        type: AppStrings.globalTypeStartersBond,
+        type: AppConstants.globalTypeStartersBond,
         onLoaded: (e) {},
         onSelected: (p0) {
           if (p0.row?.cells["bondId"]?.value != '') {

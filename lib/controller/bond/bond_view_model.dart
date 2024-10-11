@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_details_view.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/custom_bond_details_view.dart';
@@ -61,9 +61,9 @@ class BondViewModel extends GetxController {
     } else {
       tempBondModel = GlobalModel.fromJson(model.toFullJson());
       bondModel = GlobalModel.fromJson(model.toFullJson());
-      if (bondModel.bondType == AppStrings.bondTypeDaily ||
-          bondModel.bondType == AppStrings.bondTypeStart ||
-          bondModel.bondType == AppStrings.bondTypeInvoice) {
+      if (bondModel.bondType == AppConstants.bondTypeDaily ||
+          bondModel.bondType == AppConstants.bondTypeStart ||
+          bondModel.bondType == AppConstants.bondTypeInvoice) {
         Get.off(() => BondDetailsView(
               oldId: bondModel.bondId,
               bondType: bondModel.bondType!,
@@ -72,7 +72,7 @@ class BondViewModel extends GetxController {
       } else {
         Get.off(() => CustomBondDetailsView(
               oldId: bondModel.bondId,
-              isDebit: bondModel.bondType == AppStrings.bondTypeDebit,
+              isDebit: bondModel.bondType == AppConstants.bondTypeDebit,
             ));
         update();
       }
@@ -99,7 +99,7 @@ class BondViewModel extends GetxController {
       dateController.text = tempBondModel.bondDate!.split(" ")[0];
       noteController.text = tempBondModel.bondDescription ?? '';
 
-      if (tempBondModel.bondType == AppStrings.bondTypeCredit) {
+      if (tempBondModel.bondType == AppConstants.bondTypeCredit) {
         debitOrCreditController.text =
             getAccountNameFromId(tempBondModel.bondRecord?.last.bondRecAccount);
         plutoEditViewModel.getRows(
@@ -110,7 +110,7 @@ class BondViewModel extends GetxController {
                     .toList() ??
                 [],
             type!);
-      } else if (tempBondModel.bondType == AppStrings.bondTypeDebit) {
+      } else if (tempBondModel.bondType == AppConstants.bondTypeDebit) {
         debitOrCreditController.text =
             getAccountNameFromId(tempBondModel.bondRecord?.last.bondRecAccount);
         plutoEditViewModel.getRows(
@@ -188,8 +188,8 @@ class BondViewModel extends GetxController {
     tempBondModel.bondTotal = total.toString();
     tempBondModel.bondType = bondType;
     tempBondModel.bondDescription = bondDes;
-    tempBondModel.bondType ??= AppStrings.bondTypeDaily;
-    tempBondModel.globalType = AppStrings.globalTypeBond;
+    tempBondModel.bondType ??= AppConstants.bondTypeDaily;
+    tempBondModel.globalType = AppConstants.globalTypeBond;
 
     if (oldBondCode == null) {
       var bondCode = "";
@@ -249,7 +249,7 @@ class BondViewModel extends GetxController {
   getBondByCode(String bondType, bondCode) {
     List<GlobalModel> bond = allBondsItem.values
         .where((element) =>
-            element.globalType == AppStrings.globalTypeBond &&
+            element.globalType == AppConstants.globalTypeBond &&
             element.bondType == bondType &&
             element.bondCode == bondCode)
         .toList();
@@ -271,7 +271,7 @@ class BondViewModel extends GetxController {
   bondNextOrPrev(String bondType, bool isPrev) {
     List<GlobalModel> bond = allBondsItem.values
         .where((element) =>
-            element.globalType == AppStrings.globalTypeBond &&
+            element.globalType == AppConstants.globalTypeBond &&
             element.bondType == bondType)
         .toList()
         .reversed
@@ -364,12 +364,12 @@ class BondViewModel extends GetxController {
       }
     });
     if (text != null) return text;
-    if ((tempBondModel.bondType == AppStrings.bondTypeDaily ||
-            tempBondModel.bondType == AppStrings.bondTypeStart) &&
+    if ((tempBondModel.bondType == AppConstants.bondTypeDaily ||
+            tempBondModel.bondType == AppConstants.bondTypeStart) &&
         double.parse(tempBondModel.bondTotal!) != 0) {
       return "خطأ بالمجموع";
-    } else if ((tempBondModel.bondType != AppStrings.bondTypeDaily &&
-            tempBondModel.bondType != AppStrings.bondTypeStart) &&
+    } else if ((tempBondModel.bondType != AppConstants.bondTypeDaily &&
+            tempBondModel.bondType != AppConstants.bondTypeStart) &&
         double.parse(tempBondModel.bondTotal!) == 0) {
       return "خطأ بالمجموع";
     }

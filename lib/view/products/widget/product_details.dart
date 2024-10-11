@@ -8,7 +8,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/hive.dart';
 import '../../../model/global/global_model.dart';
 import '../../../model/product/product_model.dart';
@@ -69,8 +69,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     onPressed: () {
                       confirmDeleteWidget().then((value) {
                         if (value) {
-                          checkPermissionForOperation(AppStrings.roleUserDelete,
-                                  AppStrings.roleViewProduct)
+                          checkPermissionForOperation(AppConstants.roleUserDelete,
+                                  AppConstants.roleViewProduct)
                               .then((value) {
                             if (value) {
                               productController.deleteProduct(withLogger: true);
@@ -119,7 +119,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       .getCells()
                                       .firstWhere((element) =>
                                           element.columnName ==
-                                          AppStrings.rowProductInvId)
+                                          AppConstants.rowProductInvId)
                                       .value;
                                   Get.to(
                                     () => InvoiceView(
@@ -144,26 +144,26 @@ class _ProductDetailsState extends State<ProductDetails> {
                               columns: <GridColumn>[
                                 GridColumnItem(
                                     label: "المادة",
-                                    name: AppStrings.rowProductRecProduct),
+                                    name: AppConstants.rowProductRecProduct),
                                 GridColumnItem(
                                     label: "النوع",
-                                    name: AppStrings.rowProductType),
+                                    name: AppConstants.rowProductType),
                                 GridColumnItem(
                                     label: 'الكمية',
-                                    name: AppStrings.rowProductQuantity),
+                                    name: AppConstants.rowProductQuantity),
                                 GridColumnItem(
                                     label: 'الكمية',
-                                    name: AppStrings.rowProductTotal),
+                                    name: AppConstants.rowProductTotal),
                                 GridColumnItem(
                                     label: 'التاريخ',
-                                    name: AppStrings.rowProductDate),
+                                    name: AppConstants.rowProductDate),
                                 // GridColumnItem(
                                 //     label: 'الرمز التسلسي للفاتورة',
                                 //     name: Const.rowProductInvId),
                                 GridColumn(
                                     visible: false,
                                     allowEditing: false,
-                                    columnName: AppStrings.rowProductInvId,
+                                    columnName: AppConstants.rowProductInvId,
                                     label: Container(
                                       decoration: const BoxDecoration(
                                         borderRadius: BorderRadius.only(
@@ -234,7 +234,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               false))
           .toList();
       for (var globalModel in globalModels) {
-        if (globalModel.invType != AppStrings.invoiceTypeChange) {
+        if (globalModel.invType != AppConstants.invoiceTypeChange) {
           await productController.initGlobalProduct(globalModel);
         }
       }

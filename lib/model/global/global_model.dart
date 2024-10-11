@@ -5,7 +5,7 @@ import '../../controller/account/account_view_model.dart';
 import '../../controller/pattern/pattern_model_view.dart';
 import '../../controller/seller/sellers_view_model.dart';
 import '../../controller/store/store_view_model.dart';
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
 import '../bond/bond_record_model.dart';
 import '../cheque/cheque_rec_model.dart';
@@ -280,7 +280,7 @@ class GlobalModel {
       addedTotal: json['addedTotal'],
       isDeleted: json['isDeleted'],
       invIsPaid:
-          json['invIsPaid'] ?? json['invPayType'] == AppStrings.invPayTypeCash
+          json['invIsPaid'] ?? json['invPayType'] == AppConstants.invPayTypeCash
               ? true
               : false,
       originAmenId: json['originAmenId'],
@@ -481,7 +481,7 @@ class GlobalModel {
   }
 
   String? affectedKey({String? type}) {
-    return type == AppStrings.globalTypeInvoice ? "invId" : "bondId";
+    return type == AppConstants.globalTypeInvoice ? "invId" : "bondId";
   }
 
   GlobalModel({
@@ -550,7 +550,7 @@ class GlobalModel {
   });
 
   Map<String, dynamic> toMap({String? type}) {
-    if (type == AppStrings.globalTypeInvoice) {
+    if (type == AppConstants.globalTypeInvoice) {
       return {
         "الرقم التسلسلي": invId ?? '',
         "الرمز": invCode ?? '',
@@ -569,7 +569,7 @@ class GlobalModel {
         "حساب البائع": getSellerNameFromId(invSeller), //Isolate
         'وصف': invComment ?? '',
       };
-    } else if (type == AppStrings.globalTypeBond) {
+    } else if (type == AppConstants.globalTypeBond) {
       return {
         'bondId': bondId ?? entryBondId,
         'رقم السند': bondCode,
@@ -594,7 +594,7 @@ class GlobalModel {
                 .toList() ??
             ''
       };
-    } else if (type == AppStrings.globalTypeCheque) {
+    } else if (type == AppConstants.globalTypeCheque) {
       return {
         'cheqId': cheqId,
         'رقم الشيك': cheqName,
@@ -611,7 +611,7 @@ class GlobalModel {
         'نوع الشيك': getChequeTypeFromEnum(cheqType.toString()),
         'اسم البنك': getAccountNameFromId(cheqBankAccount),
       };
-    } else if (type == AppStrings.globalTypeAccountDue) {
+    } else if (type == AppConstants.globalTypeAccountDue) {
       return {
         "الرقم التسلسلي": invId ?? '',
         "الرمز": invCode ?? '',
@@ -632,7 +632,7 @@ class GlobalModel {
         'النوع': getInvTypeFromEnum(invType ?? ""),
         'وصف': invComment ?? '',
       };
-    } else if (type == AppStrings.globalTypeStartersBond) {
+    } else if (type == AppConstants.globalTypeStartersBond) {
       return {
         'bondId': entryBondId,
         'رقم السند': entryBondCode ?? 0,

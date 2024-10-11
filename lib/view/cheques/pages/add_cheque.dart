@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dar
 import 'package:ba3_business_solutions/controller/cheque/cheque_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/entry_bond/pages/entry_bond_details_view.dart';
@@ -50,8 +50,8 @@ class _AddChequeState extends State<AddCheque> {
       print(DateTime.now().toString().split(" ")[0]);
       chequeController.initModel!.cheqDate =
           DateTime.now().toString().split(" ")[0];
-      chequeType = AppStrings.chequeTypeList[0];
-      chequeController.initModel?.cheqType = AppStrings.chequeTypeList[0];
+      chequeType = AppConstants.chequeTypeList[0];
+      chequeController.initModel?.cheqType = AppConstants.chequeTypeList[0];
       if (chequeController.allCheques.isNotEmpty) {
         codeController.text = (int.parse(
                     chequeController.allCheques.values.last.cheqCode ?? "0") +
@@ -144,13 +144,13 @@ class _AddChequeState extends State<AddCheque> {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           color: controller.initModel!.cheqStatus ==
-                                  AppStrings.chequeStatusPaid
+                                  AppConstants.chequeStatusPaid
                               ? Colors.green.shade200
                               : controller.initModel!.cheqStatus ==
-                                      AppStrings.chequeStatusNotPaid
+                                      AppConstants.chequeStatusNotPaid
                                   ? Colors.red.shade200
                                   : controller.initModel!.cheqStatus ==
-                                          AppStrings.chequeStatusNotAllPaid
+                                          AppConstants.chequeStatusNotAllPaid
                                       ? Colors.orange.shade200
                                       : Colors.white,
                           border: Border.all(),
@@ -164,7 +164,7 @@ class _AddChequeState extends State<AddCheque> {
                           ),
                           Text(getChequeStatusFromEnum(
                               controller.initModel!.cheqStatus ??
-                                  AppStrings.chequeStatusNotPaid)),
+                                  AppConstants.chequeStatusNotPaid)),
                         ],
                       ),
                     ),
@@ -202,7 +202,7 @@ class _AddChequeState extends State<AddCheque> {
                     StatefulBuilder(builder: (context, setstae) {
                       return DropdownButton<String>(
                         value: chequeType,
-                        items: AppStrings.chequeTypeList
+                        items: AppConstants.chequeTypeList
                             .map((e) => DropdownMenuItem(
                                   value: e,
                                   child: Text(getChequeTypeFromEnum(e)),
@@ -288,7 +288,7 @@ class _AddChequeState extends State<AddCheque> {
                         primaryController,
                         onFieldSubmitted: (value) async {
                           var a = await controller.getAccountComplete(
-                              value, AppStrings.accountTypeDefault);
+                              value, AppConstants.accountTypeDefault);
                           primaryController.text = a;
                           controller.initModel?.cheqPrimeryAccount = a;
                         },
@@ -299,9 +299,9 @@ class _AddChequeState extends State<AddCheque> {
                         onFieldSubmitted: (value) async {
                           var a = await controller.getAccountComplete(
                               value,
-                              chequeType == AppStrings.chequeTypeCatch
-                                  ? AppStrings.accountTypeDefault
-                                  : AppStrings.accountTypeDefault);
+                              chequeType == AppConstants.chequeTypeCatch
+                                  ? AppConstants.accountTypeDefault
+                                  : AppConstants.accountTypeDefault);
                           secondaryController.text = a;
                           controller.initModel?.cheqSecoundryAccount = a;
                         },
@@ -311,7 +311,7 @@ class _AddChequeState extends State<AddCheque> {
                         bankController,
                         onFieldSubmitted: (value) async {
                           var a = await controller.getAccountComplete(
-                              value, AppStrings.accountTypeDefault);
+                              value, AppConstants.accountTypeDefault);
                           bankController.text = a;
                           controller.initModel?.cheqBankAccount = a;
                         },
@@ -352,8 +352,8 @@ class _AddChequeState extends State<AddCheque> {
                             Get.snackbar("خطأ", "يرجى كتابة المعلومات");
                           } else {
                             checkPermissionForOperation(
-                                    AppStrings.roleUserWrite,
-                                    AppStrings.roleViewCheques)
+                                    AppConstants.roleUserWrite,
+                                    AppConstants.roleViewCheques)
                                 .then((value) {
                               if (value) {
                                 String des =
@@ -361,7 +361,7 @@ class _AddChequeState extends State<AddCheque> {
 
                                 if (controller.initModel!.cheqId == null) {
                                   controller.addCheque(GlobalModel(
-                                      globalType: AppStrings.globalTypeCheque,
+                                      globalType: AppConstants.globalTypeCheque,
                                       cheqDeuDate:
                                           controller.initModel!.cheqDeuDate,
                                       cheqDate: controller.initModel!.cheqDate,
@@ -383,7 +383,7 @@ class _AddChequeState extends State<AddCheque> {
                                           getAccountIdFromText(
                                               secondaryController.text),
                                       cheqStatus:
-                                          AppStrings.chequeStatusNotPaid,
+                                          AppConstants.chequeStatusNotPaid,
                                       cheqType: chequeType,
                                       cheqRemainingAmount:
                                           allAmountController.text,
@@ -409,7 +409,7 @@ class _AddChequeState extends State<AddCheque> {
                                       ]));
                                 } else {
                                   controller.addCheque(GlobalModel(
-                                      globalType: AppStrings.globalTypeCheque,
+                                      globalType: AppConstants.globalTypeCheque,
                                       cheqDeuDate:
                                           controller.initModel!.cheqDeuDate,
                                       cheqDate: controller.initModel!.cheqDate,
@@ -431,7 +431,7 @@ class _AddChequeState extends State<AddCheque> {
                                           getAccountIdFromText(
                                               secondaryController.text),
                                       cheqStatus:
-                                          AppStrings.chequeStatusNotPaid,
+                                          AppConstants.chequeStatusNotPaid,
                                       cheqType: chequeType,
                                       cheqRemainingAmount:
                                           allAmountController.text,
@@ -479,8 +479,8 @@ class _AddChequeState extends State<AddCheque> {
                             confirmDeleteWidget().then((value) {
                               if (value) {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserDelete,
-                                        AppStrings.roleViewCheques)
+                                        AppConstants.roleUserDelete,
+                                        AppConstants.roleViewCheques)
                                     .then((value) {
                                   if (value) {
                                     var globalController =
@@ -515,15 +515,15 @@ class _AddChequeState extends State<AddCheque> {
                         AppButton(
                           onPressed: () async {
                             if (controller.initModel?.cheqStatus ==
-                                AppStrings.chequeStatusNotPaid) {
+                                AppConstants.chequeStatusNotPaid) {
                               String des = controller.initModel?.cheqStatus ==
-                                      AppStrings.chequeStatusNotPaid
+                                      AppConstants.chequeStatusNotPaid
                                   ? "سند دفع شيك رقم ${controller.initModel?.cheqName}"
                                   : "سند ارجاع قيمة شيك برقم ${controller.initModel?.cheqName}";
                               List<BondRecordModel> bondRecord = [];
                               List<EntryBondRecordModel> entryBondRecord = [];
                               if (controller.initModel?.cheqStatus ==
-                                  AppStrings.chequeStatusNotPaid) {
+                                  AppConstants.chequeStatusNotPaid) {
                                 bondRecord.add(BondRecordModel(
                                     "00",
                                     0,
@@ -572,30 +572,30 @@ class _AddChequeState extends State<AddCheque> {
 
                               await globalViewModel.addGlobalBond(
                                 GlobalModel(
-                                  globalType: AppStrings.globalTypeBond,
+                                  globalType: AppConstants.globalTypeBond,
                                   bondDate: DateTime.now().toString(),
                                   bondRecord: bondRecord,
                                   bondCode: Get.find<BondViewModel>()
                                       .getNextBondCode(
-                                          type: AppStrings.bondTypeDebit),
+                                          type: AppConstants.bondTypeDebit),
                                   entryBondRecord: entryBondRecord,
                                   bondDescription: des,
-                                  bondType: AppStrings.bondTypeDebit,
+                                  bondType: AppConstants.bondTypeDebit,
                                   bondTotal: "0",
                                 ),
                               );
                             } else {}
                           },
                           title: controller.initModel?.cheqStatus ==
-                                  AppStrings.chequeStatusNotPaid
+                                  AppConstants.chequeStatusNotPaid
                               ? "دفع"
                               : "ارجاع",
                           color: controller.initModel?.cheqStatus ==
-                                  AppStrings.chequeStatusNotPaid
+                                  AppConstants.chequeStatusNotPaid
                               ? Colors.black
                               : Colors.red,
                           iconData: controller.initModel?.cheqStatus ==
-                                  AppStrings.chequeStatusNotPaid
+                                  AppConstants.chequeStatusNotPaid
                               ? Icons.paid
                               : Icons.real_estate_agent_outlined,
                         ),

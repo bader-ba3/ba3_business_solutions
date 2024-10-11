@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/model/account/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/shared/widgets/new_Pluto.dart';
+import '../../../../core/shared/widgets/new_pluto.dart';
 import '../../../view/invoices/widget/custom_TextField.dart';
 
 Future<String?> searchAccountTextDialog(String accountText) async {

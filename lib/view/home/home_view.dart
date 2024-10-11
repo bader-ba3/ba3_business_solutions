@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controller/account/account_view_model.dart';
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../card_management/card_management_view.dart';
 import '../database/database_type.dart';
 import '../user_management/pages/user_management.dart';
@@ -37,7 +37,7 @@ class HomeView extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(
-              "Hello " + getMyUserName() + (" ") * 35 + AppStrings.dataName),
+              "Hello " + getMyUserName() + (" ") * 35 + AppConstants.dataName),
           actions: [
             if (getMyUserSellerId() != null)
               ElevatedButton(

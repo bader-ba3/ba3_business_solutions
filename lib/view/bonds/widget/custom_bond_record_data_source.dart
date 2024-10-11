@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
 final bondController = Get.find<BondViewModel>();
@@ -32,22 +32,22 @@ class CustomBondRecordDataSource extends DataGridSource {
     dataGridRows = recordData.bondRecord!
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondId, value: e.bondRecId),
+                  columnName: AppConstants.rowBondId, value: e.bondRecId),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondAccount,
+                  columnName: AppConstants.rowBondAccount,
                   value: accountController.accountList.values
                       .toList()
                       .firstWhereOrNull((_) => _.accId == e.bondRecAccount)
                       ?.accName),
               isDebit
                   ? DataGridCell<double>(
-                      columnName: AppStrings.rowBondDebitAmount,
+                      columnName: AppConstants.rowBondDebitAmount,
                       value: e.bondRecDebitAmount)
                   : DataGridCell<double>(
-                      columnName: AppStrings.rowBondCreditAmount,
+                      columnName: AppConstants.rowBondCreditAmount,
                       value: e.bondRecCreditAmount),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondDescription,
+                  columnName: AppConstants.rowBondDescription,
                   value: e.bondRecDescription),
             ]))
         .toList();
@@ -55,16 +55,16 @@ class CustomBondRecordDataSource extends DataGridSource {
 
   void addItem(isDebit) {
     dataGridRows.add(DataGridRow(cells: [
-      const DataGridCell<String>(columnName: AppStrings.rowBondId, value: ""),
+      const DataGridCell<String>(columnName: AppConstants.rowBondId, value: ""),
       const DataGridCell<String>(
-          columnName: AppStrings.rowBondAccount, value: ''),
+          columnName: AppConstants.rowBondAccount, value: ''),
       isDebit
           ? const DataGridCell<double>(
-              columnName: AppStrings.rowBondCreditAmount, value: null)
+              columnName: AppConstants.rowBondCreditAmount, value: null)
           : const DataGridCell<double>(
-              columnName: AppStrings.rowBondDebitAmount, value: null),
+              columnName: AppConstants.rowBondDebitAmount, value: null),
       const DataGridCell<String>(
-          columnName: AppStrings.rowBondDescription, value: ""),
+          columnName: AppConstants.rowBondDescription, value: ""),
     ]));
   }
 
@@ -112,7 +112,7 @@ class CustomBondRecordDataSource extends DataGridSource {
               .toString();
       if (int.parse(id) < 10) id = "0$id";
       dataGridRows[dataRowIndex].getCells()[0] =
-          DataGridCell<String>(columnName: AppStrings.rowBondId, value: id);
+          DataGridCell<String>(columnName: AppConstants.rowBondId, value: id);
       bondController.tempBondModel.bondRecord
           ?.add(BondRecordModel(id, 0.0, 0.0, '', ''));
     }
@@ -146,7 +146,7 @@ class CustomBondRecordDataSource extends DataGridSource {
     //   }
     // }
 
-    if (column.columnName == AppStrings.rowBondAccount) {
+    if (column.columnName == AppConstants.rowBondAccount) {
       print("object");
       List<String> result = searchText(newCellValue.toString());
       if (result.isEmpty) {
@@ -214,7 +214,7 @@ class CustomBondRecordDataSource extends DataGridSource {
       }
     }
 
-    if (column.columnName == AppStrings.rowBondDescription) {
+    if (column.columnName == AppConstants.rowBondDescription) {
       // bondController.tempBondModel.bondRecord?[dataRowIndex].bondRecDescription=newCellValue;
       bondController.tempBondModel.bondRecord
           ?.firstWhere((element) =>
@@ -223,7 +223,7 @@ class CustomBondRecordDataSource extends DataGridSource {
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<String>(
               columnName: column.columnName, value: newCellValue);
-    } else if (column.columnName == AppStrings.rowBondCreditAmount) {
+    } else if (column.columnName == AppConstants.rowBondCreditAmount) {
       bondController.tempBondModel.bondRecord
           ?.firstWhere((element) =>
               element.bondRecId == rows[dataRowIndex].getCells()[0].value)
@@ -233,7 +233,7 @@ class CustomBondRecordDataSource extends DataGridSource {
           DataGridCell<double>(
               columnName: column.columnName,
               value: double.parse(newCellValue ?? "0"));
-    } else if (column.columnName == AppStrings.rowBondDebitAmount) {
+    } else if (column.columnName == AppConstants.rowBondDebitAmount) {
       bondController.tempBondModel.bondRecord
           ?.firstWhere((element) =>
               element.bondRecId.toString() ==
@@ -274,9 +274,9 @@ class CustomBondRecordDataSource extends DataGridSource {
 
     newCellValue = null;
     editingController.text = displayText.toString();
-    final bool isNumericType = column.columnName == AppStrings.rowBondId ||
-        column.columnName == AppStrings.rowBondCreditAmount ||
-        column.columnName == AppStrings.rowBondDebitAmount;
+    final bool isNumericType = column.columnName == AppConstants.rowBondId ||
+        column.columnName == AppConstants.rowBondCreditAmount ||
+        column.columnName == AppConstants.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
     // final RegExp regExp = _getRegExp(isNumericType, column.columnName);
@@ -375,7 +375,7 @@ class CustomBondRecordDataSource extends DataGridSource {
           item.accName.toString().toLowerCase().contains(query.toLowerCase());
       var code =
           item.accCode.toString().toLowerCase().contains(query.toLowerCase());
-      var type = item.accType == AppStrings.accountTypeDefault;
+      var type = item.accType == AppConstants.accountTypeDefault;
       return type && (name || code);
     }).toList();
     return products.map((e) => e.accName!).toList();

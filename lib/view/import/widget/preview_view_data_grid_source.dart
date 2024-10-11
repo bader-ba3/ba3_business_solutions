@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -60,7 +60,7 @@ class PreViewViewDataGridSource extends DataGridSource {
                     value: dataGridCell.value,
                     onChanged: (_) {
                       dataGridCell = DataGridCell<bool>(
-                          columnName: AppStrings.rowImportHasVat, value: _);
+                          columnName: AppConstants.rowImportHasVat, value: _);
                     }),
               ),
       );
@@ -87,9 +87,9 @@ class PreViewViewDataGridSource extends DataGridSource {
     // into the current non-modified [DataGridCell].
     newCellValue = null;
 
-    final bool isNumericType = column.columnName == AppStrings.rowBondId ||
-        column.columnName == AppStrings.rowBondCreditAmount ||
-        column.columnName == AppStrings.rowBondDebitAmount;
+    final bool isNumericType = column.columnName == AppConstants.rowBondId ||
+        column.columnName == AppConstants.rowBondCreditAmount ||
+        column.columnName == AppConstants.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
     // final RegExp regExp = _getRegExp(isNumericType, column.columnName);
@@ -97,7 +97,7 @@ class PreViewViewDataGridSource extends DataGridSource {
     return Container(
       padding: const EdgeInsets.all(8.0),
       alignment: Alignment.center,
-      child: column.columnName == AppStrings.rowImportHasVat
+      child: column.columnName == AppConstants.rowImportHasVat
           ? Switch(
               autofocus: true,
               value: displayText,

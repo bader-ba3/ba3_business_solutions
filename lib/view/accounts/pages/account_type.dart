@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/invoice/search_view_controller.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/dialogs/AccountDueOption.dart';
 import '../widget/customer_pluto_edit_view.dart';
 import 'partner_due_account.dart';
@@ -46,7 +46,7 @@ class _AccountTypeState extends State<AccountType> {
             // }),
             item("كشف حساب", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewAccount)
+                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
                   .then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();
@@ -60,7 +60,7 @@ class _AccountTypeState extends State<AccountType> {
             }),
             item("معاينة الحسابات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewAccount)
+                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
                   .then((value) {
                 if (value) {
                   Get.to(() => const AllAccount());
@@ -69,21 +69,21 @@ class _AccountTypeState extends State<AccountType> {
             }),
             item("شجرة الحسابات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewAccount)
+                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
                   .then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
             item("سجل استحقاق الشركاء", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewAccount)
+                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
                   .then((value) {
                 if (value) Get.to(() => const AllPartnerDueAccount());
               });
             }),
             item("المستحقات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewAccount)
+                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
                   .then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();

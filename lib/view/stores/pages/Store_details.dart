@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/view/products/widget/product_details.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 
 class StoreDetails extends StatelessWidget {
   final String? oldKey;

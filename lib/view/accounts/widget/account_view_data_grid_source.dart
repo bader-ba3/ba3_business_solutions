@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -26,17 +26,17 @@ class AccountViewDataGridSource extends DataGridSource {
 
         return DataGridRow(cells: [
           DataGridCell<String>(
-              columnName: AppStrings.rowViewAccountId, value: userId),
+              columnName: AppConstants.rowViewAccountId, value: userId),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewAccountCode,
+              columnName: AppConstants.rowViewAccountCode,
               value: account.accCode),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewAccountName,
+              columnName: AppConstants.rowViewAccountName,
               value: account.accName),
           DataGridCell<double>(
-              columnName: AppStrings.rowViewAccountBalance, value: balance),
+              columnName: AppConstants.rowViewAccountBalance, value: balance),
           DataGridCell<int>(
-              columnName: AppStrings.rowViewAccountLength, value: count),
+              columnName: AppConstants.rowViewAccountLength, value: count),
           // DataGridCell<String>(
           //     columnName: 'AccountId', value: account.accountId),
         ]);

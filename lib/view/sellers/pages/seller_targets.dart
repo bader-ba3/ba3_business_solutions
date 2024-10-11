@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../model/seller/seller_model.dart';
 import '../../../model/seller/task_model.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class SellerTarget extends StatefulWidget {
   final String sellerId;

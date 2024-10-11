@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import '../../../controller/invoice/screen_view_model.dart';
 import '../../../controller/invoice/search_view_controller.dart';
 import '../../../controller/warranty/warranty_pluto_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
 import '../../../model/patterens/pattern_model.dart';
@@ -174,13 +174,13 @@ class _InvoiceTypeState extends State<InvoiceType> {
               ),
             ),
             if (checkPermission(
-                AppStrings.roleUserAdmin, AppStrings.roleViewInvoice))
+                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
                     checkPermissionForOperation(
-                            AppStrings.roleUserRead, AppStrings.roleViewInvoice)
+                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
                         .then((value) {
                       if (value) {
                         Get.to(
@@ -206,13 +206,13 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 ),
               ),
             if (checkPermission(
-                AppStrings.roleUserAdmin, AppStrings.roleViewInvoice)) ...[
+                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) ...[
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
                     checkPermissionForOperation(
-                            AppStrings.roleUserRead, AppStrings.roleViewInvoice)
+                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
                         .then((value) {
                       // if (value) Get.to(() => const AllInvoice());
                       if (value) {
@@ -246,7 +246,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 child: InkWell(
                   onTap: () {
                     checkPermissionForOperation(
-                            AppStrings.roleUserRead, AppStrings.roleViewInvoice)
+                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
                         .then((value) {
                       if (value) Get.to(() => const AllPendingInvoice());
                     });

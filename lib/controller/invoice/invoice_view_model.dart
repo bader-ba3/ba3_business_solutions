@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/controller/product/product_view_model.dar
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
@@ -100,7 +100,7 @@ class InvoiceViewModel extends GetxController {
     AccountCustomer customer = AccountCustomer();
     PatternModel patternModel =
         patternController.patternModel[initModel.patternId]!;
-    if (patternModel.patType != AppStrings.invoiceTypeBuy) {
+    if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       if (getIfAccountHaveCustomers(secondaryAccountController.text)) {
         customer = await accountCustomerDialog(
             customers: getAccountCustomers(secondaryAccountController.text),
@@ -361,7 +361,7 @@ class InvoiceViewModel extends GetxController {
         .toList();
     if ((!HiveDataBase.getWithFree()) &&
         patternController.patternModel[patId]?.patType ==
-            AppStrings.invoiceTypeBuy) {
+            AppConstants.invoiceTypeBuy) {
       inv = invoiceModel.values
           .where((element) =>
               element.patternId == patId &&
@@ -454,7 +454,7 @@ class InvoiceViewModel extends GetxController {
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
 
     invPartnerCodeController.text = '';
-    if (patternModel.patType != AppStrings.invoiceTypeBuy) {
+    if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       invCustomerAccountController.text =
           getAccountModelFromId(patternModel.patSecondary)
                   ?.accCustomer
@@ -471,7 +471,7 @@ class InvoiceViewModel extends GetxController {
     }
     Get.find<InvoicePlutoViewModel>().customerName =
         invCustomerAccountController.text;
-    if (patternModel.patType != AppStrings.invoiceTypeChange) {
+    if (patternModel.patType != AppConstants.invoiceTypeChange) {
       primaryAccountController.text =
           getAccountNameFromId(patternModel.patPrimary!);
       secondaryAccountController.text =
@@ -550,8 +550,8 @@ class InvoiceViewModel extends GetxController {
           patternController.patternModel[initModel.patternId]!.patColor!;
     }
 
-    if (patternModel.patType != AppStrings.invoiceTypeChange &&
-        patternModel.patType != AppStrings.invoiceTypeAdd) {
+    if (patternModel.patType != AppConstants.invoiceTypeChange &&
+        patternModel.patType != AppConstants.invoiceTypeAdd) {
       secondaryAccountController.text =
           getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text =
@@ -563,7 +563,7 @@ class InvoiceViewModel extends GetxController {
       storeNewController.text = getStoreNameFromId(initModel.invSecStorehouse);
     }
 
-    if (patternModel.patType != AppStrings.invoiceTypeBuy) {
+    if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       invCustomerAccountController.text =
           getAccountModelFromId(initModel.invSecondaryAccount)
                   ?.accCustomer
@@ -627,7 +627,7 @@ class InvoiceViewModel extends GetxController {
         invCustomerAccountController.text;
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
-    if (patternModel.patType != AppStrings.invoiceTypeBuy) {
+    if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       invCustomerAccountController.text =
           getAccountModelFromId(initModel.invSecondaryAccount)
                   ?.accCustomer
@@ -648,8 +648,8 @@ class InvoiceViewModel extends GetxController {
       colorInvoice =
           patternController.patternModel[initModel.patternId]!.patColor!;
     }
-    if (patternModel.patType != AppStrings.invoiceTypeChange &&
-        patternModel.patType != AppStrings.invoiceTypeAdd) {
+    if (patternModel.patType != AppConstants.invoiceTypeChange &&
+        patternModel.patType != AppConstants.invoiceTypeAdd) {
       secondaryAccountController.text =
           getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text =
@@ -871,7 +871,7 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
             Center(
               child: QrImageView(
                 data:
-                    'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppStrings.dataName}',
+                    'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
                 version: QrVersions.auto,
                 size: Get.height / 2.5,
               ),
@@ -899,7 +899,7 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
                   controller: TextEditingController(),
                   onSubmitted: (p0) {
                     sendEmail(
-                        'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppStrings.dataName}',
+                        'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
                         p0,);
                   },
                 )),
@@ -907,7 +907,7 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
                   onPressed: () {
                     Clipboard.setData(ClipboardData(
                       text:
-                          'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppStrings.dataName}',
+                          'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
                     ));
                   },
                   // backgroundColor: Colors.grey,

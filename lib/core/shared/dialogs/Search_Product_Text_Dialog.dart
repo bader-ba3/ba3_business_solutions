@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/product/product_view_model.dart';
-import '../../../../core/shared/widgets/new_Pluto.dart';
+import '../../../../core/shared/widgets/new_pluto.dart';
 import '../../../view/invoices/widget/custom_TextField.dart';
 
 Future<String?> searchProductTextDialog(String productText) async {

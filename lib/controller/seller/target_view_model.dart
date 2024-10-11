@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +18,7 @@ class TargetViewModel extends GetxController {
 
   getAllTargets() {
     FirebaseFirestore.instance
-        .collection(AppStrings.tasksCollection)
+        .collection(AppConstants.tasksCollection)
         .snapshots()
         .listen((value) {
       allTarget.clear();
@@ -33,14 +33,14 @@ class TargetViewModel extends GetxController {
   void addTask(TaskModel targetModel) {
     targetModel.taskId = generateId(RecordType.task);
     FirebaseFirestore.instance
-        .collection(AppStrings.tasksCollection)
+        .collection(AppConstants.tasksCollection)
         .doc(targetModel.taskId)
         .set(targetModel.toJson());
   }
 
   void updateTask(TaskModel targetModel) {
     FirebaseFirestore.instance
-        .collection(AppStrings.tasksCollection)
+        .collection(AppConstants.tasksCollection)
         .doc(targetModel.taskId)
         .update(
           targetModel.toJson(),
@@ -49,7 +49,7 @@ class TargetViewModel extends GetxController {
 
   void deleteTask(TaskModel targetModel) {
     FirebaseFirestore.instance
-        .collection(AppStrings.tasksCollection)
+        .collection(AppConstants.tasksCollection)
         .doc(targetModel.taskId)
         .delete();
   }
@@ -69,8 +69,8 @@ class TargetViewModel extends GetxController {
         .where(
           ///get invoice just for one seller and on month
           (element) {
-            return element.globalType == AppStrings.globalTypeInvoice &&
-                element.invType != AppStrings.invoiceTypeBuy &&
+            return element.globalType == AppConstants.globalTypeInvoice &&
+                element.invType != AppConstants.invoiceTypeBuy &&
                 element.invSeller == sellerId &&
                 element.invDate?.split("-")[1] ==
                     Timestamp.now().toDate().month.toString().padLeft(2, "0");

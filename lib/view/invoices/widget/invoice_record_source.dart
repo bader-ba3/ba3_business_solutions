@@ -8,7 +8,7 @@
 // import 'package:get/get.dart';
 // import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 //
-// import '../../../Const/app_strings.dart';
+// import '../../../Const/app_constants.dart';
 // import '../../../Dialogs/Search_Product_Text_Dialog.dart';
 // import '../../../controller/invoice_view_model.dart';
 // import '../../../controller/product_view_model.dart';

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../model/warranty/warranty_model.dart';
@@ -125,7 +125,7 @@ class WarrantyViewModel extends GetxController {
     await addInvoiceToFirebase();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addChangeToChanges(
-        initModel.toJson(), AppStrings.warrantyCollection);
+        initModel.toJson(), AppConstants.warrantyCollection);
     isNew = false;
     update();
   }
@@ -158,7 +158,7 @@ class WarrantyViewModel extends GetxController {
       return;
     }
     FirebaseFirestore.instance
-        .collection(AppStrings.warrantyCollection)
+        .collection(AppConstants.warrantyCollection)
         .doc(initModel.invId)
         .set({"isDeleted": true}, SetOptions(merge: true));
     HiveDataBase.globalModelBox.delete(initModel.invId);
@@ -166,7 +166,7 @@ class WarrantyViewModel extends GetxController {
 
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addRemoveChangeToChanges(
-        initModel.toJson(), AppStrings.warrantyCollection);
+        initModel.toJson(), AppConstants.warrantyCollection);
     update();
   }
 
@@ -177,7 +177,7 @@ class WarrantyViewModel extends GetxController {
 
   addInvoiceToFirebase() async {
     await FirebaseFirestore.instance
-        .collection(AppStrings.warrantyCollection)
+        .collection(AppConstants.warrantyCollection)
         .doc(initModel.invId)
         .set(initModel.toJson(), SetOptions(merge: true));
 /*    if (globalModel.invMobileNumber != null && globalModel.invMobileNumber != '') {

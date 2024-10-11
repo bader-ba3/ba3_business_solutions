@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/view/products/widget/product_details.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 
 class AllProduct extends StatelessWidget {
   const AllProduct({super.key});

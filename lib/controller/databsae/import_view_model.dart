@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../core/utils/loading_dialog.dart';
@@ -260,12 +260,12 @@ class ImportViewModel extends GetxController {
         }
 
         String type = typeList[i].removeAllWhitespace == "دفع"
-            ? AppStrings.bondTypeDebit
+            ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppStrings.bondTypeCredit
+            ? AppConstants.bondTypeCredit
             : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppStrings.bondTypeStart
-            : AppStrings.bondTypeDaily;
+            ? AppConstants.bondTypeStart
+            : AppConstants.bondTypeDaily;
 
         DateTime date = DateTime(
             int.parse(dateList[i].split("/")[2].split(" ")[0]),
@@ -273,7 +273,7 @@ class ImportViewModel extends GetxController {
             int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
-            globalType: AppStrings.globalTypeBond,
+            globalType: AppConstants.globalTypeBond,
             bondDescription: desList[i],
             bondRecord: recordTemp.toList(),
             bondId: generateId(RecordType.bond),
@@ -444,7 +444,7 @@ class ImportViewModel extends GetxController {
             invDate: date.toString(),
             entryBondRecord: recordTemp.toList(),
             bondTotal: totalList[i].replaceAll(",", ""),
-            bondType: AppStrings.globalTypeStartersBond);
+            bondType: AppConstants.globalTypeStartersBond);
         // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
@@ -607,7 +607,7 @@ class ImportViewModel extends GetxController {
             invDate: date.toString(),
             entryBondRecord: recordTemp.toList(),
             bondTotal: totalList[i].replaceAll(",", ""),
-            bondType: AppStrings.globalTypeStartersBond);
+            bondType: AppConstants.globalTypeStartersBond);
         // print(model.toFullJson());
         bondList.add(GlobalModel.fromJson(model.toFullJson()));
         recordTemp.clear();
@@ -766,12 +766,12 @@ class ImportViewModel extends GetxController {
         // print(typeList[i].removeAllWhitespace);
         // print(typeList[i].removeAllWhitespace=="دفع");
         String type = typeList[i].removeAllWhitespace == "دفع"
-            ? AppStrings.bondTypeDebit
+            ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppStrings.bondTypeCredit
+            ? AppConstants.bondTypeCredit
             : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppStrings.bondTypeStart
-            : AppStrings.bondTypeDaily;
+            ? AppConstants.bondTypeStart
+            : AppConstants.bondTypeDaily;
         // print(type);
 
         DateTime date = DateTime(
@@ -794,7 +794,7 @@ class ImportViewModel extends GetxController {
 
     bondType: type);*/
         GlobalModel model = GlobalModel(
-            globalType: AppStrings.globalTypeBond,
+            globalType: AppConstants.globalTypeBond,
             bondDescription: desList[i],
             bondRecord: recordTemp.toList(),
             bondId: generateId(RecordType.bond),
@@ -838,18 +838,18 @@ class ImportViewModel extends GetxController {
   correctDebitAndCredit(List bondList) {
     for (var index = 0; index < bondList.length; index++) {
       GlobalModel model = bondList[index];
-      if (model.bondType == AppStrings.bondTypeDebit ||
-          model.bondType == AppStrings.bondTypeCredit) {
+      if (model.bondType == AppConstants.bondTypeDebit ||
+          model.bondType == AppConstants.bondTypeCredit) {
         Map<String, double> allRec = {};
         for (var ji = 0; ji < (model.bondRecord ?? []).length; ji++) {
           BondRecordModel element = model.bondRecord![ji];
-          if (model.bondType == AppStrings.bondTypeDebit &&
+          if (model.bondType == AppConstants.bondTypeDebit &&
               element.bondRecCreditAmount != 0) {
             if (allRec[element.bondRecAccount!] == null)
               allRec[element.bondRecAccount!] = 0;
             allRec[element.bondRecAccount!] =
                 allRec[element.bondRecAccount]! + element.bondRecCreditAmount!;
-          } else if (model.bondType == AppStrings.bondTypeCredit &&
+          } else if (model.bondType == AppConstants.bondTypeCredit &&
               element.bondRecDebitAmount != 0) {
             if (allRec[element.bondRecAccount!] == null)
               allRec[element.bondRecAccount!] = 0;
@@ -857,7 +857,7 @@ class ImportViewModel extends GetxController {
                 allRec[element.bondRecAccount]! + element.bondRecDebitAmount!;
           }
         }
-        if (model.bondType == AppStrings.bondTypeCredit) {
+        if (model.bondType == AppConstants.bondTypeCredit) {
           model.bondRecord?.removeWhere((e) => e.bondRecDebitAmount != 0);
           model.bondRecord?.add(BondRecordModel(
               "X", 0, allRec.entries.first.value, allRec.entries.first.key,
@@ -979,7 +979,7 @@ class ImportViewModel extends GetxController {
               .find<PatternViewModel>()
               .patternModel
               .values
-              .firstWhere((e) => e.patType == AppStrings.invoiceTypeChange));
+              .firstWhere((e) => e.patType == AppConstants.invoiceTypeChange));
         } else {
           if (element[indexOfInvCode].toString().split(":")[0].replaceAll(
               " ", "") == "تا") {
@@ -999,7 +999,7 @@ class ImportViewModel extends GetxController {
                     " ", "")));
           }
         }
-        bool isAdd = (patternModel.patType == AppStrings.invoiceTypeAdd);
+        bool isAdd = (patternModel.patType == AppConstants.invoiceTypeAdd);
         var primery;
         var secoundry;
 
@@ -1013,12 +1013,12 @@ class ImportViewModel extends GetxController {
         //   print("primery: |"+element[indexOfPrimery]);
         //   notFoundAccount.add(element[indexOfPrimery]);
         // }
-        if (patternModel.patType == AppStrings.invoiceTypeSales) {
+        if (patternModel.patType == AppConstants.invoiceTypeSales) {
           // primery = patternModel.patPrimary;
           primery = getAccountIdFromText(
               getAccountModelFromId(patternModel.patPrimary)!.accName!);
           secoundry = getAccountIdFromText(element[indexOfSecoundry]);
-        } else if (patternModel.patType == AppStrings.invoiceTypeBuy) {
+        } else if (patternModel.patType == AppConstants.invoiceTypeBuy) {
           primery = getAccountIdFromText(element[indexOfSecoundry]);
           // secoundry = patternModel.patSecondary;
           secoundry = getAccountIdFromText(
@@ -1044,7 +1044,7 @@ class ImportViewModel extends GetxController {
         //   print(primery.toString()+"|"+secoundry.toString()+"|"+element[indexOfInvCode]);
         //   print("------------------");
         // }
-        if (patternModel.patType == AppStrings.invoiceTypeChange) {
+        if (patternModel.patType == AppConstants.invoiceTypeChange) {
           print("-----------");
           print(allChanges[_[1]]);
           print("-----------");
@@ -1062,12 +1062,12 @@ class ImportViewModel extends GetxController {
               // originId: invId,
               originAmenId: element[indexOfInvCode].toString().split(":")[1]
                   .replaceAll(" ", ""),
-              bondType: AppStrings.bondTypeInvoice,
+              bondType: AppConstants.bondTypeInvoice,
               invIsPending: false,
               invPayType: element[indexOfPayType].removeAllWhitespace ==
                   "نقداً".removeAllWhitespace
-                  ? AppStrings.invPayTypeCash
-                  : AppStrings.invPayTypeDue,
+                  ? AppConstants.invPayTypeCash
+                  : AppConstants.invPayTypeDue,
               //  bondCode: getNextBondCode(),
               discountTotal: double.parse(
                   element[indexOfTotalDiscount].replaceAll("\"", "").replaceAll(
@@ -1083,19 +1083,19 @@ class ImportViewModel extends GetxController {
               invMobileNumber: "",
               patternId: patternModel.patId,
               invSeller: seller,
-              globalType: AppStrings.globalTypeInvoice,
+              globalType: AppConstants.globalTypeInvoice,
               invPrimaryAccount: primery,
               invSecondaryAccount: secoundry,
               invStorehouse: patternModel.patType !=
-                  AppStrings.invoiceTypeChange ? store : allChanges[_[1]]!
+                  AppConstants.invoiceTypeChange ? store : allChanges[_[1]]!
                   .strart,
               invSecStorehouse: allChanges[_[1]]?.end,
               invDate: date.toString().split(".")[0],
               invCustomerAccount: element[indexOfSecoundry],
               bondDate: date.toString().split(".")[0],
-              invVatAccount: patternModel.patType == AppStrings.invoiceTypeBuy
-                  ? AppStrings.returnVatAccountId
-                  : AppStrings.vatAccountId,
+              invVatAccount: patternModel.patType == AppConstants.invoiceTypeBuy
+                  ? AppConstants.returnVatAccountId
+                  : AppConstants.vatAccountId,
               invDiscountRecord: [],
               invTotal: double.parse(
                   element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(
@@ -1107,7 +1107,7 @@ class ImportViewModel extends GetxController {
                       " ", ""),
               invRecords: [
                 InvoiceRecordModel(
-                  prodChoosePriceMethod: AppStrings
+                  prodChoosePriceMethod: AppConstants
                       .invoiceChoosePriceMethodeCustom,
                   invRecId: "1",
                   invRecQuantity: double.parse(
@@ -1147,7 +1147,7 @@ class ImportViewModel extends GetxController {
                   .replaceAll("٫", ".")).abs() +
               invMap[element[indexOfInvCode]]!.invTotal!;
           invMap[element[indexOfInvCode]]?.invRecords?.add(InvoiceRecordModel(
-            prodChoosePriceMethod: AppStrings.invoiceChoosePriceMethodeCustom,
+            prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
             invRecId: lastCode.toString(),
             invRecQuantity: double.parse(element[indexOfQuantity].toString()
                 .replaceAll(",", "")
@@ -1391,7 +1391,7 @@ class ImportViewModel extends GetxController {
                   .patternModel
                   .values
                   .firstWhere((e) =>
-              e.patType == AppStrings.invoiceTypeChange));
+              e.patType == AppConstants.invoiceTypeChange));
             } else {
               patternModel = (Get
                   .find<PatternViewModel>()
@@ -1402,15 +1402,15 @@ class ImportViewModel extends GetxController {
                   element[indexOfInvCode].toString().split(":")[0].replaceAll(
                       " ", "")));
             }
-            bool isAdd = (patternModel.patType == AppStrings.invoiceTypeAdd);
+            bool isAdd = (patternModel.patType == AppConstants.invoiceTypeAdd);
             var primery;
             var secoundry;
 
-            if (patternModel.patType == AppStrings.invoiceTypeSales) {
+            if (patternModel.patType == AppConstants.invoiceTypeSales) {
               primery = getAccountIdFromText(
                   getAccountModelFromId(patternModel.patPrimary)!.accName!);
               secoundry = getAccountIdFromText(element[indexOfSecoundry]);
-            } else if (patternModel.patType == AppStrings.invoiceTypeBuy) {
+            } else if (patternModel.patType == AppConstants.invoiceTypeBuy) {
               primery = getAccountIdFromText(element[indexOfSecoundry]);
 
               secoundry = getAccountIdFromText(
@@ -1432,7 +1432,7 @@ class ImportViewModel extends GetxController {
               notFoundProduct.add(element[indexOfProductName]);
             }
 
-            if (patternModel.patType == AppStrings.invoiceTypeChange) {
+            if (patternModel.patType == AppConstants.invoiceTypeChange) {
               print("-----------");
               print(allChanges[_[1]]);
               print("-----------");
@@ -1464,8 +1464,8 @@ class ImportViewModel extends GetxController {
                     // bondType: AppStrings.bondTypeInvoice,
                     invIsPending: false,
                     invPayType: element[indexOfPayType].removeAllWhitespace ==
-                        "نقداً".removeAllWhitespace ? AppStrings
-                        .invPayTypeCash : AppStrings.invPayTypeDue,
+                        "نقداً".removeAllWhitespace ? AppConstants
+                        .invPayTypeCash : AppConstants.invPayTypeDue,
                     invComment: element[indexOfComment],
                     discountTotal: double.parse(
                         element[indexOfTotalDiscount].replaceAll("\"", "")
@@ -1486,11 +1486,11 @@ class ImportViewModel extends GetxController {
                     invMobileNumber: "",
                     patternId: patternModel.patId,
                     invSeller: seller,
-                    globalType: AppStrings.globalTypeInvoice,
+                    globalType: AppConstants.globalTypeInvoice,
                     invPrimaryAccount: primery,
                     invSecondaryAccount: secoundry,
                     invStorehouse: patternModel.patType !=
-                        AppStrings.invoiceTypeChange
+                        AppConstants.invoiceTypeChange
                         ? store
                         : allChanges[_[1]]!.strart,
                     invSecStorehouse: allChanges[_[1]]?.end,
@@ -1498,8 +1498,8 @@ class ImportViewModel extends GetxController {
                     invCustomerAccount: element[indexOfSecoundry],
                     // bondDate: date.toString().split(".")[0],
                     invVatAccount: patternModel.patType ==
-                        AppStrings.invoiceTypeBuy ? AppStrings
-                        .returnVatAccountId : AppStrings.vatAccountId,
+                        AppConstants.invoiceTypeBuy ? AppConstants
+                        .returnVatAccountId : AppConstants.vatAccountId,
                     invDiscountRecord: [],
                     invTotal: double.parse(
                         element[indexOfTotalWithVat].replaceAll("\"", "")
@@ -1516,7 +1516,7 @@ class ImportViewModel extends GetxController {
                             double.parse(element[indexOfQuantity].toString()
                                 .replaceAll("\"", "")
                                 .replaceAll(",", "")),
-                        prodChoosePriceMethod: AppStrings
+                        prodChoosePriceMethod: AppConstants
                             .invoiceChoosePriceMethodeCustom,
                         invRecId: "1",
                         invRecQuantity: double.parse(element[indexOfQuantity]
@@ -1571,7 +1571,7 @@ class ImportViewModel extends GetxController {
                     .abs() + invMap[element[indexOfInvCode]]!.invTotal!;
                 invMap[element[indexOfInvCode]]?.invRecords?.add(
                     InvoiceRecordModel(
-                      prodChoosePriceMethod: AppStrings
+                      prodChoosePriceMethod: AppConstants
                           .invoiceChoosePriceMethodeCustom,
                       invRecGiftTotal: double.parse(
                           element[indexOfGift].toString()
@@ -1901,12 +1901,12 @@ class ImportViewModel extends GetxController {
         // print(typeList[i].removeAllWhitespace);
         // print(typeList[i].removeAllWhitespace=="دفع");
         String type = typeList[i].removeAllWhitespace == "دفع"
-            ? AppStrings.bondTypeDebit
+            ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppStrings.bondTypeCredit
+            ? AppConstants.bondTypeCredit
             : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppStrings.bondTypeStart
-            : AppStrings.bondTypeDaily;
+            ? AppConstants.bondTypeStart
+            : AppConstants.bondTypeDaily;
         // print(type);
         DateTime date = DateTime(int.parse(dateList[i].split("-")[2]),
             int.parse(dateList[i].split("-")[1]),

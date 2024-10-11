@@ -7,7 +7,7 @@ import 'package:ba3_business_solutions/controller/store_view_model.dart';
 import 'package:ba3_business_solutions/model/product_model.dart';
 import 'package:get/get.dart';
 
-import '../Const/app_strings.dart';
+import '../Const/app_constants.dart';
 import '../model/pattern_model.dart';
 import '../model/account_model.dart';
 import '../model/account_record_model.dart';

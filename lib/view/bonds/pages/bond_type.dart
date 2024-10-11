@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/view/bonds/widget/bond_record_pluto_view_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import 'bond_details_view.dart';
 
 class BondType extends StatefulWidget {
@@ -32,33 +32,33 @@ class _BondTypeState extends State<BondType> {
             Item("سند يومية", () {
               Get.to(
                 () => const BondDetailsView(
-                  bondType: AppStrings.bondTypeDaily,
+                  bondType: AppConstants.bondTypeDaily,
                 ),
                 binding: BindingsBuilder(() {
                   Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppStrings.bondTypeDaily));
+                      () => BondRecordPlutoViewModel(AppConstants.bondTypeDaily));
                 }),
               );
             }),
             Item("سند دفع", () {
               Get.to(
                 () => const BondDetailsView(
-                  bondType: AppStrings.bondTypeDebit,
+                  bondType: AppConstants.bondTypeDebit,
                 ),
                 binding: BindingsBuilder(() {
                   Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppStrings.bondTypeDebit));
+                      () => BondRecordPlutoViewModel(AppConstants.bondTypeDebit));
                 }),
               );
             }),
             Item("سند قبض", () {
               Get.to(
                 () => const BondDetailsView(
-                  bondType: AppStrings.bondTypeCredit,
+                  bondType: AppConstants.bondTypeCredit,
                 ),
                 binding: BindingsBuilder(() {
                   Get.lazyPut(() =>
-                      BondRecordPlutoViewModel(AppStrings.bondTypeCredit));
+                      BondRecordPlutoViewModel(AppConstants.bondTypeCredit));
                 }),
               );
             }),
@@ -71,11 +71,11 @@ class _BondTypeState extends State<BondType> {
             Item("قيد افتتاحي", () {
               Get.to(
                 () => const BondDetailsView(
-                  bondType: AppStrings.bondTypeStart,
+                  bondType: AppConstants.bondTypeStart,
                 ),
                 binding: BindingsBuilder(() {
                   Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppStrings.bondTypeStart));
+                      () => BondRecordPlutoViewModel(AppConstants.bondTypeStart));
                 }),
               );
             }),

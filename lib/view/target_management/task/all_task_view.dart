@@ -6,7 +6,7 @@ import 'package:ba3_business_solutions/view/target_management/task/add_task.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/seller/task_model.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 
@@ -119,8 +119,8 @@ class _AllTaskViewState extends State<AllTaskView> {
                         IconButton(
                             onPressed: () async {
                               checkPermissionForOperation(
-                                      AppStrings.roleUserUpdate,
-                                      AppStrings.roleViewTask)
+                                      AppConstants.roleUserUpdate,
+                                      AppConstants.roleViewTask)
                                   .then((value) async {
                                 if (value) {
                                   Get.to(() => AddTaskView(
@@ -141,8 +141,8 @@ class _AllTaskViewState extends State<AllTaskView> {
                               confirmDeleteWidget().then((value) {
                                 if (value) {
                                   checkPermissionForOperation(
-                                          AppStrings.roleUserDelete,
-                                          AppStrings.roleViewTask)
+                                          AppConstants.roleUserDelete,
+                                          AppConstants.roleViewTask)
                                       .then((value) async {
                                     if (value) {
                                       controller.deleteTask(model.value);

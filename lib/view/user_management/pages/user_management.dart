@@ -4,8 +4,8 @@ import 'package:ba3_business_solutions/view/user_management/user_crud/all_user.d
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class UserManagementType extends StatefulWidget {
   const UserManagementType({super.key});
@@ -26,7 +26,7 @@ class _UserManagementTypeState extends State<UserManagementType> {
         .waitUntilFirstFrameRasterized
         .then((value) {
       checkPermissionForOperation(
-              AppStrings.roleUserAdmin, AppStrings.roleViewUserManagement)
+              AppConstants.roleUserAdmin, AppConstants.roleViewUserManagement)
           .then((value) {
         print(value);
         if (value) {

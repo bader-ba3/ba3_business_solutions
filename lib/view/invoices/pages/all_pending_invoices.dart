@@ -1,9 +1,9 @@
 import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'new_invoice_view.dart';
@@ -28,7 +28,7 @@ class AllPendingInvoice extends StatelessWidget {
           : CustomPlutoGridWithAppBar(
               title: "جميع الفواتير",
               onLoaded: (e) {},
-              type: AppStrings.globalTypeInvoice,
+              type: AppConstants.globalTypeInvoice,
               onSelected: (p0) {
                 Get.to(
                   () => InvoiceView(

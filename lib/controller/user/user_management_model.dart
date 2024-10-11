@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:ba3_business_solutions/controller/global/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/model/user/role_model.dart';
 import 'package:ba3_business_solutions/model/user/user_model.dart';
@@ -41,7 +41,7 @@ class UserManagementViewModel extends GetxController {
 
   void getAllRole() {
     FirebaseFirestore.instance
-        .collection(AppStrings.roleCollection)
+        .collection(AppConstants.roleCollection)
         .get()
         .then((event) {
       allRole.clear();
@@ -59,7 +59,7 @@ class UserManagementViewModel extends GetxController {
   void checkUserStatus() async {
     if (userPin != null) {
       FirebaseFirestore.instance
-          .collection(AppStrings.usersCollection)
+          .collection(AppConstants.usersCollection)
           .where('userPin', isEqualTo: userPin)
           .get()
           .then((value) async {
@@ -103,7 +103,7 @@ class UserManagementViewModel extends GetxController {
           Get.offAll(() => const LoginView());
         } else if (value.docs.isNotEmpty) {
           FirebaseFirestore.instance
-              .collection(AppStrings.usersCollection)
+              .collection(AppConstants.usersCollection)
               .doc(value.docs.first.data()["userId"])
               .get()
               .then((value0) {
@@ -139,7 +139,7 @@ class UserManagementViewModel extends GetxController {
 
   void initAllUser() {
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .snapshots()
         .listen((event) {
       allUserList.clear();
@@ -152,9 +152,9 @@ class UserManagementViewModel extends GetxController {
 
   void addUser() {
     initAddUserModel?.userId ??= generateId(RecordType.user);
-    initAddUserModel?.userStatus ??= AppStrings.userStatusOnline;
+    initAddUserModel?.userStatus ??= AppConstants.userStatusOnline;
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .doc(initAddUserModel?.userId)
         .set(initAddUserModel!.toJson());
   }
@@ -164,7 +164,7 @@ class UserManagementViewModel extends GetxController {
   void addRole() {
     roleModel?.roleId ??= generateId(RecordType.role);
     FirebaseFirestore.instance
-        .collection(AppStrings.roleCollection)
+        .collection(AppConstants.roleCollection)
         .doc(roleModel?.roleId)
         .set(roleModel!.toJson(), SetOptions(merge: true));
     update();
@@ -174,7 +174,7 @@ class UserManagementViewModel extends GetxController {
     customDate ??= DateTime.now();
     // UserTimeRecord model = UserTimeRecord(date: date, time: time.toString(), timestamp: startTime,totalTime:0);
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .doc(userId)
         .set({
       "userDateList": FieldValue.arrayUnion(
@@ -182,10 +182,10 @@ class UserManagementViewModel extends GetxController {
       ),
     }, SetOptions(merge: true));
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .doc(userId)
         .set({
-      "userStatus": AppStrings.userStatusAway,
+      "userStatus": AppConstants.userStatusAway,
     }, SetOptions(merge: true));
   }
 
@@ -194,27 +194,27 @@ class UserManagementViewModel extends GetxController {
     customTime ??= DateTime.now().difference(model).inSeconds;
     // Get.snackbar("title", DateTime.now().difference(model).inSeconds.toString());
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .doc(userId)
         .update({
       "userTimeList": [...?allUserList[userId]!.userTimeList, customTime],
     });
     FirebaseFirestore.instance
-        .collection(AppStrings.usersCollection)
+        .collection(AppConstants.usersCollection)
         .doc(userId)
         .set({
-      "userStatus": AppStrings.userStatusOnline,
+      "userStatus": AppConstants.userStatusOnline,
     }, SetOptions(merge: true));
   }
 
   void logInTime() {
     try {
       FirebaseFirestore.instance
-          .collection(AppStrings.usersCollection)
+          .collection(AppConstants.usersCollection)
           .doc(myUserModel!.userId)
           .update({
         "logInDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]),
-        "userStatus": AppStrings.userStatusOnline,
+        "userStatus": AppConstants.userStatusOnline,
       });
     } on Exception catch (e) {
       Get.snackbar(
@@ -225,11 +225,11 @@ class UserManagementViewModel extends GetxController {
   void logOutTime() {
     try {
       FirebaseFirestore.instance
-          .collection(AppStrings.usersCollection)
+          .collection(AppConstants.usersCollection)
           .doc(myUserModel!.userId)
           .update({
         "logOutDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]),
-        "userStatus": AppStrings.userStatusOnline,
+        "userStatus": AppConstants.userStatusOnline,
       });
     } on Exception catch (e) {
       Get.snackbar(

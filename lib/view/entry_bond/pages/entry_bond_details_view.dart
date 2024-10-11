@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/custom_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/cheques/pages/add_cheque.dart';
@@ -174,19 +174,19 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                               columns: <GridColumn>[
                                 gridColumnItem(
                                     label: "الرمز التسلسلي",
-                                    name: AppStrings.rowBondId),
+                                    name: AppConstants.rowBondId),
                                 gridColumnItem(
                                     label: 'الحساب',
-                                    name: AppStrings.rowBondAccount),
+                                    name: AppConstants.rowBondAccount),
                                 gridColumnItem(
                                     label: ' مدين',
-                                    name: AppStrings.rowBondDebitAmount),
+                                    name: AppConstants.rowBondDebitAmount),
                                 gridColumnItem(
                                     label: ' دائن',
-                                    name: AppStrings.rowBondCreditAmount),
+                                    name: AppConstants.rowBondCreditAmount),
                                 gridColumnItem(
                                     label: "البيان",
-                                    name: AppStrings.rowBondDescription),
+                                    name: AppConstants.rowBondDescription),
                               ],
                             );
                           });
@@ -240,7 +240,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                       title: "الأصل",
                       onPressed: () {
                         if (controller.tempBondModel.globalType ==
-                            AppStrings.globalTypeInvoice) {
+                            AppConstants.globalTypeInvoice) {
                           Get.to(
                             () => InvoiceView(
                               billId: controller.tempBondModel.invId!,
@@ -252,26 +252,26 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                             }),
                           );
                         } else if (controller.tempBondModel.globalType ==
-                            AppStrings.globalTypeCheque) {
+                            AppConstants.globalTypeCheque) {
                           Get.to(() => AddCheque(
                                 modelKey: controller.tempBondModel.cheqId,
                               ));
                         } else if (controller.tempBondModel.bondType ==
-                                AppStrings.bondTypeDaily ||
+                                AppConstants.bondTypeDaily ||
                             controller.tempBondModel.bondType ==
-                                AppStrings.bondTypeStart) {
+                                AppConstants.bondTypeStart) {
                           Get.to(() => BondDetailsView(
                                 oldId: controller.tempBondModel.bondId,
                                 bondType: controller.tempBondModel.bondType!,
                               ));
                         } else if (controller.tempBondModel.bondType ==
-                                AppStrings.bondTypeDebit ||
+                                AppConstants.bondTypeDebit ||
                             controller.tempBondModel.bondType ==
-                                AppStrings.bondTypeCredit) {
+                                AppConstants.bondTypeCredit) {
                           Get.to(() => CustomBondDetailsView(
                                 oldId: controller.tempBondModel.bondId,
                                 isDebit: controller.tempBondModel.bondType ==
-                                    AppStrings.bondTypeDebit,
+                                    AppConstants.bondTypeDebit,
                               ));
                         }
                       },
@@ -287,7 +287,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
 
   GridColumn gridColumnItem({required label, name}) {
     return GridColumn(
-        allowEditing: name == AppStrings.rowBondId ? false : true,
+        allowEditing: name == AppConstants.rowBondId ? false : true,
         columnName: name,
         label: Container(
             color: Colors.blue,

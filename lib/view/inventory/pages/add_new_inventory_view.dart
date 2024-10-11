@@ -2,7 +2,7 @@ import 'package:ba3_business_solutions/controller/inventory/inventory_view_model
 import 'package:ba3_business_solutions/controller/pluto/pluto_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/Option_Text_Widget.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/option_text_widget.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
@@ -11,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/product/product_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../model/inventory/inventory_model.dart';
 import '../../../model/product/product_model.dart';
 import '../widgets/custom_pluto_grid.dart';
@@ -210,7 +210,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
 
                                     FirebaseFirestore.instance
                                         .collection(
-                                            AppStrings.inventoryCollection)
+                                            AppConstants.inventoryCollection)
                                         .doc(inventory.inventoryId)
                                         .set(inventory.toJson());
 

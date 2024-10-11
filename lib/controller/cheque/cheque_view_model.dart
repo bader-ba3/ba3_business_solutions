@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../global/global_view_model.dart';
 
@@ -82,7 +82,7 @@ class ChequeViewModel extends GetxController {
   addCheque(GlobalModel globalModel) async {
     print(globalModel.toFullJson());
     await FirebaseFirestore.instance
-        .collection(AppStrings.chequesCollection)
+        .collection(AppConstants.chequesCollection)
         .doc(globalModel.cheqId)
         .set(globalModel.toFullJson());
     entryBondController.allEntryBonds[globalModel.entryBondId!] = globalModel;
@@ -253,26 +253,26 @@ class ChequeViewModel extends GetxController {
 
   ///checked
   void payAllAmount({String? oldEntryBondId, required bool ispayEdit}) {
-    initModel?.cheqStatus = AppStrings.chequeStatusPaid;
-    allCheques[initModel?.cheqId]?.cheqStatus = AppStrings.chequeStatusPaid;
+    initModel?.cheqStatus = AppConstants.chequeStatusPaid;
+    allCheques[initModel?.cheqId]?.cheqStatus = AppConstants.chequeStatusPaid;
 
     FirebaseFirestore.instance
-        .collection(AppStrings.chequesCollection)
+        .collection(AppConstants.chequesCollection)
         .doc(initModel?.cheqId)
-        .update({"cheqStatus": AppStrings.chequeStatusPaid});
+        .update({"cheqStatus": AppConstants.chequeStatusPaid});
     var entryBondId = oldEntryBondId ?? generateId(RecordType.entryBond);
     entryBondController.fastAddBondAddToModel(
         globalModel: GlobalModel(
             entryBondId: entryBondId,
             originId: initModel!.cheqId!,
             cheqAllAmount: initModel!.cheqAllAmount!,
-            bondType: AppStrings.bondTypeInvoice),
+            bondType: AppConstants.bondTypeInvoice),
         record: [
           EntryBondRecordModel(
               "00",
               double.parse(initModel!.cheqAllAmount!),
               0,
-              initModel?.cheqType == AppStrings.chequeTypeCatch
+              initModel?.cheqType == AppConstants.chequeTypeCatch
                   ? initModel!.cheqBankAccount!
                   : initModel!.cheqSecoundryAccount!,
               "تم التوليد من الشيكات",
@@ -281,7 +281,7 @@ class ChequeViewModel extends GetxController {
               "01",
               0,
               double.parse(initModel!.cheqAllAmount!),
-              initModel?.cheqType == AppStrings.chequeTypeCatch
+              initModel?.cheqType == AppConstants.chequeTypeCatch
                   ? initModel!.cheqSecoundryAccount!
                   : initModel!.cheqBankAccount!,
               "تم التوليد من الشيكات",
@@ -290,7 +290,7 @@ class ChequeViewModel extends GetxController {
     ChequeRecModel recMap = ChequeRecModel(
       cheqRecEntryBondId: entryBondId,
       cheqRecAmount: initModel!.cheqAllAmount!,
-      cheqRecType: AppStrings.chequeRecTypeAllPayment,
+      cheqRecType: AppConstants.chequeRecTypeAllPayment,
       cheqRecId: initModel?.cheqId,
       cheqRecChequeType: initModel?.cheqType,
       cheqRecPrimeryAccount: initModel!.cheqSecoundryAccount,
@@ -326,7 +326,7 @@ class ChequeViewModel extends GetxController {
     List<ChequeRecModel?>? paymentList = initModel?.cheqRecords
         ?.cast<ChequeRecModel?>()
         .where((element) =>
-            element?.cheqRecType == AppStrings.chequeRecTypePartPayment)
+            element?.cheqRecType == AppConstants.chequeRecTypePartPayment)
         .toList();
     if (paymentList != null && paymentList.isNotEmpty) {
       if (!ispayEdit &&
@@ -336,16 +336,16 @@ class ChequeViewModel extends GetxController {
                       .reduce((value, element) => value + element) +
                   double.parse(amount) ==
               double.parse(initModel!.cheqAllAmount!)) {
-        initModel?.cheqStatus = AppStrings.chequeStatusPaid;
-        status = AppStrings.chequeStatusPaid;
+        initModel?.cheqStatus = AppConstants.chequeStatusPaid;
+        status = AppConstants.chequeStatusPaid;
       } else if (ispayEdit &&
           paymentList
                   .map((e) => double.parse(e!.cheqRecAmount!))
                   .toList()
                   .reduce((value, element) => value + element) ==
               double.parse(initModel!.cheqAllAmount!)) {
-        initModel?.cheqStatus = AppStrings.chequeStatusPaid;
-        status = AppStrings.chequeStatusPaid;
+        initModel?.cheqStatus = AppConstants.chequeStatusPaid;
+        status = AppConstants.chequeStatusPaid;
       } else if (!ispayEdit &&
           paymentList
                       .map((e) => double.parse(e!.cheqRecAmount!))
@@ -356,27 +356,27 @@ class ChequeViewModel extends GetxController {
         return;
       } else if (double.parse(amount) ==
           double.parse(initModel!.cheqAllAmount!)) {
-        initModel?.cheqStatus = AppStrings.chequeStatusPaid;
-        status = AppStrings.chequeStatusPaid;
+        initModel?.cheqStatus = AppConstants.chequeStatusPaid;
+        status = AppConstants.chequeStatusPaid;
       } else {
-        initModel?.cheqStatus = AppStrings.chequeStatusNotAllPaid;
-        status = AppStrings.chequeStatusNotAllPaid;
+        initModel?.cheqStatus = AppConstants.chequeStatusNotAllPaid;
+        status = AppConstants.chequeStatusNotAllPaid;
       }
     } else if (double.parse(amount) ==
         double.parse(initModel!.cheqAllAmount!)) {
-      initModel?.cheqStatus = AppStrings.chequeStatusPaid;
-      status = AppStrings.chequeStatusPaid;
+      initModel?.cheqStatus = AppConstants.chequeStatusPaid;
+      status = AppConstants.chequeStatusPaid;
     } else if (double.parse(amount) > double.parse(initModel!.cheqAllAmount!)) {
       print("error " * 20);
       return;
     } else {
-      initModel?.cheqStatus = AppStrings.chequeStatusNotAllPaid;
-      status = AppStrings.chequeStatusNotAllPaid;
+      initModel?.cheqStatus = AppConstants.chequeStatusNotAllPaid;
+      status = AppConstants.chequeStatusNotAllPaid;
     }
     print(amount + "  " + initModel!.cheqAllAmount!);
     print("_________________________");
     FirebaseFirestore.instance
-        .collection(AppStrings.chequesCollection)
+        .collection(AppConstants.chequesCollection)
         .doc(initModel?.cheqId)
         .update({"cheqStatus": status});
     var entryBondId = oldEntryBondId ?? generateId(RecordType.entryBond);
@@ -385,13 +385,13 @@ class ChequeViewModel extends GetxController {
             entryBondId: entryBondId,
             originId: initModel!.cheqId!,
             cheqAllAmount: initModel!.cheqAllAmount!,
-            bondType: AppStrings.bondTypeInvoice),
+            bondType: AppConstants.bondTypeInvoice),
         record: [
           EntryBondRecordModel(
               "00",
               double.parse(amount),
               0,
-              initModel?.cheqType == AppStrings.chequeTypeCatch
+              initModel?.cheqType == AppConstants.chequeTypeCatch
                   ? initModel!.cheqBankAccount!
                   : initModel!.cheqSecoundryAccount!,
               "تم التوليد من الشيكات",
@@ -400,7 +400,7 @@ class ChequeViewModel extends GetxController {
               "01",
               0,
               double.parse(amount),
-              initModel?.cheqType == AppStrings.chequeTypeCatch
+              initModel?.cheqType == AppConstants.chequeTypeCatch
                   ? initModel!.cheqSecoundryAccount!
                   : initModel!.cheqBankAccount!,
               "تم التوليد من الشيكات",
@@ -414,7 +414,7 @@ class ChequeViewModel extends GetxController {
     ChequeRecModel recMap = ChequeRecModel(
       cheqRecEntryBondId: entryBondId,
       cheqRecAmount: amount,
-      cheqRecType: AppStrings.chequeRecTypePartPayment,
+      cheqRecType: AppConstants.chequeRecTypePartPayment,
       cheqRecId: initModel?.cheqId,
       cheqRecChequeType: initModel?.cheqType,
       cheqRecPrimeryAccount: initModel!.cheqSecoundryAccount,

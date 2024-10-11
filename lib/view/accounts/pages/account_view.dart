@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 import '../../../core/utils/hive.dart';
 import '../widget/customer_pluto_edit_view.dart';
 

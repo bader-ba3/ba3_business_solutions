@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/warranty/warranty_view_model.dart';
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 
 import 'warranty_view.dart';
 import '../../../controller/warranty/warranty_pluto_view_model.dart';

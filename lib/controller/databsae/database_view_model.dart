@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dar
 import 'package:ba3_business_solutions/controller/print/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/cards_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +30,8 @@ class DataBaseViewModel extends GetxController {
 
   getAllDataBase() {
     FirebaseFirestore.instance
-        .collection(AppStrings.settingCollection)
-        .doc(AppStrings.dataCollection)
+        .collection(AppConstants.settingCollection)
+        .doc(AppConstants.dataCollection)
         .snapshots()
         .listen((value) {
       // databaseList.clear();
@@ -76,8 +76,8 @@ class DataBaseViewModel extends GetxController {
   void setDefaultDataBase(String databaseName) {
     if (databaseList.contains(databaseName)) {
       FirebaseFirestore.instance
-          .collection(AppStrings.settingCollection)
-          .doc(AppStrings.dataCollection)
+          .collection(AppConstants.settingCollection)
+          .doc(AppConstants.dataCollection)
           .update({"defaultDataName": databaseName});
     } else {
       Get.snackbar("خطأ", "لا يوجد قاعدة بيانات بنفس الاسم");
@@ -89,8 +89,8 @@ class DataBaseViewModel extends GetxController {
       Get.snackbar("خطأ", "يوجد قاعدة بيانات بنفس الاسم");
     } else {
       FirebaseFirestore.instance
-          .collection(AppStrings.settingCollection)
-          .doc(AppStrings.dataCollection)
+          .collection(AppConstants.settingCollection)
+          .doc(AppConstants.dataCollection)
           .update({
         'dataList': FieldValue.arrayUnion([databaseName]),
       });

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/seller/sellers_view_model.dart';
 
 class AddInventoryView extends StatefulWidget {
@@ -254,7 +254,7 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                                                         .toString();
                                                     // setState(() {});
                                                     FirebaseFirestore.instance
-                                                        .collection(AppStrings
+                                                        .collection(AppConstants
                                                             .inventoryCollection)
                                                         .doc(inventoryModel
                                                             .inventoryId)

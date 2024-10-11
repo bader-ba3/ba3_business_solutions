@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 import '../../../model/global/global_model.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
-import '../widgets/Option_Text_Widget.dart';
+import '../widgets/option_text_widget.dart';
 
 class BondDebitDialog extends StatelessWidget {
   BondDebitDialog({
@@ -273,10 +273,10 @@ class BondDebitDialog extends StatelessWidget {
                         GlobalModel(
                           bondRecord: bondRecord,
                           bondCode: Get.find<BondViewModel>()
-                              .getNextBondCode(type: AppStrings.bondTypeDebit),
+                              .getNextBondCode(type: AppConstants.bondTypeDebit),
                           entryBondRecord: entryBondRecord,
                           bondDescription: des,
-                          bondType: AppStrings.bondTypeDebit,
+                          bondType: AppConstants.bondTypeDebit,
                           bondTotal: "0",
                         ),
                       );

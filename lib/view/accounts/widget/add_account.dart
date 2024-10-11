@@ -1,15 +1,14 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/Custom_Pluto_With_Edite.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../model/account/account_model.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
@@ -296,8 +295,8 @@ class _AddAccountState extends State<AddAccount> {
                                         accIsRoot);
                                     if (accountModel.accId == null) {
                                       checkPermissionForOperation(
-                                              AppStrings.roleUserWrite,
-                                              AppStrings.roleViewAccount)
+                                              AppConstants.roleUserWrite,
+                                              AppConstants.roleViewAccount)
                                           .then((value) {
                                         if (value) {
                                           accountController.addNewAccount(
@@ -307,8 +306,8 @@ class _AddAccountState extends State<AddAccount> {
                                       });
                                     } else {
                                       checkPermissionForOperation(
-                                              AppStrings.roleUserUpdate,
-                                              AppStrings.roleViewAccount)
+                                              AppConstants.roleUserUpdate,
+                                              AppConstants.roleViewAccount)
                                           .then((value) {
                                         if (value) {
                                           accountController.updateAccount(
