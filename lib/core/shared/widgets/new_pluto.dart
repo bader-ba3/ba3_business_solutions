@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
+import '../widgets/CustomWindowTitleBar.dart';
 import '../../../controller/pluto/pluto_view_model.dart';
-import 'custom_window_title_bar.dart';
 
 class CustomPlutoGridWithAppBar extends StatelessWidget {
   const CustomPlutoGridWithAppBar(
