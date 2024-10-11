@@ -1146,9 +1146,7 @@ PODS:
     - abseil/xcprivacy
   - abseil/xcprivacy (1.20240116.2)
   - audioplayers_darwin (0.0.1):
-    - FlutterMacOS
-  - bitsdojo_window_macos (0.0.1):
-    - FlutterMacOS
+    - Flutter
   - BoringSSL-GRPC (0.0.36):
     - BoringSSL-GRPC/Implementation (= 0.0.36)
     - BoringSSL-GRPC/Interface (= 0.0.36)
@@ -1156,18 +1154,51 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.36)
   - BoringSSL-GRPC/Interface (0.0.36)
   - cloud_firestore (5.4.4):
-    - Firebase/CoreOnly (~> 11.2.0)
-    - Firebase/Firestore (~> 11.2.0)
+    - Firebase/Firestore (= 11.2.0)
     - firebase_core
-    - FlutterMacOS
+    - Flutter
+  - DKImagePickerController/Core (4.3.9):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.3.9)
+  - DKImagePickerController/PhotoGallery (4.3.9):
+    - DKImagePickerController/Core
+    - DKPhotoGallery
+  - DKImagePickerController/Resource (4.3.9)
+  - DKPhotoGallery (0.0.19):
+    - DKPhotoGallery/Core (= 0.0.19)
+    - DKPhotoGallery/Model (= 0.0.19)
+    - DKPhotoGallery/Preview (= 0.0.19)
+    - DKPhotoGallery/Resource (= 0.0.19)
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Core (0.0.19):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Preview
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Model (0.0.19):
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Preview (0.0.19):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Resource
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Resource (0.0.19):
+    - SDWebImage
+    - SwiftyGif
+  - file_picker (0.0.1):
+    - DKImagePickerController/PhotoGallery
+    - Flutter
   - Firebase/CoreOnly (11.2.0):
     - FirebaseCore (= 11.2.0)
   - Firebase/Firestore (11.2.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 11.2.0)
   - firebase_core (3.6.0):
-    - Firebase/CoreOnly (~> 11.2.0)
-    - FlutterMacOS
+    - Firebase/CoreOnly (= 11.2.0)
+    - Flutter
   - FirebaseAppCheckInterop (11.3.0)
   - FirebaseCore (11.2.0):
     - FirebaseCoreInternal (~> 11.0)
@@ -1198,11 +1229,9 @@ PODS:
     - leveldb-library (~> 1.22)
     - nanopb (~> 3.30910.0)
   - FirebaseSharedSwift (11.3.0)
+  - Flutter (1.0.0)
   - flutter_platform_alert (0.0.1):
-    - FlutterMacOS
-  - flutter_window_close (0.0.1):
-    - FlutterMacOS
-  - FlutterMacOS (1.0.0)
+    - Flutter
   - GoogleUtilities/Environment (8.0.2):
     - GoogleUtilities/Privacy
   - GoogleUtilities/Logger (8.0.2):
@@ -1302,32 +1331,48 @@ PODS:
   - gRPC-Core/Interface (1.65.5)
   - gRPC-Core/Privacy (1.65.5)
   - leveldb-library (1.22.5)
+  - MTBBarcodeScanner (5.0.11)
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
+  - nfc_manager (0.0.1):
+    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - print_bluetooth_thermal (0.0.1):
+    - Flutter
   - printing (1.0.0):
-    - FlutterMacOS
+    - Flutter
+  - qr_code_scanner (0.2.0):
+    - Flutter
+    - MTBBarcodeScanner
+  - SDWebImage (5.19.7):
+    - SDWebImage/Core (= 5.19.7)
+  - SDWebImage/Core (5.19.7)
+  - SwiftyGif (5.4.5)
 
 DEPENDENCIES:
-  - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos`)
-  - bitsdojo_window_macos (from `Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos`)
-  - cloud_firestore (from `Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos`)
-  - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
-  - flutter_platform_alert (from `Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos`)
-  - flutter_window_close (from `Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos`)
-  - FlutterMacOS (from `Flutter/ephemeral`)
-  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
-  - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
+  - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - file_picker (from `.symlinks/plugins/file_picker/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_platform_alert (from `.symlinks/plugins/flutter_platform_alert/ios`)
+  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - print_bluetooth_thermal (from `.symlinks/plugins/print_bluetooth_thermal/ios`)
+  - printing (from `.symlinks/plugins/printing/ios`)
+  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
 
 SPEC REPOS:
   trunk:
     - abseil
     - BoringSSL-GRPC
+    - DKImagePickerController
+    - DKPhotoGallery
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseCore
@@ -1340,36 +1385,45 @@ SPEC REPOS:
     - "gRPC-C++"
     - gRPC-Core
     - leveldb-library
+    - MTBBarcodeScanner
     - nanopb
+    - SDWebImage
+    - SwiftyGif
 
 EXTERNAL SOURCES:
   audioplayers_darwin:
-    :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos
-  bitsdojo_window_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   cloud_firestore:
-    :path: Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos
+    :path: ".symlinks/plugins/cloud_firestore/ios"
+  file_picker:
+    :path: ".symlinks/plugins/file_picker/ios"
   firebase_core:
-    :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
+    :path: ".symlinks/plugins/firebase_core/ios"
+  Flutter:
+    :path: Flutter
   flutter_platform_alert:
-    :path: Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos
-  flutter_window_close:
-    :path: Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos
-  FlutterMacOS:
-    :path: Flutter/ephemeral
+    :path: ".symlinks/plugins/flutter_platform_alert/ios"
+  nfc_manager:
+    :path: ".symlinks/plugins/nfc_manager/ios"
   path_provider_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  print_bluetooth_thermal:
+    :path: ".symlinks/plugins/print_bluetooth_thermal/ios"
   printing:
-    :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
+    :path: ".symlinks/plugins/printing/ios"
+  qr_code_scanner:
+    :path: ".symlinks/plugins/qr_code_scanner/ios"
 
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
-  audioplayers_darwin: dcad41de4fbd0099cb3749f7ab3b0cb8f70b810c
-  bitsdojo_window_macos: 44e3b8fe3dd463820e0321f6256c5b1c16bb6a00
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
-  cloud_firestore: 93bfa173db17eeb954a3c9865c70174331d42d76
+  cloud_firestore: 5cb927f1a8c9d748d6fdbf16c6b267956cb82c53
+  DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
+  DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
+  file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
   Firebase: 98e6bf5278170668a7983e12971a66b2cd57fc8c
-  firebase_core: e88f946a4601cb1854178cb07da241bba5a6508e
+  firebase_core: 2bedc3136ec7c7b8561c6123ed0239387b53f2af
   FirebaseAppCheckInterop: 7789a8adfb09e905ce02a76540b94b059029ea81
   FirebaseCore: a282032ae9295c795714ded2ec9c522fc237f8da
   FirebaseCoreExtension: 30bb063476ef66cd46925243d64ad8b2c8ac3264
@@ -1377,17 +1431,22 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 62708adbc1dfcd6d165a7c0a202067b441912dc9
   FirebaseFirestoreInternal: ad9b9ee2d3d430c8f31333a69b3b6737a7206232
   FirebaseSharedSwift: d39c2ad64a11a8d936ce25a42b00df47078bb59c
-  flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
-  flutter_window_close: a0f4f388e956ebafa866e3e171ce837c166eab9c
-  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_platform_alert: f507baf17889a38794d3cf16b98b637fb69479bd
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   "gRPC-C++": 2fa52b3141e7789a28a737f251e0c45b4cb20a87
   gRPC-Core: a27c294d6149e1c39a7d173527119cfbc3375ce4
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
+  nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
+  print_bluetooth_thermal: 54a9ba9436479dd633d18f393669ee793ee498fa
+  printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
+  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
+  SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
 
-PODFILE CHECKSUM: ebd4484585a0d7bc022aaecd743fb4a450f70847
+PODFILE CHECKSUM: 1959d098c91d8a792531a723c4a9d7e9f6a01e38
 
 COCOAPODS: 1.15.2
