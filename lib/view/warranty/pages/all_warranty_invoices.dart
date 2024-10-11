@@ -15,8 +15,9 @@ class AllWarrantyInvoices extends StatelessWidget {
         title: "جميع فواتير الضمان",
         onLoaded: (e) {},
         onSelected: (p0) {
-          Get.toNamed(AppRoutes.warrantyInvoiceView,
-              arguments: p0.row?.cells["invId"]?.value);
+          Get.find<WarrantyController>()
+              .initBills(p0.row?.cells["invId"]?.value);
+          Get.toNamed(AppRoutes.warrantyInvoiceView);
 
           /*   Get.to(() => InvoiceView(
                 billId: p0.row?.cells["الرقم التسلسلي"]?.value,

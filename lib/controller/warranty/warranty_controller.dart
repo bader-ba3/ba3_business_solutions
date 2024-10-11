@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ba3_business_solutions/controller/warranty/warranty_pluto_view_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +22,8 @@ class WarrantyController extends GetxController {
 
   late String billId;
 
-  @override
-  void onInit() {
-    log('WarrantyController onInit ${Get.arguments}');
-    super.onInit();
-
-    billId = Get.arguments as String;
+  initBills(String billId) {
+    this.billId = billId;
     if (billId != "1") {
       buildInvInit(billId);
       Get.find<WarrantyPlutoViewModel>()

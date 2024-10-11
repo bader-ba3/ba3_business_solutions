@@ -1,6 +1,7 @@
 import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/warranty/warranty_controller.dart';
 import 'package:ba3_business_solutions/core/router/app_routes.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/login_view.dart';
@@ -134,8 +135,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                         width: Get.width,
                         child: InkWell(
                           onTap: () {
-                            Get.toNamed(AppRoutes.warrantyInvoiceView,
-                                arguments: "1");
+                            Get.find<WarrantyController>().initBills("1");
+                            Get.toNamed(AppRoutes.warrantyInvoiceView);
                           },
                           child: Container(
                             width: Get.width * 0.19,
