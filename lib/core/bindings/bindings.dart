@@ -22,7 +22,7 @@ import '../../controller/invoice/screen_view_model.dart';
 import '../../controller/invoice/search_view_controller.dart';
 import '../../controller/pluto/pluto_view_model.dart';
 import '../../controller/user/user_management_model.dart';
-import '../../controller/warranty/warranty_view_model.dart';
+import '../../controller/warranty/warranty_controller.dart';
 
 class GetBinding extends Bindings {
   @override
@@ -44,7 +44,6 @@ class GetBinding extends Bindings {
     Get.put(CostCenterViewModel());
     Get.put(InventoryViewModel());
     Get.put(AccountCustomerViewModel());
-    Get.put(WarrantyViewModel());
 
     // Get.put(IsolateViewModel());
     Get.put(DataBaseViewModel());
@@ -52,6 +51,9 @@ class GetBinding extends Bindings {
     Get.put(TargetViewModel());
     Get.put(PrintViewModel());
     Get.put(PlutoViewModel());
+
+    // Lazy controllers with fenix
+    Get.lazyPut(() => WarrantyController(), fenix: true);
 
     Get.lazyPut(() => ChangesViewModel(), fenix: true);
   }

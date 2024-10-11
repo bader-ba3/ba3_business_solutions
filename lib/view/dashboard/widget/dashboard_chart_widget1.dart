@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/controller/global/changes_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
   void initState() {
     touchedValue = -1;
     super.initState();
-    Get.find<ChangesViewModel>().listenChanges();
+    // Get.find<ChangesViewModel>().listenChanges();
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
@@ -53,7 +52,9 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
     return SideTitleWidget(
       space: 4,
       axisSide: meta.axisSide,
-      fitInside: fitInsideBottomTitle ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0) : SideTitleFitInsideData.disable(),
+      fitInside: fitInsideBottomTitle
+          ? SideTitleFitInsideData.fromTitleMeta(meta, distanceFromEdge: 0)
+          : SideTitleFitInsideData.disable(),
       child: Text(
         (listData[value.toInt()]?.sellerName) ?? "",
         style: style,
@@ -79,7 +80,8 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
           return MapEntry(index, allSellers[index - 1]);
         }
       }));
-      listData[allSellers.length + 1] = SellerModel(sellerName: "", sellerRecord: []);
+      listData[allSellers.length + 1] =
+          SellerModel(sellerName: "", sellerRecord: []);
       listData.forEach(
         (key, value) {
           if (value.sellerRecord!.isNotEmpty) {
@@ -142,7 +144,8 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                     child: LineChart(
                       LineChartData(
                         lineTouchData: LineTouchData(
-                          getTouchedSpotIndicator: (LineChartBarData barData, List<int> spotIndexes) {
+                          getTouchedSpotIndicator: (LineChartBarData barData,
+                              List<int> spotIndexes) {
                             return spotIndexes.map((spotIndex) {
                               final spot = barData.spots[spotIndex];
                               if (spot.x == 0 || spot.x == 6) {
@@ -154,20 +157,23 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                                   strokeWidth: 4,
                                 ),
                                 FlDotData(
-                                  getDotPainter: (spot, percent, barData, index) {
+                                  getDotPainter:
+                                      (spot, percent, barData, index) {
                                     if (index.isEven) {
                                       return FlDotCirclePainter(
                                         radius: 8,
                                         color: Colors.white,
                                         strokeWidth: 5,
-                                        strokeColor: widget.indicatorTouchedSpotStrokeColor,
+                                        strokeColor: widget
+                                            .indicatorTouchedSpotStrokeColor,
                                       );
                                     } else {
                                       return FlDotSquarePainter(
                                         size: 16,
                                         color: Colors.white,
                                         strokeWidth: 5,
-                                        strokeColor: widget.indicatorTouchedSpotStrokeColor,
+                                        strokeColor: widget
+                                            .indicatorTouchedSpotStrokeColor,
                                       );
                                     }
                                   },
@@ -176,8 +182,10 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                             }).toList();
                           },
                           touchTooltipData: LineTouchTooltipData(
-                            getTooltipColor: (touchedSpot) => widget.tooltipBgColor,
-                            getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                            getTooltipColor: (touchedSpot) =>
+                                widget.tooltipBgColor,
+                            getTooltipItems:
+                                (List<LineBarSpot> touchedBarSpots) {
                               return touchedBarSpots.map((barSpot) {
                                 final flSpot = barSpot;
                                 if (flSpot.x == 0 || flSpot.x == 6) {
@@ -274,7 +282,8 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                                   strokeWidth: 2,
                                 ),
                                 checkToShowSpotLine: (spot) {
-                                  if (spot.x == 0 || spot.x == listData.length) {
+                                  if (spot.x == 0 ||
+                                      spot.x == listData.length) {
                                     return false;
                                   }
 
@@ -290,14 +299,16 @@ class _DashboardChartWidget1State extends State<DashboardChartWidget1> {
                                     radius: 6,
                                     color: Colors.white,
                                     strokeWidth: 3,
-                                    strokeColor: widget.indicatorSpotStrokeColor,
+                                    strokeColor:
+                                        widget.indicatorSpotStrokeColor,
                                   );
                                 } else {
                                   return FlDotSquarePainter(
                                     size: 12,
                                     color: Colors.white,
                                     strokeWidth: 3,
-                                    strokeColor: widget.indicatorSpotStrokeColor,
+                                    strokeColor:
+                                        widget.indicatorSpotStrokeColor,
                                   );
                                 }
                               },

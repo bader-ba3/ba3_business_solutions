@@ -1,6 +1,7 @@
+import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
+import 'package:ba3_business_solutions/core/router/app_routes.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/login_view.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,11 @@ import 'package:get/get.dart';
 
 import '../../../controller/invoice/screen_view_model.dart';
 import '../../../controller/invoice/search_view_controller.dart';
-import '../../../controller/warranty/warranty_pluto_view_model.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
 import '../../../model/patterens/pattern_model.dart';
 import '../../Warranty/pages/all_warranty_invoices.dart';
-import '../../Warranty/pages/warranty_view.dart';
 import 'all_pending_invoices.dart';
 
 class InvoiceType extends StatefulWidget {
@@ -80,10 +79,11 @@ class _InvoiceTypeState extends State<InvoiceType> {
                       MapEntry<String, PatternModel> i = entry.value;
 
                       // Only display the first and last item
-                     /* if (index == 0 ||
+                      /* if (index == 0 ||
                           index ==
                               patternController.patternModel.entries.length -
-                                  1)*/ {
+                                  1)*/
+                      {
                         return InkWell(
                           onTap: () {
                             SystemChrome.setPreferredOrientations([
@@ -101,9 +101,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                             );
                           },
                           child: Container(
-                            width: Get.width/5.2,
+                            width: Get.width / 5.2,
                             margin: const EdgeInsets.all(2),
-
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
@@ -135,16 +134,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                         width: Get.width,
                         child: InkWell(
                           onTap: () {
-
-                            Get.to(
-                                () => const WarrantyInvoiceView(
-                                      billId: "1",
-                                    ),
-                                binding: BindingsBuilder(
-                                  () => Get.lazyPut(
-                                    () => WarrantyPlutoViewModel(),
-                                  ),
-                                ));
+                            Get.toNamed(AppRoutes.warrantyInvoiceView,
+                                arguments: "1");
                           },
                           child: Container(
                             width: Get.width * 0.19,
@@ -179,8 +170,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(
-                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
+                    checkPermissionForOperation(AppConstants.roleUserRead,
+                            AppConstants.roleViewInvoice)
                         .then((value) {
                       if (value) {
                         Get.to(
@@ -211,8 +202,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(
-                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
+                    checkPermissionForOperation(AppConstants.roleUserRead,
+                            AppConstants.roleViewInvoice)
                         .then((value) {
                       // if (value) Get.to(() => const AllInvoice());
                       if (value) {
@@ -245,8 +236,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(
-                            AppConstants.roleUserRead, AppConstants.roleViewInvoice)
+                    checkPermissionForOperation(AppConstants.roleUserRead,
+                            AppConstants.roleViewInvoice)
                         .then((value) {
                       if (value) Get.to(() => const AllPendingInvoice());
                     });
