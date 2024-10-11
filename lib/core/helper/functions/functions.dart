@@ -520,7 +520,7 @@ Future<String> savePdfLocally(GlobalModel model) async {
 void sendEmailWithPdfAttachment(GlobalModel model) async {
   String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
   String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
-
+  // burjalarab000
   final smtpServer = gmail(username, password);
   String pdfFilePath = await savePdfLocally(model);
   final message = Message()

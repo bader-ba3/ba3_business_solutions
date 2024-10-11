@@ -6,6 +6,8 @@ import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:pdf/widgets.dart' as pw;
+
 
 class PdfInvoiceApi {
   static Future<Uint8List> generate(GlobalModel invoice) async {
@@ -72,18 +74,28 @@ class PdfInvoiceApi {
   static Widget buildInvoice(GlobalModel invoice) {
     final headers = [
       'Item Name',
-      // 'Date',
+      'Barcode',
       'Quantity',
       'Unit Price',
       'VAT',
       'Total'
     ];
-    List<List<String?>>? data = invoice.invRecords?.map((item) {
-      // final total = item.unitPrice * item.quantity * (1 + item.vat);
+
+    // إنشاء البيانات بشكل قائمة من القوائم
+    List<List<dynamic>> data = invoice.invRecords!.map((item) {
+      final barcode = Barcode.codabar(); // اختيار نوع الباركود المناسب
+
+      // تحويل الباركود إلى صورة
+      final barcodeImage = pw.BarcodeWidget(
+        barcode: barcode,
+        data: getProductBarcodeFromId(item.invRecProduct),
+        width: 100,
+        height: 40,
+      );
 
       return [
         getProductNameFromId(item.invRecProduct!),
-        // Utils.formatDate(item.date),
+        barcodeImage, // عرض الباركود كصورة
         '${item.invRecQuantity}',
         ((((item.invRecTotal! / item.invRecQuantity!)) - (item.invRecTotal! * 0.05)).toStringAsFixed(2)),
         ((item.invRecTotal! * 0.05).toStringAsFixed(2)),
@@ -91,23 +103,24 @@ class PdfInvoiceApi {
       ];
     }).toList();
 
-    return Table.fromTextArray(
+    // استخدام Table.fromTextArray لتنسيق الجدول
+    return pw.Table.fromTextArray(
       headers: headers,
-      data: data!,
+      data: data,
       border: null,
-      headerStyle: TextStyle(fontWeight: FontWeight.bold),
-      headerDecoration: const BoxDecoration(color: PdfColors.grey300),
+      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+      headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       columnWidths: {
-        0: const IntrinsicColumnWidth(flex: 10),
+        0: pw.IntrinsicColumnWidth(flex: 10),
       },
       cellAlignments: {
-        0: Alignment.centerLeft,
-        1: Alignment.center,
-        2: Alignment.center,
-        3: Alignment.centerRight,
-        4: Alignment.centerRight,
-        // 5: Alignment.centerRight,
+        0: pw.Alignment.centerLeft,
+        1: pw.Alignment.center, // محاذاة الباركود
+        2: pw.Alignment.center,
+        3: pw.Alignment.centerRight,
+        4: pw.Alignment.centerRight,
+        5: pw.Alignment.centerRight,
       },
     );
   }

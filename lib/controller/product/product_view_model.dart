@@ -1004,6 +1004,16 @@ String getProductNameFromId(id) {
     return "";
   }
 }
+String getProductBarcodeFromId(id) {
+  if (id != null && id != " " && id != "") {
+    if (Get.find<ProductViewModel>().productDataMap[id] == null) {
+      return "0";
+    }
+    return Get.find<ProductViewModel>().productDataMap[id]!.prodBarcode!;
+  } else {
+    return "0";
+  }
+}
 
 ProductModel? getProductModelFromId(id) {
   if (id.runtimeType == InvoiceRecordModel) {
