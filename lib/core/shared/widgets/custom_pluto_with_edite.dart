@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import 'custom_pluto_grid_style_config.dart';
+import 'CustomPlutoGridStyleConfig.dart';
 
 class CustomPlutoWithEdite extends StatelessWidget {
   const CustomPlutoWithEdite({
     super.key,
     required this.controller,
-    this.shortCut,
+     this.shortCut,
     this.onChanged,
     required this.onRowSecondaryTap,
-    this.evenRowColor = Colors.blueAccent,
+    this.evenRowColor=Colors.blueAccent,
   });
 
   final dynamic controller;
@@ -24,13 +24,14 @@ class CustomPlutoWithEdite extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: PlutoGrid(
+
         columns: controller.columns,
         rows: controller.rows,
         onRowSecondaryTap: onRowSecondaryTap,
         onChanged: onChanged,
         configuration: PlutoGridConfiguration(
-          shortcut: shortCut ?? const PlutoGridShortcut(),
-          style: buildGridStyleConfig(evenRowColor: evenRowColor),
+          shortcut: shortCut??const PlutoGridShortcut(),
+          style: buildGridStyleConfig(evenRowColor:evenRowColor),
           localeText: const PlutoGridLocaleText.arabic(),
         ),
         onLoaded: (PlutoGridOnLoadedEvent event) {
@@ -38,15 +39,12 @@ class CustomPlutoWithEdite extends StatelessWidget {
           final newRows = controller.stateManager.getNewRows(count: 30);
           controller.stateManager.appendRows(newRows);
 
-          if (controller.stateManager.rows.isNotEmpty &&
-              controller.stateManager.rows.first.cells.length > 1) {
-            final secondCell = controller.stateManager.rows.first.cells.entries
-                .elementAt(1)
-                .value;
+          if (controller.stateManager.rows.isNotEmpty && controller.stateManager.rows.first.cells.length > 1) {
+            final secondCell = controller.stateManager.rows.first.cells.entries.elementAt(1).value;
             controller.stateManager.setCurrentCell(secondCell, 0);
 
-            FocusScope.of(event.stateManager.gridFocusNode.context!)
-                .requestFocus(event.stateManager.gridFocusNode);
+            FocusScope.of(event.stateManager.gridFocusNode.context!).requestFocus(event.stateManager.gridFocusNode);
+
           }
         },
       ),
