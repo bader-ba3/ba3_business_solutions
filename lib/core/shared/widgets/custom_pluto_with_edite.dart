@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import 'CustomPlutoGridStyleConfig.dart';
+import 'custom_pluto_grid_style_config.dart';
+
 
 class CustomPlutoWithEdite extends StatelessWidget {
   const CustomPlutoWithEdite({
