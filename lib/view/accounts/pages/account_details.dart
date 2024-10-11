@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/account/account_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 import '../../bonds/pages/bond_details_view.dart';
 import '../../bonds/widget/bond_record_pluto_view_model.dart';
 import '../../invoices/pages/new_invoice_view.dart';
@@ -32,7 +32,7 @@ class AccountDetails extends StatelessWidget {
               child: CustomPlutoGridWithAppBar(
                 title:
                     "حركات ${getAccountNameFromId(modelKey.last)} من تاريخ  ${listDate.first}  إلى تاريخ  ${listDate.last}",
-                type: AppStrings.typeAccountView,
+                type: AppConstants.typeAccountView,
                 onLoaded: (e) {},
                 onSelected: (p0) {
                   if ((p0.row?.cells["id"]?.value

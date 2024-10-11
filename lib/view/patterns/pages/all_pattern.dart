@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 
 class AllPattern extends StatelessWidget {
   const AllPattern({super.key});

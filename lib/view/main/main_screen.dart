@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/accounts/pages/account_type.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_type.dart';
@@ -37,86 +37,86 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     (
       name: "لوحة التحكم",
       widget: const DashboardView(),
-      role: AppStrings.roleViewHome
+      role: AppConstants.roleViewHome
     ),
     (
       name: "الفواتير",
       widget: const InvoiceType(),
-      role: AppStrings.roleViewInvoice
+      role: AppConstants.roleViewInvoice
     ),
-    (name: "السندات", widget: const BondType(), role: AppStrings.roleViewBond),
+    (name: "السندات", widget: const BondType(), role: AppConstants.roleViewBond),
     // (name: "سندات القيد", widget: const EntryBondType(), role: Const.roleViewBond),
     (
       name: "الحسابات",
       widget: const AccountType(),
-      role: AppStrings.roleViewAccount
+      role: AppConstants.roleViewAccount
     ),
     (
       name: "المواد",
       widget: const ProductType(),
-      role: AppStrings.roleViewProduct
+      role: AppConstants.roleViewProduct
     ),
     (
       name: "المستودعات",
       widget: const StoreType(),
-      role: AppStrings.roleViewStore
+      role: AppConstants.roleViewStore
     ),
     (
       name: "أنماط البيع",
       widget: const PatternType(),
-      role: AppStrings.roleViewPattern
+      role: AppConstants.roleViewPattern
     ),
     (
       name: "الشيكات",
       widget: const ChequeType(),
-      role: AppStrings.roleViewCheques
+      role: AppConstants.roleViewCheques
     ),
     // (name: "الاستحقاق", widget: const DueType(), role: Const.roleViewDue),
     // (name: "تقرير المبيعات", widget: const ReportGridView(), role: Const.roleViewReport),
     (
       name: "الاحصائيات",
       widget: const StatisticsType(),
-      role: AppStrings.roleViewStatistics
+      role: AppConstants.roleViewStatistics
     ),
     (
       name: "البائعون",
       widget: const SellerType(),
-      role: AppStrings.roleViewSeller
+      role: AppConstants.roleViewSeller
     ),
     (
       name: "استيراد المعلومات",
       widget: FilePickerWidget(),
-      role: AppStrings.roleViewImport
+      role: AppConstants.roleViewImport
     ),
     (
       name: "الجرد",
       widget: const InventoryType(),
-      role: AppStrings.roleViewInventory
+      role: AppConstants.roleViewInventory
     ),
     (
       name: "إدارة المستخدمين",
       widget: const UserManagementType(),
-      role: AppStrings.roleViewUserManagement
+      role: AppConstants.roleViewUserManagement
     ),
     (
       name: "إدارة التارجيت",
       widget: const TargetManagementType(),
-      role: AppStrings.roleViewTarget
+      role: AppConstants.roleViewTarget
     ),
     (
       name: "إدارة الوقت",
       widget: const TimeType(),
-      role: AppStrings.roleViewTimer
+      role: AppConstants.roleViewTimer
     ),
     (
       name: "إدارة البطاقات",
       widget: const CardManagementType(),
-      role: AppStrings.roleViewCard
+      role: AppConstants.roleViewCard
     ),
     (
       name: "إدارة قواعد البيانات",
       widget: const DataBaseType(),
-      role: AppStrings.roleViewDataBase
+      role: AppConstants.roleViewDataBase
     ),
   ];
   List<({String name, Widget widget, String role})> allData = [];

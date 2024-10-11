@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/product/product_model.dart';
 
 class ProductRecordDataSource extends DataGridSource {
@@ -28,20 +28,20 @@ class ProductRecordDataSource extends DataGridSource {
       total = total + int.parse(e.prodRecQuantity ?? "0");
       return DataGridRow(cells: [
         DataGridCell<String>(
-            columnName: AppStrings.rowProductRecProduct,
+            columnName: AppConstants.rowProductRecProduct,
             value: getProductNameFromId(e.prodRecProduct)),
         DataGridCell<String>(
-            columnName: AppStrings.rowProductType,
+            columnName: AppConstants.rowProductType,
             value: getInvoicePatternFromInvId(e.invId)),
         DataGridCell<String>(
-            columnName: AppStrings.rowProductQuantity,
+            columnName: AppConstants.rowProductQuantity,
             value: e.prodRecQuantity),
         DataGridCell<String>(
-            columnName: AppStrings.rowProductTotal, value: total.toString()),
+            columnName: AppConstants.rowProductTotal, value: total.toString()),
         DataGridCell<String>(
-            columnName: AppStrings.rowProductDate, value: e.prodRecDate),
+            columnName: AppConstants.rowProductDate, value: e.prodRecDate),
         DataGridCell<String>(
-            columnName: AppStrings.rowProductInvId, value: e.invId),
+            columnName: AppConstants.rowProductInvId, value: e.invId),
       ]);
     }).toList();
   }

@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/view/user_management/role_management/add_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class RoleManagementView extends StatelessWidget {
   const RoleManagementView({super.key});

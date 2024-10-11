@@ -53,9 +53,9 @@ dependencies:
   hive_flutter:
   flutter_material_color_picker:
   nfc_manager:
-  audioplayers: ^6.1.0
-  audioplayers_android: ^5.0.0
-  audioplayers_darwin: ^6.0.0
+  #  audioplayers: ^6.1.0
+  #  audioplayers_android: ^5.0.0
+  #  audioplayers_darwin: ^6.0.0
   syncfusion_flutter_gauges:
   stop_watch_timer:
   infinite_scroll_pagination:
@@ -120,14 +120,14 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: Almarai
-       fonts:
-         - asset: assets/fonts/Almarai-Regular.ttf
-         - asset: assets/fonts/Almarai-Bold.ttf
+    - family: Almarai
+      fonts:
+        - asset: assets/fonts/Almarai-Regular.ttf
+        - asset: assets/fonts/Almarai-Bold.ttf
 
-     - family: NotoSansArabic
-       fonts:
-         - asset: assets/NotoSansArabic-Regular.ttf
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/NotoSansArabic-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

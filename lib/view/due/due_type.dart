@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/controller/user/user_management_model.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import 'due_view.dart';
 
 class DueType extends StatefulWidget {
@@ -28,7 +28,7 @@ class _DueTypeState extends State<DueType> {
           children: [
             Item("معاينة الاستحقاق", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewDue)
+                      AppConstants.roleUserRead, AppConstants.roleViewDue)
                   .then((value) {
                 if (value) Get.to(() => AllDueView());
               });

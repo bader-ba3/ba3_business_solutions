@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../model/product/product_model.dart';
 import '../../core/helper/functions/functions.dart';
 
@@ -33,7 +33,7 @@ class InvoicePlutoViewModel extends GetxController {
   String customerName = '';
 
   bool getIfHaveVAT() {
-    if (typeBile != AppStrings.invoiceTypeBuy) {
+    if (typeBile != AppConstants.invoiceTypeBuy) {
       return true;
     } else {
       return getCustomerHaveVAT(customerName);
@@ -153,25 +153,25 @@ class InvoicePlutoViewModel extends GetxController {
     ProductModel product = getProductModelFromName(prodName.toString())!;
 
     switch (type) {
-      case AppStrings.invoiceChoosePriceMethodeCustomerPrice:
+      case AppConstants.invoiceChoosePriceMethodeCustomerPrice:
         price = double.parse(product.prodCustomerPrice ?? "0");
         break;
-      case AppStrings.invoiceChoosePriceMethodeWholePrice:
+      case AppConstants.invoiceChoosePriceMethodeWholePrice:
         price = double.parse(product.prodWholePrice ?? "0");
         break;
-      case AppStrings.invoiceChoosePriceMethodeRetailPrice:
+      case AppConstants.invoiceChoosePriceMethodeRetailPrice:
         price = double.parse(product.prodRetailPrice ?? "0");
         break;
-      case AppStrings.invoiceChoosePriceMethodeMinPrice:
+      case AppConstants.invoiceChoosePriceMethodeMinPrice:
         price = double.parse(product.prodMinPrice ?? "0");
         break;
-      case AppStrings.invoiceChoosePriceMethodeAverageBuyPrice:
+      case AppConstants.invoiceChoosePriceMethodeAverageBuyPrice:
         price = productController.getAvreageBuy(product);
         break;
-      case AppStrings.invoiceChoosePriceMethodeCostPrice:
+      case AppConstants.invoiceChoosePriceMethodeCostPrice:
         price = double.parse(product.prodCostPrice ?? "0");
         break;
-      case AppStrings.invoiceChoosePriceMethodeLastPrice:
+      case AppConstants.invoiceChoosePriceMethodeLastPrice:
         var lastPriceProduct =
             productController.productDataMap[prodName]?.prodRecord;
         if (lastPriceProduct != null && lastPriceProduct.isNotEmpty) {
@@ -179,7 +179,7 @@ class InvoicePlutoViewModel extends GetxController {
               double.parse(lastPriceProduct.last.prodRecSubVat!);
         }
         break;
-      case AppStrings.invoiceChoosePriceMethodeHigher:
+      case AppConstants.invoiceChoosePriceMethodeHigher:
         var higherProducts =
             productController.productDataMap[prodName]?.prodRecord;
         if (higherProducts != null && higherProducts.isNotEmpty) {
@@ -192,7 +192,7 @@ class InvoicePlutoViewModel extends GetxController {
           }
         }
         break;
-      case AppStrings.invoiceChoosePriceMethodeLower:
+      case AppConstants.invoiceChoosePriceMethodeLower:
         var lowerProducts =
             productController.productDataMap[prodName]?.prodRecord;
         if (lowerProducts != null && lowerProducts.isNotEmpty) {
@@ -207,7 +207,7 @@ class InvoicePlutoViewModel extends GetxController {
           }
         }
         break;
-      case AppStrings.invoiceChoosePriceMethodeAveragePrice:
+      case AppConstants.invoiceChoosePriceMethodeAveragePrice:
         var averageProducts =
             productController.productDataMap[prodName]?.prodRecord;
         if (averageProducts != null && averageProducts.isNotEmpty) {
@@ -235,43 +235,43 @@ class InvoicePlutoViewModel extends GetxController {
     final menuItems = [
       {
         'label': 'سعر المستهلك',
-        'method': AppStrings.invoiceChoosePriceMethodeCustomerPrice
+        'method': AppConstants.invoiceChoosePriceMethodeCustomerPrice
       },
       {
         'label': 'سعر الجملة',
-        'method': AppStrings.invoiceChoosePriceMethodeWholePrice
+        'method': AppConstants.invoiceChoosePriceMethodeWholePrice
       },
       {
         'label': 'سعر المفرق',
-        'method': AppStrings.invoiceChoosePriceMethodeRetailPrice
+        'method': AppConstants.invoiceChoosePriceMethodeRetailPrice
       },
       {
         'label': 'اقل سعر مسموح',
-        'method': AppStrings.invoiceChoosePriceMethodeMinPrice
+        'method': AppConstants.invoiceChoosePriceMethodeMinPrice
       },
       {
         'label': 'سعر التكلفة',
-        'method': AppStrings.invoiceChoosePriceMethodeCostPrice
+        'method': AppConstants.invoiceChoosePriceMethodeCostPrice
       },
       {
         'label': 'سعر الوسطي',
-        'method': AppStrings.invoiceChoosePriceMethodeAveragePrice
+        'method': AppConstants.invoiceChoosePriceMethodeAveragePrice
       },
       {
         'label': 'اخر سعر',
-        'method': AppStrings.invoiceChoosePriceMethodeLastPrice
+        'method': AppConstants.invoiceChoosePriceMethodeLastPrice
       },
       {
         'label': 'سعر الاعلى',
-        'method': AppStrings.invoiceChoosePriceMethodeHigher
+        'method': AppConstants.invoiceChoosePriceMethodeHigher
       },
       {
         'label': 'سعر الاقل',
-        'method': AppStrings.invoiceChoosePriceMethodeLower
+        'method': AppConstants.invoiceChoosePriceMethodeLower
       },
       {
         'label': 'متوسط شراء',
-        'method': AppStrings.invoiceChoosePriceMethodeAverageBuyPrice
+        'method': AppConstants.invoiceChoosePriceMethodeAverageBuyPrice
       },
     ];
 

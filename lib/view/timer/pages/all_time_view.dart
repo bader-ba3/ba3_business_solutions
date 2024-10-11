@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 
 class AllTimeView extends StatelessWidget {
@@ -90,7 +90,7 @@ class AllTimeView extends StatelessWidget {
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                         color: userModel.userStatus ==
-                                                AppStrings.userStatusOnline
+                                                AppConstants.userStatusOnline
                                             ? Colors.green
                                             : Colors.orange),
                                   ),

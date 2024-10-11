@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/account/account_view_model.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
 class AllDueAccount extends StatelessWidget {
@@ -27,7 +27,7 @@ class AllDueAccount extends StatelessWidget {
             Expanded(
               child: CustomPlutoGridWithAppBar(
                 title: "مستحقات ${getAccountNameFromId(modelKey.last)}",
-                type: AppStrings.typeAccountDueView,
+                type: AppConstants.typeAccountDueView,
                 onLoaded: (e) {},
                 onSelected: (p0) {
                   Get.to(

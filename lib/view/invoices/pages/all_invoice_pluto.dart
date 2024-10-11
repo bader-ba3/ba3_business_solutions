@@ -6,7 +6,7 @@
 // import 'package:get/get.dart';
 // import 'package:pluto_grid/pluto_grid.dart';
 //
-// import '../../Widgets/new_Pluto.dart';
+// import '../../Widgets/new_pluto.dart';
 // import '../../model/global_model.dart';
 //
 //

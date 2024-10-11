@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
 import '../../../core/utils/date_range_picker.dart';
@@ -122,15 +122,15 @@ class AllSellerInvoice extends StatelessWidget {
                                   visible: false,
                                   allowEditing: false,
                                   columnName:
-                                      AppStrings.rowSellerAllInvoiceInvId,
+                                      AppConstants.rowSellerAllInvoiceInvId,
                                   label: const Text('ID')),
                               // GridColumnItem(label: "الرمز التسلسلي", name: Const.rowSellerAllInvoiceInvId),
                               GridColumnItem(
                                   label: "قيمة الفاتورة",
-                                  name: AppStrings.rowSellerAllInvoiceAmount),
+                                  name: AppConstants.rowSellerAllInvoiceAmount),
                               GridColumnItem(
                                   label: "تاريخ الفاتورة",
-                                  name: AppStrings.rowSellerAllInvoiceAmount),
+                                  name: AppConstants.rowSellerAllInvoiceAmount),
                             ],
                             source: controller.recordViewDataSource,
                             allowEditing: false,

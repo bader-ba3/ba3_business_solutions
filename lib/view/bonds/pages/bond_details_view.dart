@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
 import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/CustomPlutoShortCut.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/Custom_Pluto_With_Edite.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_short_cut.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_pluto_view_model.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/get_account_enter_pluto_action.dart';
@@ -16,7 +16,7 @@ import 'package:get/get.dart';
 import '../../../controller/account/account_view_model.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/services/Get_Date_From_String.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../entry_bond/pages/entry_bond_details_view.dart';
 import '../../invoices/widget/custom_TextField.dart';
@@ -47,7 +47,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
     print(widget.oldId);
     bondController.initPage(oldId: widget.oldId, type: widget.bondType);
     bondController.lastBondOpened = widget.oldId;
-    isDebitOrCredit = widget.bondType == AppStrings.bondTypeCredit || widget.bondType == AppStrings.bondTypeDebit;
+    isDebitOrCredit = widget.bondType == AppConstants.bondTypeCredit || widget.bondType == AppConstants.bondTypeDebit;
   }
 
   @override
@@ -182,14 +182,14 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                             onChanged: (event) {
                               if (event.column.field == "bondRecDebitAmount") {
                                 controller.updateCellValue("bondRecDebitAmount", extractNumbersAndCalculate(event.row.cells["bondRecDebitAmount"]?.value));
-                                if (widget.bondType != AppStrings.bondTypeDebit && widget.bondType != AppStrings.bondTypeCredit) {
+                                if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecCreditAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecCreditAmount", "");
                                   }
                                 }
                               } else if (event.column.field == "bondRecCreditAmount") {
                                 controller.updateCellValue("bondRecCreditAmount", extractNumbersAndCalculate(event.row.cells["bondRecCreditAmount"]?.value));
-                                if (widget.bondType != AppStrings.bondTypeDebit && widget.bondType != AppStrings.bondTypeCredit) {
+                                if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecDebitAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecDebitAmount", "");
                                   }
@@ -217,9 +217,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                     Container(
                                         width: 120,
                                         color: controller.checkIfBalancedBond(
-                                          isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                          isDebit: widget.bondType == AppConstants.bondTypeDebit
                                               ? true
-                                              : widget.bondType == AppStrings.bondTypeCredit
+                                              : widget.bondType == AppConstants.bondTypeCredit
                                                   ? false
                                                   : null,
                                         )
@@ -229,9 +229,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         child: Text(
                                             controller
                                                 .calcDebitTotal(
-                                                  isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                                  isDebit: widget.bondType == AppConstants.bondTypeDebit
                                                       ? true
-                                                      : widget.bondType == AppStrings.bondTypeCredit
+                                                      : widget.bondType == AppConstants.bondTypeCredit
                                                           ? false
                                                           : null,
                                                 )
@@ -241,9 +241,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                     Container(
                                         width: 120,
                                         color: controller.checkIfBalancedBond(
-                                          isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                          isDebit: widget.bondType == AppConstants.bondTypeDebit
                                               ? true
-                                              : widget.bondType == AppStrings.bondTypeCredit
+                                              : widget.bondType == AppConstants.bondTypeCredit
                                                   ? false
                                                   : null,
                                         )
@@ -253,9 +253,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         child: Text(
                                             controller
                                                 .calcCreditTotal(
-                                                  isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                                  isDebit: widget.bondType == AppConstants.bondTypeDebit
                                                       ? true
-                                                      : widget.bondType == AppStrings.bondTypeCredit
+                                                      : widget.bondType == AppConstants.bondTypeCredit
                                                           ? false
                                                           : null,
                                                 )
@@ -275,9 +275,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                     Container(
                                         width: 250,
                                         color: controller.checkIfBalancedBond(
-                                          isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                          isDebit: widget.bondType == AppConstants.bondTypeDebit
                                               ? true
-                                              : widget.bondType == AppStrings.bondTypeCredit
+                                              : widget.bondType == AppConstants.bondTypeCredit
                                                   ? false
                                                   : null,
                                         )
@@ -287,9 +287,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         child: Text(
                                             controller
                                                 .getDefBetweenCreditAndDebt(
-                                                  isDebit: widget.bondType == AppStrings.bondTypeDebit
+                                                  isDebit: widget.bondType == AppConstants.bondTypeDebit
                                                       ? true
-                                                      : widget.bondType == AppStrings.bondTypeCredit
+                                                      : widget.bondType == AppConstants.bondTypeCredit
                                                           ? false
                                                           : null,
                                                 )
@@ -309,8 +309,8 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                             AppButton(
                                 title: bondController.isNew ? "إضافة" : "تعديل",
                                 onPressed: () {
-                                  bool isDebitBond = widget.bondType == AppStrings.bondTypeDebit;
-                                  bool isCreditBond = widget.bondType == AppStrings.bondTypeCredit;
+                                  bool isDebitBond = widget.bondType == AppConstants.bondTypeDebit;
+                                  bool isCreditBond = widget.bondType == AppConstants.bondTypeCredit;
                                   bool isBalancedBond = plutoBondController.checkIfBalancedBond(isDebit: isDebitBond ? true : (isCreditBond ? false : null));
                                   bool hasValidAccount = getAccountIdFromText(controller.debitOrCreditController.text) != "";
                                   bool isDateValid = DateTime.tryParse(bondController.dateController.text) != null;
@@ -327,23 +327,23 @@ class _BondDetailsViewState extends State<BondDetailsView> {
 
                                   if ((isDebitOrCreditWithAccount && isValidBondForSave) || (!isDebitOrCredit && isBalancedBond && isValidBondForSave)) {
                                     if (bondController.isNew) {
-                                      checkPermissionForOperation(AppStrings.roleUserWrite, AppStrings.roleViewBond).then((value) async {
+                                      checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           await globalController.addGlobalBond(GlobalModel(
                                               bondCode: controller.codeController.text,
                                               bondDate: bondController.dateController.text,
                                               bondRecord: plutoBondController.handleSaveAll(
-                                                isCredit: widget.bondType == AppStrings.bondTypeCredit
+                                                isCredit: widget.bondType == AppConstants.bondTypeCredit
                                                     ? true
-                                                    : widget.bondType == AppStrings.bondTypeDebit
+                                                    : widget.bondType == AppConstants.bondTypeDebit
                                                         ? false
                                                         : null,
                                                 account: controller.debitOrCreditController.text,
                                               ),
                                               entryBondRecord: plutoBondController.handleSaveAllForEntry(
-                                                isCredit: widget.bondType == AppStrings.bondTypeCredit
+                                                isCredit: widget.bondType == AppConstants.bondTypeCredit
                                                     ? true
-                                                    : widget.bondType == AppStrings.bondTypeDebit
+                                                    : widget.bondType == AppConstants.bondTypeDebit
                                                         ? false
                                                         : null,
                                                 account: controller.debitOrCreditController.text,
@@ -357,28 +357,28 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         }
                                       });
                                     } else {
-                                      checkPermissionForOperation(AppStrings.roleUserUpdate, AppStrings.roleViewBond).then((value) async {
+                                      checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           bondController.isNew = false;
                                           controller.isEdit = false;
                                           await globalController.updateGlobalBond(GlobalModel(
                                               entryBondCode: controller.tempBondModel.entryBondCode,
                                               entryBondRecord: plutoBondController.handleSaveAllForEntry(
-                                                isCredit: widget.bondType == AppStrings.bondTypeCredit
+                                                isCredit: widget.bondType == AppConstants.bondTypeCredit
                                                     ? true
-                                                    : widget.bondType == AppStrings.bondTypeDebit
+                                                    : widget.bondType == AppConstants.bondTypeDebit
                                                         ? false
                                                         : null,
                                                 account: controller.debitOrCreditController.text,
                                               ),
                                               bondCode: controller.tempBondModel.bondCode,
-                                              globalType: AppStrings.globalTypeBond,
+                                              globalType: AppConstants.globalTypeBond,
                                               entryBondId: controller.tempBondModel.entryBondId,
                                               bondDate: bondController.dateController.text,
                                               bondRecord: plutoBondController.handleSaveAll(
-                                                isCredit: widget.bondType == AppStrings.bondTypeCredit
+                                                isCredit: widget.bondType == AppConstants.bondTypeCredit
                                                     ? true
-                                                    : widget.bondType == AppStrings.bondTypeDebit
+                                                    : widget.bondType == AppConstants.bondTypeDebit
                                                         ? false
                                                         : null,
                                                 account: controller.debitOrCreditController.text,
@@ -409,7 +409,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 onPressed: () async {
                                   confirmDeleteWidget().then((value) {
                                     if (value) {
-                                      checkPermissionForOperation(AppStrings.roleUserDelete, AppStrings.roleViewBond).then((value) async {
+                                      checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           //entryBond1726453481733976
                                           //entryBond1726453481733976

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -82,7 +82,7 @@ class BondRecordModel {
 
   Map<PlutoColumn, dynamic> toEditedMap(String type) {
     switch (type) {
-      case AppStrings.bondTypeDebit:
+      case AppConstants.bondTypeDebit:
         return {
           PlutoColumn(
             title: 'الرقم',
@@ -114,7 +114,7 @@ class BondRecordModel {
             type: PlutoColumnType.text(),
           ): bondRecDescription,
         };
-      case AppStrings.bondTypeCredit:
+      case AppConstants.bondTypeCredit:
         return {
           PlutoColumn(
             title: 'الرقم',

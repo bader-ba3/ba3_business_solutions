@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_view_data_grid_source.dart';
@@ -24,7 +24,7 @@ class SellersViewModel extends GetxController {
 
   void getAllSeller() {
     FirebaseFirestore.instance
-        .collection(AppStrings.sellersCollection)
+        .collection(AppConstants.sellersCollection)
         .snapshots()
         .listen((event) {
       RxMap<String, List<SellerRecModel>> oldSellerList =
@@ -58,14 +58,14 @@ class SellersViewModel extends GetxController {
     var id = generateId(RecordType.sellers);
     model.sellerId ??= id;
     FirebaseFirestore.instance
-        .collection(AppStrings.sellersCollection)
+        .collection(AppConstants.sellersCollection)
         .doc(model.sellerId)
         .set(model.toJson());
   }
 
   deleteSeller(SellerModel model) {
     FirebaseFirestore.instance
-        .collection(AppStrings.sellersCollection)
+        .collection(AppConstants.sellersCollection)
         .doc(model.sellerId)
         .delete();
   }
@@ -242,7 +242,7 @@ Future<String> getSellerComplete(text) async {
   }
   if (sellerModel!.sellerId != getMyUserSellerId()) {
     if (await checkPermissionForOperation(
-        AppStrings.roleUserAdmin, AppStrings.roleViewInvoice)) {
+        AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) {
       return sellerModel!.sellerName!;
     } else {
       return getSellerNameFromId(getMyUserSellerId()) ?? "";

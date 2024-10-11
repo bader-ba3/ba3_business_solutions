@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
@@ -66,8 +66,8 @@ class _AddProductState extends State<AddProduct> {
                   child: const Text("تجاهل")),
               ElevatedButton(
                   onPressed: () {
-                    checkPermissionForOperation(AppStrings.roleUserUpdate,
-                            AppStrings.roleViewProduct)
+                    checkPermissionForOperation(AppConstants.roleUserUpdate,
+                            AppConstants.roleViewProduct)
                         .then((value) {
                       if (value) {
                         productController.updateProduct(editedProduct,
@@ -330,8 +330,8 @@ class _AddProductState extends State<AddProduct> {
                                     underline: const SizedBox(),
                                     isExpanded: true,
                                     items: [
-                                      AppStrings.productTypeStore,
-                                      AppStrings.productTypeService
+                                      AppConstants.productTypeStore,
+                                      AppConstants.productTypeService
                                     ]
                                         .map((e) => DropdownMenuItem(
                                             value: e,
@@ -367,8 +367,8 @@ class _AddProductState extends State<AddProduct> {
                             if (checkInput()) {
                               if (editedProduct.prodId == null) {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserWrite,
-                                        AppStrings.roleViewProduct)
+                                        AppConstants.roleUserWrite,
+                                        AppConstants.roleViewProduct)
                                     .then((value) {
                                   if (value) {
                                     print("object");
@@ -380,8 +380,8 @@ class _AddProductState extends State<AddProduct> {
                                 });
                               } else {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserUpdate,
-                                        AppStrings.roleViewProduct)
+                                        AppConstants.roleUserUpdate,
+                                        AppConstants.roleViewProduct)
                                     .then((value) {
                                   if (value) {
                                     productController.updateProduct(
@@ -461,7 +461,7 @@ class _AddProductState extends State<AddProduct> {
       isGroup = false;
       editedProduct.prodIsLocal = false;
 
-      editedProduct.prodType = AppStrings.productTypeStore;
+      editedProduct.prodType = AppConstants.productTypeStore;
       editedProduct.prodIsGroup = false;
       if (widget.oldBarcode != null) {
         barcodeController.text = widget.oldBarcode!;

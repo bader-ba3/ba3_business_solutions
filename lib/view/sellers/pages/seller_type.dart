@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/sellers/pages/all_sellers_view.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class SellerType extends StatefulWidget {
   const SellerType({super.key});
@@ -32,7 +32,7 @@ class _SellerTypeState extends State<SellerType> {
             }),
             Item("معاينة البائعون", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewSeller)
+                      AppConstants.roleUserRead, AppConstants.roleViewSeller)
                   .then((value) {
                 if (value) Get.to(() => const AllSellers());
               });

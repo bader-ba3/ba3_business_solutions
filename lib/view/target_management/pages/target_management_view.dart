@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/view/target_management/task/task_manageme
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
 
 class TargetManagementType extends StatefulWidget {
@@ -29,7 +29,7 @@ class _TargetManagementTypeState extends State<TargetManagementType> {
             }),
             Item("معاينة التارجيت", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewTarget)
+                      AppConstants.roleUserRead, AppConstants.roleViewTarget)
                   .then((value) {
                 if (value) Get.to(() => const AllTargets());
               });

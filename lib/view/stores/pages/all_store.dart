@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../patterns/pages/all_pattern.dart';
 import 'Store_details.dart';
 
@@ -43,7 +43,7 @@ class AllStore extends StatelessWidget {
                             ?.dataGridRows[details.rowColumnIndex.rowIndex - 1]
                             .getCells()
                             .firstWhere((element) =>
-                                element.columnName == AppStrings.stId)
+                                element.columnName == AppConstants.stId)
                             .value);
 
                         Get.to(() => StoreDetails(
@@ -59,9 +59,9 @@ class AllStore extends StatelessWidget {
                           label: const Text('ID')),
                       gridColumnItem(
                         label: "الرمز",
-                        name: AppStrings.stCode,
+                        name: AppConstants.stCode,
                       ),
-                      gridColumnItem(label: "الاسم", name: AppStrings.stName),
+                      gridColumnItem(label: "الاسم", name: AppConstants.stName),
                     ],
                     source: storeController.recordViewDataSource!,
                     allowEditing: false,

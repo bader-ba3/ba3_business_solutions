@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -71,7 +71,7 @@ class AccountCustomer {
         title: 'نوع الضريبة',
         field: 'customerVAT',
         type: PlutoColumnType.select(
-            [AppStrings.mainVATCategory, AppStrings.withoutVAT]),
+            [AppConstants.mainVATCategory, AppConstants.withoutVAT]),
       ): customerVAT,
     };
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/user/user_management_model.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class AllUserView extends StatefulWidget {
   const AllUserView({super.key});

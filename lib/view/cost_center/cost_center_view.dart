@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/cost/cost_center_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/cost/cost_center_tree.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +55,7 @@ class CostCenterView extends StatelessWidget {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection(AppStrings.costCenterCollection)
+              .collection(AppConstants.costCenterCollection)
               .snapshots(),
           builder: (context, snapshot) {
             return GetBuilder<CostCenterViewModel>(builder: (controller) {

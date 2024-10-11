@@ -6,7 +6,7 @@ import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class ProductType extends StatefulWidget {
   const ProductType({super.key});
@@ -38,14 +38,14 @@ class _ProductTypeState extends State<ProductType> {
             // }),
             Item("معاينة المواد(الشكل الجديد)", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewProduct)
+                      AppConstants.roleUserRead, AppConstants.roleViewProduct)
                   .then((value) {
                 if (value) Get.to(() => const AllProduct());
               });
             }),
             Item("شجرة المواد", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewProduct)
+                      AppConstants.roleUserRead, AppConstants.roleViewProduct)
                   .then((value) {
                 if (value) Get.to(() => ProductTreeView());
               });

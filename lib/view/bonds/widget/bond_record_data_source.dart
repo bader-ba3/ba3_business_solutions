@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
 final bondController = Get.find<BondViewModel>();
@@ -30,21 +30,21 @@ class BondRecordDataSource extends DataGridSource {
     dataGridRows = (recordData.bondRecord ?? [])
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondId, value: e.bondRecId),
+                  columnName: AppConstants.rowBondId, value: e.bondRecId),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondAccount,
+                  columnName: AppConstants.rowBondAccount,
                   value: accountController.accountList.values
                       .toList()
                       .firstWhereOrNull((_) => _.accId == e.bondRecAccount)
                       ?.accName),
               DataGridCell<double>(
-                  columnName: AppStrings.rowBondDebitAmount,
+                  columnName: AppConstants.rowBondDebitAmount,
                   value: e.bondRecDebitAmount),
               DataGridCell<double>(
-                  columnName: AppStrings.rowBondCreditAmount,
+                  columnName: AppConstants.rowBondCreditAmount,
                   value: e.bondRecCreditAmount),
               DataGridCell<String>(
-                  columnName: AppStrings.rowBondDescription,
+                  columnName: AppConstants.rowBondDescription,
                   value: e.bondRecDescription),
             ]))
         .toList();
@@ -52,14 +52,14 @@ class BondRecordDataSource extends DataGridSource {
 
   void addItem() {
     dataGridRows.add(const DataGridRow(cells: [
-      DataGridCell<String>(columnName: AppStrings.rowBondId, value: ""),
-      DataGridCell<String>(columnName: AppStrings.rowBondAccount, value: ''),
+      DataGridCell<String>(columnName: AppConstants.rowBondId, value: ""),
+      DataGridCell<String>(columnName: AppConstants.rowBondAccount, value: ''),
       DataGridCell<double>(
-          columnName: AppStrings.rowBondCreditAmount, value: null),
+          columnName: AppConstants.rowBondCreditAmount, value: null),
       DataGridCell<double>(
-          columnName: AppStrings.rowBondDebitAmount, value: null),
+          columnName: AppConstants.rowBondDebitAmount, value: null),
       DataGridCell<String>(
-          columnName: AppStrings.rowBondDescription, value: ""),
+          columnName: AppConstants.rowBondDescription, value: ""),
     ]));
   }
 
@@ -124,13 +124,13 @@ class BondRecordDataSource extends DataGridSource {
               .toString();
       if (int.parse(id) < 10) id = "0$id";
       dataGridRows[dataRowIndex].getCells()[0] =
-          DataGridCell<String>(columnName: AppStrings.rowBondId, value: id);
+          DataGridCell<String>(columnName: AppConstants.rowBondId, value: id);
       bondController.tempBondModel.bondRecord
           ?.add(BondRecordModel(id, 0, 0, '', ''));
     }
-    if (column.columnName == AppStrings.rowBondDebitAmount ||
-        column.columnName == AppStrings.rowBondCreditAmount) {
-      if (column.columnName == AppStrings.rowBondDebitAmount) {
+    if (column.columnName == AppConstants.rowBondDebitAmount ||
+        column.columnName == AppConstants.rowBondCreditAmount) {
+      if (column.columnName == AppConstants.rowBondDebitAmount) {
         if (dataGridRows[dataRowIndex]
                     .getCells()[rowColumnIndex.columnIndex + 1]
                     .value ==
@@ -180,7 +180,7 @@ class BondRecordDataSource extends DataGridSource {
         }
       }
     } else {
-      if (column.columnName == AppStrings.rowBondAccount) {
+      if (column.columnName == AppConstants.rowBondAccount) {
         List<String> result = searchText(newCellValue.toString());
 
         if (result.isEmpty) {
@@ -235,7 +235,7 @@ class BondRecordDataSource extends DataGridSource {
               ]);
         }
       }
-      if (column.columnName == AppStrings.rowBondDescription) {
+      if (column.columnName == AppConstants.rowBondDescription) {
         bondController.tempBondModel.bondRecord?[dataRowIndex]
             .bondRecDescription = newCellValue;
         dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -280,9 +280,9 @@ class BondRecordDataSource extends DataGridSource {
 
     newCellValue = null;
     editingController.text = displayText.toString();
-    final bool isNumericType = column.columnName == AppStrings.rowBondId ||
-        column.columnName == AppStrings.rowBondCreditAmount ||
-        column.columnName == AppStrings.rowBondDebitAmount;
+    final bool isNumericType = column.columnName == AppConstants.rowBondId ||
+        column.columnName == AppConstants.rowBondCreditAmount ||
+        column.columnName == AppConstants.rowBondDebitAmount;
 
     // Holds regular expression pattern based on the column type.
     // final RegExp regExp = _getRegExp(isNumericType, column.columnName);

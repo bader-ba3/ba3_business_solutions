@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../Const/app_strings.dart';
+import '../../Const/app_constants.dart';
 
 class AccountsViewOLD extends StatelessWidget {
   const AccountsViewOLD({super.key});

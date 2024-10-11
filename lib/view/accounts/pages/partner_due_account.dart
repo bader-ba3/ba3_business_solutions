@@ -1,10 +1,10 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
-import '../../../core/shared/widgets/new_Pluto.dart';
+import '../../../core/shared/widgets/new_pluto.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
 class AllPartnerDueAccount extends StatelessWidget {
@@ -14,7 +14,7 @@ class AllPartnerDueAccount extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<InvoiceViewModel>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
-        type: AppStrings.globalTypeAccountDue,
+        type: AppConstants.globalTypeAccountDue,
         title: "الفواتير المستحقة على الشركاء",
         onLoaded: (e) {},
         onSelected: (p0) {
@@ -34,7 +34,7 @@ class AllPartnerDueAccount extends StatelessWidget {
         modelList: controller.invoiceModel.values.where(
           (element) {
             return element.invIsPaid == false &&
-                element.invType == AppStrings.invoiceTypeSalesWithPartner;
+                element.invType == AppConstants.invoiceTypeSalesWithPartner;
           },
         ).toList(),
       );

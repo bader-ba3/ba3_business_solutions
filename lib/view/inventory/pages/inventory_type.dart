@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../../model/inventory/inventory_model.dart';
 import 'add_new_inventory_view.dart';
@@ -78,8 +78,8 @@ class _InventoryTypeState extends State<InventoryType> {
                         ))
                     : InkWell(
                         onTap: () async {
-                          checkPermissionForOperation(AppStrings.roleUserWrite,
-                                  AppStrings.roleViewInventory)
+                          checkPermissionForOperation(AppConstants.roleUserWrite,
+                                  AppConstants.roleViewInventory)
                               .then((value) async {
                             if (value) {
                               await Get.to(() => const AddNewInventoryView());
@@ -108,8 +108,8 @@ class _InventoryTypeState extends State<InventoryType> {
                 Column(
                   children: [
                     Item("إكمال الجرد", () {
-                      checkPermissionForOperation(AppStrings.roleUserWrite,
-                              AppStrings.roleViewInventory)
+                      checkPermissionForOperation(AppConstants.roleUserWrite,
+                              AppConstants.roleViewInventory)
                           .then((value) async {
                         if (value) {
                           await Get.to(() => AddInventoryView(
@@ -120,8 +120,8 @@ class _InventoryTypeState extends State<InventoryType> {
                       });
                     }),
                     Item("معاينة الجرد", () {
-                      checkPermissionForOperation(AppStrings.roleUserRead,
-                              AppStrings.roleViewInventory)
+                      checkPermissionForOperation(AppConstants.roleUserRead,
+                              AppConstants.roleViewInventory)
                           .then((value) {
                         if (value) {
                           Get.to(() => AllInventoryView(
@@ -130,13 +130,13 @@ class _InventoryTypeState extends State<InventoryType> {
                       });
                     }),
                     Item("إنهاء الجرد", () {
-                      checkPermissionForOperation(AppStrings.roleUserUpdate,
-                              AppStrings.roleViewInventory)
+                      checkPermissionForOperation(AppConstants.roleUserUpdate,
+                              AppConstants.roleViewInventory)
                           .then((value) {
                         if (value) {
                           print(selectedInventory!.toJson());
                           FirebaseFirestore.instance
-                              .collection(AppStrings.inventoryCollection)
+                              .collection(AppConstants.inventoryCollection)
                               .doc(selectedInventory!.inventoryId)
                               .set((selectedInventory!..isDone = true).toJson(),
                                   SetOptions(merge: true));
@@ -148,14 +148,14 @@ class _InventoryTypeState extends State<InventoryType> {
                       });
                     }),
                     Item("حذف الجرد", () {
-                      checkPermissionForOperation(AppStrings.roleUserDelete,
-                              AppStrings.roleViewInventory)
+                      checkPermissionForOperation(AppConstants.roleUserDelete,
+                              AppConstants.roleViewInventory)
                           .then((value) {
                         if (value) {
                           confirmDeleteWidget().then((value) {
                             if (value) {
                               FirebaseFirestore.instance
-                                  .collection(AppStrings.inventoryCollection)
+                                  .collection(AppConstants.inventoryCollection)
                                   .doc(selectedInventory!.inventoryId)
                                   .delete();
 
@@ -172,7 +172,7 @@ class _InventoryTypeState extends State<InventoryType> {
                 ),
               Item("معاينة الجرد قديم", () {
                 checkPermissionForOperation(
-                        AppStrings.roleUserAdmin, AppStrings.roleViewInventory)
+                        AppConstants.roleUserAdmin, AppConstants.roleViewInventory)
                     .then((value) {
                   if (value) {
                     Get.defaultDialog(

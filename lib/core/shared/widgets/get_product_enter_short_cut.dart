@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../constants/app_strings.dart';
+import '../../constants/app_constants.dart';
 import '../dialogs/Search_Product_Text_Dialog.dart';
 
 class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction {
@@ -76,7 +76,7 @@ class GetProductEnterPlutoGridAction extends PlutoGridShortcutAction {
         controller.updateInvoiceValues(
             controller.getPrice(
                 prodName: newValue,
-                type: AppStrings.invoiceChoosePriceMethodeCustomerPrice),
+                type: AppConstants.invoiceChoosePriceMethodeCustomerPrice),
             1);
       } else {
         stateManager.changeCellValue(

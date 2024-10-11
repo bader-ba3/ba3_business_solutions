@@ -8,7 +8,7 @@ import '../../../controller/invoice/search_view_controller.dart';
 import '../../../main.dart';
 import '../../../view/accounts/pages/all_due_account.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
-import '../widgets/Option_Text_Widget.dart';
+import '../widgets/option_text_widget.dart';
 
 class AccountDueOptionDialog extends StatelessWidget {
   const AccountDueOptionDialog({

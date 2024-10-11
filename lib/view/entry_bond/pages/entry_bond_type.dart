@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/controller/user/user_management_model.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import 'all_entry_bonds.dart';
 
 class EntryBondType extends StatefulWidget {
@@ -28,10 +28,10 @@ class _EntryBondTypeState extends State<EntryBondType> {
           children: [
             Item("سند قيد", () {}),
             if (checkPermission(
-                AppStrings.roleUserAdmin, AppStrings.roleViewInvoice))
+                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
               Item("عرض سندات القيد ", () {
                 checkPermissionForOperation(
-                        AppStrings.roleUserRead, AppStrings.roleViewBond)
+                        AppConstants.roleUserRead, AppConstants.roleViewBond)
                     .then((value) {
                   if (value) Get.to(() => const AllEntryBonds());
                 });

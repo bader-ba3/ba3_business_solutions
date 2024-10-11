@@ -15,7 +15,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/utils/logger.dart';
 import '../../model/invoice/invoice_record_model.dart';
 import '../../model/product/product_model.dart';
@@ -36,8 +36,8 @@ class ProductViewModel extends GetxController {
   initGlobalProduct(GlobalModel globalModel) async {
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
     Map<String, List> allRecTotal = {};
-    bool isPay = globalModel.invType == AppStrings.invoiceTypeBuy ||
-        globalModel.invType == AppStrings.invoiceTypeAdd;
+    bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy ||
+        globalModel.invType == AppConstants.invoiceTypeAdd;
     int correctQuantity = isPay ? 1 : -1;
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
@@ -56,7 +56,7 @@ class ProductViewModel extends GetxController {
       var recCredit = value.reduce((value, element) => value + element);
       if (productDataMap[key] != null) {
         bool isStoreProduct =
-            productDataMap[key]!.prodType == AppStrings.productTypeStore;
+            productDataMap[key]!.prodType == AppConstants.productTypeStore;
         InvoiceRecordModel element = globalModel.invRecords!
             .firstWhere((element) => element.invRecProduct == key);
         // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
@@ -107,7 +107,7 @@ class ProductViewModel extends GetxController {
     for (ProductRecordModel element in productModel.prodRecord ?? []) {
       GlobalModel globalModel = invoiceViewModel.invoiceModel[element.invId!]!;
       count = (int.parse(element.prodRecQuantity ?? "0")) + count;
-      if (globalModel.invType == AppStrings.invoiceTypeBuy) {
+      if (globalModel.invType == AppConstants.invoiceTypeBuy) {
         avg = ((double.parse(element.prodRecSubTotal ?? "0") *
                     int.parse(element.prodRecQuantity ?? "0")) +
                 ((count - int.parse(element.prodRecQuantity ?? "0")) * avg)) /
@@ -218,7 +218,7 @@ class ProductViewModel extends GetxController {
     if (HiveDataBase.productModelBox.values.isEmpty) {
       print("THE PRODUCT IS READ FROM FIREBASE");
       FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .get()
           .then((value) async {
         productDataMap.clear();
@@ -462,7 +462,7 @@ class ProductViewModel extends GetxController {
       editProductModel.prodIsParent = true;
     } else {
       FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(editProductModel.prodParentId)
           .update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
@@ -486,17 +486,17 @@ class ProductViewModel extends GetxController {
       }
       changesViewModel.addChangeToChanges(
           productDataMap[editProductModel.prodParentId]!.toFullJson(),
-          AppStrings.productsCollection);
+          AppConstants.productsCollection);
       editProductModel.prodIsParent = false;
     }
     if (withLogger) logger(newData: editProductModel);
     await FirebaseFirestore.instance
-        .collection(AppStrings.productsCollection)
+        .collection(AppConstants.productsCollection)
         .doc(editProductModel.prodId)
         .set(editProductModel.toJson());
     HiveDataBase.productModelBox.put(editProductModel.prodId, editProductModel);
     changesViewModel.addChangeToChanges(
-        editProductModel.toFullJson(), AppStrings.productsCollection);
+        editProductModel.toFullJson(), AppConstants.productsCollection);
     Get.snackbar("فحص المطاييح", ' تم اضافة المطيح');
   }
 
@@ -547,7 +547,7 @@ class ProductViewModel extends GetxController {
       editProductModel.prodIsParent = true;
     } else {
       FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(editProductModel.prodParentId)
           .update({
         'prodChild': FieldValue.arrayUnion([editProductModel.prodId]),
@@ -572,17 +572,17 @@ class ProductViewModel extends GetxController {
       }
       changesViewModel.addChangeToChanges(
           productDataMap[editProductModel.prodParentId]!.toFullJson(),
-          AppStrings.productsCollection);
+          AppConstants.productsCollection);
       editProductModel.prodIsParent = false;
     }
     FirebaseFirestore.instance
-        .collection(AppStrings.productsCollection)
+        .collection(AppConstants.productsCollection)
         .doc(editProductModel.prodId)
         .update(editProductModel.toJson());
     HiveDataBase.productModelBox.put(editProductModel.prodId, editProductModel);
 
     changesViewModel.addChangeToChanges(
-        editProductModel.toFullJson(), AppStrings.productsCollection);
+        editProductModel.toFullJson(), AppConstants.productsCollection);
     update();
   }
 
@@ -605,19 +605,19 @@ class ProductViewModel extends GetxController {
     if (withLogger) logger(oldData: productModel);
     if (productModel?.prodParentId != null) {
       await FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(productModel!.prodParentId)
           .update({
         'prodChild': FieldValue.arrayRemove([productModel!.prodId]),
       });
     }
     FirebaseFirestore.instance
-        .collection(AppStrings.productsCollection)
+        .collection(AppConstants.productsCollection)
         .doc(productModel?.prodId)
         .delete();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     changesViewModel.addRemoveChangeToChanges(
-        productModel!.toFullJson(), AppStrings.productsCollection);
+        productModel!.toFullJson(), AppConstants.productsCollection);
     productModel == null;
 
     update();
@@ -742,7 +742,7 @@ class ProductViewModel extends GetxController {
 
   void endRenameChild() {
     FirebaseFirestore.instance
-        .collection(AppStrings.productsCollection)
+        .collection(AppConstants.productsCollection)
         .doc(editItem)
         .update({
       "prodName": editCon?.text,
@@ -907,7 +907,7 @@ class ProductViewModel extends GetxController {
         prodId: generateId(RecordType.product));
     if (prodParentId != null) {
       FirebaseFirestore.instance
-          .collection(AppStrings.productsCollection)
+          .collection(AppConstants.productsCollection)
           .doc(prodParentId)
           .update({
         'prodChild': FieldValue.arrayUnion([prodModel.prodId]),
@@ -915,7 +915,7 @@ class ProductViewModel extends GetxController {
     }
     productDataMap[prodParentId]!.prodChild!.add(prodModel.prodId);
     FirebaseFirestore.instance
-        .collection(AppStrings.productsCollection)
+        .collection(AppConstants.productsCollection)
         .doc()
         .set(prodModel.toJson());
     HiveDataBase.productModelBox.put(prodModel.prodId, prodModel);

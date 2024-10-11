@@ -1,12 +1,12 @@
 import 'package:ba3_business_solutions/controller/cheque/cheque_view_model.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/CustomWindowTitleBar.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_window_title_bar.dart';
 import 'package:ba3_business_solutions/view/cheques/pages/add_cheque.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/shared/Widgets/new_Pluto.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/Widgets/new_pluto.dart';
 
 class AllCheques extends StatelessWidget {
   const AllCheques({super.key, required this.isAll});
@@ -22,7 +22,7 @@ class AllCheques extends StatelessWidget {
           Expanded(
             child: CustomPlutoGridWithAppBar(
               title: isAll ? "جميع الشيكات" : "الشيكات المستحقة",
-              type: AppStrings.globalTypeCheque,
+              type: AppConstants.globalTypeCheque,
               onLoaded: (e) {},
               onSelected: (p0) {
                 Get.to(() => AddCheque(
@@ -34,7 +34,7 @@ class AllCheques extends StatelessWidget {
                   if (isAll) {
                     return true;
                   } else {
-                    return element.cheqStatus != AppStrings.chequeStatusPaid;
+                    return element.cheqStatus != AppConstants.chequeStatusPaid;
                   }
                 },
               ).toList(),

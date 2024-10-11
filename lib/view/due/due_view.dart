@@ -4,7 +4,7 @@ import 'package:ba3_business_solutions/model/account/account_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../model/global/global_model.dart';
 
@@ -26,8 +26,8 @@ class AllDueView extends StatelessWidget {
             List<GlobalModel> allBuyInv =
                 invoiceViewModel.invoiceModel.values.where(
               (element) {
-                return element.invType == AppStrings.invoiceTypeBuy &&
-                    element.invPayType == AppStrings.invPayTypeDue;
+                return element.invType == AppConstants.invoiceTypeBuy &&
+                    element.invPayType == AppConstants.invPayTypeDue;
               },
             ).toList();
             for (var element in allBuyInv) {
@@ -77,10 +77,10 @@ class AllDueView extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                               color: model.accountRecordModel.isPaidStatus ==
-                                      AppStrings.paidStatusFullUsed
+                                      AppConstants.paidStatusFullUsed
                                   ? Colors.green.withOpacity(0.5)
                                   : model.accountRecordModel.isPaidStatus ==
-                                          AppStrings.paidStatusSemiUsed
+                                          AppConstants.paidStatusSemiUsed
                                       ? Colors.orange.withOpacity(0.5)
                                       : Colors.red.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(8)),

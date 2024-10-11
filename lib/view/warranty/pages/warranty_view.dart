@@ -6,11 +6,11 @@ import '../../../controller/invoice/invoice_view_model.dart';
 import '../../../controller/print/print_view_model.dart';
 import '../../../controller/user/user_management_model.dart';
 import '../../../controller/warranty/warranty_view_model.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/shared/widgets/CustomPlutoShortCut.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
-import '../../../core/shared/widgets/Custom_Pluto_With_Edite.dart';
-import '../../../core/shared/widgets/GetProductEnterShortCut.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/widgets/custom_pluto_short_cut.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../core/shared/widgets/custom_pluto_with_edite.dart';
+import '../../../core/shared/widgets/get_product_enter_short_cut.dart';
 import '../../../controller/warranty/warranty_pluto_view_model.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../../core/utils/date_picker.dart';
@@ -91,7 +91,7 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                   ),*/
 
                   SizedBox(
-                    height: AppStrings.constHeightTextField,
+                    height: AppConstants.constHeightTextField,
                     child: Row(
                       children: [
                         Row(
@@ -287,8 +287,8 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                               title: 'جديد',
                               onPressed: () async {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserWrite,
-                                        AppStrings.roleViewInvoice)
+                                        AppConstants.roleUserWrite,
+                                        AppConstants.roleViewInvoice)
                                     .then((value) {
                                   if (value) {
                                     controller.getInit();
@@ -314,8 +314,8 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                 onPressed: () async {
                                   plutoEditViewModel.handleSaveAll();
                                   checkPermissionForOperation(
-                                          AppStrings.roleUserUpdate,
-                                          AppStrings.roleViewInvoice)
+                                          AppConstants.roleUserUpdate,
+                                          AppConstants.roleViewInvoice)
                                       .then((value) async {
                                     if (value) {
                                       controller.updateInvoice(
@@ -333,8 +333,8 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                   plutoEditViewModel.handleSaveAll();
 
                                   checkPermissionForOperation(
-                                          AppStrings.roleUserAdmin,
-                                          AppStrings.roleViewInvoice)
+                                          AppConstants.roleUserAdmin,
+                                          AppConstants.roleViewInvoice)
                                       .then((value) async {
                                     if (value) {
                                       controller.updateInvoice(
@@ -373,8 +373,8 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                 confirmDeleteWidget().then((value) {
                                   if (value) {
                                     checkPermissionForOperation(
-                                            AppStrings.roleUserDelete,
-                                            AppStrings.roleViewInvoice)
+                                            AppConstants.roleUserDelete,
+                                            AppConstants.roleViewInvoice)
                                         .then((value) async {
                                       if (value) {
                                         controller.deleteInvoice();

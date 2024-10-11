@@ -10,7 +10,7 @@ import '../../../controller/invoice/search_view_controller.dart';
 import '../../../view/accounts/pages/account_details.dart';
 import '../../helper/functions/functions.dart';
 import '../../services/Get_Date_From_String.dart';
-import '../widgets/Option_Text_Widget.dart';
+import '../widgets/option_text_widget.dart';
 
 class AccountOptionDialog extends StatelessWidget {
   const AccountOptionDialog({

@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/model/store/store_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
@@ -128,8 +128,8 @@ class _AddStoreState extends State<AddStore> {
                             if (nameController.text.isNotEmpty &&
                                 codeController.text.isNotEmpty) {
                               checkPermissionForOperation(
-                                      AppStrings.roleUserUpdate,
-                                      AppStrings.roleViewStore)
+                                      AppConstants.roleUserUpdate,
+                                      AppConstants.roleViewStore)
                                   .then((value) {
                                 if (value) {
                                   storeController.editStore();
@@ -150,8 +150,8 @@ class _AddStoreState extends State<AddStore> {
                             if (nameController.text.isNotEmpty &&
                                 codeController.text.isNotEmpty) {
                               checkPermissionForOperation(
-                                      AppStrings.roleUserWrite,
-                                      AppStrings.roleViewStore)
+                                      AppConstants.roleUserWrite,
+                                      AppConstants.roleViewStore)
                                   .then((value) {
                                 if (value) storeController.addNewStore();
                               });

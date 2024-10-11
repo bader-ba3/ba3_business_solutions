@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 
 class AccountRecordDataSource extends DataGridSource {
@@ -27,7 +27,7 @@ class AccountRecordDataSource extends DataGridSource {
       allRecord
           .addAll(accountController.accountList[element]!.accRecord.toList());
     }
-    if (accountModel.accType == AppStrings.accountTypeAggregateAccount) {
+    if (accountModel.accType == AppConstants.accountTypeAggregateAccount) {
       for (var element in accountModel.accAggregateList) {
         allRecord
             .addAll(accountController.accountList[element]!.accRecord.toList());
@@ -38,29 +38,29 @@ class AccountRecordDataSource extends DataGridSource {
     );
     dataGridRows = allRecord.map<DataGridRow>((e) {
       String? _;
-      if (e.isPaidStatus == AppStrings.paidStatusSemiUsed) {
+      if (e.isPaidStatus == AppConstants.paidStatusSemiUsed) {
         _ = " متبقي (${e.paid})";
       }
 
       return DataGridRow(cells: [
         DataGridCell<String>(
-            columnName: AppStrings.rowAccountName,
+            columnName: AppConstants.rowAccountName,
             value: getAccountNameFromId(e.account)),
         DataGridCell<String>(
-            columnName: AppStrings.rowAccountName, value: e.date),
+            columnName: AppConstants.rowAccountName, value: e.date),
         DataGridCell<String>(
-            columnName: AppStrings.rowAccountType,
+            columnName: AppConstants.rowAccountType,
             value: getGlobalTypeFromEnum(e.accountRecordType!)),
         DataGridCell<String>(
-            columnName: AppStrings.rowAccountTotal,
+            columnName: AppConstants.rowAccountTotal,
             value: double.parse(e.total!) > 0 ? "0" : e.total!),
         DataGridCell<String>(
-            columnName: AppStrings.rowAccountTotal2,
+            columnName: AppConstants.rowAccountTotal2,
             value: double.parse(e.total!) < 0 ? "0" : e.total!),
         DataGridCell<double>(
-            columnName: AppStrings.rowAccountBalance,
+            columnName: AppConstants.rowAccountBalance,
             value: lastBalance += double.parse(e.total!)),
-        DataGridCell<String>(columnName: AppStrings.rowAccountId, value: e.id),
+        DataGridCell<String>(columnName: AppConstants.rowAccountId, value: e.id),
       ]);
     }).toList();
   }
@@ -85,12 +85,12 @@ class AccountRecordDataSource extends DataGridSource {
           alignment: Alignment.center,
           color: getRowBackgroundColor(),
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: dataGridCell.columnName == AppStrings.rowAccountType
+          child: dataGridCell.columnName == AppConstants.rowAccountType
               ? Text(dataGridCell.value,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 22))
-              : dataGridCell.columnName == AppStrings.rowAccountBalance ||
-                      dataGridCell.columnName == AppStrings.rowAccountTotal
+              : dataGridCell.columnName == AppConstants.rowAccountBalance ||
+                      dataGridCell.columnName == AppConstants.rowAccountTotal
                   ? Text(
                       dataGridCell.value == null
                           ? ''

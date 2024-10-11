@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
 import 'add_task.dart';
 import 'all_task_view.dart';
@@ -32,7 +32,7 @@ class _TaskManagementTypeState extends State<TaskManagementType> {
             // }),
             Item("معاينة التاسكات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewTask)
+                      AppConstants.roleUserRead, AppConstants.roleViewTask)
                   .then((value) {
                 if (value) Get.to(() => const AllTaskView());
               });

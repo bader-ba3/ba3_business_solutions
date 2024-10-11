@@ -1,4 +1,4 @@
-// import 'package:ba3_business_solutions/Const/app_strings.dart';
+// import 'package:ba3_business_solutions/Const/app_constants.dart';
 // import 'package:ba3_business_solutions/controller/account_view_model.dart';
 // import 'package:ba3_business_solutions/controller/entry_bond_view_model.dart';
 // import 'package:ba3_business_solutions/controller/global_view_model.dart';
@@ -29,7 +29,7 @@
 // import '../../main.dart';
 // import '../../model/invoice_record_model.dart';
 // import '../../utils/generate_id.dart';
-// import '../widget/CustomWindowTitleBar.dart';
+// import '../widget/custom_window_title_bar.dart';
 //
 // class InvoiceView extends StatefulWidget {
 //   InvoiceView({Key? key, required this.billId, required this.patternId, this.recentScreen = false}) : super(key: key);

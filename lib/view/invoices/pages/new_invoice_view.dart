@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/core/shared/widgets/GetProductEnterShortCut.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/Custom_Pluto_With_Edite.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/get_product_enter_short_cut.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import '../../../controller/invoice/screen_view_model.dart';
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/widgets/Option_Text_Widget.dart';
+import '../../../core/shared/widgets/option_text_widget.dart';
 import '../../../core/services/Get_Date_From_String.dart';
-import '../../../core/shared/widgets/CustomPlutoShortCut.dart';
+import '../../../core/shared/widgets/custom_pluto_short_cut.dart';
 import '../../../controller/account/account_view_model.dart';
 import '../../../controller/bond/entry_bond_view_model.dart';
 import '../../../controller/global/global_view_model.dart';
@@ -32,7 +32,7 @@ import '../../../core/utils/generate_id.dart';
 import '../../entry_bond/pages/entry_bond_details_view.dart';
 import '../../sellers/pages/add_seller.dart';
 import '../../stores/pages/add_store.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class InvoiceView extends StatefulWidget {
   const InvoiceView({super.key, required this.billId, required this.patternId, this.recentScreen = false});
@@ -56,7 +56,7 @@ class _InvoiceViewState extends State<InvoiceView> {
 
   List<String> codeInvList = [];
 
-  String typeBill = AppStrings.invoiceTypeSales;
+  String typeBill = AppConstants.invoiceTypeSales;
   bool isEditDate = false;
 
   @override
@@ -74,7 +74,7 @@ class _InvoiceViewState extends State<InvoiceView> {
     } else {
       patternModel = invoiceController.patternController.patternModel[widget.patternId];
       invoiceController.getInit(patternModel!.patId!);
-      invoiceController.selectedPayType = AppStrings.invPayTypeCash;
+      invoiceController.selectedPayType = AppConstants.invPayTypeCash;
       invoiceController.invReturnCodeController.text = '';
       invoiceController.invReturnDateController.text = '';
       // globalController.dateController = DateTime.now().toString().split(" ")[0];
@@ -161,10 +161,10 @@ class _InvoiceViewState extends State<InvoiceView> {
                   ),*/
 
                   SizedBox(
-                    height: AppStrings.constHeightTextField,
+                    height: AppConstants.constHeightTextField,
                     child: Row(
                       children: [
-                        if (patternModel!.patType != AppStrings.invoiceTypeSalesWithPartner)
+                        if (patternModel!.patType != AppConstants.invoiceTypeSalesWithPartner)
                           SizedBox(
                             width: 250,
                             child: Row(
@@ -179,7 +179,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 ),
                                 Expanded(
                                   child: Container(
-                                      height: AppStrings.constHeightTextField,
+                                      height: AppConstants.constHeightTextField,
                                       decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
                                       child: DropdownButton(
                                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -188,12 +188,12 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         isExpanded: true,
                                         onChanged: (_) {
                                           invoiceController.selectedPayType = _!;
-                                          if (invoiceController.selectedPayType == AppStrings.invPayTypeCash) {
+                                          if (invoiceController.selectedPayType == AppConstants.invPayTypeCash) {
                                             invoiceController.firstPayController.clear();
                                           }
                                           setState(() {});
                                         },
-                                        items: [AppStrings.invPayTypeDue, AppStrings.invPayTypeCash]
+                                        items: [AppConstants.invPayTypeDue, AppConstants.invPayTypeCash]
                                             .map((e) => DropdownMenuItem(
                                                   value: e,
                                                   child: SizedBox(
@@ -209,7 +209,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               ],
                             ),
                           ),
-                        if (checkPermission(AppStrings.roleUserAdmin, AppStrings.roleViewInvoice))
+                        if (checkPermission(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
                           Row(
                             children: [
                               IconButton(
@@ -252,7 +252,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (patternModel!.patType != AppStrings.invoiceTypeChange)
+                    if (patternModel!.patType != AppConstants.invoiceTypeChange)
                       Column(
                         children: [
                           SizedBox(
@@ -282,7 +282,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
-                                if (patternModel?.patType != AppStrings.invoiceTypeSalesWithPartner && invoiceController.selectedPayType == AppStrings.invPayTypeDue)
+                                if (patternModel?.patType != AppConstants.invoiceTypeSalesWithPartner && invoiceController.selectedPayType == AppConstants.invPayTypeDue)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -303,7 +303,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       ],
                                     ),
                                   ),
-                                if (patternModel!.patType == AppStrings.invoiceTypeSales)
+                                if (patternModel!.patType == AppConstants.invoiceTypeSales)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -315,7 +315,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                             "المدين : ",
                                           ),
                                         ),
-                                        if (patternModel!.patType == AppStrings.invoiceTypeSales)
+                                        if (patternModel!.patType == AppConstants.invoiceTypeSales)
                                           Expanded(
                                             child: CustomTextFieldWithIcon(
                                                 controller: invoiceController.secondaryAccountController,
@@ -335,7 +335,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                                   }
                                                 }),
                                           )
-                                        else if (patternModel!.patType == AppStrings.invoiceTypeBuy)
+                                        else if (patternModel!.patType == AppConstants.invoiceTypeBuy)
                                           SizedBox(
                                             width: Get.width * 0.10,
                                             child: CustomTextFieldWithoutIcon(
@@ -345,7 +345,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       ],
                                     ),
                                   )
-                                else if (patternModel!.patType == AppStrings.invoiceTypeBuy)
+                                else if (patternModel!.patType == AppConstants.invoiceTypeBuy)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -471,7 +471,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
-                                if (patternModel?.patType == AppStrings.invoiceTypeSalesWithPartner)
+                                if (patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -640,7 +640,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                     const SizedBox(
                       height: 10,
                     ),
-                    if (patternModel!.patType != AppStrings.invoiceTypeChange) ...[
+                    if (patternModel!.patType != AppConstants.invoiceTypeChange) ...[
                       const Divider(),
                       const SizedBox(
                         height: 10,
@@ -651,7 +651,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                           child: Wrap(
                             alignment: WrapAlignment.spaceBetween,
                             children: [
-                              if (patternModel!.patType == AppStrings.invoiceTypeSalesWithPartner)
+                              if (patternModel!.patType == AppConstants.invoiceTypeSalesWithPartner)
                                 Wrap(
                                     // mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -783,7 +783,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                           AppButton(
                               title: 'جديد',
                               onPressed: () async {
-                                checkPermissionForOperation(AppStrings.roleUserWrite, AppStrings.roleViewInvoice).then((value) {
+                                checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInvoice).then((value) {
                                   if (value) {
                                     controller.getInit(controller.initModel.patternId!);
                                     controller.update();
@@ -800,26 +800,26 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   plutoEditViewModel.handleSaveAll(withOutProud: patternModel!.patFullName == "مبيعات بدون اصل");
                                   if (invoiceController.checkInvCode()) {
                                     Get.snackbar("فحص المطاييح", "هذا الرمز الرمز يرجى استخدام الرمز: ${invoiceController.getNextCodeInv()}");
-                                  } else if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppStrings.invoiceTypeAdd && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeAdd && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ تعباية", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى إضافة مواد الى الفاتورة");
                                   } else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
-                                  } else if (patternModel?.patType == AppStrings.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
+                                  } else if (patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في رقم فاتورة الشريك");
                                   } else {
-                                    checkPermissionForOperation(AppStrings.roleUserWrite, AppStrings.roleViewInvoice).then((value) async {
+                                    checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInvoice).then((value) async {
                                       if (value) {
                                         screenViewModel.openedScreen.removeWhere(
                                           (key, value) => key == _updateData(plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
@@ -853,17 +853,17 @@ class _InvoiceViewState extends State<InvoiceView> {
 
                                   // if (globalController.invCodeList.contains(
                                   //     globalController.invCodeController.text)) {
-                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
                                   } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
@@ -876,7 +876,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
                                   } else*/
                                   {
-                                    checkPermissionForOperation(AppStrings.roleUserAdmin, AppStrings.roleViewInvoice).then((value) async {
+                                    checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice).then((value) async {
                                       if (value) {
                                         await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         invoiceController.initModel.invIsPending = false;
@@ -895,19 +895,19 @@ class _InvoiceViewState extends State<InvoiceView> {
 
                                   // if (globalController.invCodeList.contains(
                                   //     globalController.invCodeController.text)) {
-                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord
                                       .where(
@@ -924,7 +924,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
                                   } */
                                   else {
-                                    checkPermissionForOperation(AppStrings.roleUserUpdate, AppStrings.roleViewInvoice).then((value) async {
+                                    checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInvoice).then((value) async {
                                       if (value) {
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
                                       }
@@ -941,17 +941,17 @@ class _InvoiceViewState extends State<InvoiceView> {
 
                                   // if (globalController.invCodeList.contains(
                                   //     globalController.invCodeController.text)) {
-                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  if (!invoiceController.checkSellerComplete() && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا البائع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreComplete()) {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppStrings.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord
                                       .where(
@@ -962,12 +962,12 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   } else if (plutoEditViewModel.invoiceRecord.isEmpty) {
                                     Get.snackbar("خطأ ", "بعض المنتجات فارغة");
                                   } else {
-                                    checkPermissionForOperation(AppStrings.roleUserUpdate, AppStrings.roleViewInvoice).then((value) async {
+                                    checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInvoice).then((value) async {
                                       if (value) {
-                                        controller.initCodeList(AppStrings.salleTypeId);
+                                        controller.initCodeList(AppConstants.salleTypeId);
                                         controller.initModel
                                           ..invRecords = plutoEditViewModel.handleSaveAll(withOutProud: false)
-                                          ..patternId = AppStrings.salleTypeId
+                                          ..patternId = AppConstants.salleTypeId
                                           ..invCode = controller.getNextCodeInv()
                                           ..invFullCode = "مبيعات : ${controller.getNextCodeInv()}"
                                           ..entryBondRecord = []
@@ -988,7 +988,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 onPressed: () async {
                                   plutoEditViewModel.handleSaveAll(withOutProud: patternModel!.patFullName == "مبيعات بدون اصل");
 
-                                  checkPermissionForOperation(AppStrings.roleUserAdmin, AppStrings.roleViewInvoice).then((value) async {
+                                  checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice).then((value) async {
                                     if (value) {
                                       PrintViewModel printViewModel = Get.find<PrintViewModel>();
                                       printViewModel.printFunction(invoiceController.initModel);
@@ -1010,7 +1010,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   onPressed: () async {
                                     confirmDeleteWidget().then((value) {
                                       if (value) {
-                                        checkPermissionForOperation(AppStrings.roleUserDelete, AppStrings.roleViewInvoice).then((value) async {
+                                        checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewInvoice).then((value) async {
                                           if (value) {
                                             globalController.deleteGlobal(invoiceController.initModel);
                                             Get.back();
@@ -1022,7 +1022,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 )
                             ]
                           ],
-                          if (patternModel!.patName == AppStrings.invoiceTypeSalesWithPartner || controller.selectedPayType == AppStrings.invPayTypeDue)
+                          if (patternModel!.patName == AppConstants.invoiceTypeSalesWithPartner || controller.selectedPayType == AppConstants.invPayTypeDue)
                             AppButton(
                               iconData: Icons.more_horiz_outlined,
                               title: 'المزيد',
@@ -1152,11 +1152,11 @@ class _InvoiceViewState extends State<InvoiceView> {
         invReturnDate: invoiceController.invReturnDateController.text,
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
-        invVatAccount: patternModel?.patType == AppStrings.invoiceTypeBuy ? getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة") : getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة"),
+        invVatAccount: patternModel?.patType == AppConstants.invoiceTypeBuy ? getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة") : getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة"),
         invPayType: invoiceController.selectedPayType,
-        invIsPaid: invoiceController.selectedPayType == AppStrings.invPayTypeDue ? getInvIsPay(patternModel!.patType!) : true,
+        invIsPaid: invoiceController.selectedPayType == AppConstants.invPayTypeDue ? getInvIsPay(patternModel!.patType!) : true,
         invPartnerCode: invoiceController.invPartnerCodeController.text,
-        invDueDate: patternModel?.patType == AppStrings.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
+        invDueDate: patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],
         invIsPending: invoiceController.initModel.invIsPending,
         // invVatAccount: getVatAccountFromPatternId(patternModel!.patId!),
@@ -1179,12 +1179,12 @@ class _InvoiceViewState extends State<InvoiceView> {
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
-        invTotalPartner: patternModel?.patType == AppStrings.invoiceTypeSalesWithPartner
+        invTotalPartner: patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner
             ? patternModel?.patName == "م Tabby"
                 ? Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - (((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!) * 1.05)
                 : Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - ((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!)
             : 0,
-        globalType: AppStrings.globalTypeInvoice);
+        globalType: AppConstants.globalTypeInvoice);
   }
 }
 
@@ -1203,7 +1203,7 @@ class AppButton extends StatelessWidget {
         onPressed: onPressed,
         child: SizedBox(
           width: 100,
-          height: AppStrings.constHeightTextField,
+          height: AppConstants.constHeightTextField,
           child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

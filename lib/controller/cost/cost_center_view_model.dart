@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/cost/cost_center_model.dart';
 import 'package:ba3_business_solutions/model/cost/cost_center_tree.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
@@ -23,7 +23,7 @@ class CostCenterViewModel extends GetxController {
 
   void getAllCostCenter({String? goto}) {
     FirebaseFirestore.instance
-        .collection(AppStrings.costCenterCollection)
+        .collection(AppConstants.costCenterCollection)
         .snapshots()
         .listen((value) async {
       costCenterModelList.clear();
@@ -70,7 +70,7 @@ class CostCenterViewModel extends GetxController {
   addChild({String? parent, name}) async {
     var id = generateId(RecordType.costCenter);
     FirebaseFirestore.instance
-        .collection(AppStrings.costCenterCollection)
+        .collection(AppConstants.costCenterCollection)
         .doc(id)
         .set({
       "name": name,
@@ -79,7 +79,7 @@ class CostCenterViewModel extends GetxController {
     });
     if (parent != null) {
       FirebaseFirestore.instance
-          .collection(AppStrings.costCenterCollection)
+          .collection(AppConstants.costCenterCollection)
           .doc(parent)
           .update({
         'child': FieldValue.arrayUnion([id]),
@@ -89,12 +89,12 @@ class CostCenterViewModel extends GetxController {
 
   removeChild({String? parent, id}) async {
     FirebaseFirestore.instance
-        .collection(AppStrings.costCenterCollection)
+        .collection(AppConstants.costCenterCollection)
         .doc(id)
         .delete();
     if (parent != null) {
       FirebaseFirestore.instance
-          .collection(AppStrings.costCenterCollection)
+          .collection(AppConstants.costCenterCollection)
           .doc(parent)
           .update({
         'child': FieldValue.arrayRemove([id]),
@@ -134,7 +134,7 @@ class CostCenterViewModel extends GetxController {
 
   void endRenameChild() {
     FirebaseFirestore.instance
-        .collection(AppStrings.costCenterCollection)
+        .collection(AppConstants.costCenterCollection)
         .doc(editItem)
         .update({
       "name": editCon?.text,

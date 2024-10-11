@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
-import 'package:ba3_business_solutions/core/shared/widgets/CustomWindowTitleBar.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/custom_window_title_bar.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
@@ -124,13 +124,13 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 ),
                               ),
                               if (patternController.editPatternModel?.patType !=
-                                  AppStrings.invoiceTypeChange) ...[
+                                  AppConstants.invoiceTypeChange) ...[
                                 SizedBox(
                                   width: Get.width * 0.45,
                                   child: IgnorePointer(
                                     ignoring:
                                         patternController.typeController.text ==
-                                            AppStrings.invoiceTypeAdd,
+                                            AppConstants.invoiceTypeAdd,
                                     child: Row(
                                       children: [
                                         const SizedBox(
@@ -140,7 +140,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                             foregroundDecoration:
                                                 patternController.typeController
                                                             .text ==
-                                                        AppStrings
+                                                        AppConstants
                                                             .invoiceTypeAdd
                                                     ? BoxDecoration(
                                                         color: Colors.grey
@@ -212,7 +212,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                         width: 100, child: Text("النوع :")),
                                     Container(
                                       width: (Get.width * 0.45) - 100,
-                                      height: AppStrings.constHeightTextField,
+                                      height: AppConstants.constHeightTextField,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
@@ -226,13 +226,13 @@ class _PatternDetailsState extends State<PatternDetails> {
                                           isExpanded: true,
                                           value: patternController
                                                   .typeController.text.isEmpty
-                                              ? AppStrings.invoiceTypeSales
+                                              ? AppConstants.invoiceTypeSales
                                               : patternController
                                                   .typeController.text,
                                           items: const [
                                             DropdownMenuItem(
                                               value:
-                                                  AppStrings.invoiceTypeSales,
+                                                  AppConstants.invoiceTypeSales,
                                               child: Center(
                                                 child: Text(
                                                   "مبيع",
@@ -242,14 +242,14 @@ class _PatternDetailsState extends State<PatternDetails> {
                                               ),
                                             ),
                                             DropdownMenuItem(
-                                              value: AppStrings.invoiceTypeBuy,
+                                              value: AppConstants.invoiceTypeBuy,
                                               child: Center(
                                                   child: Text("شراء",
                                                       textDirection:
                                                           TextDirection.rtl)),
                                             ),
                                             DropdownMenuItem(
-                                              value: AppStrings.invoiceTypeAdd,
+                                              value: AppConstants.invoiceTypeAdd,
                                               child: Center(
                                                   child: Text("إدخال",
                                                       textDirection:
@@ -257,14 +257,14 @@ class _PatternDetailsState extends State<PatternDetails> {
                                             ),
                                             DropdownMenuItem(
                                               value:
-                                                  AppStrings.invoiceTypeChange,
+                                                  AppConstants.invoiceTypeChange,
                                               child: Center(
                                                   child: Text("تبديل مستودعي",
                                                       textDirection:
                                                           TextDirection.rtl)),
                                             ),
                                             DropdownMenuItem(
-                                              value: AppStrings
+                                              value: AppConstants
                                                   .invoiceTypeSalesWithPartner,
                                               child: Center(
                                                   child: Text("مبيعات مع شريك",
@@ -279,7 +279,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                                 .editPatternModel?.patType = _;
                                             if (patternController
                                                     .typeController.text ==
-                                                AppStrings.invoiceTypeAdd) {
+                                                AppConstants.invoiceTypeAdd) {
                                               patternController.editPatternModel
                                                   ?.patPrimary = null;
                                               patternController
@@ -293,7 +293,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 ),
                               ),
                               if (patternController.editPatternModel?.patType ==
-                                  AppStrings.invoiceTypeChange)
+                                  AppConstants.invoiceTypeChange)
                                 SizedBox(
                                   width: Get.width * 0.45,
                                   child: Row(
@@ -325,7 +325,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                   ),
                                 ),
                               if (patternController.editPatternModel?.patType !=
-                                  AppStrings.invoiceTypeChange) ...[
+                                  AppConstants.invoiceTypeChange) ...[
                                 SizedBox(
                                   width: Get.width * 0.45,
                                   child: Row(
@@ -418,7 +418,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 ),
                               ),
                               if (patternController.editPatternModel?.patType ==
-                                  AppStrings.invoiceTypeSalesWithPartner) ...[
+                                  AppConstants.invoiceTypeSalesWithPartner) ...[
                                 SizedBox(
                                   width: (Get.width * 0.45),
                                   child: Row(
@@ -556,10 +556,10 @@ class _PatternDetailsState extends State<PatternDetails> {
                                         true) &&
                                     patternController
                                             .editPatternModel?.patType !=
-                                        AppStrings.invoiceTypeAdd &&
+                                        AppConstants.invoiceTypeAdd &&
                                     patternController
                                             .editPatternModel?.patType !=
-                                        AppStrings.invoiceTypeChange) {
+                                        AppConstants.invoiceTypeChange) {
                                   Get.snackbar(
                                       "خطأ", "يرجى كتابة الحساب الاساسي");
                                 } else if ((patternController.editPatternModel
@@ -567,7 +567,7 @@ class _PatternDetailsState extends State<PatternDetails> {
                                         true) &&
                                     patternController
                                             .editPatternModel?.patType !=
-                                        AppStrings.invoiceTypeChange) {
+                                        AppConstants.invoiceTypeChange) {
                                   Get.snackbar(
                                       "خطأ", "يرجى كتابة الحساب الثانوي");
                                 } else if (patternController
@@ -583,8 +583,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                                           .editPatternModel?.patId !=
                                       null) {
                                     checkPermissionForOperation(
-                                            AppStrings.roleUserUpdate,
-                                            AppStrings.roleViewPattern)
+                                            AppConstants.roleUserUpdate,
+                                            AppConstants.roleViewPattern)
                                         .then((value) {
                                       if (value) {
                                         patternController.editPattern();
@@ -592,8 +592,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                                     });
                                   } else {
                                     checkPermissionForOperation(
-                                            AppStrings.roleUserWrite,
-                                            AppStrings.roleViewPattern)
+                                            AppConstants.roleUserWrite,
+                                            AppConstants.roleViewPattern)
                                         .then((value) {
                                       if (value) patternController.addPattern();
                                     });
@@ -617,8 +617,8 @@ class _PatternDetailsState extends State<PatternDetails> {
                                 title: "حذف",
                                 onPressed: () {
                                   checkPermissionForOperation(
-                                          AppStrings.roleUserDelete,
-                                          AppStrings.roleViewPattern)
+                                          AppConstants.roleUserDelete,
+                                          AppConstants.roleViewPattern)
                                       .then((value) {
                                     if (value) {
                                       patternController.deletePattern();

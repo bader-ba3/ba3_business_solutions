@@ -12,7 +12,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../constants/app_strings.dart';
+import '../../constants/app_constants.dart';
 import '../../utils/pdf_invoice_api.dart';
 
 bool getIfAccountHaveCustomers(String accId) {
@@ -29,7 +29,7 @@ bool getCustomerHaveVAT(String customerName) {
           .customerMap
           .values
           .where(
-            (element) => element.customerAccountName == customerName && element.customerVAT == AppStrings.mainVATCategory,
+            (element) => element.customerAccountName == customerName && element.customerVAT == AppConstants.mainVATCategory,
           )
           .firstOrNull !=
       null;
@@ -46,9 +46,9 @@ List<AccountCustomer> getAccountCustomers(String accId) {
 
 String getInvPayTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.invPayTypeCash:
+    case AppConstants.invPayTypeCash:
       return "نقدي";
-    case AppStrings.invPayTypeDue:
+    case AppConstants.invPayTypeDue:
       return "اجل";
   }
 
@@ -57,21 +57,21 @@ String getInvPayTypeFromEnum(String type) {
 
 String getGlobalTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.globalTypeBond:
+    case AppConstants.globalTypeBond:
       return "سند";
-    case AppStrings.bondTypeCredit:
+    case AppConstants.bondTypeCredit:
       return "سند  قبض";
-    case AppStrings.bondTypeDaily:
+    case AppConstants.bondTypeDaily:
       return "سند يومية";
-    case AppStrings.bondTypeDebit:
+    case AppConstants.bondTypeDebit:
       return "سند دفع";
-    case AppStrings.bondTypeInvoice:
+    case AppConstants.bondTypeInvoice:
       return "سند قيد";
-    case AppStrings.bondTypeStart:
+    case AppConstants.bondTypeStart:
       return "قيد افتتاحي";
-    case AppStrings.chequeTypeCatch:
+    case AppConstants.chequeTypeCatch:
       return "شيك قبض";
-    case AppStrings.chequeTypePay:
+    case AppConstants.chequeTypePay:
       return "شيك دفع";
   }
 
@@ -80,11 +80,11 @@ String getGlobalTypeFromEnum(String type) {
 
 String getAccountPaidStatusFromEnum(String type, bool isPositive) {
   switch (type) {
-    case AppStrings.paidStatusFullUsed:
+    case AppConstants.paidStatusFullUsed:
       return isPositive ? "مقبوض كليا" : "مدفوع كليا";
-    case AppStrings.paidStatusNotUsed:
+    case AppConstants.paidStatusNotUsed:
       return isPositive ? "غير مقبوض" : "غير مدفوع";
-    case AppStrings.paidStatusSemiUsed:
+    case AppConstants.paidStatusSemiUsed:
       return isPositive ? "مقبوض جزئيا" : "مدفوع جزئيا";
   }
   return type;
@@ -92,9 +92,9 @@ String getAccountPaidStatusFromEnum(String type, bool isPositive) {
 
 String getUserStatusFromEnum(String type) {
   switch (type) {
-    case AppStrings.userStatusOnline:
+    case AppConstants.userStatusOnline:
       return "موجود";
-    case AppStrings.userStatusAway:
+    case AppConstants.userStatusAway:
       return "في الخارج";
   }
   return type;
@@ -102,15 +102,15 @@ String getUserStatusFromEnum(String type) {
 
 String getInvTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.invoiceTypeSales:
+    case AppConstants.invoiceTypeSales:
       return "بيع";
-    case AppStrings.invoiceTypeBuy:
+    case AppConstants.invoiceTypeBuy:
       return "شراء";
-    case AppStrings.invoiceTypeAdd:
+    case AppConstants.invoiceTypeAdd:
       return "إدخال";
-    case AppStrings.invoiceTypeChange:
+    case AppConstants.invoiceTypeChange:
       return "مناقلة";
-    case AppStrings.invoiceTypeSalesWithPartner:
+    case AppConstants.invoiceTypeSalesWithPartner:
       return "مبيعات مع نسبة شريك";
   }
   return type;
@@ -118,9 +118,9 @@ String getInvTypeFromEnum(String type) {
 
 String getChequeTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.chequeTypeCatch:
+    case AppConstants.chequeTypeCatch:
       return "شيك قبض";
-    case AppStrings.chequeTypePay:
+    case AppConstants.chequeTypePay:
       return "شيك دفع";
   }
   return type;
@@ -140,15 +140,15 @@ List<String> getDatesBetween(DateTime startDate, DateTime endDate) {
 
 String getBondTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.bondTypeDaily:
+    case AppConstants.bondTypeDaily:
       return "سند يومية";
-    case AppStrings.bondTypeDebit:
+    case AppConstants.bondTypeDebit:
       return "سند دفع";
-    case AppStrings.bondTypeCredit:
+    case AppConstants.bondTypeCredit:
       return "سند قبض";
-    case AppStrings.bondTypeStart:
+    case AppConstants.bondTypeStart:
       return "قيد افتتاحي";
-    case AppStrings.bondTypeInvoice:
+    case AppConstants.bondTypeInvoice:
       return "سند قيد";
   }
 
@@ -158,15 +158,15 @@ String getBondTypeFromEnum(String type) {
 String getBondEnumFromType(String type) {
   switch (type) {
     case "سند يومية":
-      return AppStrings.bondTypeDaily;
+      return AppConstants.bondTypeDaily;
     case "سند دفع":
-      return AppStrings.bondTypeDebit;
+      return AppConstants.bondTypeDebit;
     case "سند قبض":
-      return AppStrings.bondTypeCredit;
+      return AppConstants.bondTypeCredit;
     case "قيد افتتاحي":
-      return AppStrings.bondTypeStart;
+      return AppConstants.bondTypeStart;
     case "سند قيد":
-      return AppStrings.bondTypeInvoice;
+      return AppConstants.bondTypeInvoice;
   }
 
   return type;
@@ -174,9 +174,9 @@ String getBondEnumFromType(String type) {
 
 String getProductTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.productTypeService:
+    case AppConstants.productTypeService:
       return "مواد خدمية";
-    case AppStrings.productTypeStore:
+    case AppConstants.productTypeStore:
       return "مواد مستودعية";
   }
   return type;
@@ -194,11 +194,11 @@ String getPatTypeFromId(String id) {
 
 String getAccountTypeFromEnum(String type) {
   switch (type) {
-    case AppStrings.accountTypeDefault:
+    case AppConstants.accountTypeDefault:
       return "حساب عادي";
-    case AppStrings.accountTypeFinalAccount:
+    case AppConstants.accountTypeFinalAccount:
       return "حساب ختامي";
-    case AppStrings.accountTypeAggregateAccount:
+    case AppConstants.accountTypeAggregateAccount:
       return "حساب تجميعي";
     // case Const.accountTypeChequeCatch:
     //   return "حساب شيكات قبض";
@@ -212,11 +212,11 @@ String getAccountTypeFromEnum(String type) {
 
 String getChequeStatusFromEnum(String type) {
   switch (type) {
-    case AppStrings.chequeStatusPaid:
+    case AppConstants.chequeStatusPaid:
       return "تم الدفع";
-    case AppStrings.chequeStatusNotPaid:
+    case AppConstants.chequeStatusNotPaid:
       return "لم يتم الدفع";
-    case AppStrings.chequeStatusNotAllPaid:
+    case AppConstants.chequeStatusNotAllPaid:
       return "تم الدفع جزئبا";
   }
   return "error";
@@ -232,15 +232,15 @@ double getVatFromName(text) {
 
 String getRoleNameFromEnum(String type) {
   switch (type) {
-    case AppStrings.roleUserRead:
+    case AppConstants.roleUserRead:
       return "القراءة";
-    case AppStrings.roleUserWrite:
+    case AppConstants.roleUserWrite:
       return "الكتابة";
-    case AppStrings.roleUserUpdate:
+    case AppConstants.roleUserUpdate:
       return "التعديل";
-    case AppStrings.roleUserDelete:
+    case AppConstants.roleUserDelete:
       return "الحذف";
-    case AppStrings.roleUserAdmin:
+    case AppConstants.roleUserAdmin:
       return "الإدارة";
   }
   return "error";
@@ -248,45 +248,45 @@ String getRoleNameFromEnum(String type) {
 
 String getPageNameFromEnum(String type) {
   switch (type) {
-    case AppStrings.roleViewInvoice:
+    case AppConstants.roleViewInvoice:
       return "الفواتير";
-    case AppStrings.roleViewBond:
+    case AppConstants.roleViewBond:
       return "السندات";
-    case AppStrings.roleViewAccount:
+    case AppConstants.roleViewAccount:
       return "الحسابات";
-    case AppStrings.roleViewProduct:
+    case AppConstants.roleViewProduct:
       return "المواد";
-    case AppStrings.roleViewStore:
+    case AppConstants.roleViewStore:
       return "المستودعات";
-    case AppStrings.roleViewPattern:
+    case AppConstants.roleViewPattern:
       return "انماط البيع";
-    case AppStrings.roleViewCheques:
+    case AppConstants.roleViewCheques:
       return "الشيكات";
-    case AppStrings.roleViewSeller:
+    case AppConstants.roleViewSeller:
       return "البائعون";
-    case AppStrings.roleViewReport:
+    case AppConstants.roleViewReport:
       return "تقارير المبيعات";
-    case AppStrings.roleViewImport:
+    case AppConstants.roleViewImport:
       return "استيراد المعلومات";
-    case AppStrings.roleViewTarget:
+    case AppConstants.roleViewTarget:
       return "التارغت";
-    case AppStrings.roleViewTask:
+    case AppConstants.roleViewTask:
       return "التاسكات";
-    case AppStrings.roleViewInventory:
+    case AppConstants.roleViewInventory:
       return "الجرد";
-    case AppStrings.roleViewUserManagement:
+    case AppConstants.roleViewUserManagement:
       return "إدارة المستخدمين";
-    case AppStrings.roleViewDue:
+    case AppConstants.roleViewDue:
       return "الاستحقاق";
-    case AppStrings.roleViewStatistics:
+    case AppConstants.roleViewStatistics:
       return "التقارير";
-    case AppStrings.roleViewTimer:
+    case AppConstants.roleViewTimer:
       return "المؤقت";
-    case AppStrings.roleViewDataBase:
+    case AppConstants.roleViewDataBase:
       return "ادارة قواعد البيانات";
-    case AppStrings.roleViewCard:
+    case AppConstants.roleViewCard:
       return "ادارة البطاقات";
-    case AppStrings.roleViewHome:
+    case AppConstants.roleViewHome:
       return "الصفحة الرئيسية";
   }
   return "error";
@@ -294,15 +294,15 @@ String getPageNameFromEnum(String type) {
 
 String getNameOfRoleFromEnum(String type) {
   switch (type) {
-    case AppStrings.roleUserRead:
+    case AppConstants.roleUserRead:
       return "قراءة البيانات";
-    case AppStrings.roleUserWrite:
+    case AppConstants.roleUserWrite:
       return "كتابة البيانات";
-    case AppStrings.roleUserUpdate:
+    case AppConstants.roleUserUpdate:
       return "تعديل البيانات";
-    case AppStrings.roleUserDelete:
+    case AppConstants.roleUserDelete:
       return "حذف البيانات";
-    case AppStrings.roleUserAdmin:
+    case AppConstants.roleUserAdmin:
       return "إدارة البيانات";
   }
   return type;
@@ -409,9 +409,9 @@ DateTime getDueDate(String invTyp) {
   DateTime dueDate = DateTime.now();
 
   switch (invTyp) {
-    case AppStrings.tabbySales:
+    case AppConstants.tabbySales:
       dueDate = getNextMonday();
-    case AppStrings.stripSales:
+    case AppConstants.stripSales:
       dueDate = DateTime.now().copyWith(day: dueDate.day + 5);
   }
 
@@ -422,11 +422,11 @@ bool getInvIsPay(String invTyp) {
   bool isPay = true;
 
   switch (invTyp) {
-    case AppStrings.invoiceTypeBuy:
+    case AppConstants.invoiceTypeBuy:
       isPay = false;
-    case AppStrings.invoiceTypeSales:
+    case AppConstants.invoiceTypeSales:
       isPay = true;
-    case AppStrings.invoiceTypeSalesWithPartner:
+    case AppConstants.invoiceTypeSalesWithPartner:
       isPay = false;
     default:
       isPay = true;

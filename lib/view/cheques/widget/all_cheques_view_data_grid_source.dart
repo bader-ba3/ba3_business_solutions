@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -17,25 +17,25 @@ class AllChequesViewDataGridSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => cheqMap.entries.where(
         (element) {
-          return element.value.cheqStatus == AppStrings.chequeStatusNotPaid;
+          return element.value.cheqStatus == AppConstants.chequeStatusNotPaid;
         },
       ).map<DataGridRow>((entry) {
         String cheqId = entry.key;
         GlobalModel cheque = entry.value;
         return DataGridRow(cells: [
           DataGridCell<String>(
-              columnName: AppStrings.rowViewCheqId, value: cheqId),
+              columnName: AppConstants.rowViewCheqId, value: cheqId),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewChequeStatus,
+              columnName: AppConstants.rowViewChequeStatus,
               value: getChequeStatusFromEnum(cheque.cheqStatus ?? "")),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewChequePrimeryAccount,
+              columnName: AppConstants.rowViewChequePrimeryAccount,
               value: getAccountNameFromId(cheque.cheqPrimeryAccount)),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewChequeSecoundryAccount,
+              columnName: AppConstants.rowViewChequeSecoundryAccount,
               value: getAccountNameFromId(cheque.cheqSecoundryAccount)),
           DataGridCell<String>(
-              columnName: AppStrings.rowViewChequeAllAmount,
+              columnName: AppConstants.rowViewChequeAllAmount,
               value: cheque.cheqAllAmount),
         ]);
       }).toList();

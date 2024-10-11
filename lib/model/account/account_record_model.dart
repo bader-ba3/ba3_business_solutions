@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 
 import '../../core/helper/functions/functions.dart';
 
@@ -48,7 +48,7 @@ class AccountRecordModel {
 
   Map<String, dynamic> toMap({required String type}) {
     switch (type) {
-      case AppStrings.typeAccountView:
+      case AppConstants.typeAccountView:
         return {
           "id": id,
           "رقم": code,
@@ -64,7 +64,7 @@ class AccountRecordModel {
           "الحساب بعد العملية": subBalance?.toStringAsFixed(2),
           "القيمة": double.parse(total!).toStringAsFixed(2),
         };
-      case AppStrings.typeAccountDueView:
+      case AppConstants.typeAccountDueView:
         return {
           "id": id,
           "رقم": code,

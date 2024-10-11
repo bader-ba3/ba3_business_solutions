@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_constants.dart';
 import '../../model/inventory/inventory_model.dart';
 import '../../model/product/product_model.dart';
 
@@ -12,7 +12,7 @@ class InventoryViewModel extends GetxController {
 
   InventoryViewModel() {
     FirebaseFirestore.instance
-        .collection(AppStrings.inventoryCollection)
+        .collection(AppConstants.inventoryCollection)
         .snapshots()
         .listen((event) {
       allInventory.clear();

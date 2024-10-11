@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -18,7 +18,7 @@ class _DatePickerState extends State<DatePicker> {
   Widget build(BuildContext context) {
     DateTime? date;
     return Container(
-      height: AppStrings.constHeightTextField,
+      height: AppConstants.constHeightTextField,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),

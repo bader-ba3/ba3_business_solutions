@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
-import 'package:ba3_business_solutions/core/constants/app_strings.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../../../controller/account/account_view_model.dart';
 import '../../../controller/global/global_view_model.dart';
 import '../../../controller/user/user_management_model.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/widgets/CustomWindowTitleBar.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../../model/account/account_model.dart';
 import '../../../model/bond/bond_record_model.dart';
@@ -58,7 +58,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
 
   void initPage() {
     bondController.initCodeList(
-        widget.isDebit ? AppStrings.bondTypeDebit : AppStrings.bondTypeCredit);
+        widget.isDebit ? AppConstants.bondTypeDebit : AppConstants.bondTypeCredit);
     if (widget.oldId != null || widget.oldBondModel != null) {
       print("init");
       bondController.tempBondModel = GlobalModel.fromJson(
@@ -85,11 +85,11 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
       bondController.bondModel = getBondData();
       isNew = true;
       bondController.tempBondModel.bondType =
-          widget.isDebit ? AppStrings.bondTypeDebit : AppStrings.bondTypeCredit;
+          widget.isDebit ? AppConstants.bondTypeDebit : AppConstants.bondTypeCredit;
       newCodeController.text = bondController.getNextBondCode(
           type: widget.isDebit
-              ? AppStrings.bondTypeDebit
-              : AppStrings.bondTypeCredit);
+              ? AppConstants.bondTypeDebit
+              : AppConstants.bondTypeCredit);
       bondController.tempBondModel.bondCode = newCodeController.text;
     }
     defualtCode = bondController.tempBondModel.bondCode!;
@@ -117,8 +117,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                     title: Text(
                         "${bondController.bondModel.bondCode ?? "سند جديد"} ${getBondTypeFromEnum(bondController.tempBondModel.bondType.toString())}"),
                     // leading: const BackButton(),
-                    actions: !checkPermission(AppStrings.roleUserAdmin,
-                            AppStrings.roleViewInvoice)
+                    actions: !checkPermission(AppConstants.roleUserAdmin,
+                            AppConstants.roleViewInvoice)
                         ? []
                         : isNew
                             ? [
@@ -290,8 +290,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                         confirmDeleteWidget().then((value) {
                                           if (value) {
                                             checkPermissionForOperation(
-                                                    AppStrings.roleUserDelete,
-                                                    AppStrings.roleViewBond)
+                                                    AppConstants.roleUserDelete,
+                                                    AppConstants.roleViewBond)
                                                 .then((value) async {
                                               if (value) {
                                                 globalController.deleteGlobal(
@@ -438,22 +438,22 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                     columns: <GridColumn>[
                                       GridColumnItem(
                                           label: "الرمز التسلسلي",
-                                          name: AppStrings.rowBondId),
+                                          name: AppConstants.rowBondId),
                                       GridColumnItem(
                                           label: 'الحساب',
-                                          name: AppStrings.rowBondAccount),
+                                          name: AppConstants.rowBondAccount),
                                       widget.isDebit
                                           ? GridColumnItem(
                                               label: ' مدين',
                                               name:
-                                                  AppStrings.rowBondDebitAmount)
+                                                  AppConstants.rowBondDebitAmount)
                                           : GridColumnItem(
                                               label: ' دائن',
-                                              name: AppStrings
+                                              name: AppConstants
                                                   .rowBondCreditAmount),
                                       GridColumnItem(
                                           label: "البيان",
-                                          name: AppStrings.rowBondDescription),
+                                          name: AppConstants.rowBondDescription),
                                     ],
                                   );
                                 });
@@ -521,7 +521,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             bondController.tempBondModel.bondRecord
                                 ?.forEach((element) {
                               if (bondController.tempBondModel.bondType ==
-                                  AppStrings.bondTypeDebit) {
+                                  AppConstants.bondTypeDebit) {
                                 total += element.bondRecDebitAmount ?? 0;
                               } else {
                                 total += element.bondRecCreditAmount ?? 0;
@@ -543,8 +543,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             if (isNew) {
                               if (validate2 == null) {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserWrite,
-                                        AppStrings.roleViewBond)
+                                        AppConstants.roleUserWrite,
+                                        AppConstants.roleViewBond)
                                     .then((value) async {
                                   if (value) {
                                     print(bondController
@@ -565,8 +565,8 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             } else if (controller.bondModel.originId == null) {
                               if (validate2 == null) {
                                 checkPermissionForOperation(
-                                        AppStrings.roleUserUpdate,
-                                        AppStrings.roleViewBond)
+                                        AppConstants.roleUserUpdate,
+                                        AppConstants.roleViewBond)
                                     .then((value) async {
                                   if (value) {
                                     GlobalModel temp = GlobalModel.fromJson(
@@ -607,7 +607,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
 
   GridColumn GridColumnItem({required label, name}) {
     return GridColumn(
-        allowEditing: name == AppStrings.rowBondId ? false : true,
+        allowEditing: name == AppConstants.rowBondId ? false : true,
         columnName: name,
         label: Container(
             padding: const EdgeInsets.all(16.0),

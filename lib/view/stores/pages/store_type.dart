@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/stores/pages/all_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class StoreType extends StatefulWidget {
   const StoreType({super.key});
@@ -32,7 +32,7 @@ class _StoreTypeState extends State<StoreType> {
             }),
             Item("معاينة المستودعات", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewStore)
+                      AppConstants.roleUserRead, AppConstants.roleViewStore)
                   .then((value) {
                 if (value) Get.to(() => const AllStore());
               });

@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/patterns/pages/pattern_details.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_constants.dart';
 
 class PatternType extends StatefulWidget {
   const PatternType({super.key});
@@ -32,7 +32,7 @@ class _PatternTypeState extends State<PatternType> {
             }),
             Item("معاينة الانماط", () {
               checkPermissionForOperation(
-                      AppStrings.roleUserRead, AppStrings.roleViewPattern)
+                      AppConstants.roleUserRead, AppConstants.roleViewPattern)
                   .then((value) {
                 if (value) Get.to(() => const AllPattern());
               });
