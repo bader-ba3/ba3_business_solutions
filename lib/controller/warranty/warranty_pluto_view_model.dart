@@ -17,7 +17,7 @@ class WarrantyPlutoViewModel extends GetxController {
     return columns;
   }
 
-  updateInvoiceValuesByTotal(double? total, int? quantity) {}
+  updateInvoiceValues(double? total, int? quantity) {}
 
   getPrice({type, prodName}) {}
 

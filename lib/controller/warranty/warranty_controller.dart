@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ba3_business_solutions/controller/warranty/warranty_pluto_view_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +12,30 @@ import '../../model/warranty/warranty_model.dart';
 import '../global/changes_view_model.dart';
 import '../user/user_management_model.dart';
 
-class WarrantyViewModel extends GetxController {
+class WarrantyController extends GetxController {
   Map<String, WarrantyModel> warrantyMap = {};
 
-  WarrantyViewModel() {
+  WarrantyController() {
     for (var element in HiveDataBase.warrantyModelBox.values) {
       warrantyMap[element.invId!] = element;
       print(element.toJson());
+    }
+  }
+
+  late String billId;
+
+  @override
+  void onInit() {
+    log('WarrantyController onInit ${Get.arguments}');
+    super.onInit();
+
+    billId = Get.arguments as String;
+    if (billId != "1") {
+      buildInvInit(billId);
+      Get.find<WarrantyPlutoViewModel>()
+          .getRows(warrantyMap[billId]?.invRecords?.toList() ?? []);
+    } else {
+      getInit();
     }
   }
 
@@ -81,6 +100,7 @@ class WarrantyViewModel extends GetxController {
     } else {
       invCodeController.text = "1";
     }
+    initModel = WarrantyModel();
     isNew = true;
     mobileNumberController = TextEditingController();
     customerNameController = TextEditingController();
@@ -110,6 +130,7 @@ class WarrantyViewModel extends GetxController {
         }
       }
     } else {
+      print('inv ${inv.map((e) => e.toJson()).toList()}');
       if (currentPosition < inv.length - 1) {
         buildInvInit(inv[currentPosition + 1].invId!);
       }

@@ -5,50 +5,29 @@ import 'package:pluto_grid/pluto_grid.dart';
 import '../../../controller/invoice/invoice_view_model.dart';
 import '../../../controller/print/print_view_model.dart';
 import '../../../controller/user/user_management_model.dart';
-import '../../../controller/warranty/warranty_view_model.dart';
+import '../../../controller/warranty/warranty_controller.dart';
+import '../../../controller/warranty/warranty_pluto_view_model.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/widgets/custom_pluto_short_cut.dart';
-import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/shared/widgets/custom_pluto_with_edite.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/shared/widgets/get_product_enter_short_cut.dart';
-import '../../../controller/warranty/warranty_pluto_view_model.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../../core/utils/date_picker.dart';
 import '../../../model/global/global_model.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
-class WarrantyInvoiceView extends StatefulWidget {
-  const WarrantyInvoiceView({super.key, required this.billId});
-
-  final String billId;
-
-  @override
-  State<WarrantyInvoiceView> createState() => _WarrantyInvoiceViewState();
-}
-
-class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
-  WarrantyViewModel invoiceController = Get.find<WarrantyViewModel>();
-  WarrantyPlutoViewModel plutoEditViewModel =
-      Get.find<WarrantyPlutoViewModel>();
-  List<String> codeInvList = [];
-
-  @override
-  void initState() {
-    if (widget.billId != "1") {
-      invoiceController.buildInvInit(widget.billId);
-      plutoEditViewModel.getRows(
-          invoiceController.warrantyMap[widget.billId]?.invRecords?.toList() ??
-              []);
-    } else {
-      invoiceController.getInit();
-    }
-
-    super.initState();
-  }
+class WarrantyInvoiceView extends StatelessWidget {
+  const WarrantyInvoiceView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    WarrantyController invoiceController = Get.find<WarrantyController>();
+
+    WarrantyPlutoViewModel plutoEditViewModel =
+        Get.find<WarrantyPlutoViewModel>();
+
     return Column(
       children: [
         const CustomWindowTitleBar(),
@@ -70,7 +49,7 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                         size: 16,
                       )),
                 ),
-                title: Text(widget.billId == "1"
+                title: Text(invoiceController.billId == "1"
                     ? "فاتورة الضمان"
                     : "تفاصيل فاتورة الضمان"),
                 actions: [
@@ -101,7 +80,6 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                                   invoiceController.invNextOrPrev(
                                       invoiceController.invCodeController.text,
                                       true);
-                                  setState(() {});
                                 },
                                 icon: const Icon(
                                     Icons.keyboard_double_arrow_right)),
@@ -138,7 +116,7 @@ class _WarrantyInvoiceViewState extends State<WarrantyInvoiceView> {
                   ),
                 ],
               ),
-              body: GetBuilder<WarrantyViewModel>(builder: (controller) {
+              body: GetBuilder<WarrantyController>(builder: (controller) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
