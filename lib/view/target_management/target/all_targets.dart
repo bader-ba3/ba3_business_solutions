@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/sellers/pages/seller_targets.dart';
 import 'package:flutter/material.dart';
@@ -24,53 +24,40 @@ class AllTargets extends StatelessWidget {
               ? const Center(
                   child: Text("لا يوجد التارغتات بعد"),
                 )
-              : GetBuilder<TargetViewModel>(builder: (targetViewModel) {
+              : GetBuilder<TargetController>(builder: (targetViewModel) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListView.builder(
                       itemCount: controller.allSellers.values.length,
                       itemBuilder: (context, index) {
-                        SellerModel sellerModel =
-                            controller.allSellers.values.toList()[index];
-                        ({
-                          double mobileTotal,
-                          double otherTotal,
-                          Map<String, int> productsMap
-                        }) sellerData =
+                        SellerModel sellerModel = controller.allSellers.values.toList()[index];
+                        ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) sellerData =
                             targetViewModel.checkTask(sellerModel.sellerId!);
                         int allTask = 0;
                         bool isHitTarget = false;
-                        for (TaskModel model
-                            in targetViewModel.allTarget.values.toList()) {
-                          int count =
-                              sellerData.productsMap[model.taskProductId!] ?? 0;
+                        for (TaskModel model in targetViewModel.allTarget.values.toList()) {
+                          int count = sellerData.productsMap[model.taskProductId!] ?? 0;
                           bool isDone = count >= model.taskQuantity!;
                           if (isDone) allTask++;
                         }
                         if (allTask == targetViewModel.allTarget.length &&
-                            sellerData.otherTotal >
-                                AppConstants.minMobileTarget &&
-                            sellerData.mobileTotal >
-                                AppConstants.minOtherTarget) {
+                            sellerData.otherTotal > AppConstants.minMobileTarget &&
+                            sellerData.mobileTotal > AppConstants.minOtherTarget) {
                           isHitTarget = true;
                         }
                         return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SellerTarget(
-                                    sellerId: sellerModel.sellerId!));
+                                Get.to(() => SellerTarget(sellerId: sellerModel.sellerId!));
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.15), borderRadius: BorderRadius.circular(10)),
                                 height: 140,
                                 width: 140,
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Row(
                                       children: [
@@ -83,35 +70,24 @@ class AllTargets extends StatelessWidget {
                                         ),
                                         Text(
                                           sellerModel.sellerName ?? "",
-                                          style: const TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                        "تارغيت الجوالات: ${sellerData.mobileTotal}",
-                                        style: const TextStyle(fontSize: 18)),
-                                    Text(
-                                        "تارغيت الاكسسوارات: ${sellerData.otherTotal.toStringAsFixed(2)}",
-                                        style: const TextStyle(fontSize: 18)),
+                                    Text("تارغيت الجوالات: ${sellerData.mobileTotal}", style: const TextStyle(fontSize: 18)),
+                                    Text("تارغيت الاكسسوارات: ${sellerData.otherTotal.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18)),
                                     Text(
                                         "التاسكات المنفذة: ${allTask.toInt()} من أصل ${targetViewModel.allTarget.values.where((e) => e.taskSellerListId.contains(sellerModel.sellerId) && e.isTaskAvailable!).length}",
                                         style: const TextStyle(fontSize: 18)),
                                     Row(
                                       children: [
-                                        const Text("حقق التارغيت:",
-                                            style: TextStyle(fontSize: 18)),
+                                        const Text("حقق التارغيت:", style: TextStyle(fontSize: 18)),
                                         const SizedBox(
                                           width: 5,
                                         ),
                                         Icon(
-                                          isHitTarget
-                                              ? Icons.check
-                                              : Icons.cancel,
-                                          color: isHitTarget
-                                              ? Colors.green
-                                              : Colors.red,
+                                          isHitTarget ? Icons.check : Icons.cancel,
+                                          color: isHitTarget ? Colors.green : Colors.red,
                                         ),
                                       ],
                                     )

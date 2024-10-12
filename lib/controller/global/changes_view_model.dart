@@ -65,10 +65,10 @@ class ChangesViewModel extends GetxController {
             AccountViewModel accountViewModel = Get.find<AccountViewModel>();
             accountViewModel.removeAccountFromMemory(element.data());
           } else if (element['changeType'] == AppConstants.storeCollection) {
-            StoreViewModel storeViewModel = Get.find<StoreViewModel>();
+            StoreController storeViewModel = Get.find<StoreController>();
             storeViewModel.addStoreToMemory(element.data());
           } else if (element['changeType'] == "remove_${AppConstants.storeCollection}") {
-            StoreViewModel storeViewModel = Get.find<StoreViewModel>();
+            StoreController storeViewModel = Get.find<StoreController>();
             storeViewModel.removeStoreFromMemory(element.data());
           } else if (element['changeType'] == AppConstants.bondsCollection) {
             GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
@@ -102,17 +102,13 @@ class ChangesViewModel extends GetxController {
   }
 
   String getLastChangesIndexWithPad() {
-    return generateId(RecordType
-        .changes) /*(HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0")*/;
+    return generateId(RecordType.changes) /*(HiveDataBase.lastChangesIndexBox.get("lastChangesIndex")! + 1).toString().padLeft(padWidth, "0")*/;
   }
 
   addChangeToChanges(Map json, changeType) async {
     String lastChangesIndex = getLastChangesIndexWithPad();
     print(lastChangesIndex);
-    await FirebaseFirestore.instance
-        .collection(AppConstants.changesCollection)
-        .doc(lastChangesIndex)
-        .set({
+    await FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(lastChangesIndex).set({
       "ali": true,
       "changeType": changeType,
       "changeId": lastChangesIndex,
@@ -127,11 +123,7 @@ class ChangesViewModel extends GetxController {
     await FirebaseFirestore.instance
         .collection(AppConstants.changesCollection)
         .doc(lastChangesIndex)
-        .set({
-      "changeType": "remove_" + changeType,
-      "changeId": lastChangesIndex,
-      ...json
-    });
+        .set({"changeType": "remove_" + changeType, "changeId": lastChangesIndex, ...json});
     // FirebaseFirestore.instance.collection(Const.settingCollection).doc("data").update({"lastChangesIndex": Random.secure().nextInt(999999999)});
   }
 }

@@ -1,38 +1,14 @@
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
-import 'package:ba3_business_solutions/model/store/store_model.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/app_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
-class AddStore extends StatefulWidget {
-  final String? oldKey;
-
-  const AddStore({super.key, this.oldKey});
-
-  @override
-  State<AddStore> createState() => _AddStoreState();
-}
-
-class _AddStoreState extends State<AddStore> {
-  var nameController = TextEditingController();
-  var codeController = TextEditingController();
-  StoreViewModel storeController = Get.find<StoreViewModel>();
-
-  @override
-  void initState() {
-    if (widget.oldKey == null) {
-      storeController.editStoreModel = StoreModel();
-    } else {
-      storeController.editStoreModel = StoreModel.fromJson(
-          storeController.storeMap[widget.oldKey]!.toFullJson());
-      nameController.text = storeController.editStoreModel?.stName ?? "";
-      codeController.text = storeController.editStoreModel?.stCode ?? "";
-    }
-    super.initState();
-  }
+class AddStore extends StatelessWidget {
+  const AddStore({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +20,11 @@ class _AddStoreState extends State<AddStore> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(15),
-          child: GetBuilder<StoreViewModel>(builder: (storeController) {
+          child: GetBuilder<StoreController>(builder: (storeController) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 75,
-                ),
-                // Container(
-                //   width: Get.width * 0.5,
-                //   margin: const EdgeInsets.symmetric(horizontal: 15),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //     children: [const Flexible(flex: 2, child: Text("رمز المستودع :")), Text(storeController.editStoreModel?.stId ?? "new Store")],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 75,
-                // ),
+                const VerticalSpace(75),
                 Row(
                   children: [
                     Flexible(
@@ -69,12 +32,11 @@ class _AddStoreState extends State<AddStore> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Flexible(
-                              flex: 2, child: Text("اسم المستودع :")),
+                          const Flexible(flex: 2, child: Text("اسم المستودع :")),
                           Flexible(
                               flex: 3,
                               child: CustomTextFieldWithoutIcon(
-                                  controller: nameController,
+                                  controller: storeController.nameController,
                                   onChanged: (_) {
                                     storeController.editStoreModel?.stName = _;
                                   })),
@@ -86,12 +48,11 @@ class _AddStoreState extends State<AddStore> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Flexible(
-                              flex: 2, child: Text("رمز المستودع :")),
+                          const Flexible(flex: 2, child: Text("رمز المستودع :")),
                           Flexible(
                               flex: 3,
                               child: CustomTextFieldWithoutIcon(
-                                  controller: codeController,
+                                  controller: storeController.codeController,
                                   onChanged: (_) {
                                     storeController.editStoreModel?.stCode = _;
                                   })),
@@ -100,37 +61,29 @@ class _AddStoreState extends State<AddStore> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
+                const VerticalSpace(25),
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
                         style: ButtonStyle(
-                          foregroundColor:
-                              WidgetStateProperty.all<Color>(Colors.black),
+                          foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                         ),
                         onPressed: () {
-                          nameController.clear();
-                          codeController.clear();
+                          storeController.nameController.clear();
+                          storeController.codeController.clear();
                           storeController.clearController();
                         },
                         child: const Text("إفراغ")),
                     if (storeController.editStoreModel?.stId != null)
                       ElevatedButton(
                           style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.black),
+                            foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                           ),
                           onPressed: () {
-                            if (nameController.text.isNotEmpty &&
-                                codeController.text.isNotEmpty) {
-                              checkPermissionForOperation(
-                                      AppConstants.roleUserUpdate,
-                                      AppConstants.roleViewStore)
-                                  .then((value) {
+                            if (storeController.nameController.text.isNotEmpty && storeController.codeController.text.isNotEmpty) {
+                              checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewStore).then((value) {
                                 if (value) {
                                   storeController.editStore();
                                 }
@@ -143,32 +96,21 @@ class _AddStoreState extends State<AddStore> {
                     else
                       ElevatedButton(
                           style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.black),
+                            foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                           ),
                           onPressed: () {
-                            if (nameController.text.isNotEmpty &&
-                                codeController.text.isNotEmpty) {
-                              checkPermissionForOperation(
-                                      AppConstants.roleUserWrite,
-                                      AppConstants.roleViewStore)
-                                  .then((value) {
+                            if (storeController.nameController.text.isNotEmpty && storeController.codeController.text.isNotEmpty) {
+                              checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewStore).then((value) {
                                 if (value) storeController.addNewStore();
                               });
                             } else {
                               Get.snackbar("خطأ", "يرجى ملئ البيانات");
                             }
-
-                            // storeController.clearController();
-                            // storeController.getNewCode();
                           },
                           child: const Text("إنشاء")),
-                    // if (storeController.editStoreModel?.stId != null)
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const VerticalSpace(50),
               ],
             );
           }),

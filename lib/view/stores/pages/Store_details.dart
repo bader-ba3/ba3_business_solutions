@@ -13,10 +13,10 @@ class StoreDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StoreViewModel storeViewModel = Get.find<StoreViewModel>();
+    StoreController storeViewModel = Get.find<StoreController>();
     RxMap<String, StoreRecordView> data = storeViewModel.allData.obs;
     storeViewModel.initStorePage(oldKey);
-    return GetBuilder<StoreViewModel>(builder: (controller) {
+    return GetBuilder<StoreController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع الحركات ${storeViewModel.storeMap[oldKey]!.stName}",
         onLoaded: (e) {},

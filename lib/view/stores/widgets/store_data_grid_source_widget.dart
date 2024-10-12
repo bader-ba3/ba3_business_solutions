@@ -4,20 +4,18 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../core/constants/app_constants.dart';
 
-class StoreRecordDataSource extends DataGridSource {
+class StoreDataGridSourceWidget extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
 
-  StoreRecordDataSource({required Map<String, StoreModel> stores}) {
+  StoreDataGridSourceWidget({required Map<String, StoreModel> stores}) {
     dataGridRows.clear();
     dataGridRows = stores.values
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: "stId", value: e.stId),
-              DataGridCell<String>(
-                  columnName: AppConstants.stCode, value: e.stCode),
-              DataGridCell<String>(
-                  columnName: AppConstants.stName, value: e.stName),
+              DataGridCell<String>(columnName: AppConstants.stCode, value: e.stCode),
+              DataGridCell<String>(columnName: AppConstants.stName, value: e.stName),
             ]))
         .toList();
   }
@@ -51,10 +49,7 @@ class StoreRecordDataSource extends DataGridSource {
 
   @override
   Widget? buildTableSummaryCellWidget(
-      GridTableSummaryRow summaryRow,
-      GridSummaryColumn? summaryColumn,
-      RowColumnIndex rowColumnIndex,
-      String summaryValue) {
+      GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn, RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: Text(summaryValue),
@@ -63,8 +58,7 @@ class StoreRecordDataSource extends DataGridSource {
 
   // description
   @override
-  Future<bool> canSubmitCell(DataGridRow dataGridRow,
-      RowColumnIndex rowColumnIndex, GridColumn column) async {
+  Future<bool> canSubmitCell(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
     // Return false, to retain in edit mode.
     return false; // or super.canSubmitCell(dataGridRow, rowColumnIndex, column);
   }
@@ -86,9 +80,9 @@ class StoreRecordDataSource extends DataGridSource {
   }
 
   dynamic getValueByColumnName(DataGridRow row, String columnName) {
-    final cell = row.getCells().firstWhere(
-        (element) => element.columnName == columnName,
-        orElse: () => DataGridCell<String>(columnName: columnName, value: ''));
+    final cell = row
+        .getCells()
+        .firstWhere((element) => element.columnName == columnName, orElse: () => DataGridCell<String>(columnName: columnName, value: ''));
     return cell.value;
   }
 }

@@ -3,17 +3,12 @@ import 'package:ba3_business_solutions/view/target_management/task/task_manageme
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
+import '../../../core/constants/app_constants.dart';
 
-class TargetManagementType extends StatefulWidget {
+class TargetManagementType extends StatelessWidget {
   const TargetManagementType({super.key});
 
-  @override
-  State<TargetManagementType> createState() => _TargetManagementTypeState();
-}
-
-class _TargetManagementTypeState extends State<TargetManagementType> {
   @override
   Widget build(BuildContext context) {
     return Directionality(

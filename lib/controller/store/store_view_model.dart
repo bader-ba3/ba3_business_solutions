@@ -7,7 +7,7 @@ import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/model/store/store_model.dart';
-import 'package:ba3_business_solutions/view/stores/widgets/store_dataSource.dart';
+import 'package:ba3_business_solutions/view/stores/widgets/store_data_grid_source_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -17,9 +17,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../model/store/store_record_model.dart';
 
-class StoreViewModel extends GetxController {
-  final CollectionReference _storeCollectionRef =
-      FirebaseFirestore.instance.collection(AppConstants.storeCollection);
+class StoreController extends GetxController {
+  final CollectionReference _storeCollectionRef = FirebaseFirestore.instance.collection(AppConstants.storeCollection);
 
   RxMap<String, StoreModel> storeMap = <String, StoreModel>{}.obs;
 
@@ -29,34 +28,44 @@ class StoreViewModel extends GetxController {
 
   StoreModel? editStoreModel;
 
-  StoreViewModel() {
+  var nameController = TextEditingController();
+  var codeController = TextEditingController();
+
+  StoreController() {
     getAllStore();
   }
 
+  initStore([String? key]) {
+    if (key == null) {
+      nameController.clear();
+      codeController.clear();
+      editStoreModel = StoreModel();
+    } else {
+      editStoreModel = StoreModel.fromJson(storeMap[key]!.toFullJson());
+      nameController.text = editStoreModel?.stName ?? "";
+      codeController.text = editStoreModel?.stCode ?? "";
+    }
+  }
+
   String? openedStore;
-  StoreRecordDataSource? recordViewDataSource;
+  StoreDataGridSourceWidget? storeDataGridSource;
 
   void initGlobalStore(GlobalModel globalModel) {
     Map<String, StoreRecProductModel> allRecTotal = {};
     Map<String, StoreRecProductModel> allRecTotal2 = {};
 
     if (globalModel.invType != AppConstants.invoiceTypeChange) {
-      bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy ||
-          globalModel.invType == AppConstants.invoiceTypeAdd;
+      bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
       int correctQuantity = isPay ? 1 : -1;
       Map<String, int> allRecTotalProduct = {};
 
       for (int i = 0; i < globalModel.invRecords!.length; i++) {
         if (globalModel.invRecords![i].invRecId != null) {
-          if (allRecTotalProduct[globalModel.invRecords![i].invRecProduct] ==
-              null) {
-            allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] =
-                ((globalModel.invRecords![i].invRecQuantity ?? 1));
+          if (allRecTotalProduct[globalModel.invRecords![i].invRecProduct] == null) {
+            allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ((globalModel.invRecords![i].invRecQuantity ?? 1));
           } else {
             allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] =
-                ((globalModel.invRecords![i].invRecQuantity ?? 1)) +
-                    allRecTotalProduct[
-                        globalModel.invRecords![i].invRecProduct!]!;
+                ((globalModel.invRecords![i].invRecQuantity ?? 1)) + allRecTotalProduct[globalModel.invRecords![i].invRecProduct!]!;
           }
         }
       }
@@ -75,65 +84,44 @@ class StoreViewModel extends GetxController {
         }
       });
 
-      StoreRecordModel model = StoreRecordModel(
-          storeRecId: globalModel.invStorehouse,
-          storeRecInvId: globalModel.invId,
-          storeRecProduct: allRecTotal);
+      StoreRecordModel model =
+          StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
       if (storeMap[model.storeRecId]?.stRecords == null) {
         storeMap[model.storeRecId]?.stRecords = [model];
       } else {
-        storeMap[model.storeRecId]?.stRecords.removeWhere(
-            (element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
         storeMap[model.storeRecId]?.stRecords.add(model);
       }
     } else {
       for (int i = 0; i < globalModel.invRecords!.length; i++) {
-        if (globalModel.invRecords![i].invRecId != null &&
-            getProductModelFromId(globalModel.invRecords![i].invRecProduct) !=
-                null) {
-          bool isStoreProduct =
-              getProductModelFromId(globalModel.invRecords![i].invRecProduct)!
-                      .prodType ==
-                  AppConstants.productTypeStore;
+        if (globalModel.invRecords![i].invRecId != null && getProductModelFromId(globalModel.invRecords![i].invRecProduct) != null) {
+          bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == AppConstants.productTypeStore;
           if (isStoreProduct) {
-            allRecTotal[globalModel.invRecords![i].invRecProduct!] =
-                StoreRecProductModel(
+            allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
               storeRecProductId: globalModel.invRecords![i].invRecProduct,
-              storeRecProductPrice:
-                  globalModel.invRecords![i].invRecSubTotal.toString(),
-              storeRecProductQuantity:
-                  (-1 * globalModel.invRecords![i].invRecQuantity!).toString(),
-              storeRecProductTotal:
-                  globalModel.invRecords![i].invRecTotal.toString(),
+              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
+              storeRecProductQuantity: (-1 * globalModel.invRecords![i].invRecQuantity!).toString(),
+              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
             );
-            allRecTotal2[globalModel.invRecords![i].invRecProduct!] =
-                StoreRecProductModel(
+            allRecTotal2[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
               storeRecProductId: globalModel.invRecords![i].invRecProduct,
-              storeRecProductPrice:
-                  globalModel.invRecords![i].invRecSubTotal.toString(),
-              storeRecProductQuantity:
-                  (1 * globalModel.invRecords![i].invRecQuantity!).toString(),
-              storeRecProductTotal:
-                  globalModel.invRecords![i].invRecTotal.toString(),
+              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
+              storeRecProductQuantity: (1 * globalModel.invRecords![i].invRecQuantity!).toString(),
+              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
             );
           }
         }
       }
 
-      StoreRecordModel model = StoreRecordModel(
-          storeRecId: globalModel.invStorehouse,
-          storeRecInvId: globalModel.invId,
-          storeRecProduct: allRecTotal);
-      StoreRecordModel model2 = StoreRecordModel(
-          storeRecId: globalModel.invSecStorehouse,
-          storeRecInvId: globalModel.invId,
-          storeRecProduct: allRecTotal2);
+      StoreRecordModel model =
+          StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
+      StoreRecordModel model2 =
+          StoreRecordModel(storeRecId: globalModel.invSecStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal2);
 
       if (storeMap[model.storeRecId]?.stRecords == null) {
         storeMap[model.storeRecId]?.stRecords = [model];
       } else {
-        storeMap[model.storeRecId]?.stRecords.removeWhere(
-            (element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
         storeMap[model.storeRecId]?.stRecords.add(model);
       }
       // if(globalModel.invSecStorehouse==null){
@@ -155,8 +143,7 @@ class StoreViewModel extends GetxController {
       if (storeMap[model2.storeRecId.toString()]?.stRecords == null) {
         storeMap[model2.storeRecId]?.stRecords = [model2];
       } else {
-        storeMap[model2.storeRecId]?.stRecords.removeWhere(
-            (element) => element.storeRecInvId == globalModel.invId);
+        storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
         storeMap[model2.storeRecId]?.stRecords.add(model2);
       }
     }
@@ -166,16 +153,14 @@ class StoreViewModel extends GetxController {
   }
 
   void deleteGlobalStore(GlobalModel globalModel) {
-    storeMap[globalModel.invStorehouse]
-        ?.stRecords
-        .removeWhere((element) => element.storeRecInvId == globalModel.invId);
+    storeMap[globalModel.invStorehouse]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
   }
 
   addStoreToMemory(Map json) {
     StoreModel storeModel = StoreModel.fromJson(json);
     storeMap[storeModel.stId!] = storeModel;
     HiveDataBase.storeModelBox.put(storeModel.stId, storeModel);
-    recordViewDataSource = StoreRecordDataSource(stores: storeMap);
+    storeDataGridSource = StoreDataGridSourceWidget(stores: storeMap);
     update();
   }
 
@@ -183,24 +168,20 @@ class StoreViewModel extends GetxController {
     StoreModel storeModel = StoreModel.fromJson(json);
     storeMap.remove(storeModel.stId);
     HiveDataBase.accountModelBox.delete(storeModel.stId);
-    recordViewDataSource = StoreRecordDataSource(stores: storeMap);
+    storeDataGridSource = StoreDataGridSourceWidget(stores: storeMap);
     update();
   }
 
   getAllStore() {
     if (HiveDataBase.storeModelBox.isEmpty) {
-      FirebaseFirestore.instance
-          .collection(AppConstants.storeCollection)
-          .get()
-          .then((value) {
+      FirebaseFirestore.instance.collection(AppConstants.storeCollection).get().then((value) {
         storeMap.clear();
         HiveDataBase.storeModelBox.clear();
         for (var element in value.docs) {
-          HiveDataBase.storeModelBox
-              .put(element.id, StoreModel.fromJson(element.data()));
+          HiveDataBase.storeModelBox.put(element.id, StoreModel.fromJson(element.data()));
           storeMap[element.id] = StoreModel.fromJson(element.data());
         }
-        recordViewDataSource = StoreRecordDataSource(stores: storeMap);
+        storeDataGridSource = StoreDataGridSourceWidget(stores: storeMap);
         update();
       });
     } else {
@@ -208,7 +189,7 @@ class StoreViewModel extends GetxController {
       for (StoreModel element in HiveDataBase.storeModelBox.values.toList()) {
         storeMap[element.stId!] = element;
       }
-      recordViewDataSource = StoreRecordDataSource(stores: storeMap);
+      storeDataGridSource = StoreDataGridSourceWidget(stores: storeMap);
       update();
     }
   }
@@ -220,9 +201,7 @@ class StoreViewModel extends GetxController {
     totalAmountPage.clear();
     storeMap[storeId]?.stRecords.forEach((value) {
       value.storeRecProduct?.forEach((key, value) {
-        totalAmountPage[value.storeRecProductId!] =
-            (totalAmountPage[value.storeRecProductId!] ?? 0) +
-                double.parse(value.storeRecProductQuantity!);
+        totalAmountPage[value.storeRecProductId!] = (totalAmountPage[value.storeRecProductId!] ?? 0) + double.parse(value.storeRecProductQuantity!);
       });
     });
     totalAmountPage.forEach(
@@ -233,16 +212,11 @@ class StoreViewModel extends GetxController {
         );
       },
     );
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then((value) => update());
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update());
   }
 
   addNewStore() {
-    List<StoreModel> _ = storeMap.values
-        .toList()
-        .where((element) => element.stCode == editStoreModel!.stCode)
-        .toList();
+    List<StoreModel> _ = storeMap.values.toList().where((element) => element.stCode == editStoreModel!.stCode).toList();
     if (_.isNotEmpty) {
       Get.snackbar("خطأ", "الرمز مستخدم");
       return;
@@ -251,8 +225,7 @@ class StoreViewModel extends GetxController {
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
-    changesViewModel.addChangeToChanges(
-        editStoreModel!.toFullJson(), AppConstants.storeCollection);
+    changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), AppConstants.storeCollection);
     update();
   }
 
@@ -260,8 +233,7 @@ class StoreViewModel extends GetxController {
     _storeCollectionRef.doc(editStoreModel?.stId).set(editStoreModel?.toJson());
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
-    changesViewModel.addChangeToChanges(
-        editStoreModel!.toFullJson(), AppConstants.storeCollection);
+    changesViewModel.addChangeToChanges(editStoreModel!.toFullJson(), AppConstants.storeCollection);
     update();
   }
 
@@ -286,8 +258,7 @@ class StoreViewModel extends GetxController {
     _storeCollectionRef.doc(editStoreModel.stId).delete();
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
-    changesViewModel.addRemoveChangeToChanges(
-        editStoreModel.toFullJson(), AppConstants.storeCollection);
+    changesViewModel.addRemoveChangeToChanges(editStoreModel.toFullJson(), AppConstants.storeCollection);
     update();
   }
 
@@ -327,9 +298,7 @@ class StoreViewModel extends GetxController {
       data.add([getProductNameFromId(key), value.toString()]);
     });
     String csv = const ListToCsvConverter().convert(data);
-    String? saveData = await FilePicker.platform.saveFile(
-        fileName:
-            "${getStoreNameFromId(oldKey)} ${DateTime.now().toString().split(" ")[0]}.csv");
+    String? saveData = await FilePicker.platform.saveFile(fileName: "${getStoreNameFromId(oldKey)} ${DateTime.now().toString().split(" ")[0]}.csv");
 
     if (saveData != null) {
       File file = File(saveData);
@@ -343,13 +312,9 @@ class StoreViewModel extends GetxController {
 }
 
 String getStoreIdFromText(text) {
-  var storeController = Get.find<StoreViewModel>();
+  var storeController = Get.find<StoreController>();
   if (text != null && text != " " && text != "") {
-    return storeController.storeMap.values
-            .toList()
-            .firstWhereOrNull((element) => element.stName == text)
-            ?.stId ??
-        "";
+    return storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == text)?.stId ?? "";
   } else {
     return "";
   }
@@ -357,7 +322,7 @@ String getStoreIdFromText(text) {
 
 String getStoreNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<StoreViewModel>().storeMap[id]!.stName!;
+    return Get.find<StoreController>().storeMap[id]!.stName!;
   } else {
     return "";
   }

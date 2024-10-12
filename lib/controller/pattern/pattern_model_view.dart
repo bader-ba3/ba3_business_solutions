@@ -1,10 +1,11 @@
-import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
 import 'package:ba3_business_solutions/view/patterns/widget/pattern_source_code.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../core/utils/generate_id.dart';
 import '../account/account_view_model.dart';
 
@@ -37,18 +38,13 @@ class PatternViewModel extends GetxController {
     fullNameController.text = editPatternModel?.patFullName ?? "";
     codeController.text = editPatternModel?.patCode ?? "";
     patPartnerRatio.text = editPatternModel?.patPartnerRatio.toString() ?? "";
-    patPartnerCommission.text =
-        editPatternModel?.patPartnerCommission.toString() ?? "";
+    patPartnerCommission.text = editPatternModel?.patPartnerCommission.toString() ?? "";
     primaryController.text = getAccountNameFromId(editPatternModel?.patPrimary);
-    patPartnerAccountFee.text =
-        getAccountNameFromId(editPatternModel?.patPartnerFeeAccount);
+    patPartnerAccountFee.text = getAccountNameFromId(editPatternModel?.patPartnerFeeAccount);
     typeController.text = editPatternModel?.patType ?? "";
-    giftAccountController.text =
-        getAccountNameFromId(editPatternModel?.patGiftAccount);
-    secgiftAccountController.text =
-        getAccountNameFromId(editPatternModel?.patSecGiftAccount);
-    secondaryController.text =
-        getAccountNameFromId(editPatternModel?.patSecondary);
+    giftAccountController.text = getAccountNameFromId(editPatternModel?.patGiftAccount);
+    secgiftAccountController.text = getAccountNameFromId(editPatternModel?.patSecGiftAccount);
+    secondaryController.text = getAccountNameFromId(editPatternModel?.patSecondary);
     storeEditController.text = getStoreNameFromId(editPatternModel?.patStore);
     storeNewController.text = getStoreNameFromId(editPatternModel?.patNewStore);
     // storeController.text=getStoreNameFromId("store1702230185210544");
@@ -56,13 +52,12 @@ class PatternViewModel extends GetxController {
 
   RxMap<String, PatternModel> patternModel = <String, PatternModel>{}.obs;
 
-  final CollectionReference _patternCollectionRef =
-      FirebaseFirestore.instance.collection(AppConstants.patternCollection);
+  final CollectionReference _patternCollectionRef = FirebaseFirestore.instance.collection(AppConstants.patternCollection);
 
   List<String> accountPickList = [];
 
   var accountController = Get.find<AccountViewModel>();
-  var storeController = Get.find<StoreViewModel>();
+  var storeController = Get.find<StoreController>();
 
   PatternModel? editPatternModel;
 
@@ -71,8 +66,7 @@ class PatternViewModel extends GetxController {
       patternModel.clear();
       for (var element in value.docs) {
         patternModel[element.id] = PatternModel();
-        patternModel[element.id] =
-            PatternModel.fromJson(element.data() as Map<String, dynamic>);
+        patternModel[element.id] = PatternModel.fromJson(element.data() as Map<String, dynamic>);
       }
 
       update();
@@ -80,9 +74,7 @@ class PatternViewModel extends GetxController {
   }
 
   addPattern() {
-    List a = patternModel.values
-        .where((element) => editPatternModel!.patCode == element.patCode)
-        .toList();
+    List a = patternModel.values.where((element) => editPatternModel!.patCode == element.patCode).toList();
     if (a.isNotEmpty) {
       Get.snackbar("خطأ", "الرمز مستخدم");
       return;
@@ -145,9 +137,7 @@ class PatternViewModel extends GetxController {
     _storePickList = [];
     storeController.storeMap.forEach((key, value) {
       _storePickList.addIf(
-          value.stCode!.toLowerCase().contains(text.toLowerCase()) ||
-              value.stName!.toLowerCase().contains(text.toLowerCase()),
-          value.stName!);
+          value.stCode!.toLowerCase().contains(text.toLowerCase()) || value.stName!.toLowerCase().contains(text.toLowerCase()), value.stName!);
     });
     // print(_storePickList.length);
     if (_storePickList.length > 1) {
@@ -191,13 +181,7 @@ class PatternViewModel extends GetxController {
   clearController() {
     editPatternModel = null;
     editPatternModel = PatternModel();
-    codeController.text = ((int.tryParse(patternModel.values
-                    .map((e) => e.patCode)
-                    .last
-                    .toString()) ??
-                0) +
-            1)
-        .toString();
+    codeController.text = ((int.tryParse(patternModel.values.map((e) => e.patCode).last.toString()) ?? 0) + 1).toString();
     editPatternModel!.patCode = codeController.text;
     editPatternModel?.patColor = 4294198070;
     editPatternModel?.patType = AppConstants.invoiceTypeSales;

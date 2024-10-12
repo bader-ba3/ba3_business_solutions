@@ -27,23 +27,20 @@ class AllStore extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(15),
-          child: GetBuilder<StoreViewModel>(builder: (storeController) {
+          child: GetBuilder<StoreController>(builder: (storeController) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
                   child: SfDataGrid(
-                    horizontalScrollPhysics:
-                        const NeverScrollableScrollPhysics(),
+                    horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
                     verticalScrollPhysics: const BouncingScrollPhysics(),
                     controller: storeController.storeDataGridController,
                     onCellTap: (details) {
                       if (details.rowColumnIndex.rowIndex != 0) {
-                        var stId = (storeController.recordViewDataSource
-                            ?.dataGridRows[details.rowColumnIndex.rowIndex - 1]
+                        var stId = (storeController.storeDataGridSource?.dataGridRows[details.rowColumnIndex.rowIndex - 1]
                             .getCells()
-                            .firstWhere((element) =>
-                                element.columnName == AppConstants.stId)
+                            .firstWhere((element) => element.columnName == AppConstants.stId)
                             .value);
 
                         Get.to(() => StoreDetails(
@@ -52,18 +49,11 @@ class AllStore extends StatelessWidget {
                       }
                     },
                     columns: <GridColumn>[
-                      GridColumn(
-                          visible: false,
-                          allowEditing: false,
-                          columnName: "stId",
-                          label: const Text('ID')),
-                      gridColumnItem(
-                        label: "الرمز",
-                        name: AppConstants.stCode,
-                      ),
+                      GridColumn(visible: false, allowEditing: false, columnName: "stId", label: const Text('ID')),
+                      gridColumnItem(label: "الرمز", name: AppConstants.stCode),
                       gridColumnItem(label: "الاسم", name: AppConstants.stName),
                     ],
-                    source: storeController.recordViewDataSource!,
+                    source: storeController.storeDataGridSource!,
                     allowEditing: false,
                     selectionMode: SelectionMode.none,
                     editingGestureType: EditingGestureType.tap,

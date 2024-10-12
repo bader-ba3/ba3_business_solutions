@@ -32,15 +32,12 @@ class InvoiceViewModel extends GetxController {
   var bondController = Get.find<BondViewModel>();
   var productController = Get.find<ProductViewModel>();
   var patternController = Get.find<PatternViewModel>();
-  var storeViewController = Get.find<StoreViewModel>();
+  var storeViewController = Get.find<StoreController>();
   var sellerViewController = Get.find<SellersViewModel>();
-  var startDateController = TextEditingController()
-    ..text = DateTime.now().toString().split(" ")[0];
-  var endDateController = TextEditingController()
-    ..text = DateTime.now().toString().split(" ")[0];
+  var startDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
+  var endDateController = TextEditingController()..text = DateTime.now().toString().split(" ")[0];
 
-
-  Map<String,ProductImei> imeiMap={};
+  Map<String, ProductImei> imeiMap = {};
 
   GlobalModel? invoiceForSearch;
 
@@ -99,36 +96,28 @@ class InvoiceViewModel extends GetxController {
   List<GlobalModel> allInvoiceForPluto = [];
 
   changeCustomer() async {
-    InvoicePlutoViewModel plutoInvController =
-        Get.find<InvoicePlutoViewModel>();
+    InvoicePlutoViewModel plutoInvController = Get.find<InvoicePlutoViewModel>();
     AccountCustomer customer = AccountCustomer();
-    PatternModel patternModel =
-        patternController.patternModel[initModel.patternId]!;
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       if (getIfAccountHaveCustomers(secondaryAccountController.text)) {
-        customer = await accountCustomerDialog(
-            customers: getAccountCustomers(secondaryAccountController.text),
-            text: invCustomerAccountController.text);
+        customer =
+            await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
-        customer = await accountCustomerDialog(
-            text: invCustomerAccountController.text);
+        customer = await accountCustomerDialog(text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
-        secondaryAccountController.text =
-            getAccountNameFromId(customer.mainAccount);
+        secondaryAccountController.text = getAccountNameFromId(customer.mainAccount);
       }
     } else {
       if (getIfAccountHaveCustomers(primaryAccountController.text)) {
-        customer = await accountCustomerDialog(
-            customers: getAccountCustomers(primaryAccountController.text),
-            text: invCustomerAccountController.text);
+        customer =
+            await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
-        customer = await accountCustomerDialog(
-            text: invCustomerAccountController.text);
+        customer = await accountCustomerDialog(text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
-        primaryAccountController.text =
-            getAccountNameFromId(customer.mainAccount);
+        primaryAccountController.text = getAccountNameFromId(customer.mainAccount);
       }
     }
     plutoInvController.customerName = customer.customerAccountName!;
@@ -145,15 +134,11 @@ class InvoiceViewModel extends GetxController {
         .firstOrNull;
   }
 
-
-
   initAllInvoice() {
     invoiceAllDataGridSource = allInvoiceDataGridSource(invoiceModel);
     invoiceAllDataGridSource.updateDataGridSource();
     update();
   }
-
-
 
   initGlobalInvoice(GlobalModel globalModel) {
     invoiceModel[globalModel.invId!] = globalModel;
@@ -255,25 +240,15 @@ class InvoiceViewModel extends GetxController {
     return nextPrevList.keys.toList().contains(invCodeController.text);
   }
 
-
-
   invNextOrPrev(String patId, invCode, bool isPrev) {
-    List<GlobalModel> inv = invoiceModel.values
-        .where((element) => element.patternId == patId)
-        .toList()
-        .reversed
-        .toList();
-    if ((!HiveDataBase.getWithFree()) &&
-        patternController.patternModel[patId]?.patType ==
-            AppConstants.invoiceTypeBuy) {
+    List<GlobalModel> inv = invoiceModel.values.where((element) => element.patternId == patId).toList().reversed.toList();
+    if ((!HiveDataBase.getWithFree()) && patternController.patternModel[patId]?.patType == AppConstants.invoiceTypeBuy) {
       inv = invoiceModel.values
           .where((element) =>
               element.patternId == patId &&
               element.invRecords!.where(
                 (element) {
-                  return productController
-                          .productDataMap[element.invRecProduct]?.prodIsLocal ==
-                      false;
+                  return productController.productDataMap[element.invRecProduct]?.prodIsLocal == false;
                 },
               ).isEmpty)
           .toList()
@@ -283,17 +258,13 @@ class InvoiceViewModel extends GetxController {
     inv.sort(
       (a, b) {
         if (a.invCode!.startsWith("F") && b.invCode!.startsWith("F")) {
-          return int.parse((a.invCode ?? "F-0").split("F-")[1])
-              .compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
+          return int.parse((a.invCode ?? "F-0").split("F-")[1]).compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
         } else if (a.invCode!.startsWith("F")) {
-          return int.parse((a.invCode ?? "F-0").split("F-")[1])
-              .compareTo(int.parse(b.invCode ?? "0"));
+          return int.parse((a.invCode ?? "F-0").split("F-")[1]).compareTo(int.parse(b.invCode ?? "0"));
         } else if (b.invCode!.startsWith("F")) {
-          return int.parse((a.invCode ?? "0"))
-              .compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
+          return int.parse((a.invCode ?? "0")).compareTo(int.parse((b.invCode ?? "F-0").split("F-")[1]));
         } else {
-          return int.parse(a.invCode ?? "0")
-              .compareTo(int.parse(b.invCode ?? "0"));
+          return int.parse(a.invCode ?? "0").compareTo(int.parse(b.invCode ?? "0"));
         }
       },
     );
@@ -325,10 +296,7 @@ class InvoiceViewModel extends GetxController {
   }
 
   getInvByInvCode(String patId, invCode) {
-    List<GlobalModel> inv = invoiceModel.values
-        .where((element) =>
-            element.patternId == patId && element.invCode == invCode)
-        .toList();
+    List<GlobalModel> inv = invoiceModel.values.where((element) => element.patternId == patId && element.invCode == invCode).toList();
     if (inv.isNotEmpty) {
       buildInvInit(true, inv.first.invId!);
     } else {
@@ -359,27 +327,14 @@ class InvoiceViewModel extends GetxController {
 
     invPartnerCodeController.text = '';
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
-      invCustomerAccountController.text =
-          getAccountModelFromId(patternModel.patSecondary)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(patternModel.patSecondary)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     } else {
-      invCustomerAccountController.text =
-          getAccountModelFromId(patternModel.patPrimary)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(patternModel.patPrimary)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     }
-    Get.find<InvoicePlutoViewModel>().customerName =
-        invCustomerAccountController.text;
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     if (patternModel.patType != AppConstants.invoiceTypeChange) {
-      primaryAccountController.text =
-          getAccountNameFromId(patternModel.patPrimary!);
-      secondaryAccountController.text =
-          getAccountNameFromId(patternModel.patSecondary!);
+      primaryAccountController.text = getAccountNameFromId(patternModel.patPrimary!);
+      secondaryAccountController.text = getAccountNameFromId(patternModel.patSecondary!);
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
@@ -395,16 +350,13 @@ class InvoiceViewModel extends GetxController {
     }
     dateController = DateTime.now().toString().split(".")[0];
     invDueDateController = DateTime.now().toString().split(".")[0];
-
   }
 
   ScreenViewModel screenViewModel = Get.find<ScreenViewModel>();
 
   initCodeList(patternId) {
-    nextPrevList = Map.fromEntries(invoiceModel.values
-        .where((element) => element.patternId == patternId)
-        .map((e) => MapEntry(e.invCode!, e.invId!))
-        .toList());
+    nextPrevList =
+        Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
   }
 
   String getNextCodeInv() {
@@ -432,23 +384,18 @@ class InvoiceViewModel extends GetxController {
     // typeBill = patternController.patternModel[initModel.patternId]!.patType!;
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
-    PatternModel patternModel =
-        patternController.patternModel[initModel.patternId]!;
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     Get.find<InvoicePlutoViewModel>().typeBile = patternModel.patType!;
 
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
     if (patternController.patternModel[initModel.patternId]!.patColor != null) {
-      colorInvoice =
-          patternController.patternModel[initModel.patternId]!.patColor!;
+      colorInvoice = patternController.patternModel[initModel.patternId]!.patColor!;
     }
 
-    if (patternModel.patType != AppConstants.invoiceTypeChange &&
-        patternModel.patType != AppConstants.invoiceTypeAdd) {
-      secondaryAccountController.text =
-          getAccountNameFromId(initModel.invSecondaryAccount!);
-      primaryAccountController.text =
-          getAccountNameFromId(initModel.invPrimaryAccount!);
+    if (patternModel.patType != AppConstants.invoiceTypeChange && patternModel.patType != AppConstants.invoiceTypeAdd) {
+      secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
+      primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
       sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
@@ -457,22 +404,11 @@ class InvoiceViewModel extends GetxController {
     }
 
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
-      invCustomerAccountController.text =
-          getAccountModelFromId(initModel.invSecondaryAccount)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invSecondaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     } else {
-      invCustomerAccountController.text =
-          getAccountModelFromId(initModel.invPrimaryAccount)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invPrimaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     }
-    Get.find<InvoicePlutoViewModel>().customerName =
-        invCustomerAccountController.text;
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     mobileNumberController.text = initModel.invMobileNumber ?? "";
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
@@ -489,7 +425,6 @@ class InvoiceViewModel extends GetxController {
 
     Get.find<InvoicePlutoViewModel>().getRows(initModel.invRecords ?? []);
 
-
     if (!bool) {
       update();
     }
@@ -498,53 +433,30 @@ class InvoiceViewModel extends GetxController {
 
   buildInvInitRecent(GlobalModel model) {
     initModel = model;
-    PatternModel patternModel =
-        patternController.patternModel[initModel.patternId]!;
+    PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     Get.find<InvoicePlutoViewModel>().typeBile = patternModel.patType!;
     invReturnCodeController.text = initModel.invReturnCode ?? '';
     invReturnDateController.text = initModel.invReturnDate ?? '';
     invPartnerCodeController.text = model.invPartnerCode ?? '';
-    secondaryAccountController.text =
-        getAccountNameFromId(initModel.invSecondaryAccount);
-    primaryAccountController.text =
-        getAccountNameFromId(initModel.invPrimaryAccount);
-    invCustomerAccountController.text =
-        getAccountModelFromId(initModel.invCustomerAccount)
-                ?.accCustomer
-                ?.firstOrNull
-                ?.customerAccountName ??
-            '';
-    Get.find<InvoicePlutoViewModel>().customerName =
-        invCustomerAccountController.text;
+    secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount);
+    primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount);
+    invCustomerAccountController.text = getAccountModelFromId(initModel.invCustomerAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
+    Get.find<InvoicePlutoViewModel>().customerName = invCustomerAccountController.text;
     storeController.text = getStoreNameFromId(initModel.invStorehouse);
     billIDController.text = initModel.invId!;
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
-      invCustomerAccountController.text =
-          getAccountModelFromId(initModel.invSecondaryAccount)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invSecondaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     } else {
-      invCustomerAccountController.text =
-          getAccountModelFromId(initModel.invPrimaryAccount)
-                  ?.accCustomer
-                  ?.firstOrNull
-                  ?.customerAccountName ??
-              '';
+      invCustomerAccountController.text = getAccountModelFromId(initModel.invPrimaryAccount)?.accCustomer?.firstOrNull?.customerAccountName ?? '';
     }
     initModel.invGiftAccount = patternModel.patGiftAccount;
     initModel.invSecGiftAccount = patternModel.patSecGiftAccount;
     if (patternController.patternModel[initModel.patternId]!.patColor != null) {
-      colorInvoice =
-          patternController.patternModel[initModel.patternId]!.patColor!;
+      colorInvoice = patternController.patternModel[initModel.patternId]!.patColor!;
     }
-    if (patternModel.patType != AppConstants.invoiceTypeChange &&
-        patternModel.patType != AppConstants.invoiceTypeAdd) {
-      secondaryAccountController.text =
-          getAccountNameFromId(initModel.invSecondaryAccount!);
-      primaryAccountController.text =
-          getAccountNameFromId(initModel.invPrimaryAccount!);
+    if (patternModel.patType != AppConstants.invoiceTypeChange && patternModel.patType != AppConstants.invoiceTypeAdd) {
+      secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
+      primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
       sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
@@ -590,12 +502,8 @@ class InvoiceViewModel extends GetxController {
 
     storeViewController.storeMap.forEach((key, value) {
       storePickList.addIf(
-          value.stCode!
-                  .toLowerCase()
-                  .contains(storeController.text.toLowerCase()) ||
-              value.stName!
-                  .toLowerCase()
-                  .contains(storeController.text.toLowerCase()),
+          value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) ||
+              value.stName!.toLowerCase().contains(storeController.text.toLowerCase()),
           value.stName!);
     });
     if (storePickList.length > 1) {
@@ -637,31 +545,19 @@ class InvoiceViewModel extends GetxController {
   }
 
   bool checkAccountComplete(String text) {
-    return accountController.accountList.values
-        .map((e) => e.accName?.toLowerCase())
-        .toList()
-        .contains(text.toLowerCase());
+    return accountController.accountList.values.map((e) => e.accName?.toLowerCase()).toList().contains(text.toLowerCase());
   }
 
   bool checkStoreComplete() {
-    return storeViewController.storeMap.values
-        .map((e) => e.stName?.toLowerCase())
-        .toList()
-        .contains(storeController.text.toLowerCase());
+    return storeViewController.storeMap.values.map((e) => e.stName?.toLowerCase()).toList().contains(storeController.text.toLowerCase());
   }
 
   bool checkStoreNewComplete() {
-    return storeViewController.storeMap.values
-        .map((e) => e.stName?.toLowerCase())
-        .toList()
-        .contains(storeNewController.text.toLowerCase());
+    return storeViewController.storeMap.values.map((e) => e.stName?.toLowerCase()).toList().contains(storeNewController.text.toLowerCase());
   }
 
   bool checkSellerComplete() {
-    return sellerViewController.allSellers.values
-        .map((e) => e.sellerName?.toLowerCase())
-        .toList()
-        .contains(sellerController.text.toLowerCase());
+    return sellerViewController.allSellers.values.map((e) => e.sellerName?.toLowerCase()).toList().contains(sellerController.text.toLowerCase());
   }
 
   getInvCode() {
@@ -743,8 +639,7 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
           children: <Widget>[
             Center(
               child: QrImageView(
-                data:
-                    'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
+                data: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
                 version: QrVersions.auto,
                 size: Get.height / 2.5,
               ),
@@ -772,15 +667,15 @@ void showEInvoiceDialog({required String mobileNumber, required String invId}) {
                   controller: TextEditingController(),
                   onSubmitted: (p0) {
                     sendEmail(
-                        'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
-                        p0,);
+                      'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
+                      p0,
+                    );
                   },
                 )),
                 IconButton(
                   onPressed: () {
                     Clipboard.setData(ClipboardData(
-                      text:
-                          'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
+                      text: 'https://ba3-business-solutions.firebaseapp.com/?id=$invId&year=${AppConstants.dataName}',
                     ));
                   },
                   // backgroundColor: Colors.grey,

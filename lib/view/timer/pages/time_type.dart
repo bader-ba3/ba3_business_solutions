@@ -5,14 +5,9 @@ import 'package:get/get.dart';
 import '../../../core/constants/app_constants.dart';
 import 'all_time_view.dart';
 
-class TimeType extends StatefulWidget {
+class TimeType extends StatelessWidget {
   const TimeType({super.key});
 
-  @override
-  State<TimeType> createState() => _TimeTypeState();
-}
-
-class _TimeTypeState extends State<TimeType> {
   @override
   Widget build(BuildContext context) {
     return Directionality(

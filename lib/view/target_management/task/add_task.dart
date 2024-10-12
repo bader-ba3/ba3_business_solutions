@@ -1,64 +1,29 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/target_view_model.dart';
-import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
-import 'package:ba3_business_solutions/model/seller/task_model.dart';
+import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/core/utils/date_month_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/seller/seller_model.dart';
 import '../../invoices/widget/custom_TextField.dart';
 
-class AddTaskView extends StatefulWidget {
+class AddTaskView extends StatelessWidget {
   final String? oldKey;
 
   const AddTaskView({super.key, this.oldKey});
 
   @override
-  State<AddTaskView> createState() => _AddTaskViewState();
-}
-
-class _AddTaskViewState extends State<AddTaskView> {
-  TextEditingController productNameController = TextEditingController();
-  TextEditingController quantityController = TextEditingController();
-  TargetViewModel targetViewModel = Get.find<TargetViewModel>();
-  List<String> allUser = [];
-  late TaskModel taskModel;
-  InventoryModel? inventoryModel;
-
-  String? taskDate;
-
-  @override
-  void initState() {
-    if (widget.oldKey == null) {
-      taskModel = TaskModel(taskType: AppConstants.taskTypeProduct);
-      taskDate = "${DateTime.now().year}-${DateTime.now().month}";
-      allUser.clear();
-    } else {
-      taskModel = TaskModel.fromJson(
-          targetViewModel.allTarget[widget.oldKey]!.toJson());
-      productNameController.text =
-          getProductNameFromId(taskModel.taskProductId);
-      quantityController.text = taskModel.taskQuantity.toString();
-      allUser.assignAll(taskModel.taskSellerListId);
-      taskDate = taskModel.taskDate;
-    }
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<TargetViewModel>(builder: (controller) {
+      child: GetBuilder<TargetController>(builder: (targetController) {
         return Scaffold(
             appBar: AppBar(
-              title:
-                  Text(widget.oldKey == null ? "إضافة التاسك" : "تعديل التاسك"),
+              title: Text(oldKey == null ? "إضافة التاسك" : "تعديل التاسك"),
             ),
             body: SingleChildScrollView(
               child: SizedBox(
@@ -68,54 +33,47 @@ class _AddTaskViewState extends State<AddTaskView> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GetBuilder<SellersViewModel>(builder: (controller) {
-                      return StatefulBuilder(builder: (context, setstate) {
-                        return Column(
-                          children: [
-                            const Text("المستخدمين :"),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            for (SellerModel i
-                                in controller.allSellers.values.toList()) ...[
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Checkbox(
-                                      value: allUser.contains(i.sellerId),
-                                      fillColor: WidgetStatePropertyAll(
-                                          Colors.blue.shade800),
-                                      checkColor: Colors.white,
-                                      onChanged: (_) {
-                                        if (allUser.contains(i.sellerId)) {
-                                          allUser.remove(i.sellerId!);
+                      return Column(
+                        children: [
+                          const Text("المستخدمين :"),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          for (SellerModel i in controller.allSellers.values.toList()) ...[
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Checkbox(
+                                    value: targetController.allUser.contains(i.sellerId),
+                                    fillColor: WidgetStatePropertyAll(Colors.blue.shade800),
+                                    checkColor: Colors.white,
+                                    onChanged: (_) {
+                                      if (targetController.allUser.contains(i.sellerId)) {
+                                        targetController.allUser.remove(i.sellerId!);
+                                      } else {
+                                        if (targetController.taskModel.taskType == AppConstants.taskTypeProduct) {
+                                          targetController.allUser.add(i.sellerId!);
                                         } else {
-                                          if (taskModel.taskType ==
-                                              AppConstants.taskTypeProduct) {
-                                            allUser.add(i.sellerId!);
-                                          } else {
-                                            allUser.assign(i.sellerId!);
-                                          }
+                                          targetController.allUser.assign(i.sellerId!);
                                         }
-                                        setstate(() {});
-                                      }),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    i.sellerName.toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  )
-                                ],
-                              ),
-                              const Divider()
-                            ]
-                          ],
-                        );
-                      });
+                                      }
+                                      controller.update();
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  i.sellerName.toString(),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                )
+                              ],
+                            ),
+                            const Divider()
+                          ]
+                        ],
+                      );
                     }),
                     const SizedBox(
                       height: 50,
@@ -133,15 +91,13 @@ class _AddTaskViewState extends State<AddTaskView> {
                                 ),
                                 Expanded(
                                   child: CustomTextFieldWithIcon(
-                                    controller: productNameController,
+                                    controller: targetController.productNameController,
                                     onSubmitted: (text) async {
-                                      var a =
-                                          await controller.getComplete(text);
+                                      var a = await targetController.getComplete(text);
                                       if (a.isNotEmpty) {
-                                        taskModel.taskProductId =
-                                            getProductIdFromName(a);
-                                        productNameController.text = a;
-                                        setState(() {});
+                                        targetController.taskModel.taskProductId = getProductIdFromName(a);
+                                        targetController.productNameController.text = a;
+                                        targetController.update();
                                       }
                                     },
                                   ),
@@ -149,8 +105,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                                 const SizedBox(
                                   width: 25,
                                 ),
-                                if (taskModel.taskProductId != null)
-                                  const Icon(Icons.check),
+                                if (targetController.taskModel.taskProductId != null) const Icon(Icons.check),
                               ],
                             ),
                           ),
@@ -176,8 +131,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                                             color: Colors.black,
                                             width: 2.0,
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                              5.0), // Adjust border radius
+                                          borderRadius: BorderRadius.circular(5.0), // Adjust border radius
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
@@ -185,20 +139,14 @@ class _AddTaskViewState extends State<AddTaskView> {
                                             // Change the border color when focused
                                             width: 2.0,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
+                                          borderRadius: BorderRadius.circular(5.0),
                                         ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 0.0),
+                                        contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
                                       ),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly
-                                      ],
-                                      controller: quantityController,
+                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                      controller: targetController.quantityController,
                                       onChanged: (_) {
-                                        taskModel.taskQuantity = int.tryParse(
-                                            quantityController.text);
+                                        targetController.taskModel.taskQuantity = int.tryParse(targetController.quantityController.text);
                                       }),
                                 ),
                                 const SizedBox(
@@ -222,10 +170,10 @@ class _AddTaskViewState extends State<AddTaskView> {
                             width: 10,
                           ),
                           DateMonthPicker(
-                            initDate: taskDate,
+                            initDate: targetController.taskDate,
                             onSubmit: (date) {
-                              taskDate = "${date.year}-${date.month}";
-                              setState(() {});
+                              targetController.taskDate = "${date.year}-${date.month}";
+                              targetController.update();
                             },
                           ),
                         ],
@@ -237,38 +185,29 @@ class _AddTaskViewState extends State<AddTaskView> {
                     Center(
                       child: ElevatedButton(
                           onPressed: () {
-                            if (taskDate == null) {
+                            if (targetController.taskDate == null) {
                               Get.snackbar("خطأ", "يرجى كتابة تاريخ");
-                            } else if (taskModel.taskProductId?.isEmpty ??
-                                true) {
+                            } else if (targetController.taskModel.taskProductId?.isEmpty ?? true) {
                               Get.snackbar("خطأ", "يرجى كتابة اسم المادة");
-                            } else if (taskModel.taskQuantity == null ||
-                                taskModel.taskQuantity == 0) {
+                            } else if (targetController.taskModel.taskQuantity == null || targetController.taskModel.taskQuantity == 0) {
                               Get.snackbar("خطأ", "يرجى كتابة عدد");
-                            } else if ((allUser).isEmpty) {
+                            } else if ((targetController.allUser).isEmpty) {
                               Get.snackbar("خطأ", "يرجى إضافة مستخدمين");
                             } else {
-                              taskModel.taskSellerListId = allUser;
-                              taskModel.taskDate = taskDate;
-                              if (taskModel.taskId != null) {
-                                checkPermissionForOperation(
-                                        AppConstants.roleUserRead,
-                                        AppConstants.roleViewTask)
-                                    .then((value) {
-                                  if (value) controller.updateTask(taskModel);
+                              targetController.taskModel.taskSellerListId = targetController.allUser;
+                              targetController.taskModel.taskDate = targetController.taskDate;
+                              if (targetController.taskModel.taskId != null) {
+                                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                                  if (value) targetController.updateTask(targetController.taskModel);
                                 });
                               } else {
-                                checkPermissionForOperation(
-                                        AppConstants.roleUserRead,
-                                        AppConstants.roleViewTask)
-                                    .then((value) {
-                                  if (value) controller.addTask(taskModel);
+                                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                                  if (value) targetController.addTask(targetController.taskModel);
                                 });
                               }
                             }
                           },
-                          child: Text(
-                              taskModel.taskId != null ? "تعديل" : "إنشاء")),
+                          child: Text(targetController.taskModel.taskId != null ? "تعديل" : "إنشاء")),
                     ),
                     const SizedBox(
                       height: 50,

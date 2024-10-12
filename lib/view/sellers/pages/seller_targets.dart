@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/target_pointer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +22,7 @@ class _SellerTargetState extends State<SellerTarget> {
   final GlobalKey<TargetPointerWidgetState> othersKey = GlobalKey<TargetPointerWidgetState>();
   final GlobalKey<TargetPointerWidgetState> mobileKey = GlobalKey<TargetPointerWidgetState>();
   late ({Map<String, int> productsMap, double mobileTotal, double otherTotal}) sellerData;
-  TargetViewModel targetViewModel = Get.find<TargetViewModel>();
+  TargetController targetViewModel = Get.find<TargetController>();
   SellerModel? sellerModel;
   SellersViewModel sellersViewModel = Get.find<SellersViewModel>();
 
@@ -115,7 +115,7 @@ class _SellerTargetState extends State<SellerTarget> {
                       // sellerData = sellerData;
                       mobileKey.currentState!.addValue(sellerData.mobileTotal.toInt());
                     }
-                    return GetBuilder<TargetViewModel>(builder: (controller) {
+                    return GetBuilder<TargetController>(builder: (controller) {
                      List<TaskModel>allUserTask= controller.allTarget.values.where((element) => element.taskSellerListId.contains(widget.sellerId)&&element.isTaskAvailable!,).toList();
                       return Column(
                         children: [

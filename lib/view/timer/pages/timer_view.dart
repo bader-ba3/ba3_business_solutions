@@ -25,9 +25,6 @@ class _TimerViewState extends State<TimerView> {
     _stopWatchTimer = StopWatchTimer(
       mode: StopWatchMode.countUp,
     );
-    // _stopWatchTimer.secondTime.listen((event) {
-    //   HiveDataBase.timerTimeBox.put("time", event);
-    // });
     UserModel userModel = userManagementViewModel.allUserList[widget.oldKey]!;
     int totalSec = 0;
     bool isClosed = false;

@@ -29,19 +29,12 @@ class DataBaseViewModel extends GetxController {
   }
 
   getAllDataBase() {
-    FirebaseFirestore.instance
-        .collection(AppConstants.settingCollection)
-        .doc(AppConstants.dataCollection)
-        .snapshots()
-        .listen((value) {
+    FirebaseFirestore.instance.collection(AppConstants.settingCollection).doc(AppConstants.dataCollection).snapshots().listen((value) {
       // databaseList.clear();
       print(value.data());
-      databaseList =
-          (value.data()?['dataList'] as List).map((e) => e.toString()).toList();
+      databaseList = (value.data()?['dataList'] as List).map((e) => e.toString()).toList();
 
-      WidgetsFlutterBinding.ensureInitialized()
-          .waitUntilFirstFrameRasterized
-          .then((value) {
+      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
         update();
       });
     });
@@ -52,7 +45,7 @@ class DataBaseViewModel extends GetxController {
     await Get.deleteAll(force: true);
     Get.put(UserManagementController(), permanent: true);
     Get.put(AccountViewModel(), permanent: true);
-    Get.put(StoreViewModel(), permanent: true);
+    Get.put(StoreController(), permanent: true);
     Get.put(ProductViewModel(), permanent: true);
     Get.put(BondViewModel(), permanent: true);
     Get.put(PatternViewModel(), permanent: true);
@@ -88,10 +81,7 @@ class DataBaseViewModel extends GetxController {
     if (databaseList.contains(databaseName)) {
       Get.snackbar("خطأ", "يوجد قاعدة بيانات بنفس الاسم");
     } else {
-      FirebaseFirestore.instance
-          .collection(AppConstants.settingCollection)
-          .doc(AppConstants.dataCollection)
-          .update({
+      FirebaseFirestore.instance.collection(AppConstants.settingCollection).doc(AppConstants.dataCollection).update({
         'dataList': FieldValue.arrayUnion([databaseName]),
       });
     }

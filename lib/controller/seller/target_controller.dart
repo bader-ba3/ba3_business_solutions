@@ -9,18 +9,37 @@ import '../../model/invoice/invoice_record_model.dart';
 import '../../model/seller/task_model.dart';
 import '../product/product_view_model.dart';
 
-class TargetViewModel extends GetxController {
+class TargetController extends GetxController {
   RxMap<String, TaskModel> allTarget = <String, TaskModel>{}.obs;
 
-  TargetViewModel() {
+  TargetController() {
     getAllTargets();
   }
 
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
+  late TaskModel taskModel;
+  List<String> allUser = [];
+  String? taskDate;
+
+  initTask([String? key]) {
+    if (key == null) {
+      productNameController.clear();
+      quantityController.clear();
+      taskModel = TaskModel(taskType: AppConstants.taskTypeProduct);
+      taskDate = "${DateTime.now().year}-${DateTime.now().month}";
+      allUser.clear();
+    } else {
+      taskModel = TaskModel.fromJson(Get.find<TargetController>().allTarget[key]!.toJson());
+      productNameController.text = getProductNameFromId(taskModel.taskProductId);
+      quantityController.text = taskModel.taskQuantity.toString();
+      allUser.assignAll(taskModel.taskSellerListId);
+      taskDate = taskModel.taskDate;
+    }
+  }
+
   getAllTargets() {
-    FirebaseFirestore.instance
-        .collection(AppConstants.tasksCollection)
-        .snapshots()
-        .listen((value) {
+    FirebaseFirestore.instance.collection(AppConstants.tasksCollection).snapshots().listen((value) {
       allTarget.clear();
       for (var element in value.docs) {
         TaskModel model = TaskModel.fromJson(element.data());
@@ -32,30 +51,20 @@ class TargetViewModel extends GetxController {
 
   void addTask(TaskModel targetModel) {
     targetModel.taskId = generateId(RecordType.task);
-    FirebaseFirestore.instance
-        .collection(AppConstants.tasksCollection)
-        .doc(targetModel.taskId)
-        .set(targetModel.toJson());
+    FirebaseFirestore.instance.collection(AppConstants.tasksCollection).doc(targetModel.taskId).set(targetModel.toJson());
   }
 
   void updateTask(TaskModel targetModel) {
-    FirebaseFirestore.instance
-        .collection(AppConstants.tasksCollection)
-        .doc(targetModel.taskId)
-        .update(
+    FirebaseFirestore.instance.collection(AppConstants.tasksCollection).doc(targetModel.taskId).update(
           targetModel.toJson(),
         );
   }
 
   void deleteTask(TaskModel targetModel) {
-    FirebaseFirestore.instance
-        .collection(AppConstants.tasksCollection)
-        .doc(targetModel.taskId)
-        .delete();
+    FirebaseFirestore.instance.collection(AppConstants.tasksCollection).doc(targetModel.taskId).delete();
   }
 
-  ({double mobileTotal, double otherTotal, Map<String, int> productsMap})
-      checkTask(String sellerId) {
+  ({double mobileTotal, double otherTotal, Map<String, int> productsMap}) checkTask(String sellerId) {
 /*    double mobileTotal = 0;
     double otherTotal = 0;
     Map<String, int> productsMap = {};
@@ -72,8 +81,7 @@ class TargetViewModel extends GetxController {
             return element.globalType == AppConstants.globalTypeInvoice &&
                 element.invType != AppConstants.invoiceTypeBuy &&
                 element.invSeller == sellerId &&
-                element.invDate?.split("-")[1] ==
-                    Timestamp.now().toDate().month.toString().padLeft(2, "0");
+                element.invDate?.split("-")[1] == Timestamp.now().toDate().month.toString().padLeft(2, "0");
           },
         )
         .map(
@@ -83,16 +91,12 @@ class TargetViewModel extends GetxController {
     if (total.isNotEmpty) {
       for (var records in total) {
         for (InvoiceRecordModel oneRecord in records ?? []) {
-          if (oneRecord.invRecGift == 0 ||
-              oneRecord.invRecGift == null &&
-                  oneRecord.invRecQuantity != null) {
+          if (oneRecord.invRecGift == 0 || oneRecord.invRecGift == null && oneRecord.invRecQuantity != null) {
             if (oneRecord.invRecTotal! / oneRecord.invRecQuantity! <= 1000) {
-              productsMap[oneRecord.invRecProduct!] =
-                  oneRecord.invRecQuantity!.toInt();
+              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
               accessoryList.add(oneRecord.invRecTotal!);
             } else {
-              productsMap[oneRecord.invRecProduct!] =
-                  oneRecord.invRecQuantity!.toInt();
+              productsMap[oneRecord.invRecProduct!] = oneRecord.invRecQuantity!.toInt();
               mobileList.add(oneRecord.invRecTotal!);
             }
           }
@@ -145,9 +149,7 @@ class TargetViewModel extends GetxController {
       accountPickList.addIf(
           !value.prodIsGroup! &&
               (value.prodCode!.toLowerCase().contains(text.toLowerCase()) ||
-                  value.prodFullCode!
-                      .toLowerCase()
-                      .contains(text.toLowerCase()) ||
+                  value.prodFullCode!.toLowerCase().contains(text.toLowerCase()) ||
                   value.prodName!.toLowerCase().contains(text.toLowerCase())),
           value.prodName!);
     });

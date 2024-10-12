@@ -10,7 +10,7 @@ import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dar
 import 'package:ba3_business_solutions/controller/print/print_view_model.dart';
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/target_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/cards_view_model.dart';
 import 'package:get/get.dart';
@@ -35,7 +35,7 @@ class GetBinding extends Bindings {
     Get.put(ProductViewModel());
     Get.put(UserManagementController());
     Get.put(AccountViewModel());
-    Get.put(StoreViewModel());
+    Get.put(StoreController());
     Get.put(BondViewModel());
     Get.put(PatternViewModel());
     Get.put(SellersViewModel());
@@ -48,13 +48,12 @@ class GetBinding extends Bindings {
     // Get.put(IsolateViewModel());
     Get.put(DataBaseViewModel());
     Get.put(CardsViewModel());
-    Get.put(TargetViewModel());
     Get.put(PrintViewModel());
     Get.put(PlutoViewModel());
 
     // Lazy controllers with fenix
     Get.lazyPut(() => WarrantyController(), fenix: true);
-
     Get.lazyPut(() => ChangesViewModel(), fenix: true);
+    Get.lazyPut(() => TargetController(), fenix: true);
   }
 }
