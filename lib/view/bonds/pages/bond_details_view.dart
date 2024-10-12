@@ -332,6 +332,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                           await globalController.addGlobalBond(GlobalModel(
                                               bondCode: controller.codeController.text,
                                               bondDate: bondController.dateController.text,
+
                                               bondRecord: plutoBondController.handleSaveAll(
                                                 isCredit: widget.bondType == AppConstants.bondTypeCredit
                                                     ? true

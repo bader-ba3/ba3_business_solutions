@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../model/product/product_model.dart';
+import 'custom_product_view.dart';
 
 class ProductManagementView extends StatelessWidget {
   const ProductManagementView({super.key});
@@ -13,21 +14,32 @@ class ProductManagementView extends StatelessWidget {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            Item("المباع خلال شهر", () {}),
-            Item("المباع خلال ٦ اشهر", () {}),
-            Item("المباع خلال سنة", () {}),
-            Item("لم يباع ابدا", () {
-              Map<String, ProductModel> data = productViewModel.productDataMap;
-              data.removeWhere((key, value) => value.prodRecord!.isNotEmpty);
-              // Get.to(()=>CustomAllProduct(data: data ,));
-            }),
-          ],
-        ),
-      ),
+      child: GetBuilder<ProductViewModel>(
+
+          initState: (state) {
+
+            Get.find<ProductViewModel>().initAllProduct();
+            print("object");
+          },
+          builder: (logic) {
+
+        return Scaffold(
+          appBar: AppBar(),
+          body: Column(
+            children: [
+              Item("المباع خلال شهر", () {}),
+              Item("المباع خلال ٦ اشهر", () {}),
+              Item("المباع خلال سنة", () {}),
+              Item("لم يباع ابدا", () {
+
+
+
+                Get.to(()=>const CustomProductView(nunSell: true,));
+              }),
+            ],
+          ),
+        );
+      }),
     );
   }
 

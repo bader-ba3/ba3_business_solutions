@@ -22,7 +22,7 @@ class _DashboardViewState extends State<DashboardView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // Get.find<ChangesViewModel>(). listenChanges();
+    Get.find<ChangesViewModel>(). listenChanges();
   }
 
   @override
@@ -82,7 +82,7 @@ class _DashboardViewState extends State<DashboardView> {
                             icon: const Icon(Icons.refresh)),
                         IconButton(
 
-                            /// this for pay all check
+                            /// this for pay all cheq
                             /*      onPressed: ()async{
                               List<dynamic> global=HiveDataBase.globalModelBox.toMap().entries.where((element)=> element.value.globalType==Const.globalTypeCheque).map((e) => e.value).toList();
                               print(global.length);
@@ -114,6 +114,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   String entryBond=generateId(RecordType.entryBond);
                                   await Future.delayed(Durations.short1);
                                   element.entryBondId=entryBond;
+
                                   await     HiveDataBase.globalModelBox.put(element.cheqId, element);
                                   await globalViewModel.addGlobalBond(
                                     GlobalModel(

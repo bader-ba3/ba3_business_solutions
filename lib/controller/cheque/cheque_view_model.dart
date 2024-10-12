@@ -80,15 +80,17 @@ class ChequeViewModel extends GetxController {
 
   ///checked
   addCheque(GlobalModel globalModel) async {
-    print(globalModel.toFullJson());
-    await FirebaseFirestore.instance
-        .collection(AppConstants.chequesCollection)
-        .doc(globalModel.cheqId)
-        .set(globalModel.toFullJson());
+
+    // await FirebaseFirestore.instance
+    //     .collection(AppConstants.chequesCollection)
+    //     .doc(globalModel.cheqId)
+    //     .set(globalModel.toFullJson());
     entryBondController.allEntryBonds[globalModel.entryBondId!] = globalModel;
     allCheques[globalModel.cheqId!] = globalModel;
-    // GlobalViewModel globalController = Get.find<GlobalViewModel>();
-    // globalController.addGlobalCheque(globalModel);
+
+
+    GlobalViewModel globalController = Get.find<GlobalViewModel>();
+    globalController.addGlobalCheque(globalModel);
     initModel = globalModel;
     update();
   }

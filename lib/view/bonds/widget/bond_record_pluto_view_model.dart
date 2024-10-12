@@ -12,8 +12,7 @@ class BondRecordPlutoViewModel extends GetxController {
 
   getColumns(String type) {
     {
-      Map<PlutoColumn, dynamic> sampleData =
-          BondRecordModel("", 0.0, 0, "", "").toEditedMap(type);
+      Map<PlutoColumn, dynamic> sampleData = BondRecordModel("", 0.0, 0, "", "").toEditedMap(type);
       columns = sampleData.keys.toList();
     }
     return columns;
@@ -47,11 +46,7 @@ class BondRecordPlutoViewModel extends GetxController {
   }
 
   List<PlutoRow> rows = [];
-  late PlutoGridStateManager stateManager = PlutoGridStateManager(
-      columns: [],
-      rows: [],
-      gridFocusNode: FocusNode(),
-      scroll: PlutoGridScrollController());
+  late PlutoGridStateManager stateManager = PlutoGridStateManager(columns: [], rows: [], gridFocusNode: FocusNode(), scroll: PlutoGridScrollController());
   List<PlutoColumn> columns = [];
 
   void updateCellValue(String field, dynamic value) {
@@ -69,11 +64,8 @@ class BondRecordPlutoViewModel extends GetxController {
       total = calcCreditTotal();
     } else {
       for (var element in stateManager.rows) {
-        if (getAccountIdFromText(element.toJson()["bondRecAccount"] ?? "") !=
-            '') {
-          total +=
-              double.tryParse(element.toJson()["bondRecDebitAmount"] ?? "") ??
-                  0.0;
+        if (getAccountIdFromText(element.toJson()["bondRecAccount"] ?? "") != '') {
+          total += double.tryParse(element.toJson()["bondRecDebitAmount"] ?? "") ?? 0.0;
         }
       }
     }
@@ -86,11 +78,8 @@ class BondRecordPlutoViewModel extends GetxController {
       total = calcDebitTotal();
     } else {
       for (var element in stateManager.rows) {
-        if (getAccountIdFromText(element.toJson()["bondRecAccount"] ?? "") !=
-            '') {
-          total +=
-              double.tryParse(element.toJson()["bondRecCreditAmount"] ?? "") ??
-                  0;
+        if (getAccountIdFromText(element.toJson()["bondRecAccount"] ?? "") != '') {
+          total += double.tryParse(element.toJson()["bondRecCreditAmount"] ?? "") ?? 0;
         }
       }
     }
@@ -106,8 +95,7 @@ class BondRecordPlutoViewModel extends GetxController {
   }
 
   double getDefBetweenCreditAndDebt({bool? isDebit}) {
-    return calcCreditTotal(isDebit: isDebit).toInt() -
-        calcDebitTotal(isDebit: isDebit).toInt() * 1.0;
+    return calcCreditTotal(isDebit: isDebit).toInt() - calcDebitTotal(isDebit: isDebit).toInt() * 1.0;
   }
 
   clearRowIndex(int rowIdx) {
@@ -122,8 +110,7 @@ class BondRecordPlutoViewModel extends GetxController {
     stateManager.setShowLoading(true);
     List<BondRecordModel> invRecord = [];
     invRecord = stateManager.rows
-        .where((element) =>
-            getAccountIdFromText(element.cells['bondRecAccount']!.value) != "")
+        .where((element) => getAccountIdFromText(element.cells['bondRecAccount']!.value) != "")
         .map(
           (e) => BondRecordModel.fromPlutoJson(e.toJson()),
         )
@@ -154,13 +141,11 @@ class BondRecordPlutoViewModel extends GetxController {
     return invRecord;
   }
 
-  List<EntryBondRecordModel> handleSaveAllForEntry(
-      {bool? isCredit, String? account}) {
+  List<EntryBondRecordModel> handleSaveAllForEntry({bool? isCredit, String? account}) {
     stateManager.setShowLoading(true);
     List<EntryBondRecordModel> invRecord = [];
     invRecord = stateManager.rows
-        .where((element) =>
-            getAccountIdFromText(element.cells['bondRecAccount']!.value) != "")
+        .where((element) => getAccountIdFromText(element.cells['bondRecAccount']!.value) != "")
         .map(
           (e) => EntryBondRecordModel.fromPlutoJson(e.toJson()),
         )
@@ -171,7 +156,6 @@ class BondRecordPlutoViewModel extends GetxController {
           (invRecord.length + 1).toString(),
           0,
           calcCreditTotal(),
-
           getAccountIdFromText(account),
           "",
         ),
@@ -180,7 +164,6 @@ class BondRecordPlutoViewModel extends GetxController {
       invRecord.add(
         EntryBondRecordModel(
           (invRecord.length + 1).toString(),
-
           calcDebitTotal(),
           0,
           getAccountIdFromText(account),

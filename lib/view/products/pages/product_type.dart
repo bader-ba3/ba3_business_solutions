@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/view/products/pages/product_management_view.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_tree_view.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_view.dart';
 import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
@@ -50,11 +51,11 @@ class _ProductTypeState extends State<ProductType> {
                 if (value) Get.to(() => ProductTreeView());
               });
             }),
-            /*         Item("إدارة المخزون ",(){
-              checkPermissionForOperation(Const.roleUserAdmin , Const.roleViewProduct).then((value) {
-                if(value) Get.to(()=>ProductManagementView());
+                     Item("إدارة المخزون ",(){
+              checkPermissionForOperation(AppConstants.roleUserAdmin , AppConstants.roleViewProduct).then((value) {
+                if(value) Get.to(()=>const ProductManagementView());
               });
-            }), */
+            }),
           ],
         ),
       ),

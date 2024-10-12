@@ -33,9 +33,21 @@ class ProductViewModel extends GetxController {
     getAllProduct();
   }
 
+  bool isLoadingInitAllProduct=true;
+initAllProduct()async{
+  isLoadingInitAllProduct=false;
+  update();
+    HiveDataBase.globalModelBox.values.where((element) => element.globalType==AppConstants.globalTypeInvoice,).forEach((global) {
+      initGlobalProduct(global);
+    },);
+    print( HiveDataBase.globalModelBox.values.where((element) => element.globalType==AppConstants.globalTypeInvoice,).length)
+;  isLoadingInitAllProduct=true;
+  update();
+}
   initGlobalProduct(GlobalModel globalModel) async {
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
     Map<String, List> allRecTotal = {};
+
     bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
     int correctQuantity = isPay ? 1 : -1;
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
@@ -47,9 +59,11 @@ class ProductViewModel extends GetxController {
         }
       }
     }
+
     allRecTotal.forEach((key, value) {
       var recCredit = value.reduce((value, element) => value + element);
       if (productDataMap[key] != null) {
+
         bool isStoreProduct = productDataMap[key]!.prodType == AppConstants.productTypeStore;
         InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
         // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat

@@ -44,11 +44,11 @@ class ChangesViewModel extends GetxController {
   }
 
   listenChanges() {
-    FirebaseFirestore.instance.collection(AppConstants.changesCollection).where("ali", isEqualTo: null).snapshots().listen((value) async {
+    FirebaseFirestore.instance.collection(AppConstants.changesCollection)/*.where("ali", isEqualTo: null)*/.snapshots().listen((value) async {
       // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
       for (var element in value.docs) {
-        if (element.data()["ali"] == null) {
+        if (element.data()["ali"] != "asd") {
           print(element['changeType']);
           if (element['changeType'] == AppConstants.productsCollection) {
             ProductViewModel productViewModel = Get.find<ProductViewModel>();
