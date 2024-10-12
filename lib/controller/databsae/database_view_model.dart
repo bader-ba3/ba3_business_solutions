@@ -50,7 +50,7 @@ class DataBaseViewModel extends GetxController {
   Future<void> setDataBase(String databaseName, context) async {
     init(oldData: databaseName);
     await Get.deleteAll(force: true);
-    Get.put(UserManagementViewModel(), permanent: true);
+    Get.put(UserManagementController(), permanent: true);
     Get.put(AccountViewModel(), permanent: true);
     Get.put(StoreViewModel(), permanent: true);
     Get.put(ProductViewModel(), permanent: true);

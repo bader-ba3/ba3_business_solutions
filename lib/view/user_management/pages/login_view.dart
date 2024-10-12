@@ -20,8 +20,8 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool? isNfcAvailable;
-  UserManagementViewModel userViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userViewController =
+      Get.find<UserManagementController>();
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(
                   height: 75,
-                  child: GetBuilder<UserManagementViewModel>(
+                  child: GetBuilder<UserManagementController>(
                       builder: (controller) {
                     return controller.userStatus != UserManagementStatus.login
                         ? isNfcAvailable ?? false
@@ -144,7 +144,7 @@ class _LoginViewState extends State<LoginView> {
                           );
                   }),
                 ),
-                GetBuilder<UserManagementViewModel>(
+                GetBuilder<UserManagementController>(
                   builder: (controller) {
                     if (Get.isRegistered<GlobalViewModel>()) {
                       GlobalViewModel globalModel = Get.find<GlobalViewModel>();

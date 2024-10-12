@@ -24,10 +24,25 @@ enum UserManagementStatus {
   auth,
 }
 
-class UserManagementViewModel extends GetxController {
-  UserManagementViewModel() {
+class UserManagementController extends GetxController {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController pinController = TextEditingController();
+
+  UserManagementController() {
     getAllRole();
     initAllUser();
+  }
+
+  initUser([String? userId]) {
+    if (userId == null) {
+      nameController.clear();
+      pinController.clear();
+      initAddUserModel = UserModel();
+    } else {
+      initAddUserModel = UserModel.fromJson(allUserList[userId]!.toJson());
+      nameController.text = initAddUserModel?.userName ?? "";
+      pinController.text = initAddUserModel?.userPin ?? "";
+    }
   }
 
   Map<String, RoleModel> allRole = {};
@@ -239,50 +254,50 @@ class UserManagementViewModel extends GetxController {
 }
 
 getMyUserName() {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.myUserModel?.userName;
 }
 
 getMyUserSellerId() {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.myUserModel?.userSellerId;
 }
 
 getMyUserUserId() {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.myUserModel?.userId;
 }
 
 List? getMyUserFaceId() {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.myUserModel?.userFaceId;
 }
 
 getMyUserRole() {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.myUserModel?.userRole;
 }
 
 getUserNameById(id) {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.allUserList[id]?.userName;
 }
 
 UserModel getUserModelById(id) {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   return userManagementViewController.allUserList[id]!;
 }
 
 bool checkPermission(role, page) {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   Map<String, List<String>>? userRole = userManagementViewController
       .allRole[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[page]?.contains(role) ?? false) {
@@ -293,8 +308,8 @@ bool checkPermission(role, page) {
 }
 
 bool checkMainPermission(role) {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   Map<String, List<String>>? userRole = userManagementViewController
       .allRole[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[role]?.isNotEmpty ?? false) {
@@ -305,8 +320,8 @@ bool checkMainPermission(role) {
 }
 
 Future<bool> checkPermissionForOperation(role, page) async {
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
   Map<String, List<String>>? userRole = userManagementViewController
       .allRole[userManagementViewController.myUserModel?.userRole]?.roles;
   String error = "";

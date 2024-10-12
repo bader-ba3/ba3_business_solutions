@@ -47,8 +47,8 @@ class _UserManagementState extends State<UserManagement> {
 
   @override
   Widget build(BuildContext context) {
-    UserManagementViewModel userManagementViewController =
-        Get.find<UserManagementViewModel>();
+    UserManagementController userManagementViewController =
+        Get.find<UserManagementController>();
     userManagementViewController.checkUserStatus();
     return const Scaffold(
         body: Center(

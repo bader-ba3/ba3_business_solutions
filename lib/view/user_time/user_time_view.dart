@@ -13,7 +13,7 @@ class UserTimeView extends StatelessWidget {
       appBar: AppBar(
         title: const Text("تسجيل الدوام"),
       ),
-      body: GetBuilder<UserManagementViewModel>(builder: (logic) {
+      body: GetBuilder<UserManagementController>(builder: (logic) {
         print(logic.allUserList[logic.myUserModel!.userId!]?.logInDateList
             ?.lastOrNull);
         return Column(

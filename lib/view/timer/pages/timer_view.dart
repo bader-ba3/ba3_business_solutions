@@ -16,8 +16,8 @@ class TimerView extends StatefulWidget {
 
 class _TimerViewState extends State<TimerView> {
   late StopWatchTimer _stopWatchTimer;
-  UserManagementViewModel userManagementViewModel =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewModel =
+      Get.find<UserManagementController>();
 
   @override
   void initState() {

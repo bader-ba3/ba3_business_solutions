@@ -4,9 +4,9 @@ import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
-import '../../../core/helper/functions/functions.dart';
-import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/helper/functions/functions.dart';
+import '../../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class AddRoleView extends StatefulWidget {
   const AddRoleView({super.key, this.oldKey});
@@ -19,7 +19,7 @@ class AddRoleView extends StatefulWidget {
 
 class _AddRoleViewState extends State<AddRoleView> {
   Map<String, List<String>> allMap = {};
-  var userManagementController = Get.find<UserManagementViewModel>();
+  var userManagementController = Get.find<UserManagementController>();
   TextEditingController nameController = TextEditingController();
 
   @override
@@ -45,7 +45,7 @@ class _AddRoleViewState extends State<AddRoleView> {
         Expanded(
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: GetBuilder<UserManagementViewModel>(builder: (controller) {
+            child: GetBuilder<UserManagementController>(builder: (controller) {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(controller.roleModel?.roleName ?? "دور جديد"),
@@ -130,7 +130,7 @@ class _AddRoleViewState extends State<AddRoleView> {
     );
   }
 
-  Widget checkBoxWidget(keys, text, UserManagementViewModel controller) {
+  Widget checkBoxWidget(keys, text, UserManagementController controller) {
     return Row(
       children: [
         StatefulBuilder(builder: (context, setstate) {

@@ -15,8 +15,8 @@ class WriteCardView extends StatefulWidget {
 }
 
 class _WriteCardViewState extends State<WriteCardView> {
-  UserManagementViewModel userViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userViewController =
+      Get.find<UserManagementController>();
   CardsViewModel cardViewController = Get.find<CardsViewModel>();
 
   // TextEditingController cardController = TextEditingController();

@@ -44,7 +44,7 @@ class WarrantyController extends GetxController {
 
   void getInvByInvCode(String text) {
     List<WarrantyModel> inv =
-        warrantyMap.values.where((element) => element.invCode == text).toList();
+    warrantyMap.values.where((element) => element.invCode == text).toList();
 
     if (inv.isNotEmpty) {
       buildInvInit(inv.first.invId!);
@@ -72,10 +72,11 @@ class WarrantyController extends GetxController {
 
     Get.find<WarrantyPlutoViewModel>().getRows(initModel.invRecords ?? []);
     isNew = false;
-    WidgetsFlutterBinding.ensureInitialized()
+    WidgetsFlutterBinding
+        .ensureInitialized()
         .waitUntilFirstFrameRasterized
         .then(
-      (value) {
+          (value) {
         update();
       },
     );
@@ -84,12 +85,12 @@ class WarrantyController extends GetxController {
   void getInit() {
     if (warrantyMap.keys.isNotEmpty) {
       invCodeController.text = (int.parse(warrantyMap.values
-                      .map(
-                        (e) => e.invCode,
-                      )
-                      .lastOrNull ??
-                  "0") +
-              1)
+          .map(
+            (e) => e.invCode,
+      )
+          .lastOrNull ??
+          "0") +
+          1)
           .toString();
     } else {
       invCodeController.text = "1";
@@ -105,10 +106,10 @@ class WarrantyController extends GetxController {
   void invNextOrPrev(invCode, bool isPrev) {
     List<WarrantyModel> inv = warrantyMap.values.toList();
     int currentPosition = inv.indexOf(inv
-            .where(
-              (element) => element.invCode == invCode,
-            )
-            .firstOrNull ??
+        .where(
+          (element) => element.invCode == invCode,
+    )
+        .firstOrNull ??
         inv.last);
 
     if (isPrev) {
@@ -116,7 +117,7 @@ class WarrantyController extends GetxController {
         if (inv
             .where(
               (element) => element.invCode == invCode,
-            )
+        )
             .isNotEmpty) {
           buildInvInit(inv[currentPosition - 1].invId!);
         } else {
@@ -133,7 +134,7 @@ class WarrantyController extends GetxController {
   }
 
   saveInvoice() async {
-    UserManagementViewModel myUser = Get.find<UserManagementViewModel>();
+    UserManagementController myUser = Get.find<UserManagementController>();
     initModel.sellerId = myUser.myUserModel!.userSellerId!;
     warrantyMap[initModel.invId!] = initModel;
 

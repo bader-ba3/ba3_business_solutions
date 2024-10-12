@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
-import 'package:ba3_business_solutions/view/user_management/role_management/role_management_view.dart';
-import 'package:ba3_business_solutions/view/user_management/user_crud/all_user.dart';
+import 'package:ba3_business_solutions/view/user_management/pages/role_management/role_management_view.dart';
+import 'package:ba3_business_solutions/view/user_management/pages/user_crud/all_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,8 +16,8 @@ class UserManagementType extends StatefulWidget {
 
 class _UserManagementTypeState extends State<UserManagementType> {
   bool isAdmin = false;
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
 
   @override
   void initState() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../controller/user/user_management_model.dart';
+import '../../../../controller/user/user_management_model.dart';
 
 class TimeDetails extends StatefulWidget {
   final String oldKey;
@@ -21,7 +21,7 @@ class _TimeDetailsState extends State<TimeDetails> {
         appBar: AppBar(
           title: Text(widget.name),
         ),
-        body: GetBuilder<UserManagementViewModel>(
+        body: GetBuilder<UserManagementController>(
           builder: (controller) {
             // UserModel userModel = controller.allUserList[widget.oldKey]!;
             return const SizedBox();

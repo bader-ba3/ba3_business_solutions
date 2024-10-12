@@ -59,7 +59,7 @@ class _AddInventoryTaskViewState extends State<AddInventoryTaskView> {
                 children: [
                   SizedBox(
                     width: Get.width / 5,
-                    child: GetBuilder<UserManagementViewModel>(
+                    child: GetBuilder<UserManagementController>(
                         builder: (controller) {
                       return StatefulBuilder(builder: (context, setstate) {
                         return Column(
@@ -143,13 +143,15 @@ class _AddInventoryTaskViewState extends State<AddInventoryTaskView> {
                           Get.snackbar("خطأ", "يرجى إضافة مستخدمين");
                         } else {
                           if (taskModel.taskId != null) {
-                            checkPermissionForOperation(AppConstants.roleUserRead,
+                            checkPermissionForOperation(
+                                    AppConstants.roleUserRead,
                                     AppConstants.roleViewTask)
                                 .then((value) {
                               if (value) controller.updateTask(taskModel);
                             });
                           } else {
-                            checkPermissionForOperation(AppConstants.roleUserRead,
+                            checkPermissionForOperation(
+                                    AppConstants.roleUserRead,
                                     AppConstants.roleViewTask)
                                 .then((value) {
                               if (value) controller.addTask(taskModel);

@@ -15,8 +15,8 @@ class CardManagementType extends StatefulWidget {
 
 class _CardManagementTypeState extends State<CardManagementType> {
   bool isAdmin = false;
-  UserManagementViewModel userManagementViewController =
-      Get.find<UserManagementViewModel>();
+  UserManagementController userManagementViewController =
+      Get.find<UserManagementController>();
 
   @override
   void initState() {

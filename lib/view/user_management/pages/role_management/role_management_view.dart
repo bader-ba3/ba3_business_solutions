@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/user_management/role_management/add_role.dart';
+import 'package:ba3_business_solutions/view/user_management/pages/role_management/add_role.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class RoleManagementView extends StatelessWidget {
   const RoleManagementView({super.key});
@@ -31,7 +31,7 @@ class RoleManagementView extends StatelessWidget {
                   ],
                 ),
                 body:
-                    GetBuilder<UserManagementViewModel>(builder: (controller) {
+                    GetBuilder<UserManagementController>(builder: (controller) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(

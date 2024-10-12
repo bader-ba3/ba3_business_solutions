@@ -48,7 +48,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               Text(
-                Get.find<UserManagementViewModel>().myUserModel?.userName ?? "",
+                Get.find<UserManagementController>().myUserModel?.userName ??
+                    "",
                 style: const TextStyle(color: Colors.blue, fontSize: 14),
               ),
             ],
@@ -56,7 +57,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.find<UserManagementViewModel>().userStatus =
+                  Get.find<UserManagementController>().userStatus =
                       UserManagementStatus.first;
                   Get.offAll(const LoginView());
                 },

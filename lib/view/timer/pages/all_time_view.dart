@@ -19,7 +19,7 @@ class AllTimeView extends StatelessWidget {
         appBar: AppBar(
           title: const Text("معاينة البريك لكل موظف"),
         ),
-        body: GetBuilder<UserManagementViewModel>(builder: (controller) {
+        body: GetBuilder<UserManagementController>(builder: (controller) {
           return controller.allUserList.isEmpty
               ? const Center(
                   child: Text("لا يوجد مستخدمين بعد"),

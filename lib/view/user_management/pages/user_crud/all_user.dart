@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/user_management/user_crud/add_user.dart';
+import 'package:ba3_business_solutions/view/user_management/pages/user_crud/add_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
-import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../../controller/user/user_management_model.dart';
+import '../../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class AllUserView extends StatefulWidget {
   const AllUserView({super.key});
@@ -42,7 +42,7 @@ class _AllUserViewState extends State<AllUserView> {
         Expanded(
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: GetBuilder<UserManagementViewModel>(
+            child: GetBuilder<UserManagementController>(
               builder: (controller) {
                 return Scaffold(
                   appBar: AppBar(
@@ -51,6 +51,7 @@ class _AllUserViewState extends State<AllUserView> {
                       AppButton(
                           title: "إضافة",
                           onPressed: () {
+                            Get.find<UserManagementController>().initUser();
                             Get.to(() => const AddUserView());
                           },
                           iconData: Icons.add),
@@ -70,11 +71,11 @@ class _AllUserViewState extends State<AllUserView> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => AddUserView(
-                                      oldKey: controller.allUserList.values
-                                          .toList()[index]
-                                          .userId,
-                                    ));
+                                Get.find<UserManagementController>().initUser(
+                                    controller.allUserList.values
+                                        .toList()[index]
+                                        .userId);
+                                Get.to(() => const AddUserView());
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
