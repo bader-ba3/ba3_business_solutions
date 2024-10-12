@@ -386,7 +386,7 @@ class _AddProductState extends State<AddProduct> {
                                   if (value) {
                                     productController.updateProduct(
                                         editedProduct,
-                                        withLogger: true);
+                                        withLogger: false);
                                     isEdit = false;
                                   }
                                 });

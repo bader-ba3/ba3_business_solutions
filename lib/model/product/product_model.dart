@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/model/product/product_record_model.dart';
 
 import '../../controller/product/product_view_model.dart';
@@ -22,6 +23,7 @@ class ProductModel {
   bool? prodIsParent, prodIsGroup, prodIsLocal;
   List? prodChild = [];
   List<ProductRecordModel>? prodRecord = [];
+  List<ProductImei>? prodImei = [];
   int? prodGroupPad;
 
   ProductModel({
@@ -43,6 +45,7 @@ class ProductModel {
     this.prodIsLocal,
     this.prodGroupPad,
     this.prodAverageBuyPrice,
+    this.prodImei,
   });
 
   ProductModel.fromJson(Map<dynamic, dynamic> map) {
@@ -66,12 +69,19 @@ class ProductModel {
       map['prodRecord'].forEach((e) {
         if (e.runtimeType == Map<dynamic, dynamic>) {
           prodRecord?.add(ProductRecordModel.fromJson(e));
-        } else {
-          prodRecord?.add(e);
         }
       });
     } else {
       prodRecord = [];
+    }
+    if (map['prodImei'] != [] && map['prodImei'] != null) {
+      map['prodImei'].forEach((e) {
+        if (e.runtimeType == Map<dynamic, dynamic>) {
+          prodImei?.add(ProductImei.fromJson(e));
+        }
+      });
+    } else {
+      prodImei = [];
     }
     prodIsGroup = map['prodIsGroup'];
     prodIsLocal = map['prodIsLocal'];
@@ -186,6 +196,7 @@ class ProductModel {
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
       'prodGroupPad': prodGroupPad,
+      'prodImei': prodImei?.map((e) => e.toJson(),).toList(),
     };
   }
 
@@ -211,6 +222,7 @@ class ProductModel {
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
       'prodGroupPad': prodGroupPad,
+      'prodImei': prodImei?.map((e) => e.toJson(),).toList(),
     };
   }
 

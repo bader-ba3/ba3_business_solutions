@@ -10,6 +10,7 @@ import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_discount_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
+import 'package:ba3_business_solutions/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
@@ -37,6 +38,9 @@ class InvoiceViewModel extends GetxController {
     ..text = DateTime.now().toString().split(" ")[0];
   var endDateController = TextEditingController()
     ..text = DateTime.now().toString().split(" ")[0];
+
+
+  Map<String,ProductImei> imeiMap={};
 
   GlobalModel? invoiceForSearch;
 
@@ -131,7 +135,6 @@ class InvoiceViewModel extends GetxController {
 
     plutoInvController.changeVat();
     update();
-    // invoiceController.invCustomerAccountController.text = await getAccountComplete(invoiceController.invCustomerAccountController.text);
   }
 
   searchInvoice(String invPartnerId) {
@@ -142,47 +145,7 @@ class InvoiceViewModel extends GetxController {
         .firstOrNull;
   }
 
-/*  /// we don't need this
-  getDataForPluto() async {
-    // IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
-    isolateViewModel.init();
-    print("from invoice View");
-    final a = await compute<({List<GlobalModel> invoiceModel, IsolateViewModel isolateViewModel}), List<GlobalModel>>((message) {
-      Get.put(message.isolateViewModel);
-      return message.invoiceModel;
-    }, (invoiceModel: invoiceModel.values.toList(), isolateViewModel: isolateViewModel));
-    allInvoiceForPluto = a;
-    // Get.find<PlutoViewModel>().  update();
-    update();
-    // return a;
-  }*/
 
-/*
-  onCellTap(RowColumnIndex rowColumnIndex) {
-    if (rowColumnIndex.rowIndex + 1 == records.length) {
-      records.add(InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault));
-      invoiceRecordSource.buildDataGridRows(records, getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat);
-      invoiceRecordSource.updateDataGridSource();
-    }
-  }
-*/
-
-/*  onDiscountCellTap(RowColumnIndex rowColumnIndex) {
-    if (rowColumnIndex.rowIndex + 1 == discountRecords.length) {
-      discountRecords.add(InvoiceDiscountRecordModel());
-      invoiceDiscountRecordSource.buildDataGridRows(discountRecords);
-      invoiceDiscountRecordSource.updateDataGridSource();
-    }
-  }*/
-
-/*
-  changeSecAccount() {
-    //invoiceRecordSource.buildDataGridRows(records, getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat);
-    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
-    invoiceRecordSource.updateDataGridSource();
-    update();
-  }
-*/
 
   initAllInvoice() {
     invoiceAllDataGridSource = allInvoiceDataGridSource(invoiceModel);
@@ -190,23 +153,7 @@ class InvoiceViewModel extends GetxController {
     update();
   }
 
-  // getAllInvoices() async {
-  // _invoicesCollectionRef.snapshots().listen((value) {
-  //   _invoiceModel.clear();
-  //   for (int i = 0; i < value.docs.length; i++) {
-  //     value.docs[i].reference.collection("invRecord").snapshots().listen((value0) {
-  //       List<InvoiceRecordModel> _ = [];
-  //       for (var element in value0.docs) {
-  //         _.add(InvoiceRecordModel.fromJson(element.data()));
-  //       }
-  //       _invoiceModel[value.docs[i]['invId']] = GlobalModel.fromJson(value.docs[i].data() as Map<String, dynamic>);
-  //       _invoiceModel[value.docs[i]['invId']]?.invRecords = _;
-  //       invoiceAllDataGridSource.updateDataGridSource();
-  //       update();
-  //     });
-  //   }
-  // });
-  // }
+
 
   initGlobalInvoice(GlobalModel globalModel) {
     invoiceModel[globalModel.invId!] = globalModel;
@@ -308,50 +255,7 @@ class InvoiceViewModel extends GetxController {
     return nextPrevList.keys.toList().contains(invCodeController.text);
   }
 
-/*  buildSource(String billId) {
-    records = invoiceModel[billId]!.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
-    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
-  }*/
 
-/*  buildSourceRecent(GlobalModel model) {
-    records = model.invRecords! + [InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault)];
-    invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: secondaryAccountController.text == "" ? "a" : getAccountModelFromId(getAccountIdFromText(secondaryAccountController.text))!.accVat!);
-  }*/
-
-/*
-  buildDiscountSource(String billId) {
-    discountRecords = invoiceModel[billId]!.invDiscountRecord! + [InvoiceDiscountRecordModel()];
-    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
-  }
-*/
-
-/*  buildDiscountSourceRecent(GlobalModel model) {
-    discountRecords = model.invDiscountRecord! + [InvoiceDiscountRecordModel()];
-    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
-  }*/
-
-/*  rebuildDiscount() {
-    double totalWithoutVat = computeWithoutVatTotal();
-    for (InvoiceDiscountRecordModel model in discountRecords) {
-      if (model.discountId != null) {
-        if ((model.discountTotal ?? 0) > 0) {
-          if (model.isChooseDiscountTotal == true) {
-            model.discountPercentage = model.discountTotal! / totalWithoutVat;
-          } else if (model.isChooseDiscountTotal == false) {
-            model.discountTotal = totalWithoutVat * model.discountPercentage! / 100;
-          }
-        } else if ((model.addedTotal ?? 0) > 0) {
-          if (model.isChooseAddedTotal == true) {
-            model.addedPercentage = model.addedTotal! / totalWithoutVat;
-          } else if (model.isChooseAddedTotal == false) {
-            model.addedTotal = totalWithoutVat * model.addedPercentage! / 100;
-          }
-        }
-      }
-    }
-    invoiceDiscountRecordSource = InvoiceDiscountRecordSource(records: discountRecords);
-    update();
-  }*/
 
   invNextOrPrev(String patId, invCode, bool isPrev) {
     List<GlobalModel> inv = invoiceModel.values
@@ -491,12 +395,7 @@ class InvoiceViewModel extends GetxController {
     }
     dateController = DateTime.now().toString().split(".")[0];
     invDueDateController = DateTime.now().toString().split(".")[0];
-    // records = [...List.generate(5, (index) => InvoiceRecordModel(prodChoosePriceMethod: Const.invoiceChoosePriceMethodeDefault))];
-    // discountRecords = List.generate(3, (index) => InvoiceDiscountRecordModel());
-    // invoiceRecordSource = InvoiceRecordSource(records: records, accountVat: vat);
-    // invoiceDiscountRecordSource = InvoiceDiscountRecordSource(
-    //   records: discountRecords,
-    // );
+
   }
 
   ScreenViewModel screenViewModel = Get.find<ScreenViewModel>();
@@ -506,12 +405,6 @@ class InvoiceViewModel extends GetxController {
         .where((element) => element.patternId == patternId)
         .map((e) => MapEntry(e.invCode!, e.invId!))
         .toList());
-
-    // if (screenViewModel.openedScreen.values.where((element) => element.patternId == patternId).isEmpty) {
-    //   nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
-    // } else {
-    //   nextPrevList = Map.fromEntries(screenViewModel.openedScreen.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
-    // }
   }
 
   String getNextCodeInv() {
@@ -592,12 +485,10 @@ class InvoiceViewModel extends GetxController {
     invDueDateController = initModel.invDueDate;
     firstPayController.text = initModel.firstPay.toString();
 
-    // dateController = initModel.invDate!;
     initCodeList(initModel.patternId);
 
     Get.find<InvoicePlutoViewModel>().getRows(initModel.invRecords ?? []);
-    // buildSource(initModel.invId!);
-    // buildDiscountSource(initModel.invId!);
+
 
     if (!bool) {
       update();
@@ -691,30 +582,12 @@ class InvoiceViewModel extends GetxController {
   }
 
   bool checkAllDiscountRecords() {
-    // for (var element in discountRecords) {
-
-    //   if(( element.discountId != null && (element.accountId == null || element.percentage == null || element.total == null))){
-    //       return true;
-    //   }
-
-    // }
-    // double _total =0;
-    // if(discountRecords.length>1){
-    //   total = discountRecords.map((e)=>e.total??0).reduce((value, element) => value+element);
-    // }else if (discountRecords.length == 1){
-    //   total =discountRecords.first.total??0;
-    // }
-    // if(_total>computeWithoutVatTotal()){
-
-    //     return true;
-    // }
     return false;
   }
 
   getStoreComplete() async {
     storePickList = [];
-    // var userInput = storeController.text;
-    // storeController.clear();
+
     storeViewController.storeMap.forEach((key, value) {
       storePickList.addIf(
           value.stCode!

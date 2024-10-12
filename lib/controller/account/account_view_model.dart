@@ -325,6 +325,7 @@ class AccountViewModel extends GetxController {
       for (var element in HiveDataBase.accountModelBox.values) {
         if (element.accId == null) {
           print(element.toFullJson());
+          print("element.toFullJson()"*30);
         } else {
           accountList[element.accId!] = element;
           accountList[element.accId!]!.accRecord.clear();

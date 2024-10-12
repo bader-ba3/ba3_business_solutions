@@ -169,8 +169,9 @@ class BondRecordPlutoViewModel extends GetxController {
       invRecord.add(
         EntryBondRecordModel(
           (invRecord.length + 1).toString(),
-          calcCreditTotal(),
           0,
+          calcCreditTotal(),
+
           getAccountIdFromText(account),
           "",
         ),
@@ -179,8 +180,9 @@ class BondRecordPlutoViewModel extends GetxController {
       invRecord.add(
         EntryBondRecordModel(
           (invRecord.length + 1).toString(),
-          0,
+
           calcDebitTotal(),
+          0,
           getAccountIdFromText(account),
           "",
         ),

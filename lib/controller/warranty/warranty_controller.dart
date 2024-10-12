@@ -16,7 +16,7 @@ class WarrantyController extends GetxController {
   WarrantyController() {
     for (var element in HiveDataBase.warrantyModelBox.values) {
       warrantyMap[element.invId!] = element;
-      print(element.toJson());
+      // print(element.toJson());
     }
   }
 

@@ -205,7 +205,10 @@ class EntryBondViewModel extends GetxController {
     if (globalModel.entryBondId != null) {
       allEntryBonds[globalModel.entryBondId!] = globalModel;
     } else {
-      print(globalModel.toFullJson());
+
+      ///Todo FixError
+      // print(globalModel.toFullJson());
+      // print("globalModel.toFullJson()"*30);
     }
   }
 

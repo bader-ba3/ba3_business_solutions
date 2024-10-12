@@ -2,6 +2,7 @@ import 'package:ba3_business_solutions/core/shared/widgets/get_product_enter_sho
 import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'package:ba3_business_solutions/main.dart';
+import 'package:ba3_business_solutions/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -586,6 +587,34 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     controller.showContextMenuSubTotal(index: event.rowIdx, productModel: getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!)!, tapPosition: event.offset);
                                   }
                                 }
+                                if (event.cell.column.field == "invRecProduct") {
+
+                                  if (getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) != null) {
+                                    TextEditingController imeiController = TextEditingController();
+                                    Get.defaultDialog(
+                                        title: "اضافة IMEI",
+                                        content: CustomTextFieldWithoutIcon(
+                                          controller: imeiController,
+                                          onSubmitted: (p0) {
+                                            if (!checkProdHaveImei(getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '', p0)) {
+                                              invoiceController.imeiMap[getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? 'sd'] = ProductImei(imei: p0, invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
+                                              Get.back();
+                                            }
+                                          },
+                                        ),
+                                        actions: [
+                                          AppButton(
+                                              title: "اضافة",
+                                              onPressed: () {
+                                                if (!checkProdHaveImei(getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '', imeiController.text)) {
+                                                  invoiceController.imeiMap[getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? 'sd'] = ProductImei(imei: imeiController.text, invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
+                                                  Get.back();
+                                                }
+                                              },
+                                              iconData: Icons.check),
+                                        ]);
+                                  }
+                                }
                                 if (event.cell.column.field == "invRecId") {
                                   Get.defaultDialog(title: "تأكيد الحذف", content: const Text("هل انت متأكد من حذف هذا العنصر"), actions: [
                                     AppButton(
@@ -825,9 +854,9 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           (key, value) => key == _updateData(plutoEditViewModel.invoiceRecord).invId || key == widget.billId,
                                         );
                                         // await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
+
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
-
-
+                                        addImeiToProducts(invoiceController.imeiMap);
                                         // invoiceController.initModel=_updateData(plutoEditViewModel.invoiceRecord);
                                         screenViewModel.update();
                                       }
@@ -926,6 +955,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                   else {
                                     checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInvoice).then((value) async {
                                       if (value) {
+                                        addImeiToProducts(invoiceController.imeiMap);
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
                                       }
                                     });

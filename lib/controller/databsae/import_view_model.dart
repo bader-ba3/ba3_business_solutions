@@ -42,6 +42,7 @@ class ImportViewModel extends GetxController {
       e.bondRecord?.forEach((element) {
         if (element.bondRecAccount == "") {
           print(element.toJson());
+          print("element.toJson()"*30);
           finalList.add(element.bondRecAccount!);
         }
       });

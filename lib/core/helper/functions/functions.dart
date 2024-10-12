@@ -12,6 +12,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../model/product/product_imei.dart';
 import '../../constants/app_constants.dart';
 import '../../utils/pdf_invoice_api.dart';
 
@@ -517,6 +518,25 @@ Future<String> savePdfLocally(GlobalModel model) async {
   }
 }
 
+addImeiToProducts(Map<String, ProductImei> imeiMap) async{
+  imeiMap.forEach(
+    (key, value) async{
+   await   Get.find<ProductViewModel>().updateProduct(Get.find<ProductViewModel>().productDataMap[key]!..prodImei?.add(value));
+    },
+  );
+}
+
+bool checkProdHaveImei(String prodId, String imei) {
+  return Get.find<ProductViewModel>()
+          .productDataMap[prodId]!
+          .prodImei
+          ?.map(
+            (e) => e.imei,
+          )
+          .contains(imei) ??
+      false;
+}
+
 void sendEmailWithPdfAttachment(GlobalModel model) async {
   String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
   String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
@@ -524,7 +544,7 @@ void sendEmailWithPdfAttachment(GlobalModel model) async {
   final smtpServer = gmail(username, password);
   String pdfFilePath = await savePdfLocally(model);
   final message = Message()
-    ..from = Address(username, 'اسم المرسل')
+    ..from = Address(username, 'برج العرب للهواتف المتحركة')
     ..recipients.add("burjalarab000@gmail.com") // البريد الإلكتروني للمستلم
     ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
     ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n </p>"
@@ -536,7 +556,6 @@ void sendEmailWithPdfAttachment(GlobalModel model) async {
   try {
     final sendReport = await send(message, smtpServer);
     print('تم إرسال البريد الإلكتروني بنجاح: $sendReport');
-    // print('تم إرسال البريد الإلكتروني بنجاح: ');
   } on MailerException catch (e) {
     print('حدث خطأ أثناء الإرسال: ${e.toString()}');
     for (var p in e.problems) {
