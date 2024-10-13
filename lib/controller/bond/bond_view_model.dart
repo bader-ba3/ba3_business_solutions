@@ -131,7 +131,7 @@ class BondViewModel extends GetxController {
       plutoEditViewModel.getRows([], type!);
       tempBondModel = GlobalModel();
       codeController.text = getNextBondCode(type: type);
-      dateController.text = '';
+      dateController.text = DateTime.now().toString().split(" ")[0];
       noteController.text = '';
 
       debitOrCreditController.text = '';
