@@ -222,10 +222,7 @@ class AccountViewModel extends GetxController {
     accountList[modeKey.last]?.accRecord.clear();
     List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
         .where((element) {
-          if(element.cheqId!=null){
-            print(element.toFullJson());
 
-          }
           return (allDate.contains(element.bondDate?.split(" ")[0]) ||
                 allDate.contains(element.invDate?.split(" ")[0])) ||
             allDate.contains(element.cheqDate?.split(" ")[0]);

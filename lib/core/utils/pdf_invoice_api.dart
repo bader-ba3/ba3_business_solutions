@@ -104,15 +104,15 @@ class PdfInvoiceApi {
     }).toList();
 
     // استخدام Table.fromTextArray لتنسيق الجدول
-    return pw.Table.fromTextArray(
+    return pw.TableHelper.fromTextArray(
       headers: headers,
       data: data,
       border: null,
       headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-      headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
+      headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       columnWidths: {
-        0: pw.IntrinsicColumnWidth(flex: 10),
+        0: const pw.IntrinsicColumnWidth(flex: 10),
       },
       cellAlignments: {
         0: pw.Alignment.centerLeft,

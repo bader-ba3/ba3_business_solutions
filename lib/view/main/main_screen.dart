@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tab_container/tab_container.dart';
 
+import '../../controller/global/changes_view_model.dart';
 import '../card_management/card_management_view.dart';
 import '../database/database_type.dart';
 import '../import/pages/picker_file.dart';
@@ -30,6 +31,7 @@ class MainScreen extends StatefulWidget {
 
   @override
   State<MainScreen> createState() => _MainScreenState();
+
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
@@ -132,6 +134,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     tabController = TabController(
         length: allData.length, vsync: this, initialIndex: tabIndex);
     pageController = PageController();
+    Get.find<ChangesViewModel>(). listenChanges();
   }
 
   @override

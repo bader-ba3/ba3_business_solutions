@@ -22,7 +22,7 @@ class _DashboardViewState extends State<DashboardView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Get.find<ChangesViewModel>(). listenChanges();
+
   }
 
   @override

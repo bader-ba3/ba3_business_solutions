@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/account/account_view_model.dart';
+import '../../../controller/bond/bond_view_model.dart';
+import '../../../controller/global/global_view_model.dart';
 import '../../../controller/product/product_view_model.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/generate_id.dart';
 import '../../../core/utils/hive.dart';
 import '../../../model/account/account_customer.dart';
 import '../../../model/account/account_model.dart';
+import '../../../model/bond/bond_record_model.dart';
 import '../../../model/bond/entry_bond_record_model.dart';
 import '../../../model/global/global_model.dart';
 import '../../../model/product/product_model.dart';
@@ -17,12 +20,10 @@ class ImportConfigurationView extends StatefulWidget {
   final List<List<String>> productList;
   final List<String> rows;
 
-  const ImportConfigurationView(
-      {super.key, required this.productList, required this.rows});
+  const ImportConfigurationView({super.key, required this.productList, required this.rows});
 
   @override
-  State<ImportConfigurationView> createState() =>
-      _ImportConfigurationViewState();
+  State<ImportConfigurationView> createState() => _ImportConfigurationViewState();
 }
 
 //  return {
@@ -100,10 +101,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             children: [
               DropdownButton<RecordType>(
                   value: type,
-                  items: typeMap.keys
-                      .map((e) => DropdownMenuItem(
-                          value: typeMap[e], child: Text(e.toString())))
-                      .toList(),
+                  items: typeMap.keys.map((e) => DropdownMenuItem(value: typeMap[e], child: Text(e.toString()))).toList(),
                   onChanged: (_) {
                     type = _;
                     if (_ == RecordType.product) {
@@ -145,8 +143,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                                     height: 30,
                                     width: 300,
                                     child: DropdownButton<int>(
-                                        value: setting[
-                                            config.values.toList()[index]],
+                                        value: setting[config.values.toList()[index]],
                                         items: widget.rows
                                             .map((e) => DropdownMenuItem(
                                                   value: widget.rows.indexOf(e),
@@ -155,8 +152,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                                             .toList(),
                                         onChanged: (_) {
                                           // print(widget.rows.indexOf(_!));
-                                          setting[config.values
-                                              .toList()[index]] = _;
+                                          setting[config.values.toList()[index]] = _;
                                           print(setting);
                                           setState(() {});
                                         }),
@@ -169,7 +165,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           ElevatedButton(
               onPressed: () async {
                 if (type == RecordType.product) {
-                  await addProductFree();
+                  await addProduct();
                 } else if (type == RecordType.account) {
                   await addAccountWithOutCustomer();
                 } else if (type == RecordType.cheque) {
@@ -196,10 +192,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 children: List.generate(
                     widget.rows.length,
                     (index) => Column(
-                          children: [
-                            Text(widget.rows[index]),
-                            Text(widget.productList[0][index])
-                          ],
+                          children: [Text(widget.rows[index]), Text(widget.productList[0][index])],
                         )),
               ))
         ],
@@ -211,18 +204,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     List<ProductModel> finalData = [];
     for (var element in widget.productList) {
       //print(element[setting["prodName"]]);
-      bool isGroup =
-          !(element[setting['prodType']].removeAllWhitespace == "خدمية" ||
-              element[setting['prodType']].removeAllWhitespace == "مستودعية");
-      var code = element[setting["prodCode"]]
-          .replaceAll(element[setting["prodParentId"]], "");
+      bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
+      var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
       var parentId = "F${element[setting["prodParentId"]]}";
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String? chechIsExist = isGroup
-          ? getProductIdFromName(
-              "F-${element[setting["prodName"]].replaceAll("- ", "")}")
-          : getProductIdFromName("F-" + element[setting["prodName"]]);
+      String? chechIsExist = isGroup ? getProductIdFromName("F-${element[setting["prodName"]].replaceAll("- ", "")}") : getProductIdFromName("F-" + element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -247,10 +234,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             prodRetailPrice: element[setting['prodRetailPrice']],
             prodCostPrice: element[setting['prodCostPrice']],
             prodMinPrice: element[setting['prodMinPrice']],
-            prodType:
-                element[setting['prodType']].removeAllWhitespace == "خدمية"
-                    ? AppConstants.productTypeService
-                    : AppConstants.productTypeStore,
+            prodType: element[setting['prodType']].removeAllWhitespace == "خدمية" ? AppConstants.productTypeService : AppConstants.productTypeStore,
             // prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
             // prodIsParent : element[setting['prodParentId']].isBlank,
             prodParentId: parentId.isBlank! ? null : parentId,
@@ -293,10 +277,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       print(element.toJson());
 
       ///FireBse Todo
-      await FirebaseFirestore.instance
-          .collection(AppConstants.productsCollection)
-          .doc(element.prodId)
-          .set(element.toJson());
+      await FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
     }
     // i = 0;
@@ -330,18 +311,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
     List<ProductModel> finalData = [];
     for (var element in widget.productList) {
       //print(element[setting["prodName"]]);
-      bool isGroup =
-          !(element[setting['prodType']].removeAllWhitespace == "خدمية" ||
-              element[setting['prodType']].removeAllWhitespace == "مستودعية");
-      var code = element[setting["prodCode"]]
-          .replaceAll(element[setting["prodParentId"]], "");
+      bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
+      var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
       var parentId = element[setting["prodParentId"]];
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String? chechIsExist = isGroup
-          ? getProductIdFromName(
-              element[setting["prodName"]].replaceAll("- ", ""))
-          : getProductIdFromName(element[setting["prodName"]]);
+      String? chechIsExist = isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -373,9 +348,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 : AppConstants.productTypeStore,
             // prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
             // prodIsParent : element[setting['prodParentId']].isBlank,
-            prodParentId: parentId.isBlank!
-                ? null
-                : getProductIdFromFullName("L" + parentId),
+            prodParentId: parentId.isBlank! ? null : getProductIdFromFullName("L" + parentId),
             prodIsParent: parentId.isBlank,
             prodIsGroup: isGroup));
       }
@@ -412,21 +385,14 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       i++;
       print("$i OF ${finalData.length}");
       print(element.toJson());
-      await FirebaseFirestore.instance
-          .collection(AppConstants.productsCollection)
-          .doc(element.prodId)
-          .set(element.toJson());
+      await FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(element.prodId).set(element.toJson());
       HiveDataBase.productModelBox.put(element.prodId, element);
       print(element.prodParentId);
       if (element.prodParentId != null && element.prodParentId != '') {
-        ProductModel parentModel =
-            getProductModelFromId(element.prodParentId!)!;
+        ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
         parentModel.prodChild?.add(element.prodId);
         HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
-        FirebaseFirestore.instance
-            .collection(AppConstants.productsCollection)
-            .doc(parentModel.prodId)
-            .update({
+        FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(parentModel.prodId).update({
           'prodChild': FieldValue.arrayUnion([element.prodId]),
         });
       }
@@ -482,9 +448,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           String accIds = generateId(RecordType.account);
           finalData
               .where(
-                (e) =>
-                    e.accName ==
-                    element[setting["accParentId"]].replaceAll("-", ""),
+                (e) => e.accName == element[setting["accParentId"]].replaceAll("-", ""),
               )
               .first
               .accChild
@@ -505,9 +469,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             accVat: 'GCC',
             accParentId: finalData
                 .where(
-                  (e) =>
-                      e.accName ==
-                      element[setting["accParentId"]].replaceAll("-", ""),
+                  (e) => e.accName == element[setting["accParentId"]].replaceAll("-", ""),
                 )
                 .first
                 .accId,
@@ -548,13 +510,9 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
 
       await HiveDataBase.accountModelBox.put(element.accId, element);
       for (AccountCustomer customer in element.accCustomer ?? []) {
-        await HiveDataBase.accountCustomerBox
-            .put(customer.customerAccountId, customer);
+        await HiveDataBase.accountCustomerBox.put(customer.customerAccountId, customer);
       }
-      await FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(element.accId)
-          .set(element.toJson(), SetOptions(merge: true));
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(element.accId).set(element.toJson(), SetOptions(merge: true));
 /*      HiveDataBase.accountModelBox.put(element.accId, element);
  request.time < timestamp.date(2030, 12, 4)
       if (!element.accIsParent! || element.accParentId != null) {
@@ -593,19 +551,13 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             String accIds = generateId(RecordType.account);
             if (finalData
                     .where(
-                      (e) =>
-                          e.accName ==
-                          element[
-                              setting["accParentId"]] /*.replaceAll("-", "")*/,
+                      (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
                     )
                     .firstOrNull !=
                 null) {
               finalData
                   .where(
-                    (e) =>
-                        e.accName ==
-                        element[
-                            setting["accParentId"]] /*.replaceAll("-", "")*/,
+                    (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
                   )
                   .firstOrNull
                   ?.accChild
@@ -619,24 +571,16 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                 accVat: 'GCC',
                 accParentId: finalData
                     .where(
-                      (e) =>
-                          e.accName ==
-                          element[
-                              setting["accParentId"]] /*.replaceAll("-", "")*/,
+                      (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
                     )
                     .first
                     .accId,
                 accIsParent: accIsParent,
               ));
             } else {
-              AccountModel parent =
-                  getAccountIdFromName(element[setting["accParentId"]])!;
-              HiveDataBase.accountModelBox
-                  .put(parent.accId, parent..accChild.add(accIds));
-              FirebaseFirestore.instance
-                  .collection(AppConstants.accountsCollection)
-                  .doc(parent.accId)
-                  .set({
+              AccountModel parent = getAccountIdFromName(element[setting["accParentId"]])!;
+              HiveDataBase.accountModelBox.put(parent.accId, parent..accChild.add(accIds));
+              FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(parent.accId).set({
                 "accChild": FieldValue.arrayUnion([accIds])
               }, SetOptions(merge: true));
               finalData.add(AccountModel(
@@ -693,10 +637,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
 
       await HiveDataBase.accountModelBox.put(element.accId, element);
 
-      await FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(element.accId)
-          .set(element.toJson(), SetOptions(merge: true));
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(element.accId).set(element.toJson(), SetOptions(merge: true));
     }
   }
 
@@ -709,66 +650,78 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       String cheqId = generateId(RecordType.cheque);
 
       await Future.delayed(const Duration(milliseconds: 100));
-      String cheqType = element[setting["cheqType"]].removeAllWhitespace ==
-              "شيكات مدفوعة".removeAllWhitespace
-          ? AppConstants.chequeTypePay
-          : AppConstants.chequeTypePay;
-      String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace ==
-              "مدفوعة".removeAllWhitespace
-          ? AppConstants.chequeStatusPaid
-          : AppConstants.chequeStatusNotPaid;
+      String cheqType = element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace ? AppConstants.chequeTypePay : AppConstants.chequeTypePay;
+      String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace ? AppConstants.chequeStatusPaid : AppConstants.chequeStatusNotPaid;
       // print(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""));
       // print(element[setting["cheqPrimeryAccount"]]);
       String cheqPrimeryAccount = getAccountIdFromText("اوراق الدفع");
       // print(element[setting["cheqSecoundryAccount"]].toString().split("-")[1]);
       // print(element[setting["cheqSecoundryAccount"]].toString().split("-")[0]);
 
-      String cheqSecoundryAccount = getAccountIdFromText(
-          element[setting["cheqSecoundryAccount"]]
-              .toString()
-              .replaceAll("-", ""));
+      String cheqSecoundryAccount = getAccountIdFromText(element[setting["cheqSecoundryAccount"]].toString().replaceAll("-", ""));
       if (cheqSecoundryAccount == '') {
         print(element[setting["cheqSecoundryAccount"]]);
       }
       String cheqBankAccount = getAccountIdFromText("المصرف");
       String des = "سند قيد مولد من شيك رقم $cheqCode";
       print(element[setting["cheqAllAmount"]].replaceAll(",", ""));
-      double cheqAllAmount =
-          double.parse(element[setting["cheqAllAmount"]].replaceAll(",", ""));
-      int year =
-          int.parse(element[setting["cheqDate"]].toString().split("-")[2]);
-      int min =
-          int.parse(element[setting["cheqDate"]].toString().split("-")[1]);
-      int sec =
-          int.parse(element[setting["cheqDate"]].toString().split("-")[0]);
-      int yearDue =
-          int.parse(element[setting["cheqDateDue"]].toString().split("-")[2]);
-      int minDue =
-          int.parse(element[setting["cheqDateDue"]].toString().split("-")[1]);
-      int secDue =
-          int.parse(element[setting["cheqDateDue"]].toString().split("-")[0]);
+      double cheqAllAmount = double.tryParse(element[setting["cheqAllAmount"]].replaceAll(",", ""))??0.0;
+      int year = int.parse(element[setting["cheqDate"]].toString().split("-")[2]);
+      int min = int.parse(element[setting["cheqDate"]].toString().split("-")[1]);
+      int sec = int.parse(element[setting["cheqDate"]].toString().split("-")[0]);
+      int yearDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[2]);
+      int minDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[1]);
+      int secDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[0]);
       DateTime cheqDate = DateTime(year, min, sec);
       DateTime cheqDateDue = DateTime(yearDue, minDue, secDue);
+      String bondId = '';
+      if (cheqStatus == AppConstants.chequeStatusPaid) {
+        String des = "سند دفع " "${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}";
+        List<BondRecordModel> bondRecord = [];
+        List<EntryBondRecordModel> entryBondRecord = [];
+
+        bondRecord.add(BondRecordModel("00", 0, double.tryParse(cheqAllAmount.toString()) ?? 0, getAccountIdFromText("اوراق الدفع"), des));
+        bondRecord.add(BondRecordModel("01", double.tryParse(cheqAllAmount.toString()) ?? 0, 0, getAccountIdFromText("المصرف"), des));
+
+        // bondRecord.add(BondRecordModel("03", controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
+
+        for (var element in bondRecord) {
+          entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
+        }
+
+        GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+        bondId = generateId(RecordType.bond);
+        await globalViewModel.addGlobalBond(
+          GlobalModel(
+            bondId: bondId,
+            globalType: AppConstants.globalTypeBond,
+            bondDate: DateTime.now().toString(),
+            bondRecord: bondRecord,
+            bondCode: Get.find<BondViewModel>().getNextBondCode(type: AppConstants.bondTypeDebit),
+            entryBondRecord: entryBondRecord,
+            bondDescription: des,
+            bondType: AppConstants.bondTypeDebit,
+            bondTotal: "0",
+          ),
+        );
+      }
       finalData.add(GlobalModel(
         cheqAllAmount: cheqAllAmount.toString(),
         cheqBankAccount: cheqBankAccount,
+        bondId: bondId,
         cheqCode: cheqCode.toString(),
         cheqDate: cheqDate.toString(),
         cheqDeuDate: cheqDateDue.toString(),
         entryBondId: generateId(RecordType.entryBond),
         cheqId: cheqId,
-        cheqName:
-            "${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}",
+        cheqName: "${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}",
         cheqPrimeryAccount: cheqPrimeryAccount,
         cheqSecoundryAccount: cheqSecoundryAccount,
         entryBondRecord: [
           EntryBondRecordModel("01", cheqAllAmount, 0, cheqPrimeryAccount, des),
-          EntryBondRecordModel(
-              "02", 0, cheqAllAmount, cheqSecoundryAccount, des),
+          EntryBondRecordModel("02", 0, cheqAllAmount, cheqSecoundryAccount, des),
         ],
-        cheqRemainingAmount: cheqStatus == AppConstants.chequeStatusPaid
-            ? "0"
-            : cheqAllAmount.toString(),
+        cheqRemainingAmount: cheqStatus == AppConstants.chequeStatusPaid ? "0" : cheqAllAmount.toString(),
         cheqStatus: cheqStatus,
         cheqType: cheqType,
         globalType: AppConstants.globalTypeCheque,

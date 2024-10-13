@@ -42,7 +42,7 @@ class ImportViewModel extends GetxController {
       e.bondRecord?.forEach((element) {
         if (element.bondRecAccount == "") {
           print(element.toJson());
-          print("element.toJson()"*30);
+          // print("element.toJson()" * 30);
           finalList.add(element.bondRecAccount!);
         }
       });
@@ -143,7 +143,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -154,8 +155,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -214,9 +214,7 @@ class ImportViewModel extends GetxController {
           oreginCode.add(element[indexOfNumber]);
           typeList.add(element[indexOfType].split(":")[0]);
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -242,8 +240,7 @@ class ImportViewModel extends GetxController {
               pad = 3;
             }
 
-            String name = getAccountIdFromText(
-                accountList[i][j].replaceAll("-", " "));
+            String name = getAccountIdFromText(accountList[i][j].replaceAll("-", " "));
             if (name == '') {
               print(name);
               print(accountList[i][j].replaceAll("-", ""));
@@ -251,27 +248,19 @@ class ImportViewModel extends GetxController {
 
               print(name);
             }
-            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'),
-                double.parse(
-                    creditList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                double.parse(
-                    debitList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                name, smallDesList[i][j]));
+            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
           }
         }
 
         String type = typeList[i].removeAllWhitespace == "دفع"
             ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppConstants.bondTypeCredit
-            : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppConstants.bondTypeStart
-            : AppConstants.bondTypeDaily;
+                ? AppConstants.bondTypeCredit
+                : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
+                    ? AppConstants.bondTypeStart
+                    : AppConstants.bondTypeDaily;
 
-        DateTime date = DateTime(
-            int.parse(dateList[i].split("/")[2].split(" ")[0]),
-            int.parse(dateList[i].split("/")[1]),
-            int.parse(dateList[i].split("/")[0]));
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
             globalType: AppConstants.globalTypeBond,
@@ -285,7 +274,7 @@ class ImportViewModel extends GetxController {
             entryBondRecord: recordTemp
                 .map(
                   (e) => EntryBondRecordModel.fromJson(e.toJson()),
-            )
+                )
                 .toList(),
             originAmenId: oreginCode[i],
             bondTotal: totalList[i].replaceAll(",", ""),
@@ -298,8 +287,7 @@ class ImportViewModel extends GetxController {
       print(bondList.length);
     }
     print("---------" * 10);
-    Get.to(() =>
-        BondListView(
+    Get.to(() => BondListView(
           bondList: bondList,
         ));
   }
@@ -324,7 +312,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -335,8 +324,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -394,9 +382,7 @@ class ImportViewModel extends GetxController {
           oreginCode.add(codeBond.toString());
           typeList.add("سند يومية");
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -423,19 +409,11 @@ class ImportViewModel extends GetxController {
             }
             String name = getAccountIdFromText(accountList[i][j]);
 
-            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'),
-                double.parse(
-                    creditList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                double.parse(
-                    debitList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                name, smallDesList[i][j]));
+            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
           }
         }
 
-        DateTime date = DateTime(
-            int.parse(dateList[i].split("/")[2].split(" ")[0]),
-            int.parse(dateList[i].split("/")[1]),
-            int.parse(dateList[i].split("/")[0]));
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
             bondDescription: desList[i],
@@ -456,8 +434,7 @@ class ImportViewModel extends GetxController {
     }
     print("---------" * 10);
 
-    Get.to(() =>
-        EntryBondListView(
+    Get.to(() => EntryBondListView(
           bondList: bondList,
         ));
   }
@@ -482,7 +459,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -493,8 +471,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -552,9 +529,7 @@ class ImportViewModel extends GetxController {
           oreginCode.add("F-" + codeBond.toString());
           typeList.add("سند يومية");
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -586,19 +561,11 @@ class ImportViewModel extends GetxController {
               print(name);
             }
 
-            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'),
-                double.parse(
-                    creditList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                double.parse(
-                    debitList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                name, smallDesList[i][j]));
+            recordTemp.add(EntryBondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
           }
         }
 
-        DateTime date = DateTime(
-            int.parse(dateList[i].split("/")[2].split(" ")[0]),
-            int.parse(dateList[i].split("/")[1]),
-            int.parse(dateList[i].split("/")[0]));
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 
         GlobalModel model = GlobalModel(
             bondDescription: desList[i],
@@ -619,8 +586,7 @@ class ImportViewModel extends GetxController {
     }
     print("---------" * 10);
 
-    Get.to(() =>
-        EntryBondListView(
+    Get.to(() => EntryBondListView(
           bondList: bondList,
         ));
   }
@@ -643,7 +609,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -655,8 +622,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -709,13 +675,9 @@ class ImportViewModel extends GetxController {
           print(element[indexOfType].split(":"));
           // codeBond++;
           // codeList.add(element[indexOfType] ==""?codeBond.toString():element[indexOfType].split(":")[1]);
-          typeList.add(
-              element[indexOfType] == "" ? "سند يومية" : element[indexOfType]
-                  .split(":")[0]);
+          typeList.add(element[indexOfType] == "" ? "سند يومية" : element[indexOfType].split(":")[0]);
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -733,11 +695,10 @@ class ImportViewModel extends GetxController {
       });
       BondViewModel bondViewModel = Get.find<BondViewModel>();
 
-      List<({String? bondCode, String? bondType})> allbond = bondViewModel
-          .allBondsItem.values
+      List<({String? bondCode, String? bondType})> allbond = bondViewModel.allBondsItem.values
           .map(
             (e) => (bondCode: e.bondCode, bondType: e.bondType),
-      )
+          )
           .toList();
       for (var i = 0; i < accountList.length; i++) {
         List<BondRecordModel> recordTemp = [];
@@ -756,12 +717,7 @@ class ImportViewModel extends GetxController {
               // print(codeList[i]);
             }
             print("---------");
-            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'),
-                double.parse(
-                    creditList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                double.parse(
-                    debitList[i][j].replaceAll(",", "").replaceAll(";", "")),
-                name, smallDesList[i][j]));
+            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "").replaceAll(";", "")), double.parse(debitList[i][j].replaceAll(",", "").replaceAll(";", "")), name, smallDesList[i][j]));
           }
         }
         // print(typeList[i].removeAllWhitespace);
@@ -769,16 +725,13 @@ class ImportViewModel extends GetxController {
         String type = typeList[i].removeAllWhitespace == "دفع"
             ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppConstants.bondTypeCredit
-            : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppConstants.bondTypeStart
-            : AppConstants.bondTypeDaily;
+                ? AppConstants.bondTypeCredit
+                : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
+                    ? AppConstants.bondTypeStart
+                    : AppConstants.bondTypeDaily;
         // print(type);
 
-        DateTime date = DateTime(
-            int.parse(dateList[i].split("/")[2].split(" ")[0]),
-            int.parse(dateList[i].split("/")[1]),
-            int.parse(dateList[i].split("/")[0]));
+        DateTime date = DateTime(int.parse(dateList[i].split("/")[2].split(" ")[0]), int.parse(dateList[i].split("/")[1]), int.parse(dateList[i].split("/")[0]));
 /*        globalType: AppStrings.globalTypeBond,
     bondDescription: desList[i],
     bondRecord: recordTemp.toList(),
@@ -804,7 +757,7 @@ class ImportViewModel extends GetxController {
             entryBondRecord: recordTemp
                 .map(
                   (e) => EntryBondRecordModel.fromJson(e.toJson()),
-            )
+                )
                 .toList(),
             entryBondCode: "F-${numberList[i].replaceAll(",", "")}",
             // originAmenId: int.parse(codeList[i]).toString(),
@@ -820,13 +773,11 @@ class ImportViewModel extends GetxController {
       print(bondList.length);
       correctDebitAndCredit(bondList);
       print(bondList.length);
-      bondList.removeWhere((element) =>
-          allbond.contains(
+      bondList.removeWhere((element) => allbond.contains(
             (bondCode: element.bondCode, bondType: element.bondType),
           ));
       print(bondList.length);
-      Get.to(() =>
-          BondListView(
+      Get.to(() => BondListView(
             bondList: bondList,
           ));
       // Get.to(() => ProductListView(
@@ -839,35 +790,24 @@ class ImportViewModel extends GetxController {
   correctDebitAndCredit(List bondList) {
     for (var index = 0; index < bondList.length; index++) {
       GlobalModel model = bondList[index];
-      if (model.bondType == AppConstants.bondTypeDebit ||
-          model.bondType == AppConstants.bondTypeCredit) {
+      if (model.bondType == AppConstants.bondTypeDebit || model.bondType == AppConstants.bondTypeCredit) {
         Map<String, double> allRec = {};
         for (var ji = 0; ji < (model.bondRecord ?? []).length; ji++) {
           BondRecordModel element = model.bondRecord![ji];
-          if (model.bondType == AppConstants.bondTypeDebit &&
-              element.bondRecCreditAmount != 0) {
-            if (allRec[element.bondRecAccount!] == null)
-              allRec[element.bondRecAccount!] = 0;
-            allRec[element.bondRecAccount!] =
-                allRec[element.bondRecAccount]! + element.bondRecCreditAmount!;
-          } else if (model.bondType == AppConstants.bondTypeCredit &&
-              element.bondRecDebitAmount != 0) {
-            if (allRec[element.bondRecAccount!] == null)
-              allRec[element.bondRecAccount!] = 0;
-            allRec[element.bondRecAccount!] =
-                allRec[element.bondRecAccount]! + element.bondRecDebitAmount!;
+          if (model.bondType == AppConstants.bondTypeDebit && element.bondRecCreditAmount != 0) {
+            if (allRec[element.bondRecAccount!] == null) allRec[element.bondRecAccount!] = 0;
+            allRec[element.bondRecAccount!] = allRec[element.bondRecAccount]! + element.bondRecCreditAmount!;
+          } else if (model.bondType == AppConstants.bondTypeCredit && element.bondRecDebitAmount != 0) {
+            if (allRec[element.bondRecAccount!] == null) allRec[element.bondRecAccount!] = 0;
+            allRec[element.bondRecAccount!] = allRec[element.bondRecAccount]! + element.bondRecDebitAmount!;
           }
         }
         if (model.bondType == AppConstants.bondTypeCredit) {
           model.bondRecord?.removeWhere((e) => e.bondRecDebitAmount != 0);
-          model.bondRecord?.add(BondRecordModel(
-              "X", 0, allRec.entries.first.value, allRec.entries.first.key,
-              ""));
+          model.bondRecord?.add(BondRecordModel("X", 0, allRec.entries.first.value, allRec.entries.first.key, ""));
         } else {
           model.bondRecord?.removeWhere((e) => e.bondRecCreditAmount != 0);
-          model.bondRecord?.add(BondRecordModel(
-              "X", allRec.entries.first.value, 0, allRec.entries.first.key,
-              ""));
+          model.bondRecord?.add(BondRecordModel("X", allRec.entries.first.value, 0, allRec.entries.first.key, ""));
         }
       }
     }
@@ -901,7 +841,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -914,8 +855,7 @@ class ImportViewModel extends GetxController {
         return;
       }
 
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfPayType = row.indexOf("طريقة الدفع");
@@ -954,8 +894,7 @@ class ImportViewModel extends GetxController {
         var seller = '';
         if (element[indexOfSeller] != "") {
           seller = getSellerIdFromText(element[indexOfSeller]) ?? '';
-          if (seller == '' &&
-              !notFoundSeller.contains(element[indexOfSeller])) {
+          if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
             notFoundSeller.add(element[indexOfSeller]);
           }
         }
@@ -963,41 +902,20 @@ class ImportViewModel extends GetxController {
 
         print(element[indexOfInvCode]);
 
-        List _ = element[indexOfInvCode].toString().replaceAll(" ", "").split(
-            ":");
+        List _ = element[indexOfInvCode].toString().replaceAll(" ", "").split(":");
         if (_[0] == "إخ.م" || _[0] == "إد.م") {
           if (allChanges[_[1]] == null) {
-            allChanges[_[1]] = _[0] == "إخ.م"
-                ? (strart: store, end: null)
-                : (end: store, strart: null);
+            allChanges[_[1]] = _[0] == "إخ.م" ? (strart: store, end: null) : (end: store, strart: null);
             continue;
           } else {
-            allChanges[_[1]] = _[0] == "إخ.م"
-                ? (end: allChanges[_[1]]!.end, strart: store)
-                : (strart: allChanges[_[1]]!.strart, end: store);
+            allChanges[_[1]] = _[0] == "إخ.م" ? (end: allChanges[_[1]]!.end, strart: store) : (strart: allChanges[_[1]]!.strart, end: store);
           }
-          patternModel = (Get
-              .find<PatternViewModel>()
-              .patternModel
-              .values
-              .firstWhere((e) => e.patType == AppConstants.invoiceTypeChange));
+          patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patType == AppConstants.invoiceTypeChange));
         } else {
-          if (element[indexOfInvCode].toString().split(":")[0].replaceAll(
-              " ", "") == "تا") {
-            patternModel = (Get
-                .find<PatternViewModel>()
-                .patternModel
-                .values
-                .firstWhere((e) => e.patName! == "ت ادخال"));
+          if (element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "") == "تا") {
+            patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName! == "ت ادخال"));
           } else {
-            patternModel = (Get
-                .find<PatternViewModel>()
-                .patternModel
-                .values
-                .firstWhere((e) =>
-            e.patName?.replaceAll(" ", "") ==
-                element[indexOfInvCode].toString().split(":")[0].replaceAll(
-                    " ", "")));
+            patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName?.replaceAll(" ", "") == element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")));
           }
         }
         bool isAdd = (patternModel.patType == AppConstants.invoiceTypeAdd);
@@ -1016,28 +934,22 @@ class ImportViewModel extends GetxController {
         // }
         if (patternModel.patType == AppConstants.invoiceTypeSales) {
           // primery = patternModel.patPrimary;
-          primery = getAccountIdFromText(
-              getAccountModelFromId(patternModel.patPrimary)!.accName!);
+          primery = getAccountIdFromText(getAccountModelFromId(patternModel.patPrimary)!.accName!);
           secoundry = getAccountIdFromText(element[indexOfSecoundry]);
         } else if (patternModel.patType == AppConstants.invoiceTypeBuy) {
           primery = getAccountIdFromText(element[indexOfSecoundry]);
           // secoundry = patternModel.patSecondary;
-          secoundry = getAccountIdFromText(
-              getAccountModelFromId(patternModel.patSecondary)!.accName!);
+          secoundry = getAccountIdFromText(getAccountModelFromId(patternModel.patSecondary)!.accName!);
         }
 
-        if (secoundry == '' &&
-            !notFoundAccount.contains(element[indexOfSecoundry]) && !isAdd) {
-          print("secoundry: |" + element[indexOfSecoundry] + "| From " +
-              element[indexOfInvCode]);
+        if (secoundry == '' && !notFoundAccount.contains(element[indexOfSecoundry]) && !isAdd) {
+          print("secoundry: |" + element[indexOfSecoundry] + "| From " + element[indexOfInvCode]);
           notFoundAccount.add(element[indexOfSecoundry]);
           return;
         }
         var product = getProductIdFromName("F-" + element[indexOfProductName]);
-        if (product == '' &&
-            !notFoundProduct.contains("F-" + element[indexOfProductName])) {
-          print("product: |" + "F-" + element[indexOfProductName] + "| From " +
-              element[indexOfInvCode]);
+        if (product == '' && !notFoundProduct.contains("F-" + element[indexOfProductName])) {
+          print("product: |" + "F-" + element[indexOfProductName] + "| From " + element[indexOfInvCode]);
           notFoundProduct.add("F-" + element[indexOfProductName]);
         }
         // if(primery ==""||primery ==null||secoundry ==null||secoundry == ""){
@@ -1053,32 +965,19 @@ class ImportViewModel extends GetxController {
         //print(element[indexOfInvCode]);
         if (invMap[element[indexOfInvCode]] == null) {
           // var invId = generateId(RecordType.invoice);
-          DateTime date = DateTime(
-              int.parse(element[indexOfDate].split("-")[2]),
-              int.parse(element[indexOfDate].split("-")[1]),
-              int.parse(element[indexOfDate].split("-")[0]));
+          DateTime date = DateTime(int.parse(element[indexOfDate].split("-")[2]), int.parse(element[indexOfDate].split("-")[1]), int.parse(element[indexOfDate].split("-")[0]));
           invMap[element[indexOfInvCode]] = GlobalModel(
-            //  invId: invId,
+              //  invId: invId,
               bondId: generateId(RecordType.bond),
               // originId: invId,
-              originAmenId: element[indexOfInvCode].toString().split(":")[1]
-                  .replaceAll(" ", ""),
+              originAmenId: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
               bondType: AppConstants.bondTypeInvoice,
               invIsPending: false,
-              invPayType: element[indexOfPayType].removeAllWhitespace ==
-                  "نقداً".removeAllWhitespace
-                  ? AppConstants.invPayTypeCash
-                  : AppConstants.invPayTypeDue,
+              invPayType: element[indexOfPayType].removeAllWhitespace == "نقداً".removeAllWhitespace ? AppConstants.invPayTypeCash : AppConstants.invPayTypeDue,
               //  bondCode: getNextBondCode(),
-              discountTotal: double.parse(
-                  element[indexOfTotalDiscount].replaceAll("\"", "").replaceAll(
-                      ",", "").replaceAll("٫", ".")),
-              firstPay: double.parse(
-                  element[indexOfFirstPay].replaceAll("\"", "").replaceAll(
-                      ",", "").replaceAll("٫", ".")),
-              addedTotal: double.parse(
-                  element[indexOfTotalAdded].replaceAll("\"", "").replaceAll(
-                      ",", "").replaceAll("٫", ".")),
+              discountTotal: double.parse(element[indexOfTotalDiscount].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
+              firstPay: double.parse(element[indexOfFirstPay].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
+              addedTotal: double.parse(element[indexOfTotalAdded].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
               invComment: "",
               bondCode: "0",
               invMobileNumber: "",
@@ -1087,97 +986,51 @@ class ImportViewModel extends GetxController {
               globalType: AppConstants.globalTypeInvoice,
               invPrimaryAccount: primery,
               invSecondaryAccount: secoundry,
-              invStorehouse: patternModel.patType !=
-                  AppConstants.invoiceTypeChange ? store : allChanges[_[1]]!
-                  .strart,
+              invStorehouse: patternModel.patType != AppConstants.invoiceTypeChange ? store : allChanges[_[1]]!.strart,
               invSecStorehouse: allChanges[_[1]]?.end,
               invDate: date.toString().split(".")[0],
               invCustomerAccount: element[indexOfSecoundry],
               bondDate: date.toString().split(".")[0],
-              invVatAccount: patternModel.patType == AppConstants.invoiceTypeBuy
-                  ? AppConstants.returnVatAccountId
-                  : AppConstants.vatAccountId,
+              invVatAccount: patternModel.patType == AppConstants.invoiceTypeBuy ? AppConstants.returnVatAccountId : AppConstants.vatAccountId,
               invDiscountRecord: [],
-              invTotal: double.parse(
-                  element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(
-                      ",", "").replaceAll("٫", ".")).abs(),
+              invTotal: double.parse(element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
               // invType:  element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")=="مبيع"?AppStrings.invoiceTypeSales:AppStrings.invoiceTypeBuy,
               invType: patternModel.patType,
-              invCode: "F-" +
-                  element[indexOfInvCode].toString().split(":")[1].replaceAll(
-                      " ", ""),
+              invCode: "F-" + element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
               invRecords: [
                 InvoiceRecordModel(
-                  prodChoosePriceMethod: AppConstants
-                      .invoiceChoosePriceMethodeCustom,
+                  prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
                   invRecId: "1",
-                  invRecQuantity: double.parse(
-                      element[indexOfQuantity].toString()
-                          .replaceAll("\"", "")
-                          .replaceAll(",", "")).toInt().abs() + double.parse(
-                      element[indexOfGift].toString()
-                          .replaceAll("\"", "")
-                          .replaceAll(",", "")).toInt().abs(),
-                  invRecProduct: getProductsModelFromName(
-                      "F-" + element[indexOfProductName])!.first.prodId,
+                  invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
+                  invRecProduct: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodId,
                   //product id
-                  invRecSubTotal: double.parse(
-                      element[indexOfQuantity].toString()
-                          .replaceAll("\"", "")
-                          .replaceAll(",", "")).toInt() == 0 ? 0 : double.parse(
-                      element[indexOfSubTotal].toString().replaceAll("\"", "")
-                          .replaceAll(",", "")
-                          .replaceAll("٫", ".")).abs(),
-                  invRecIsLocal: getProductsModelFromName(
-                      "F-" + element[indexOfProductName])!.first.prodIsLocal,
-                  invRecTotal: double.parse(
-                      element[indexOfTotalWithVat].toString().replaceAll(
-                          "\"", "").replaceAll(",", "").replaceAll("٫", "."))
-                      .abs(),
+                  invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                  invRecIsLocal: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
+                  invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
 
                   // invRecVat: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs()/double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() - double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
                   invRecVat: 0,
                 )
               ]);
         } else {
-          var lastCode = int.parse(
-              invMap[element[indexOfInvCode]]!.invRecords!.last.invRecId!) + 1;
-          invMap[element[indexOfInvCode]]?.invTotal = double.parse(
-              element[indexOfTotalWithVat].toString().replaceAll("\"", "")
-                  .replaceAll(",", "")
-                  .replaceAll("٫", ".")).abs() +
-              invMap[element[indexOfInvCode]]!.invTotal!;
+          var lastCode = int.parse(invMap[element[indexOfInvCode]]!.invRecords!.last.invRecId!) + 1;
+          invMap[element[indexOfInvCode]]?.invTotal = double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs() + invMap[element[indexOfInvCode]]!.invTotal!;
           invMap[element[indexOfInvCode]]?.invRecords?.add(InvoiceRecordModel(
-            prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
-            invRecId: lastCode.toString(),
-            invRecQuantity: double.parse(element[indexOfQuantity].toString()
-                .replaceAll(",", "")
-                .replaceAll("\"", "")).toInt().abs() + double.parse(
-                element[indexOfGift].toString().replaceAll("\"", "").replaceAll(
-                    ",", "")).toInt().abs(),
-            invRecProduct: getProductsModelFromName(
-                "F-" + element[indexOfProductName])!.first.prodId,
-            invRecIsLocal: getProductsModelFromName(
-                "F-" + element[indexOfProductName])!.first.prodIsLocal,
-            invRecSubTotal: double.parse(element[indexOfQuantity].toString()
-                .replaceAll(",", "")
-                .replaceAll("\"", "")).toInt() == 0 ? 0 : double.parse(
-                element[indexOfSubTotal].toString().replaceAll("\"", "")
-                    .replaceAll(",", "")
-                    .replaceAll("٫", ".")).abs(),
-            invRecTotal: double.parse(
-                element[indexOfTotalWithVat].toString().replaceAll(",", "")
-                    .replaceAll("\"", "")
-                    .replaceAll("٫", ".")).abs(),
-            // invRecVat: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs()/double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() - double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
-            invRecVat: 0,
-          ));
+                prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
+                invRecId: lastCode.toString(),
+                invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
+                invRecProduct: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodId,
+                invRecIsLocal: getProductsModelFromName("F-" + element[indexOfProductName])!.first.prodIsLocal,
+                invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("\"", "").replaceAll("٫", ".")).abs(),
+                // invRecVat: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs()/double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() - double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                invRecVat: 0,
+              ));
         }
         //  dateList.add(element[indexOfDate]);
       }
 
-      if (notFoundProduct.isNotEmpty || notFoundStore.isNotEmpty ||
-          notFoundAccount.isNotEmpty || notFoundSeller.isNotEmpty) {
+      if (notFoundProduct.isNotEmpty || notFoundStore.isNotEmpty || notFoundAccount.isNotEmpty || notFoundSeller.isNotEmpty) {
         print(notFoundProduct);
         print(notFoundStore);
         print(notFoundAccount);
@@ -1189,35 +1042,27 @@ class ImportViewModel extends GetxController {
         Get.defaultDialog(
             title: "بعض الحسابات غير موجودة",
             content: SizedBox(
-              height: MediaQuery
-                  .sizeOf(Get.context!)
-                  .height - 150,
-              width: MediaQuery
-                  .sizeOf(Get.context!)
-                  .width / 2,
+              height: MediaQuery.sizeOf(Get.context!).height - 150,
+              width: MediaQuery.sizeOf(Get.context!).width / 2,
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  if (notFoundAccount.isNotEmpty) const Center(
-                      child: Text("الحسابات")),
+                  if (notFoundAccount.isNotEmpty) const Center(child: Text("الحسابات")),
                   for (var e in notFoundAccount) Text(e),
                   const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundStore.isNotEmpty) const Center(
-                      child: Text("المستودعات")),
+                  if (notFoundStore.isNotEmpty) const Center(child: Text("المستودعات")),
                   for (var e in notFoundStore) Text(e),
                   const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundSeller.isNotEmpty) const Center(
-                      child: Text("البائعون")),
+                  if (notFoundSeller.isNotEmpty) const Center(child: Text("البائعون")),
                   for (var e in notFoundSeller) Text(e),
                   const SizedBox(
                     height: 30,
                   ),
-                  if (notFoundProduct.isNotEmpty) const Center(
-                      child: Text("المواد")),
+                  if (notFoundProduct.isNotEmpty) const Center(child: Text("المواد")),
                   for (var e in notFoundProduct) Text(e),
                   const SizedBox(
                     height: 30,
@@ -1235,8 +1080,7 @@ class ImportViewModel extends GetxController {
         invMap.entries.toList()[i].value.bondCode = "G-$bondCode";
         bondCode++;
       }
-      Get.to(() =>
-          InvoiceListView(
+      Get.to(() => InvoiceListView(
             invoiceList: invMap.values.toList(),
           ));
 
@@ -1277,7 +1121,7 @@ class ImportViewModel extends GetxController {
         List row = [];
         // List row2 = [];
         // var indexOfInvType;
-        // var indexOfPrimery;
+        // var indexOfPrimary;
         var indexOfSecoundry;
         var indexOfInvCode;
         var indexOfTotalWithVat;
@@ -1295,18 +1139,17 @@ class ImportViewModel extends GetxController {
         var indexOfPayType;
         var indexOfComment;
         var indexOfGift;
-
         List nunProd = [];
         debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
         var result = await FilePicker.platform.pickFiles(
           type: FileType.custom,
           allowedExtensions: ['csv', "tsv"],
         );
-        if (result == null) {} else {
+        if (result == null) {
+        } else {
           File _ = File(result.files.single.path!);
           List<String> file = await _.readAsLines();
           row = file[0].split(separator);
-
           file.removeAt(0);
           // print(row);
           // print(row.length);
@@ -1315,8 +1158,7 @@ class ImportViewModel extends GetxController {
             return;
           }
 
-          List<List<String>> dataList = file.map((e) => e.split(separator))
-              .toList();
+          List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
           row.forEach((element) {
             indexOfDate = row.indexOf("التاريخ"); //1
             indexOfInvCode = row.indexOf("الفاتورة"); //2
@@ -1347,89 +1189,60 @@ class ImportViewModel extends GetxController {
           List notFoundStore = [];
           List notFoundSeller = [];
           InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
-          List<
-              ({String? invCode, String? invType})> allInvoice = invoiceViewModel
-              .invoiceModel.values
+          List<({String? invCode, String? invType})> allInvoice = invoiceViewModel.invoiceModel.values
               .map(
                 (e) => (invCode: e.invCode, invType: e.invType),
-          )
+              )
               .toList();
           for (var element in dataList) {
             var store = getStoreIdFromText(element[indexOfStore]);
             // var store = element[indexOfStore];
-            if (store == '' &&
-                !notFoundStore.contains(element[indexOfStore])) {
+            if (store == '' && !notFoundStore.contains(element[indexOfStore])) {
               notFoundStore.add(element[indexOfStore]);
             }
             var seller = '';
             if (element[indexOfSeller] != "") {
               seller = getSellerIdFromText(element[indexOfSeller]) ?? '';
-              if (seller == '' &&
-                  !notFoundSeller.contains(element[indexOfSeller])) {
+              if (seller == '' && !notFoundSeller.contains(element[indexOfSeller])) {
                 notFoundSeller.add(element[indexOfSeller]);
               }
             }
             late PatternModel patternModel;
             print(element[indexOfInvCode]);
             //  print(element[indexOfInvCode]);
-            List _ = element[indexOfInvCode].toString()
-                .replaceAll(" ", "")
-                .split(":");
+            List _ = element[indexOfInvCode].toString().replaceAll(" ", "").split(":");
             if (_[0] == "إخ.م" || _[0] == "إد.م") {
               print(_[0]);
               if (allChanges[_[1]] == null) {
-                allChanges[_[1]] = _[0] == "إخ.م"
-                    ? (strart: store, end: null)
-                    : (end: store, strart: null);
+                allChanges[_[1]] = _[0] == "إخ.م" ? (strart: store, end: null) : (end: store, strart: null);
                 continue;
               } else {
-                allChanges[_[1]] = _[0] == "إخ.م"
-                    ? (end: allChanges[_[1]]!.end, strart: store)
-                    : (strart: allChanges[_[1]]!.strart, end: store);
+                allChanges[_[1]] = _[0] == "إخ.م" ? (end: allChanges[_[1]]!.end, strart: store) : (strart: allChanges[_[1]]!.strart, end: store);
               }
-              patternModel = (Get
-                  .find<PatternViewModel>()
-                  .patternModel
-                  .values
-                  .firstWhere((e) =>
-              e.patType == AppConstants.invoiceTypeChange));
+              patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patType == AppConstants.invoiceTypeChange));
             } else {
-              patternModel = (Get
-                  .find<PatternViewModel>()
-                  .patternModel
-                  .values
-                  .firstWhere((e) =>
-              e.patName?.replaceAll(" ", "") ==
-                  element[indexOfInvCode].toString().split(":")[0].replaceAll(
-                      " ", "")));
+              patternModel = (Get.find<PatternViewModel>().patternModel.values.firstWhere((e) => e.patName?.replaceAll(" ", "") == element[indexOfInvCode].toString().split(":")[0].replaceAll(" ", "")));
             }
             bool isAdd = (patternModel.patType == AppConstants.invoiceTypeAdd);
             var primery;
             var secoundry;
 
             if (patternModel.patType == AppConstants.invoiceTypeSales) {
-              primery = getAccountIdFromText(
-                  getAccountModelFromId(patternModel.patPrimary)!.accName!);
+              primery = getAccountIdFromText(getAccountModelFromId(patternModel.patPrimary)!.accName!);
               secoundry = getAccountIdFromText(element[indexOfSecoundry]);
             } else if (patternModel.patType == AppConstants.invoiceTypeBuy) {
               primery = getAccountIdFromText(element[indexOfSecoundry]);
 
-              secoundry = getAccountIdFromText(
-                  getAccountModelFromId(patternModel.patSecondary)!.accName!);
+              secoundry = getAccountIdFromText(getAccountModelFromId(patternModel.patSecondary)!.accName!);
             }
 
-            if (secoundry == '' &&
-                !notFoundAccount.contains(element[indexOfSecoundry]) &&
-                !isAdd) {
-              print(
-                  "secoundry: |${element[indexOfSecoundry]}| From ${element[indexOfInvCode]}");
+            if (secoundry == '' && !notFoundAccount.contains(element[indexOfSecoundry]) && !isAdd) {
+              print("secoundry: |${element[indexOfSecoundry]}| From ${element[indexOfInvCode]}");
               notFoundAccount.add(element[indexOfSecoundry]);
             }
             var product = getProductIdFromName(element[indexOfProductName]);
-            if (product == '' &&
-                !notFoundProduct.contains(element[indexOfProductName])) {
-              print(
-                  "product: |${element[indexOfProductName]}| From ${element[indexOfInvCode]}");
+            if (product == '' && !notFoundProduct.contains(element[indexOfProductName])) {
+              print("product: |${element[indexOfProductName]}| From ${element[indexOfInvCode]}");
               notFoundProduct.add(element[indexOfProductName]);
             }
 
@@ -1442,8 +1255,7 @@ class ImportViewModel extends GetxController {
             if (invMap[element[indexOfInvCode]] == null) {
               //todo
 
-              if (getProductsModelFromName(element[indexOfProductName])
-                  ?.firstOrNull?.prodIsLocal == null) {
+              if (getProductsModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
                 nunProd.add(element[indexOfProductName]);
                 print(element[indexOfProductName]);
                 Get.snackbar("error", "plz check if the file separeted ");
@@ -1451,35 +1263,20 @@ class ImportViewModel extends GetxController {
               }
               // var invId = generateId(RecordType.invoice);IPHONE 16 PRO 512G مستعمل
               else {
-                DateTime date = DateTime(
-                    int.parse(element[indexOfDate].split("-")[2]),
-                    int.parse(element[indexOfDate].split("-")[1]),
-                    int.parse(element[indexOfDate].split("-")[0]));
+                DateTime date = DateTime(int.parse(element[indexOfDate].split("-")[2]), int.parse(element[indexOfDate].split("-")[1]), int.parse(element[indexOfDate].split("-")[0]));
                 invMap[element[indexOfInvCode]] = GlobalModel(
                     invId: generateId(RecordType.invoice),
                     entryBondId: generateId(RecordType.entryBond),
 
                     // invReturnCode: ,
-                    originAmenId: element[indexOfInvCode].toString().split(
-                        ":")[1].replaceAll(" ", ""),
+                    originAmenId: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
                     // bondType: AppStrings.bondTypeInvoice,
                     invIsPending: false,
-                    invPayType: element[indexOfPayType].removeAllWhitespace ==
-                        "نقداً".removeAllWhitespace ? AppConstants
-                        .invPayTypeCash : AppConstants.invPayTypeDue,
+                    invPayType: element[indexOfPayType].removeAllWhitespace == "نقداً".removeAllWhitespace ? AppConstants.invPayTypeCash : AppConstants.invPayTypeDue,
                     invComment: element[indexOfComment],
-                    discountTotal: double.parse(
-                        element[indexOfTotalDiscount].replaceAll("\"", "")
-                            .replaceAll(",", "")
-                            .replaceAll("٫", ".")),
-                    firstPay: double.parse(
-                        element[indexOfFirstPay].replaceAll("\"", "")
-                            .replaceAll(",", "")
-                            .replaceAll("٫", ".")),
-                    addedTotal: double.parse(
-                        element[indexOfTotalAdded].replaceAll("\"", "")
-                            .replaceAll(",", "")
-                            .replaceAll("٫", ".")),
+                    discountTotal: double.parse(element[indexOfTotalDiscount].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
+                    firstPay: double.parse(element[indexOfFirstPay].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
+                    addedTotal: double.parse(element[indexOfTotalAdded].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")),
                     invFullCode: element[indexOfInvCode],
                     invGiftAccount: patternModel.patGiftAccount,
                     invSecGiftAccount: patternModel.patSecGiftAccount,
@@ -1490,132 +1287,56 @@ class ImportViewModel extends GetxController {
                     globalType: AppConstants.globalTypeInvoice,
                     invPrimaryAccount: primery,
                     invSecondaryAccount: secoundry,
-                    invStorehouse: patternModel.patType !=
-                        AppConstants.invoiceTypeChange
-                        ? store
-                        : allChanges[_[1]]!.strart,
+                    invStorehouse: patternModel.patType != AppConstants.invoiceTypeChange ? store : allChanges[_[1]]!.strart,
                     invSecStorehouse: allChanges[_[1]]?.end,
                     invDate: date.toString().split(".")[0],
                     invCustomerAccount: element[indexOfSecoundry],
                     // bondDate: date.toString().split(".")[0],
-                    invVatAccount: patternModel.patType ==
-                        AppConstants.invoiceTypeBuy ? AppConstants
-                        .returnVatAccountId : AppConstants.vatAccountId,
+                    invVatAccount: patternModel.patType == AppConstants.invoiceTypeBuy ? AppConstants.returnVatAccountId : AppConstants.vatAccountId,
                     invDiscountRecord: [],
-                    invTotal: double.parse(
-                        element[indexOfTotalWithVat].replaceAll("\"", "")
-                            .replaceAll(",", "")
-                            .replaceAll("٫", ".")).abs(),
+                    invTotal: double.parse(element[indexOfTotalWithVat].replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
                     invType: patternModel.patType,
-                    invCode: element[indexOfInvCode].toString().split(":")[1]
-                        .replaceAll(" ", ""),
+                    invCode: element[indexOfInvCode].toString().split(":")[1].replaceAll(" ", ""),
                     invRecords: [
                       InvoiceRecordModel(
-                        invRecGiftTotal: double.parse(
-                            element[indexOfGift].toString().replaceAll(
-                                "\"", "").replaceAll(",", "")).abs() *
-                            double.parse(element[indexOfQuantity].toString()
-                                .replaceAll("\"", "")
-                                .replaceAll(",", "")),
-                        prodChoosePriceMethod: AppConstants
-                            .invoiceChoosePriceMethodeCustom,
+                        invRecGiftTotal: double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).abs() * double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")),
+                        prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
                         invRecId: "1",
-                        invRecQuantity: double.parse(element[indexOfQuantity]
-                            .toString().replaceAll("\"", "")
-                            .replaceAll(",", "")).toInt().abs(),
+                        invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
                         invRecProduct: product,
                         //product id
-                        invRecGift: double.parse(element[indexOfGift]
-                            .toString().replaceAll("\"", "")
-                            .replaceAll(",", "")).toInt().abs(),
-                        invRecSubTotal: double.parse(element[indexOfQuantity]
-                            .toString().replaceAll("\"", "")
-                            .replaceAll(",", "")).toInt() == 0 ? 0 : double
-                            .parse(element[indexOfSubTotal].toString()
-                            .replaceAll("\"", "").replaceAll(",", "")
-                            .replaceAll("٫", ".")).abs(),
-                        invRecIsLocal: getProductsModelFromName(
-                            element[indexOfProductName])!.first.prodIsLocal,
-                        invRecTotal: double.parse(element[indexOfTotalWithVat]
-                            .toString().replaceAll("\"", "").replaceAll(
-                            ",", "")
-                            .replaceAll("٫", ".")).abs(),
-                        invRecVat: element[indexOfQuantity].toString() ==
-                            "0.00"
+                        invRecGift: double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
+                        invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                        invRecIsLocal: getProductsModelFromName(element[indexOfProductName])!.first.prodIsLocal,
+                        invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                        invRecVat: element[indexOfQuantity].toString() == "0.00"
                             ? 0
-                            : double.parse(element[indexOfTotalWithVat]
-                            .toString().replaceAll(",", "")
-                            .replaceAll("٫", ".")).abs() /
-                            double.parse(element[indexOfQuantity]
-                                .toString()
-                                .replaceAll(",", "")).toInt().abs() -
-                            double.parse(element[indexOfSubTotal]
-                                .toString()
-                                .replaceAll(",", "")
-                                .replaceAll("٫", ".")).abs(),
+                            : double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs() / double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() -
+                                double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
                         //invRecVat: 0,
                       )
-                    ]);
+                    ],);
               }
             } else {
-              if (getProductsModelFromName(element[indexOfProductName])
-                  ?.firstOrNull?.prodIsLocal == null) {
+              if (getProductsModelFromName(element[indexOfProductName])?.firstOrNull?.prodIsLocal == null) {
                 nunProd.add(element[indexOfProductName]);
                 print(element[indexOfProductName]);
               } else {
-                var lastCode = int.parse(
-                    invMap[element[indexOfInvCode]]!.invRecords!.last
-                        .invRecId!) + 1;
-                invMap[element[indexOfInvCode]]?.invTotal = double.parse(
-                    element[indexOfTotalWithVat].toString().replaceAll(
-                        "\"", "").replaceAll(",", "").replaceAll("٫", "."))
-                    .abs() + invMap[element[indexOfInvCode]]!.invTotal!;
-                invMap[element[indexOfInvCode]]?.invRecords?.add(
-                    InvoiceRecordModel(
-                      prodChoosePriceMethod: AppConstants
-                          .invoiceChoosePriceMethodeCustom,
-                      invRecGiftTotal: double.parse(
-                          element[indexOfGift].toString()
-                              .replaceAll("\"", "")
-                              .replaceAll(",", "")).abs() * double.parse(
-                          element[indexOfQuantity].toString().replaceAll(
-                              "\"", "").replaceAll(",", "")),
+                var lastCode = int.parse(invMap[element[indexOfInvCode]]!.invRecords!.last.invRecId!) + 1;
+                invMap[element[indexOfInvCode]]?.invTotal = double.parse(element[indexOfTotalWithVat].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs() + invMap[element[indexOfInvCode]]!.invTotal!;
+                invMap[element[indexOfInvCode]]?.invRecords?.add(InvoiceRecordModel(
+                      prodChoosePriceMethod: AppConstants.invoiceChoosePriceMethodeCustom,
+                      invRecGiftTotal: double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).abs() * double.parse(element[indexOfQuantity].toString().replaceAll("\"", "").replaceAll(",", "")),
                       invRecId: lastCode.toString(),
-                      invRecQuantity: double.parse(
-                          element[indexOfQuantity].toString().replaceAll(
-                              ",", "").replaceAll("\"", "")).toInt().abs() +
-                          double.parse(
-                              element[indexOfGift].toString().replaceAll(
-                                  "\"", "").replaceAll(",", ""))
-                              .toInt()
-                              .abs(),
-                      invRecProduct: getProductIdFromName(
-                          element[indexOfProductName]),
-                      invRecIsLocal: getProductsModelFromName(
-                          element[indexOfProductName])!.first.prodIsLocal,
-                      invRecSubTotal: double.parse(
-                          element[indexOfQuantity].toString().replaceAll(
-                              ",", "").replaceAll("\"", "")).toInt() == 0
-                          ? 0
-                          : double.parse(
-                          element[indexOfSubTotal].toString().replaceAll(
-                              "\"", "").replaceAll(",", "").replaceAll(
-                              "٫", ".")).abs(),
-                      invRecTotal: double.parse(
-                          element[indexOfTotalWithVat].toString().replaceAll(
-                              ",", "").replaceAll("\"", "").replaceAll(
-                              "٫", ".")).abs(),
+                      invRecQuantity: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt().abs() + double.parse(element[indexOfGift].toString().replaceAll("\"", "").replaceAll(",", "")).toInt().abs(),
+                      invRecProduct: getProductIdFromName(element[indexOfProductName]),
+                      invRecIsLocal: getProductsModelFromName(element[indexOfProductName])!.first.prodIsLocal,
+                      invRecSubTotal: double.parse(element[indexOfQuantity].toString().replaceAll(",", "").replaceAll("\"", "")).toInt() == 0 ? 0 : double.parse(element[indexOfSubTotal].toString().replaceAll("\"", "").replaceAll(",", "").replaceAll("٫", ".")).abs(),
+                      invRecTotal: double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("\"", "").replaceAll("٫", ".")).abs(),
                       invRecVat: element[indexOfQuantity].toString() == "0.00"
                           ? 0
-                          : double.parse(
-                          element[indexOfTotalWithVat].toString().replaceAll(
-                              ",", "").replaceAll("٫", ".")).abs() /
-                          double.parse(
-                              element[indexOfQuantity].toString().replaceAll(
-                                  ",", "")).toInt().abs() -
-                          double.parse(
-                              element[indexOfSubTotal].toString().replaceAll(
-                                  ",", "").replaceAll("٫", ".")).abs(),
+                          : double.parse(element[indexOfTotalWithVat].toString().replaceAll(",", "").replaceAll("٫", ".")).abs() / double.parse(element[indexOfQuantity].toString().replaceAll(",", "")).toInt().abs() -
+                              double.parse(element[indexOfSubTotal].toString().replaceAll(",", "").replaceAll("٫", ".")).abs(),
                       // invRecVat: 0,
                     ));
               }
@@ -1623,8 +1344,7 @@ class ImportViewModel extends GetxController {
             //  dateList.add(element[indexOfDate]);
           }
 
-          if (notFoundProduct.isNotEmpty || notFoundStore.isNotEmpty ||
-              notFoundAccount.isNotEmpty || notFoundSeller.isNotEmpty) {
+          if (notFoundProduct.isNotEmpty || notFoundStore.isNotEmpty || notFoundAccount.isNotEmpty || notFoundSeller.isNotEmpty) {
             {
               print(nunProd.length);
               print(nunProd);
@@ -1634,35 +1354,27 @@ class ImportViewModel extends GetxController {
               Get.defaultDialog(
                   title: "بعض الحسابات غير موجودة",
                   content: SizedBox(
-                    height: MediaQuery
-                        .sizeOf(Get.context!)
-                        .height - 150,
-                    width: MediaQuery
-                        .sizeOf(Get.context!)
-                        .width / 2,
+                    height: MediaQuery.sizeOf(Get.context!).height - 150,
+                    width: MediaQuery.sizeOf(Get.context!).width / 2,
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        if (notFoundAccount.isNotEmpty) const Center(
-                            child: Text("الحسابات")),
+                        if (notFoundAccount.isNotEmpty) const Center(child: Text("الحسابات")),
                         for (var e in notFoundAccount) Text(e),
                         const SizedBox(
                           height: 30,
                         ),
-                        if (notFoundStore.isNotEmpty) const Center(
-                            child: Text("المستودعات")),
+                        if (notFoundStore.isNotEmpty) const Center(child: Text("المستودعات")),
                         for (var e in notFoundStore) Text(e),
                         const SizedBox(
                           height: 30,
                         ),
-                        if (notFoundSeller.isNotEmpty) const Center(
-                            child: Text("البائعون")),
+                        if (notFoundSeller.isNotEmpty) const Center(child: Text("البائعون")),
                         for (var e in notFoundSeller) Text(e),
                         const SizedBox(
                           height: 30,
                         ),
-                        if (notFoundProduct.isNotEmpty) const Center(
-                            child: Text("المواد")),
+                        if (notFoundProduct.isNotEmpty) const Center(child: Text("المواد")),
                         for (var e in notFoundProduct) Text(e),
                         const SizedBox(
                           height: 30,
@@ -1673,11 +1385,9 @@ class ImportViewModel extends GetxController {
             }
             return;
           }
-          print( invMap.values.length);
+          print(invMap.values.length);
           invMap.removeWhere(
-                (key, value) =>
-                allInvoice.contains(
-                    (invCode: value.invCode, invType: value.invType)),
+            (key, value) => allInvoice.contains((invCode: value.invCode, invType: value.invType)),
           );
 
           int bondCode = 0;
@@ -1686,8 +1396,7 @@ class ImportViewModel extends GetxController {
             bondCode++;
           }
 
-          Get.to(() =>
-              InvoiceListView(
+          Get.to(() => InvoiceListView(
                 invoiceList: invMap.values.toList(),
               ));
 
@@ -1732,7 +1441,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -1743,10 +1453,8 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
-      Get.to(() =>
-          PreviewView(
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
+      Get.to(() => PreviewView(
             productList: dataList,
             rows: row as List<String>,
           ));
@@ -1772,7 +1480,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -1784,8 +1493,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -1834,27 +1542,14 @@ class ImportViewModel extends GetxController {
           numberList.add(element[indexOfNumber]);
           totalList.add(element[indexOfTotal]);
           print(element[indexOfType].split(":"));
-          if (element[indexOfType] == "" ||
-              element[indexOfType].split(":")[0].removeAllWhitespace ==
-                  "يومية".removeAllWhitespace) {
+          if (element[indexOfType] == "" || element[indexOfType].split(":")[0].removeAllWhitespace == "يومية".removeAllWhitespace) {
             codeBond++;
           }
-          codeList.add(element[indexOfType] == "" ||
-              element[indexOfType].split(":")[0].removeAllWhitespace ==
-                  "يومية".removeAllWhitespace
-              ? codeBond.toString()
-              : element[indexOfType].split(":")[1].removeAllWhitespace);
-          oreginCode.add(element[indexOfType] == "" ? element[indexOfNumber]
-              .replaceAll(",", "")
-              .removeAllWhitespace : element[indexOfType].split(":")[1]
-              .removeAllWhitespace);
-          typeList.add(
-              element[indexOfType] == "" ? "سند يومية" : element[indexOfType]
-                  .split(":")[0]);
+          codeList.add(element[indexOfType] == "" || element[indexOfType].split(":")[0].removeAllWhitespace == "يومية".removeAllWhitespace ? codeBond.toString() : element[indexOfType].split(":")[1].removeAllWhitespace);
+          oreginCode.add(element[indexOfType] == "" ? element[indexOfNumber].replaceAll(",", "").removeAllWhitespace : element[indexOfType].split(":")[1].removeAllWhitespace);
+          typeList.add(element[indexOfType] == "" ? "سند يومية" : element[indexOfType].split(":")[0]);
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -1872,11 +1567,10 @@ class ImportViewModel extends GetxController {
       });
       BondViewModel bondViewModel = Get.find<BondViewModel>();
 
-      List<({String? bondCode, String? bondType})> allbond = bondViewModel
-          .allBondsItem.values
+      List<({String? bondCode, String? bondType})> allbond = bondViewModel.allBondsItem.values
           .map(
             (e) => (bondCode: e.bondCode, bondType: e.bondType),
-      )
+          )
           .toList();
       for (var i = 0; i < accountList.length; i++) {
         List<BondRecordModel> recordTemp = [];
@@ -1893,10 +1587,7 @@ class ImportViewModel extends GetxController {
               print(codeList[i]);
             }
             print("---------");
-            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'),
-                double.parse(creditList[i][j].replaceAll(",", "")),
-                double.parse(debitList[i][j].replaceAll(",", "")), name,
-                smallDesList[i][j]));
+            recordTemp.add(BondRecordModel(j.toString().padLeft(pad, '0'), double.parse(creditList[i][j].replaceAll(",", "")), double.parse(debitList[i][j].replaceAll(",", "")), name, smallDesList[i][j]));
           }
         }
         // print(typeList[i].removeAllWhitespace);
@@ -1904,14 +1595,12 @@ class ImportViewModel extends GetxController {
         String type = typeList[i].removeAllWhitespace == "دفع"
             ? AppConstants.bondTypeDebit
             : typeList[i].removeAllWhitespace == "قبض"
-            ? AppConstants.bondTypeCredit
-            : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
-            ? AppConstants.bondTypeStart
-            : AppConstants.bondTypeDaily;
+                ? AppConstants.bondTypeCredit
+                : typeList[i].removeAllWhitespace == "ق.إ".removeAllWhitespace
+                    ? AppConstants.bondTypeStart
+                    : AppConstants.bondTypeDaily;
         // print(type);
-        DateTime date = DateTime(int.parse(dateList[i].split("-")[2]),
-            int.parse(dateList[i].split("-")[1]),
-            int.parse(dateList[i].split("-")[0]));
+        DateTime date = DateTime(int.parse(dateList[i].split("-")[2]), int.parse(dateList[i].split("-")[1]), int.parse(dateList[i].split("-")[0]));
 
         GlobalModel model = GlobalModel(
             bondDescription: desList[i],
@@ -1934,12 +1623,10 @@ class ImportViewModel extends GetxController {
       print(bondList.length);
       print(allbond.length);
       print(bondList.last.bondCode);
-      bondList.removeWhere((element) =>
-          allbond.contains(
+      bondList.removeWhere((element) => allbond.contains(
             (bondCode: element.bondCode, bondType: element.bondType),
           ));
-      Get.to(() =>
-          BondListView(
+      Get.to(() => BondListView(
             bondList: bondList,
           ));
       // Get.to(() => ProductListView(
@@ -1951,13 +1638,10 @@ class ImportViewModel extends GetxController {
 
   syncLocalAndFireBase() async {
     print("object");
-    Map<String, GlobalModel> local = Map.fromEntries(
-        HiveDataBase.globalModelBox.values.map((e) =>
-            MapEntry(e.entryBondId!, e)).toList());
+    Map<String, GlobalModel> local = Map.fromEntries(HiveDataBase.globalModelBox.values.map((e) => MapEntry(e.entryBondId!, e)).toList());
     local.forEach(
-          (key, value) async {
-        await FirebaseFirestore.instance.collection("2024").doc(key).set(
-            value.toJson(), SetOptions(merge: true));
+      (key, value) async {
+        await FirebaseFirestore.instance.collection("2024").doc(key).set(value.toJson(), SetOptions(merge: true));
         print("key $key-------------------------${value.toJson()}");
       },
     );
@@ -1998,7 +1682,8 @@ class ImportViewModel extends GetxController {
       type: FileType.custom,
       allowedExtensions: ['csv', "tsv"],
     );
-    if (result == null) {} else {
+    if (result == null) {
+    } else {
       File _ = File(result.files.single.path!);
       List<String> file = await _.readAsLines();
       row = file[0].split(separator);
@@ -2010,8 +1695,7 @@ class ImportViewModel extends GetxController {
         Get.snackbar("error", "plz check if the file separeted ");
         return;
       }
-      List<List<String>> dataList = file.map((e) => e.split(separator))
-          .toList();
+      List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
         indexOfDate = row.indexOf("التاريخ");
         indexOfType = row.indexOf("أصل السند");
@@ -2062,19 +1746,11 @@ class ImportViewModel extends GetxController {
           desList.add(element[indexOfDetails]);
           numberList.add(element[indexOfNumber]);
           totalList.add(element[indexOfTotal]);
-          codeList.add(
-              element[indexOfType] == "" ? "-" : element[indexOfType].split(
-                  ":")[1].removeAllWhitespace);
-          oreginCode.add(
-              element[indexOfType] == "" ? "-" : element[indexOfType].split(
-                  ":")[1].removeAllWhitespace);
-          typeList.add(
-              element[indexOfType] == "" ? "سند يومية" : element[indexOfType]
-                  .split(":")[0]);
+          codeList.add(element[indexOfType] == "" ? "-" : element[indexOfType].split(":")[1].removeAllWhitespace);
+          oreginCode.add(element[indexOfType] == "" ? "-" : element[indexOfType].split(":")[1].removeAllWhitespace);
+          typeList.add(element[indexOfType] == "" ? "سند يومية" : element[indexOfType].split(":")[0]);
         } else {
-          accountTemp.add(
-              element[indexOfAccount].replaceFirst("-", "").replaceAll(
-                  element[indexOfAccount].split("-")[0], ""));
+          accountTemp.add(element[indexOfAccount].replaceFirst("-", "").replaceAll(element[indexOfAccount].split("-")[0], ""));
           creditTemp.add(element[indexOfCredit].toString());
           debitTemp.add(element[indexOfDebit].toString());
           smallDesTemp.add(element[indexOfSmallDes].toString());
@@ -2091,14 +1767,10 @@ class ImportViewModel extends GetxController {
         }
       }
 
-      var entry = Get
-          .find<InvoiceViewModel>()
-          .invoiceModel
-          .entries;
+      var entry = Get.find<InvoiceViewModel>().invoiceModel.entries;
       for (var i = 0; i < numberList.length; i++) {
         var typeAndCode = "${typeList[i]} : ${codeList[i]}";
-        var matchedEntries = entry.where((
-            element) => getInvoicePatternFromInvId(element.key) == typeAndCode);
+        var matchedEntries = entry.where((element) => getInvoicePatternFromInvId(element.key) == typeAndCode);
 
         if (matchedEntries.isNotEmpty) {
           GlobalModel globalModel = matchedEntries.first.value;
