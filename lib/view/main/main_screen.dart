@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/main.dart';
@@ -6,7 +5,9 @@ import 'package:ba3_business_solutions/view/accounts/pages/account_type.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_type.dart';
 import 'package:ba3_business_solutions/view/cheques/pages/cheque_type.dart';
 import 'package:ba3_business_solutions/view/dashboard/dashboard_view.dart';
-import 'package:ba3_business_solutions/view/invoices/pages/invoice_type.dart';
+import 'package:ba3_business_solutions/view/invoices/pages/invoice_layout.dart';
+import 'package:ba3_business_solutions/view/main/widgets/drawer_list_tile.dart';
+import 'package:ba3_business_solutions/view/main/widgets/window_buttons.dart';
 import 'package:ba3_business_solutions/view/patterns/pages/pattern_layout.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_layout.dart';
 import 'package:ba3_business_solutions/view/stores/pages/store_type.dart';
@@ -19,7 +20,7 @@ import '../../controller/global/changes_view_model.dart';
 import '../card_management/card_management_view.dart';
 import '../database/database_type.dart';
 import '../import/pages/picker_file.dart';
-import '../inventory/pages/inventory_type.dart';
+import '../inventory/pages/inventory_layout.dart';
 import '../sellers/pages/seller_layout.dart';
 import '../statistics/pages/statistics_type.dart';
 import '../target_management/pages/target_management_view.dart';
@@ -36,20 +37,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   List<({String name, Widget widget, String role})> rowData = [
     (name: "لوحة التحكم", widget: const DashboardView(), role: AppConstants.roleViewHome),
-    (name: "الفواتير", widget: const InvoiceType(), role: AppConstants.roleViewInvoice),
+    (name: "الفواتير", widget: const InvoiceLayout(), role: AppConstants.roleViewInvoice),
     (name: "السندات", widget: const BondType(), role: AppConstants.roleViewBond),
-    // (name: "سندات القيد", widget: const EntryBondType(), role: Const.roleViewBond),
     (name: "الحسابات", widget: const AccountType(), role: AppConstants.roleViewAccount),
     (name: "المواد", widget: const ProductType(), role: AppConstants.roleViewProduct),
     (name: "المستودعات", widget: const StoreType(), role: AppConstants.roleViewStore),
     (name: "أنماط البيع", widget: const PatternLayout(), role: AppConstants.roleViewPattern),
     (name: "الشيكات", widget: const ChequeType(), role: AppConstants.roleViewCheques),
-    // (name: "الاستحقاق", widget: const DueType(), role: Const.roleViewDue),
-    // (name: "تقرير المبيعات", widget: const ReportGridView(), role: Const.roleViewReport),
     (name: "الاحصائيات", widget: const StatisticsType(), role: AppConstants.roleViewStatistics),
     (name: "البائعون", widget: const SellerLayout(), role: AppConstants.roleViewSeller),
     (name: "استيراد المعلومات", widget: FilePickerWidget(), role: AppConstants.roleViewImport),
-    (name: "الجرد", widget: const InventoryType(), role: AppConstants.roleViewInventory),
+    (name: "الجرد", widget: const InventoryLayout(), role: AppConstants.roleViewInventory),
     (name: "إدارة المستخدمين", widget: const UserManagementType(), role: AppConstants.roleViewUserManagement),
     (name: "إدارة التارجيت", widget: const TargetManagementType(), role: AppConstants.roleViewTarget),
     (name: "إدارة الوقت", widget: const TimeType(), role: AppConstants.roleViewTimer),
@@ -92,7 +90,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           textDirection: TextDirection.rtl,
                           controller: tabController,
                           tabEdge: TabEdge.right,
-
                           tabsEnd: 1,
                           tabsStart: 0,
                           tabMaxLength: 60,
@@ -137,11 +134,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 child: Column(children: [
                   WindowTitleBarBox(
                     child: Row(
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(child: MoveWindow()),
-                        const WindowButtons(),
+                        const AppWindowControlButtons(),
                       ],
                     ),
                   ),
@@ -157,85 +152,5 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-}
-
-final buttonColors = WindowButtonColors(
-    iconNormal: const Color(0xFF805306),
-    mouseOver: const Color(0xFFF6A00C),
-    mouseDown: const Color(0xFF805306),
-    iconMouseOver: const Color(0xFF805306),
-    iconMouseDown: const Color(0xFFFFD500));
-
-final closeButtonColors = WindowButtonColors(
-    mouseOver: const Color(0xFFD32F2F), mouseDown: const Color(0xFFB71C1C), iconNormal: const Color(0xFF805306), iconMouseOver: Colors.white);
-
-class WindowButtons extends StatefulWidget {
-  const WindowButtons({super.key});
-
-  @override
-  State<WindowButtons> createState() => _WindowButtonsState();
-}
-
-class _WindowButtonsState extends State<WindowButtons> {
-  void maximizeOrRestore() {
-    setState(() {
-      appWindow.maximizeOrRestore();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        MinimizeWindowButton(colors: buttonColors),
-        appWindow.isMaximized
-            ? RestoreWindowButton(
-                colors: buttonColors,
-                onPressed: maximizeOrRestore,
-              )
-            : MaximizeWindowButton(
-                colors: buttonColors,
-                onPressed: maximizeOrRestore,
-              ),
-        CloseWindowButton(colors: closeButtonColors),
-      ],
-    );
-  }
-}
-
-class DrawerListTile extends StatelessWidget {
-  const DrawerListTile({
-    super.key,
-    required this.title,
-    required this.index,
-    required this.press,
-  });
-
-  final String title;
-  final int index;
-  final VoidCallback press;
-
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder<GlobalViewModel>(builder: (controller) {
-      return InkWell(
-        onTap: press,
-        child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Center(
-                child: Row(
-              children: [
-                const SizedBox(
-                  width: 40,
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                ),
-              ],
-            ))),
-      );
-    });
   }
 }

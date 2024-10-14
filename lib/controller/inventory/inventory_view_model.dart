@@ -7,21 +7,17 @@ import '../../core/constants/app_constants.dart';
 import '../../model/inventory/inventory_model.dart';
 import '../../model/product/product_model.dart';
 
-class InventoryViewModel extends GetxController {
+class InventoryController extends GetxController {
   Map<String, InventoryModel> allInventory = {};
+  InventoryModel? selectedInventory;
 
-  InventoryViewModel() {
-    FirebaseFirestore.instance
-        .collection(AppConstants.inventoryCollection)
-        .snapshots()
-        .listen((event) {
+  InventoryController() {
+    FirebaseFirestore.instance.collection(AppConstants.inventoryCollection).snapshots().listen((event) {
       allInventory.clear();
       for (var i in event.docs) {
         allInventory[i.id] = InventoryModel.fromJson(i.data());
       }
-      WidgetsFlutterBinding.ensureInitialized()
-          .waitUntilFirstFrameRasterized
-          .then((value) => update());
+      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => update());
     });
   }
 
@@ -30,9 +26,10 @@ class InventoryViewModel extends GetxController {
     if (listProduct == null || listProduct.isEmpty) {
       return [];
     } else {
-      listProduct.removeWhere(
-          (element) => !targetedProductList.contains(element.prodId));
+      listProduct.removeWhere((element) => !targetedProductList.contains(element.prodId));
       return listProduct;
     }
   }
+
+  InventoryModel? get getSelectedInventory => allInventory.values.where((element) => element.isDone == false).lastOrNull;
 }

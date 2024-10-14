@@ -67,7 +67,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                             backgroundColor: backGroundColor,
                             title: "اختر الموظف لكل مهمة",
                             middleText: "",
-                            content: GetBuilder<InventoryViewModel>(builder: (inventoryController) {
+                            content: GetBuilder<InventoryController>(builder: (inventoryController) {
                               return SizedBox(
                                 width: Get.width / 2,
                                 height: Get.height / 1.5,
