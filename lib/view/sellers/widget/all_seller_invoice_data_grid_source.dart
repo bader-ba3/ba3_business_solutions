@@ -3,24 +3,17 @@ import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class AllSellerInvoiceViewDataGridSource extends DataGridSource {
+class AllSellerInvoiceDataGridSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
 
-  AllSellerInvoiceViewDataGridSource(
-      {required List<SellerRecModel> sellerRecModel}) {
+  AllSellerInvoiceDataGridSource({required List<SellerRecModel> sellerRecModel}) {
     dataGridRows.clear();
     dataGridRows = (sellerRecModel)
         .map<DataGridRow>((e) => DataGridRow(cells: [
+              DataGridCell<String>(columnName: AppConstants.rowSellerAllInvoiceInvId, value: e.selleRecInvId),
               DataGridCell<String>(
-                  columnName: AppConstants.rowSellerAllInvoiceInvId,
-                  value: e.selleRecInvId),
-              DataGridCell<String>(
-                  columnName: AppConstants.rowSellerAllInvoiceAmount,
-                  value:
-                      double.parse(e.selleRecAmount ?? "0").toStringAsFixed(2)),
-              DataGridCell<String>(
-                  columnName: AppConstants.rowSellerAllInvoiceDate,
-                  value: e.selleRecInvDate),
+                  columnName: AppConstants.rowSellerAllInvoiceAmount, value: double.parse(e.selleRecAmount ?? "0").toStringAsFixed(2)),
+              DataGridCell<String>(columnName: AppConstants.rowSellerAllInvoiceDate, value: e.selleRecInvDate),
             ]))
         .toList();
   }

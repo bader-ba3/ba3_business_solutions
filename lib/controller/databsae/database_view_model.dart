@@ -48,8 +48,8 @@ class DataBaseViewModel extends GetxController {
     Get.put(StoreController(), permanent: true);
     Get.put(ProductViewModel(), permanent: true);
     Get.put(BondViewModel(), permanent: true);
-    Get.put(PatternViewModel(), permanent: true);
-    Get.put(SellersViewModel(), permanent: true);
+    Get.put(PatternController(), permanent: true);
+    Get.put(SellersController(), permanent: true);
     Get.put(InvoiceViewModel(), permanent: true);
     Get.put(ChequeViewModel(), permanent: true);
     Get.put(CostCenterViewModel(), permanent: true);

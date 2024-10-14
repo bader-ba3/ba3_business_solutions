@@ -3,7 +3,7 @@
 // import 'package:ba3_business_solutions/model/pattern_model.dart';
 // import 'package:ba3_business_solutions/model/account_model.dart';
 // import 'package:ba3_business_solutions/model/product_record_model.dart';
-// import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+// import 'package:ba3_business_solutions/view/products/widget/product_details_page.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:syncfusion_flutter_datagrid/datagrid.dart';

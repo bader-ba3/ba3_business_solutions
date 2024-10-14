@@ -1,30 +1,30 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
-import 'package:ba3_business_solutions/view/products/pages/barcode_view.dart';
+import 'package:ba3_business_solutions/view/products/widget/barcode_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
 import '../../../model/product/product_model.dart';
 import '../../../model/product/product_record_model.dart';
 
-class AddProduct extends StatefulWidget {
+class AddProductPage extends StatefulWidget {
   final String? oldKey;
   final String? oldBarcode;
   final String? oldParent;
 
-  const AddProduct({super.key, this.oldKey, this.oldBarcode, this.oldParent});
+  const AddProductPage({super.key, this.oldKey, this.oldBarcode, this.oldParent});
 
   @override
-  State<AddProduct> createState() => _AddProductState();
+  State<AddProductPage> createState() => _AddProductPageState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AddProductPageState extends State<AddProductPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController customerPriceController = TextEditingController();
@@ -66,12 +66,9 @@ class _AddProductState extends State<AddProduct> {
                   child: const Text("تجاهل")),
               ElevatedButton(
                   onPressed: () {
-                    checkPermissionForOperation(AppConstants.roleUserUpdate,
-                            AppConstants.roleViewProduct)
-                        .then((value) {
+                    checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
                       if (value) {
-                        productController.updateProduct(editedProduct,
-                            withLogger: true);
+                        productController.updateProduct(editedProduct, withLogger: true);
                         Get.back();
                         Get.back();
                       }
@@ -93,9 +90,7 @@ class _AddProductState extends State<AddProduct> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (editedProduct.prodParentId != null)
-                  Text(getProductModelFromId(editedProduct.prodParentId)!
-                      .prodFullCode!),
+                if (editedProduct.prodParentId != null) Text(getProductModelFromId(editedProduct.prodParentId)!.prodFullCode!),
                 SizedBox(
                   width: Get.width,
                   child: Wrap(
@@ -113,9 +108,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "الرمز",
                           controller: codeController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodCode = _;
                             isEdit = true;
@@ -123,9 +116,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "سعر مستهلك",
                           controller: customerPriceController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodCustomerPrice = _;
                             isEdit = true;
@@ -133,9 +124,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "سعر الجملة",
                           controller: wholePriceController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodWholePrice = _;
                             isEdit = true;
@@ -143,9 +132,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "سعر مفرق",
                           controller: retailPriceController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodRetailPrice = _;
                             isEdit = true;
@@ -153,9 +140,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "سعر تكلفة",
                           controller: costPriceController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodCostPrice = _;
                             isEdit = true;
@@ -163,9 +148,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "اقل سعر مسموح",
                           controller: minPriceController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodMinPrice = _;
                             isEdit = true;
@@ -173,9 +156,7 @@ class _AddProductState extends State<AddProduct> {
                       item(
                           text: "الباركود",
                           controller: barcodeController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChange: (_) {
                             editedProduct.prodBarcode = _;
                             isEdit = true;
@@ -202,8 +183,7 @@ class _AddProductState extends State<AddProduct> {
                           child: StatefulBuilder(builder: (context, setstate) {
                             return Checkbox(
                                 checkColor: Colors.white,
-                                fillColor: WidgetStatePropertyAll(
-                                    Colors.blue.shade800),
+                                fillColor: WidgetStatePropertyAll(Colors.blue.shade800),
                                 value: editedProduct.prodIsLocal!,
                                 onChanged: (_) {
                                   setstate(() {
@@ -273,26 +253,19 @@ class _AddProductState extends State<AddProduct> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const SizedBox(
-                              width: 100, child: Text("الحساب الاب")),
+                          const SizedBox(width: 100, child: Text("الحساب الاب")),
                           SizedBox(
                             width: (Get.width * .45) - 100,
                             child: IgnorePointer(
                               ignoring: editedProduct.prodIsParent ?? false,
                               child: Container(
                                   decoration: BoxDecoration(
-                                      color: editedProduct.prodIsParent ?? false
-                                          ? Colors.grey.shade700
-                                          : Colors.white,
+                                      color: editedProduct.prodIsParent ?? false ? Colors.grey.shade700 : Colors.white,
                                       borderRadius: BorderRadius.circular(5)),
                                   child: CustomTextFieldWithoutIcon(
-                                    controller: TextEditingController()
-                                      ..text = getProductNameFromId(
-                                          editedProduct.prodParentId),
+                                    controller: TextEditingController()..text = getProductNameFromId(editedProduct.prodParentId),
                                     onSubmitted: (productText) async {
-                                      editedProduct.prodParentId =
-                                          await searchProductGroupTextDialog(
-                                              productText);
+                                      editedProduct.prodParentId = await searchProductGroupTextDialog(productText);
                                       setState(() {});
                                     },
                                   )
@@ -318,25 +291,16 @@ class _AddProductState extends State<AddProduct> {
                         children: [
                           const SizedBox(width: 100, child: Text("نوع الحساب")),
                           Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5)),
+                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
                               // height: 50,
                               width: 350,
-                              child:
-                                  StatefulBuilder(builder: (context, setstate) {
+                              child: StatefulBuilder(builder: (context, setstate) {
                                 return DropdownButton(
                                     value: editedProduct.prodType,
                                     underline: const SizedBox(),
                                     isExpanded: true,
-                                    items: [
-                                      AppConstants.productTypeStore,
-                                      AppConstants.productTypeService
-                                    ]
-                                        .map((e) => DropdownMenuItem(
-                                            value: e,
-                                            child: Text(getProductTypeFromEnum(
-                                                e.toString()))))
+                                    items: [AppConstants.productTypeStore, AppConstants.productTypeService]
+                                        .map((e) => DropdownMenuItem(value: e, child: Text(getProductTypeFromEnum(e.toString()))))
                                         .toList(),
                                     onChanged: (_) {
                                       setstate(() {
@@ -358,52 +322,35 @@ class _AddProductState extends State<AddProduct> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         AppButton(
-                          color: editedProduct.prodId == null
-                              ? null
-                              : Colors.green,
-                          title:
-                              editedProduct.prodId == null ? "إضافة" : "تعديل",
+                          color: editedProduct.prodId == null ? null : Colors.green,
+                          title: editedProduct.prodId == null ? "إضافة" : "تعديل",
                           onPressed: () {
                             if (checkInput()) {
                               if (editedProduct.prodId == null) {
-                                checkPermissionForOperation(
-                                        AppConstants.roleUserWrite,
-                                        AppConstants.roleViewProduct)
-                                    .then((value) {
+                                checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewProduct).then((value) {
                                   if (value) {
                                     print("object");
-                                    productController.createProduct(
-                                        editedProduct,
-                                        withLogger: true);
+                                    productController.createProduct(editedProduct, withLogger: true);
                                     isEdit = false;
                                   }
                                 });
                               } else {
-                                checkPermissionForOperation(
-                                        AppConstants.roleUserUpdate,
-                                        AppConstants.roleViewProduct)
-                                    .then((value) {
+                                checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
                                   if (value) {
-                                    productController.updateProduct(
-                                        editedProduct,
-                                        withLogger: false);
+                                    productController.updateProduct(editedProduct, withLogger: false);
                                     isEdit = false;
                                   }
                                 });
                               }
                             }
                           },
-                          iconData: editedProduct.prodId == null
-                              ? Icons.add
-                              : Icons.edit,
+                          iconData: editedProduct.prodId == null ? Icons.add : Icons.edit,
                         ),
                         if (editedProduct.prodId != null)
                           AppButton(
                               title: "طباعة",
                               onPressed: () {
-                                if (editedProduct.prodName != null &&
-                                    editedProduct.prodCustomerPrice != null &&
-                                    editedProduct.prodBarcode != null) {
+                                if (editedProduct.prodName != null && editedProduct.prodCustomerPrice != null && editedProduct.prodBarcode != null) {
                                   Get.to(() {
                                     return ProductBarcodeView(
                                       name: editedProduct.prodName!,
@@ -431,10 +378,8 @@ class _AddProductState extends State<AddProduct> {
 
   void initPage() {
     if (widget.oldKey != null) {
-      editedProduct = ProductModel.fromJson(
-          productController.productDataMap[widget.oldKey!]!.toJson());
-      productController.productModel = ProductModel.fromJson(
-          productController.productDataMap[widget.oldKey!]!.toJson());
+      editedProduct = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toJson());
+      productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toJson());
       editedProductRecord.clear();
       productController.productModel?.prodRecord?.forEach((element) {
         editedProductRecord.add(ProductRecordModel.fromJson(element.toJson()));
@@ -468,8 +413,7 @@ class _AddProductState extends State<AddProduct> {
         editedProduct.prodBarcode = widget.oldBarcode;
       }
       if (widget.oldParent != null) {
-        editedProduct.prodCode =
-            productController.getNextProductCode(perantId: widget.oldParent);
+        editedProduct.prodCode = productController.getNextProductCode(perantId: widget.oldParent);
         editedProduct.prodParentId = widget.oldParent;
         editedProduct.prodIsParent = false;
       } else {

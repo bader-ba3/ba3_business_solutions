@@ -11,7 +11,7 @@ class AddEditUserForm extends StatelessWidget {
   });
 
   final UserManagementController userManagementViewController;
-  final SellersViewModel sellerViewController;
+  final SellersController sellerViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,7 @@ class AddEditUserForm extends StatelessWidget {
               ),
               Expanded(
                 child: TextFormField(
-                  decoration: const InputDecoration(
-                      filled: true, fillColor: Colors.white),
+                  decoration: const InputDecoration(filled: true, fillColor: Colors.white),
                   controller: userManagementViewController.nameController,
                   onChanged: (_) {
                     userManagementViewController.initAddUserModel?.userName = _;
@@ -49,8 +48,7 @@ class AddEditUserForm extends StatelessWidget {
               ),
               Expanded(
                 child: TextFormField(
-                  decoration: const InputDecoration(
-                      filled: true, fillColor: Colors.white),
+                  decoration: const InputDecoration(filled: true, fillColor: Colors.white),
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(6),
                   ],
@@ -76,15 +74,11 @@ class AddEditUserForm extends StatelessWidget {
                   color: Colors.white,
                   child: DropdownButton<String>(
                     icon: const SizedBox(),
-                    value:
-                        userManagementViewController.initAddUserModel?.userRole,
-                    items: userManagementViewController.allRole.values
-                        .map((e) => DropdownMenuItem(
-                            value: e.roleId, child: Text(e.roleName!)))
-                        .toList(),
+                    value: userManagementViewController.initAddUserModel?.userRole,
+                    items:
+                        userManagementViewController.allRole.values.map((e) => DropdownMenuItem(value: e.roleId, child: Text(e.roleName!))).toList(),
                     onChanged: (_) {
-                      userManagementViewController.initAddUserModel?.userRole =
-                          _;
+                      userManagementViewController.initAddUserModel?.userRole = _;
                       userManagementViewController.update();
                     },
                   ),
@@ -106,19 +100,15 @@ class AddEditUserForm extends StatelessWidget {
                   color: Colors.white,
                   child: DropdownButton<String>(
                     icon: const SizedBox(),
-                    value: userManagementViewController
-                        .initAddUserModel?.userSellerId,
+                    value: userManagementViewController.initAddUserModel?.userSellerId,
                     items: sellerViewController.allSellers.keys
                         .toList()
                         .map((e) => DropdownMenuItem(
                             value: sellerViewController.allSellers[e]?.sellerId,
-                            child: Text(sellerViewController
-                                    .allSellers[e]?.sellerName ??
-                                "error")))
+                            child: Text(sellerViewController.allSellers[e]?.sellerName ?? "error")))
                         .toList(),
                     onChanged: (_) {
-                      userManagementViewController
-                          .initAddUserModel?.userSellerId = _;
+                      userManagementViewController.initAddUserModel?.userSellerId = _;
                       userManagementViewController.update();
                     },
                   ),

@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
-import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
+import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../model/product/product_tree.dart';
 
-class ProductTreeView extends StatelessWidget {
-  ProductTreeView({super.key});
+class ProductTreePage extends StatelessWidget {
+  ProductTreePage({super.key});
 
   final ProductViewModel productController = Get.find<ProductViewModel>();
 
@@ -56,7 +56,7 @@ class ProductTreeView extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Get.to(() => const AddProduct());
+                        Get.to(() => const AddProductPage());
                       },
                       child: const Text("اضافة حساب")),
                   const SizedBox(
@@ -69,16 +69,14 @@ class ProductTreeView extends StatelessWidget {
                     ? const CircularProgressIndicator()
                     : TreeView<ProductTree>(
                         treeController: productController.treeController!,
-                        nodeBuilder: (BuildContext context,
-                            TreeEntry<ProductTree> entry) {
+                        nodeBuilder: (BuildContext context, TreeEntry<ProductTree> entry) {
                           return myTreeTile(
                             context: context,
                             key: ValueKey(entry.node),
                             entry: entry,
                             onTap: () {
                               controller.lastIndex = entry.node.id;
-                              productController.treeController
-                                  ?.toggleExpansion(entry.node);
+                              productController.treeController?.toggleExpansion(entry.node);
                             },
                           );
                         },
@@ -91,11 +89,7 @@ class ProductTreeView extends StatelessWidget {
     );
   }
 
-  myTreeTile(
-      {context,
-      required ValueKey<ProductTree> key,
-      required VoidCallback onTap,
-      required TreeEntry<ProductTree> entry}) {
+  myTreeTile({context, required ValueKey<ProductTree> key, required VoidCallback onTap, required TreeEntry<ProductTree> entry}) {
     return TreeIndentation(
       key: key,
       entry: entry,
@@ -107,12 +101,10 @@ class ProductTreeView extends StatelessWidget {
           height: 50,
           child: GestureDetector(
             onSecondaryTapDown: (details) {
-              showContextMenu(
-                  context, details.globalPosition, productController, entry);
+              showContextMenu(context, details.globalPosition, productController, entry);
             },
             onLongPressStart: (details) {
-              showContextMenu(
-                  context, details.globalPosition, productController, entry);
+              showContextMenu(context, details.globalPosition, productController, entry);
             },
             onTap: onTap,
             child: Row(
@@ -123,14 +115,12 @@ class ProductTreeView extends StatelessWidget {
                   onPressed: entry.hasChildren ? onTap : null,
                 ),
                 if (productController.editItem != entry.node.id)
-                  Text(
-                      "${productController.getFullCodeOfProduct(entry.node.id!)} - ${entry.node.name!}")
+                  Text("${productController.getFullCodeOfProduct(entry.node.id!)} - ${entry.node.name!}")
                 else
                   SizedBox(
                     width: 300,
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                          fillColor: Colors.white, filled: true),
+                      decoration: const InputDecoration(fillColor: Colors.white, filled: true),
                       controller: productController.editCon,
                       onFieldSubmitted: (_) {
                         productController.endRenameChild();
@@ -145,8 +135,7 @@ class ProductTreeView extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition,
-      ProductViewModel controller, entry) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, ProductViewModel controller, entry) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
@@ -161,8 +150,7 @@ class ProductTreeView extends StatelessWidget {
             value: 'adddda',
             child: ListTile(
               leading: const Icon(Icons.add_box_outlined),
-              title: Text('الازاحة ${getProductModelFromId(entry.node.id)!
-                      .prodGroupPad}'),
+              title: Text('الازاحة ${getProductModelFromId(entry.node.id)!.prodGroupPad}'),
             ),
           ),
         const PopupMenuItem(
@@ -198,11 +186,11 @@ class ProductTreeView extends StatelessWidget {
       ],
     ).then((value) {
       if (value == 'seeDetails') {
-        Get.to(() => ProductDetails(oldKey: entry.node.id!));
+        Get.to(() => ProductDetailsPage(oldKey: entry.node.id!));
       } else if (value == 'rename') {
         controller.startRenameChild(entry.node.id);
       } else if (value == "add") {
-        Get.to(AddProduct(oldParent: entry.node.id));
+        Get.to(AddProductPage(oldParent: entry.node.id));
       } else if (value == "addFolder") {
         TextEditingController nameCon = TextEditingController();
         Get.defaultDialog(
@@ -221,8 +209,7 @@ class ProductTreeView extends StatelessWidget {
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    controller.addFolder(nameCon.text,
-                        prodParentId: entry.node.id);
+                    controller.addFolder(nameCon.text, prodParentId: entry.node.id);
                     Get.back();
                   },
                   child: const Text("إضافة")),

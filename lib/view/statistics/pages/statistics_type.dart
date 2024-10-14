@@ -5,8 +5,8 @@ import 'package:ba3_business_solutions/view/statistics/pages/statistics_view.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/account/account_view_model.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
 class StatisticsType extends StatefulWidget {
@@ -17,7 +17,7 @@ class StatisticsType extends StatefulWidget {
 }
 
 class _StatisticsTypeState extends State<StatisticsType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _StatisticsTypeState extends State<StatisticsType> {
         ),
         body: Column(
           children: [
-            Item(
+            item(
               "إضافة حساب",
               () async {
                 TextEditingController nameController = TextEditingController();
@@ -48,9 +48,7 @@ class _StatisticsTypeState extends State<StatisticsType> {
                                 height: 40,
                                 child: TextFormField(
                                   textDirection: TextDirection.rtl,
-                                  decoration: const InputDecoration(
-                                      hintText: "اكتب اسم الحساب او رقمه",
-                                      hintTextDirection: TextDirection.rtl),
+                                  decoration: const InputDecoration(hintText: "اكتب اسم الحساب او رقمه", hintTextDirection: TextDirection.rtl),
                                   onChanged: (_) {
                                     accountList = getAccountModelsFromName(_);
                                     print(accountList);
@@ -70,28 +68,22 @@ class _StatisticsTypeState extends State<StatisticsType> {
                                       : ListView.builder(
                                           itemCount: accountList.length,
                                           itemBuilder: (context, index) {
-                                            AccountModel model =
-                                                accountList[index];
+                                            AccountModel model = accountList[index];
                                             return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: InkWell(
                                                   onTap: () {
-                                                    HiveDataBase.statisticBox
-                                                        .put(model.accId, {
+                                                    HiveDataBase.statisticBox.put(model.accId, {
                                                       "accName": model.accName,
                                                       "accId": model.accId,
                                                     });
                                                     Get.back();
                                                   },
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    padding: const EdgeInsets.all(8.0),
                                                     child: Text(
                                                       "${model.accName}   ${model.accCode}",
-                                                      textDirection:
-                                                          TextDirection.rtl,
+                                                      textDirection: TextDirection.rtl,
                                                     ),
                                                   )),
                                             );
@@ -106,10 +98,8 @@ class _StatisticsTypeState extends State<StatisticsType> {
               },
             ),
             for (var i in HiveDataBase.statisticBox.values.toList())
-              Item("معاينة ${i["accName"]}", () {
-                checkPermissionForOperation(
-                        AppConstants.roleUserRead, AppConstants.roleViewStore)
-                    .then((value) {
+              item("معاينة ${i["accName"]}", () {
+                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewStore).then((value) {
                   if (value) {
                     Get.to(() => StatisticsView(accountId: i["accId"]!));
                   }
@@ -121,15 +111,14 @@ class _StatisticsTypeState extends State<StatisticsType> {
     );
   }
 
-  Widget Item(text, onTap) {
+  Widget item(text, onTap) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: InkWell(
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
                 child: Text(

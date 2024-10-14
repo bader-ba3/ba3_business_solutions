@@ -2,10 +2,10 @@ import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'all_seller_invoice_view.dart';
+import 'all_seller_invoice_page.dart';
 
-class AllSellers extends StatelessWidget {
-  const AllSellers({super.key});
+class AllSellersPage extends StatelessWidget {
+  const AllSellersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class AllSellers extends StatelessWidget {
         appBar: AppBar(
           title: const Text("جميع البائعون"),
         ),
-        body: GetBuilder<SellersViewModel>(builder: (controller) {
+        body: GetBuilder<SellersController>(builder: (controller) {
           return controller.allSellers.isEmpty
               ? const Center(
                   child: Text("لا يوجد بائعون بعد"),
@@ -31,38 +31,23 @@ class AllSellers extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: InkWell(
                                   onTap: () {
-                                    Get.to(() => AllSellerInvoice(
-                                        oldKey: controller.allSellers.values
-                                            .toList()[index]
-                                            .sellerId));
+                                    Get.to(() => AllSellerInvoicePage(oldKey: controller.allSellers.values.toList()[index].sellerId));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
+                                    decoration: BoxDecoration(color: Colors.grey.withOpacity(0.5), borderRadius: BorderRadius.circular(10)),
                                     height: 140,
                                     width: 140,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(
-                                          controller.allSellers.values
-                                                  .toList()[index]
-                                                  .sellerCode ??
-                                              "",
+                                          controller.allSellers.values.toList()[index].sellerCode ?? "",
                                           style: const TextStyle(fontSize: 24),
                                         ),
                                         Text(
-                                          controller.allSellers.values
-                                                  .toList()[index]
-                                                  .sellerName ??
-                                              "",
-                                          style: const TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold),
+                                          controller.allSellers.values.toList()[index].sellerName ?? "",
+                                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),

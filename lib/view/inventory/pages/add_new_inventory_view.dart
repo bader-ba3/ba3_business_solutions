@@ -28,8 +28,7 @@ class AddNewInventoryView extends StatefulWidget {
 
 class _AddNewInventoryViewState extends State<AddNewInventoryView> {
   List<Map<String, dynamic>> treeListData = [];
-  TextEditingController dateInventoryController = TextEditingController(
-      text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
+  TextEditingController dateInventoryController = TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
   TextEditingController productGroupNameController = TextEditingController();
   List<ProductModel> allData = [];
 
@@ -56,24 +55,19 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                   AppButton(
                       title: "موافق",
                       onPressed: () async {
-                        SellersViewModel sellerViewController =
-                            Get.find<SellersViewModel>();
+                        SellersController sellerViewController = Get.find<SellersController>();
                         List<String?> sellers = [];
                         Map<String, String> allInventoryProducts = {};
                         List<String> groupProduct = [];
                         for (var element in allData) {
-                          groupProduct.addIf(
-                              !groupProduct.contains(element.prodParentId!),
-                              element.prodParentId!);
+                          groupProduct.addIf(!groupProduct.contains(element.prodParentId!), element.prodParentId!);
                         }
-                        sellers =
-                            List.generate(groupProduct.length, (index) => null);
+                        sellers = List.generate(groupProduct.length, (index) => null);
                         Get.defaultDialog(
                             backgroundColor: backGroundColor,
                             title: "اختر الموظف لكل مهمة",
                             middleText: "",
-                            content: GetBuilder<InventoryViewModel>(
-                                builder: (inventoryController) {
+                            content: GetBuilder<InventoryViewModel>(builder: (inventoryController) {
                               return SizedBox(
                                 width: Get.width / 2,
                                 height: Get.height / 1.5,
@@ -82,27 +76,17 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                       return Container(
                                         padding: const EdgeInsets.all(15),
                                         margin: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue.shade200,
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
+                                        decoration: BoxDecoration(color: Colors.blue.shade200, borderRadius: BorderRadius.circular(15)),
                                         alignment: Alignment.center,
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             SizedBox(
                                               width: 300,
                                               child: Text(
-                                                getProductNameFromId(
-                                                        groupProduct[index])
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                                getProductNameFromId(groupProduct[index]).toString(),
+                                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
@@ -114,45 +98,25 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                               width: 300,
                                               child: Row(
                                                 children: [
-                                                  const SizedBox(
-                                                      width: 70,
-                                                      child: Text("البائع")),
+                                                  const SizedBox(width: 70, child: Text("البائع")),
                                                   Expanded(
                                                     child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10),
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15)),
-                                                      child: DropdownButton<
-                                                          String>(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                                                      child: DropdownButton<String>(
                                                         icon: const SizedBox(),
-                                                        underline:
-                                                            const SizedBox(),
+                                                        underline: const SizedBox(),
                                                         value: sellers[index],
-                                                        items: sellerViewController
-                                                            .allSellers.keys
+                                                        items: sellerViewController.allSellers.keys
                                                             .toList()
                                                             .map((e) => DropdownMenuItem(
-                                                                value: sellerViewController
-                                                                    .allSellers[
-                                                                        e]
-                                                                    ?.sellerId,
-                                                                child: Text(sellerViewController
-                                                                        .allSellers[
-                                                                            e]
-                                                                        ?.sellerName ??
-                                                                    "error")))
+                                                                value: sellerViewController.allSellers[e]?.sellerId,
+                                                                child: Text(sellerViewController.allSellers[e]?.sellerName ?? "error")))
                                                             .toList(),
                                                         onChanged: (_) {
                                                           if (_ != null) {
                                                             sellers[index] = _;
-                                                            inventoryController
-                                                                .update();
+                                                            inventoryController.update();
                                                           }
 
                                                           // controller.initAddUserModel?.userSellerId = _;
@@ -175,42 +139,31 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                 title: "حفظ",
                                 onPressed: () {
                                   if (!sellers.contains(null)) {
-                                    for (int i = 0;
-                                        i < groupProduct.length;
-                                        i++) {
+                                    for (int i = 0; i < groupProduct.length; i++) {
                                       allData
                                           .where(
-                                            (element) =>
-                                                element.prodParentId ==
-                                                groupProduct[i],
+                                            (element) => element.prodParentId == groupProduct[i],
                                           )
                                           .map(
                                             (e) => e.prodId,
                                           )
                                           .forEach(
                                         (element) {
-                                          allInventoryProducts[element!] =
-                                              sellers[i]!;
+                                          allInventoryProducts[element!] = sellers[i]!;
                                         },
                                       );
                                     }
                                     InventoryModel inventory = InventoryModel(
                                         isDone: false,
                                         inventoryUserId: getMyUserUserId(),
-                                        inventoryId:
-                                            generateId(RecordType.inventory),
-                                        inventoryDate: DateTime.now()
-                                            .toString()
-                                            .split(" ")[0],
-                                        inventoryName:
-                                            dateInventoryController.text,
+                                        inventoryId: generateId(RecordType.inventory),
+                                        inventoryDate: DateTime.now().toString().split(" ")[0],
+                                        inventoryName: dateInventoryController.text,
                                         inventoryRecord: {},
-                                        inventoryTargetedProductList:
-                                            allInventoryProducts);
+                                        inventoryTargetedProductList: allInventoryProducts);
 
                                     FirebaseFirestore.instance
-                                        .collection(
-                                            AppConstants.inventoryCollection)
+                                        .collection(AppConstants.inventoryCollection)
                                         .doc(inventory.inventoryId)
                                         .set(inventory.toJson());
 
@@ -237,8 +190,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                       children: [
                         const Text(
                           "اسم الجرد: ",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
                           width: 5,
@@ -248,8 +200,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                             width: 400,
                             child: TextFormField(
                               controller: dateInventoryController,
-                              decoration:
-                                  const InputDecoration(hintText: "اسم الجرد"),
+                              decoration: const InputDecoration(hintText: "اسم الجرد"),
                             )),
                       ],
                     ),
@@ -260,12 +211,10 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                       title: "اسم المجموعة",
                       controller: productGroupNameController,
                       onSubmitted: (productText) async {
-                        PlutoViewModel plutoViewMode =
-                            Get.find<PlutoViewModel>();
+                        PlutoViewModel plutoViewMode = Get.find<PlutoViewModel>();
                         plutoViewMode.plutoKey = GlobalKey();
                         ProductModel? productModel;
-                        productModel = getProductModelFromId(
-                            await searchProductGroupTextDialog(productText));
+                        productModel = getProductModelFromId(await searchProductGroupTextDialog(productText));
                         if (productModel != null) {
                           if (hasCommonElements(
                               productModel.prodChild!,
@@ -274,21 +223,18 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                     (e) => e.prodId,
                                   )
                                   .toList())) {
-                            Get.snackbar(
-                                "فشل العملية", "المجموعة موجودة من قبل");
+                            Get.snackbar("فشل العملية", "المجموعة موجودة من قبل");
                             return;
                           }
                           allData.addAll(productModel.prodChild!.map(
                             (e) => getProductModelFromId(e)!,
                           ));
 
-                          Get.snackbar("تمت العملية بنجاح",
-                              "تمت اضافة المجموعة الى الجرد");
+                          Get.snackbar("تمت العملية بنجاح", "تمت اضافة المجموعة الى الجرد");
                           setState(() {});
                           productGroupNameController.clear();
                         } else {
-                          Get.snackbar(
-                              "فشل العملية", "هذه المجموعة غير موجودة");
+                          Get.snackbar("فشل العملية", "هذه المجموعة غير موجودة");
                         }
                       },
                     ),

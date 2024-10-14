@@ -1,25 +1,25 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
+import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../controller/user/user_management_model.dart';
+import '../../../core/constants/app_constants.dart';
 
-class AddSeller extends StatefulWidget {
-  const AddSeller({super.key, this.oldKey});
+class AddSellerPage extends StatefulWidget {
+  const AddSellerPage({super.key, this.oldKey});
 
   final String? oldKey;
 
   @override
-  State<AddSeller> createState() => _AddSellerState();
+  State<AddSellerPage> createState() => _AddSellerPageState();
 }
 
-class _AddSellerState extends State<AddSeller> {
-  var sellerController = Get.find<SellersViewModel>();
+class _AddSellerPageState extends State<AddSellerPage> {
+  var sellerController = Get.find<SellersController>();
   var nameController = TextEditingController();
   var codeController = TextEditingController();
   late SellerModel model;
@@ -29,11 +29,7 @@ class _AddSellerState extends State<AddSeller> {
     super.initState();
     if (widget.oldKey == null) {
       model = SellerModel();
-      int code = sellerController.allSellers.isEmpty
-          ? 0
-          : int.parse(
-                  sellerController.allSellers.values.last.sellerCode ?? "0") +
-              1;
+      int code = sellerController.allSellers.isEmpty ? 0 : int.parse(sellerController.allSellers.values.last.sellerCode ?? "0") + 1;
       codeController.text = code.toString();
       model.sellerCode = code.toString();
     } else {
@@ -47,7 +43,7 @@ class _AddSellerState extends State<AddSeller> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<SellersViewModel>(builder: (controller) {
+      child: GetBuilder<SellersController>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(
             title: Text(model.sellerName ?? "جديد"),
@@ -91,8 +87,7 @@ class _AddSellerState extends State<AddSeller> {
                           ),
                           Expanded(
                             child: CustomTextFieldWithoutIcon(
-                              controller: TextEditingController()
-                                ..text = model.sellerCode ?? '',
+                              controller: TextEditingController()..text = model.sellerCode ?? '',
                               onChanged: (_) {
                                 model.sellerCode = _;
                               },
@@ -124,9 +119,7 @@ class _AddSellerState extends State<AddSeller> {
                             ),
                             Expanded(
                               child: CustomTextFieldWithoutIcon(
-                                controller: TextEditingController()
-                                  ..text =
-                                      model.sellerTime?.firstTimeEnter ?? '',
+                                controller: TextEditingController()..text = model.sellerTime?.firstTimeEnter ?? '',
                                 onChanged: (_) {
                                   model.sellerTime!.firstTimeEnter = _;
                                 },
@@ -148,8 +141,7 @@ class _AddSellerState extends State<AddSeller> {
                               child: CustomTextFieldWithoutIcon(
                                 // decoration: const InputDecoration(filled: true,fillColor: Colors.white),
 
-                                controller: TextEditingController()
-                                  ..text = model.sellerTime?.firstTimeOut ?? '',
+                                controller: TextEditingController()..text = model.sellerTime?.firstTimeOut ?? '',
                                 onChanged: (_) {
                                   model.sellerTime!.firstTimeOut = _;
                                 },
@@ -171,9 +163,7 @@ class _AddSellerState extends State<AddSeller> {
                               child: CustomTextFieldWithoutIcon(
                                 // decoration: const InputDecoration(filled: true,fillColor: Colors.white),
 
-                                controller: TextEditingController()
-                                  ..text =
-                                      model.sellerTime?.secondTimeEnter ?? '',
+                                controller: TextEditingController()..text = model.sellerTime?.secondTimeEnter ?? '',
                                 onChanged: (_) {
                                   model.sellerTime!.secondTimeEnter = _;
                                 },
@@ -195,9 +185,7 @@ class _AddSellerState extends State<AddSeller> {
                               child: CustomTextFieldWithoutIcon(
                                 // decoration: const InputDecoration(filled: true,fillColor: Colors.white),
 
-                                controller: TextEditingController()
-                                  ..text =
-                                      model.sellerTime?.secondTimeOut ?? '',
+                                controller: TextEditingController()..text = model.sellerTime?.secondTimeOut ?? '',
                                 onChanged: (_) {
                                   model.sellerTime!.secondTimeOut = _;
                                 },
@@ -276,11 +264,8 @@ class _AddSellerState extends State<AddSeller> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              model.sellerDayOff![index]
-                                  .toString()
-                                  .split(" ")[0],
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w700),
+                              model.sellerDayOff![index].toString().split(" ")[0],
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                             ),
                             IconButton(
                               onPressed: () {
@@ -318,8 +303,7 @@ class _AddSellerState extends State<AddSeller> {
                         lastDate: DateTime(2100),
                       ).then((date) {
                         if (date != null) {
-                          model.sellerDayOff!
-                              .add(date.toString().split(" ")[0]);
+                          model.sellerDayOff!.add(date.toString().split(" ")[0]);
                           setState(() {});
                         }
                       });
@@ -332,18 +316,13 @@ class _AddSellerState extends State<AddSeller> {
                 ),
                 AppButton(
                   onPressed: () {
-                    if (nameController.text.isNotEmpty &&
-                        codeController.text.isNotEmpty) {
+                    if (nameController.text.isNotEmpty && codeController.text.isNotEmpty) {
                       if (model.sellerId == null) {
-                        checkPermissionForOperation(AppConstants.roleUserWrite,
-                                AppConstants.roleViewSeller)
-                            .then((value) {
+                        checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewSeller).then((value) {
                           if (value) sellerController.addSeller(model);
                         });
                       } else {
-                        checkPermissionForOperation(AppConstants.roleUserUpdate,
-                                AppConstants.roleViewSeller)
-                            .then((value) {
+                        checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewSeller).then((value) {
                           if (value) sellerController.addSeller(model);
                         });
                       }
@@ -356,16 +335,12 @@ class _AddSellerState extends State<AddSeller> {
                 const SizedBox(
                   height: 20,
                 ),
-                if (model.sellerId != null &&
-                    (model.sellerRecord ?? []).isEmpty)
+                if (model.sellerId != null && (model.sellerRecord ?? []).isEmpty)
                   ElevatedButton(
                       onPressed: () {
                         confirmDeleteWidget().then((value) {
                           if (value) {
-                            checkPermissionForOperation(
-                                    AppConstants.roleUserDelete,
-                                    AppConstants.roleViewSeller)
-                                .then((value) {
+                            checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewSeller).then((value) {
                               if (value) {
                                 sellerController.deleteSeller(model);
                                 Get.back();

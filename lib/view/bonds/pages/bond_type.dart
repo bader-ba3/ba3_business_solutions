@@ -15,7 +15,7 @@ class BondType extends StatefulWidget {
 }
 
 class _BondTypeState extends State<BondType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,7 @@ class _BondTypeState extends State<BondType> {
                   bondType: AppConstants.bondTypeDaily,
                 ),
                 binding: BindingsBuilder(() {
-                  Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppConstants.bondTypeDaily));
+                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDaily));
                 }),
               );
             }),
@@ -46,8 +45,7 @@ class _BondTypeState extends State<BondType> {
                   bondType: AppConstants.bondTypeDebit,
                 ),
                 binding: BindingsBuilder(() {
-                  Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppConstants.bondTypeDebit));
+                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDebit));
                 }),
               );
             }),
@@ -57,8 +55,7 @@ class _BondTypeState extends State<BondType> {
                   bondType: AppConstants.bondTypeCredit,
                 ),
                 binding: BindingsBuilder(() {
-                  Get.lazyPut(() =>
-                      BondRecordPlutoViewModel(AppConstants.bondTypeCredit));
+                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeCredit));
                 }),
               );
             }),
@@ -74,8 +71,7 @@ class _BondTypeState extends State<BondType> {
                   bondType: AppConstants.bondTypeStart,
                 ),
                 binding: BindingsBuilder(() {
-                  Get.lazyPut(
-                      () => BondRecordPlutoViewModel(AppConstants.bondTypeStart));
+                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeStart));
                 }),
               );
             }),
@@ -104,8 +100,7 @@ class _BondTypeState extends State<BondType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
                 child: Text(

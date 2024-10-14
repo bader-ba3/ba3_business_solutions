@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
 import 'package:ba3_business_solutions/model/store/store_record_model.dart';
-import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,7 @@ class StoreDetails extends StatelessWidget {
         title: "جميع الحركات ${storeViewModel.storeMap[oldKey]!.stName}",
         onLoaded: (e) {},
         onSelected: (p0) {
-          Get.to(() => ProductDetails(
+          Get.to(() => ProductDetailsPage(
                 oldKey: p0.row?.cells["id"]?.value,
               ));
           // Get.to(() => InvoiceView(

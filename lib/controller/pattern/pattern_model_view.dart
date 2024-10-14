@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import '../../core/utils/generate_id.dart';
 import '../account/account_view_model.dart';
 
-class PatternViewModel extends GetxController {
+class PatternController extends GetxController {
   PatternRecordDataSource? recordViewDataSource;
   TextEditingController codeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -27,7 +27,7 @@ class PatternViewModel extends GetxController {
   TextEditingController patPartnerAccountFee = TextEditingController();
   bool hasVatController = false;
 
-  PatternViewModel() {
+  PatternController() {
     getAllPattern();
     // recordViewDataSource=PatternRecordDataSource(patternRecordModel: patternModel);
   }
@@ -47,7 +47,14 @@ class PatternViewModel extends GetxController {
     secondaryController.text = getAccountNameFromId(editPatternModel?.patSecondary);
     storeEditController.text = getStoreNameFromId(editPatternModel?.patStore);
     storeNewController.text = getStoreNameFromId(editPatternModel?.patNewStore);
-    // storeController.text=getStoreNameFromId("store1702230185210544");
+  }
+
+  initPattern([String? oldKey]) {
+    if (oldKey == null) {
+      clearController();
+    } else {
+      initPage(oldKey);
+    }
   }
 
   RxMap<String, PatternModel> patternModel = <String, PatternModel>{}.obs;
@@ -133,7 +140,7 @@ class PatternViewModel extends GetxController {
   List _storePickList = [];
 
   Future<String> getStoreComplete(text) async {
-    var _ = '';
+    var store = '';
     _storePickList = [];
     storeController.storeMap.forEach((key, value) {
       _storePickList.addIf(
@@ -151,7 +158,7 @@ class PatternViewModel extends GetxController {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  _ = _storePickList[index];
+                  store = _storePickList[index];
                   update();
                   Get.back();
                 },
@@ -171,11 +178,11 @@ class PatternViewModel extends GetxController {
         ),
       );
     } else if (_storePickList.length == 1) {
-      _ = _storePickList[0];
+      store = _storePickList[0];
     } else {
       Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
     }
-    return _;
+    return store;
   }
 
   clearController() {
@@ -217,7 +224,7 @@ class PatternViewModel extends GetxController {
 
 PatternModel getPatModelFromPatternId(id) {
   if (id != null && id != " " && id != "") {
-    return Get.find<PatternViewModel>().patternModel[id]!;
+    return Get.find<PatternController>().patternModel[id]!;
   } else {
     return PatternModel(patName: "not found");
   }

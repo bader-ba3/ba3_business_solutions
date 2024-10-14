@@ -26,7 +26,7 @@ class InvoiceType extends StatefulWidget {
 }
 
 class _InvoiceTypeState extends State<InvoiceType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   void initState() {
@@ -48,8 +48,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               Text(
-                Get.find<UserManagementController>().myUserModel?.userName ??
-                    "",
+                Get.find<UserManagementController>().myUserModel?.userName ?? "",
                 style: const TextStyle(color: Colors.blue, fontSize: 14),
               ),
             ],
@@ -57,8 +56,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.find<UserManagementController>().userStatus =
-                      UserManagementStatus.first;
+                  Get.find<UserManagementController>().userStatus = UserManagementStatus.first;
                   Get.offAll(const LoginView());
                 },
                 icon: const Icon(Icons.logout, color: Colors.red))
@@ -72,11 +70,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 alignment: WrapAlignment.start,
                 spacing: 10.0,
                 runSpacing: 2.0,
-                children: patternController.patternModel.entries
-                        .toList()
-                        .asMap()
-                        .entries
-                        .map((entry) {
+                children: patternController.patternModel.entries.toList().asMap().entries.map((entry) {
                       int index = entry.key;
                       MapEntry<String, PatternModel> i = entry.value;
 
@@ -110,8 +104,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                               borderRadius: BorderRadius.circular(20),
                               color: Colors.white,
                               border: Border.all(
-                                color:
-                                    Color(i.value.patColor!).withOpacity(0.5),
+                                color: Color(i.value.patColor!).withOpacity(0.5),
                                 width: 1.0,
                               ),
                             ),
@@ -119,8 +112,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                             child: Center(
                               child: Text(
                                 i.value.patFullName ?? "error",
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 textDirection: TextDirection.rtl,
                                 textAlign: TextAlign.center,
                               ),
@@ -154,8 +146,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                             child: const Center(
                               child: Text(
                                 "فاتورة ضمان",
-                                style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 textDirection: TextDirection.rtl,
                                 textAlign: TextAlign.center,
                               ),
@@ -166,15 +157,12 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     ],
               ),
             ),
-            if (checkPermission(
-                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
+            if (checkPermission(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead,
-                            AppConstants.roleViewInvoice)
-                        .then((value) {
+                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       if (value) {
                         Get.to(
                           () => const AllWarrantyInvoices(),
@@ -184,51 +172,41 @@ class _InvoiceTypeState extends State<InvoiceType> {
                   },
                   child: Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                       padding: const EdgeInsets.all(30.0),
                       child: const Center(
                         child: Text(
                           "عرض فواتير ضمان",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           textDirection: TextDirection.rtl,
                         ),
                       )),
                 ),
               ),
-            if (checkPermission(
-                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) ...[
+            if (checkPermission(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) ...[
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead,
-                            AppConstants.roleViewInvoice)
-                        .then((value) {
+                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       // if (value) Get.to(() => const AllInvoice());
                       if (value) {
                         Get.find<SearchViewController>().initController();
                         showDialog<String>(
                           context: context,
-                          builder: (BuildContext context) =>
-                              const InvoiceOptionDialog(),
+                          builder: (BuildContext context) => const InvoiceOptionDialog(),
                         );
                       }
                     });
                   },
                   child: Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                       padding: const EdgeInsets.all(30.0),
                       child: const Center(
                         child: Text(
                           "عرض جميع الفواتير",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           textDirection: TextDirection.rtl,
                         ),
                       )),
@@ -238,23 +216,18 @@ class _InvoiceTypeState extends State<InvoiceType> {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead,
-                            AppConstants.roleViewInvoice)
-                        .then((value) {
+                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       if (value) Get.to(() => const AllPendingInvoice());
                     });
                   },
                   child: Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
                       padding: const EdgeInsets.all(30.0),
                       child: const Center(
                         child: Text(
                           "عرض جميع الفواتير الغير مؤكدة",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           textDirection: TextDirection.rtl,
                         ),
                       )),
@@ -270,8 +243,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     Text(
                       "الفواتيير المفتوحة"
                       "(${screenController.openedScreen.length})",
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
                       height: 15,
@@ -279,9 +251,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                     Wrap(
                       spacing: 15.0,
                       runSpacing: 15.0,
-                      children: screenController.openedScreen.entries
-                          .toList()
-                          .map((i) {
+                      children: screenController.openedScreen.entries.toList().map((i) {
                         return Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -314,11 +284,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                   borderRadius: BorderRadius.circular(20),
                                   color: Colors.white,
                                   border: Border.all(
-                                    color: Color(patternController
-                                                .patternModel[i.value.patternId]
-                                                ?.patColor! ??
-                                            00000)
-                                        .withOpacity(0.5),
+                                    color: Color(patternController.patternModel[i.value.patternId]?.patColor! ?? 00000).withOpacity(0.5),
                                     width: 1.0,
                                   ),
                                 ),
@@ -328,8 +294,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const SizedBox(
@@ -342,14 +307,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                         ),
                                         SizedBox(
                                           child: Text(
-                                            patternController
-                                                    .patternModel[
-                                                        i.value.patternId!]!
-                                                    .patName ??
-                                                "error",
-                                            style: const TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
+                                            patternController.patternModel[i.value.patternId!]!.patName ?? "error",
+                                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                             textDirection: TextDirection.rtl,
                                           ),
                                         ),
@@ -359,8 +318,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                       height: 5,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const SizedBox(
@@ -373,10 +331,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                         ),
                                         Text(
                                           i.value.invCode.toString(),
-                                          style: const TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue),
+                                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],
@@ -385,8 +340,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                       height: 5,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const SizedBox(
@@ -398,13 +352,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                           ),
                                         ),
                                         Text(
-                                          i.value.invDate
-                                              .toString()
-                                              .split(" ")[1],
-                                          style: const TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
+                                          i.value.invDate.toString().split(" ")[1],
+                                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],
@@ -413,8 +362,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                       height: 5,
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const SizedBox(
@@ -426,12 +374,8 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                           ),
                                         ),
                                         Text(
-                                          formatDecimalNumberWithCommas(
-                                              i.value.invTotal ?? 0),
-                                          style: const TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
+                                          formatDecimalNumberWithCommas(i.value.invTotal ?? 0),
+                                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],
@@ -453,12 +397,7 @@ class _InvoiceTypeState extends State<InvoiceType> {
                                       decoration: BoxDecoration(
                                           color: Colors.red.shade800,
                                           shape: BoxShape.circle,
-                                          boxShadow: const [
-                                            BoxShadow(
-                                                color: Colors.grey,
-                                                blurRadius: 10,
-                                                spreadRadius: 0.2)
-                                          ]),
+                                          boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 10, spreadRadius: 0.2)]),
                                       child: const Icon(
                                         Icons.close,
                                         size: 13,

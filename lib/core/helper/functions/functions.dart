@@ -185,12 +185,12 @@ String getProductTypeFromEnum(String type) {
 
 String getPatNameFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
-  return Get.find<PatternViewModel>().patternModel[id]?.patName ?? "";
+  return Get.find<PatternController>().patternModel[id]?.patName ?? "";
 }
 
 String getPatTypeFromId(String id) {
 // return "سند مولد من فاتورة ${Get.find<PatternViewModel>().patternModel[id]?.patName}";
-  return Get.find<PatternViewModel>().patternModel[id]?.patType ?? "";
+  return Get.find<PatternController>().patternModel[id]?.patType ?? "";
 }
 
 String getAccountTypeFromEnum(String type) {
@@ -518,10 +518,10 @@ Future<String> savePdfLocally(GlobalModel model) async {
   }
 }
 
-addImeiToProducts(Map<String, ProductImei> imeiMap) async{
+addImeiToProducts(Map<String, ProductImei> imeiMap) async {
   imeiMap.forEach(
-    (key, value) async{
-   await   Get.find<ProductViewModel>().updateProduct(Get.find<ProductViewModel>().productDataMap[key]!..prodImei?.add(value));
+    (key, value) async {
+      await Get.find<ProductViewModel>().updateProduct(Get.find<ProductViewModel>().productDataMap[key]!..prodImei?.add(value));
     },
   );
 }

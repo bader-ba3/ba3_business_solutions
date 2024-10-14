@@ -37,8 +37,8 @@ class GetBinding extends Bindings {
     Get.put(AccountViewModel());
     Get.put(StoreController());
     Get.put(BondViewModel());
-    Get.put(PatternViewModel());
-    Get.put(SellersViewModel());
+    Get.put(PatternController());
+    Get.put(SellersController());
     Get.put(InvoiceViewModel());
     Get.put(ChequeViewModel());
     Get.put(CostCenterViewModel());

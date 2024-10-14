@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/core/utils/logger.dart';
-import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,21 +29,13 @@ class AllProductOLDOLD extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ListView.builder(
                 itemCount: controller.productDataMap.values
-                    .where((element) =>
-                        !element.prodIsGroup! &&
-                        (HiveDataBase.isFree.get("isFree")!
-                            ? element.prodIsLocal!
-                            : true))
+                    .where((element) => !element.prodIsGroup! && (HiveDataBase.isFree.get("isFree")! ? element.prodIsLocal! : true))
                     .toList()
                     .length,
                 itemBuilder: (context, index) {
                   ProductModel model = controller.productDataMap.values
                       .toList()
-                      .where((element) =>
-                          !element.prodIsGroup! &&
-                          (HiveDataBase.isFree.get("isFree")!
-                              ? element.prodIsLocal!
-                              : true))
+                      .where((element) => !element.prodIsGroup! && (HiveDataBase.isFree.get("isFree")! ? element.prodIsLocal! : true))
                       .toList()[index];
                   return _prodItemWidget(model, controller);
                 }),
@@ -59,7 +51,7 @@ class AllProductOLDOLD extends StatelessWidget {
       child: InkWell(
         onTap: () {
           logger(newData: model, transfersType: TransfersType.read);
-          Get.to(() => ProductDetails(
+          Get.to(() => ProductDetailsPage(
                 oldKey: model.prodId,
               ));
         },

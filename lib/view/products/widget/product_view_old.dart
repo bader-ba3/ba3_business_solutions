@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/core/utils/logger.dart';
-import 'package:ba3_business_solutions/view/products/widget/product_details.dart';
+import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,20 +18,12 @@ class AllProductOLD extends StatelessWidget {
           return SliverListWidget<ProductModel>(
             header: "المواد",
             hintText: "البحث عن منتج",
-            allElement: controller.productDataMap.values
-                .toList()
-                .where((element) => !element.prodIsGroup!)
-                .toList(),
+            allElement: controller.productDataMap.values.toList().where((element) => !element.prodIsGroup!).toList(),
             childBuilder: (BuildContext context, item, int index) {
               return _prodItemWidget(item, controller);
             },
             where: (item, String search) {
-              return item.prodName!
-                      .toLowerCase()
-                      .contains(search.toLowerCase()) ||
-                  item.prodFullCode!
-                      .toLowerCase()
-                      .contains(search.toLowerCase());
+              return item.prodName!.toLowerCase().contains(search.toLowerCase()) || item.prodFullCode!.toLowerCase().contains(search.toLowerCase());
             },
           );
         }),
@@ -46,7 +38,7 @@ class AllProductOLD extends StatelessWidget {
       child: InkWell(
         onTap: () {
           logger(newData: model, transfersType: TransfersType.read);
-          Get.to(() => ProductDetails(
+          Get.to(() => ProductDetailsPage(
                 oldKey: model.prodId,
               ));
         },

@@ -32,7 +32,7 @@ class GlobalViewModel extends GetxController {
   InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
   AccountViewModel accountViewModel = Get.find<AccountViewModel>();
   EntryBondViewModel entryBondViewModel = Get.find<EntryBondViewModel>();
-  SellersViewModel sellerViewModel = Get.find<SellersViewModel>();
+  SellersController sellerViewModel = Get.find<SellersController>();
   ChequeViewModel chequeViewModel = Get.find<ChequeViewModel>();
   bool isEdit = false;
 

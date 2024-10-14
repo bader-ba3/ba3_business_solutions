@@ -14,9 +14,8 @@ class AddUserView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserManagementController userManagementViewController =
-        Get.find<UserManagementController>();
-    SellersViewModel sellerViewController = Get.find<SellersViewModel>();
+    UserManagementController userManagementViewController = Get.find<UserManagementController>();
+    SellersController sellerViewController = Get.find<SellersController>();
     return Column(
       children: [
         const CustomWindowTitleBar(),
@@ -27,8 +26,7 @@ class AddUserView extends StatelessWidget {
               child: Scaffold(
                 appBar: AppBar(
                   centerTitle: false,
-                  title: Text(
-                      controller.initAddUserModel?.userName ?? "مستخدم جديد"),
+                  title: Text(controller.initAddUserModel?.userName ?? "مستخدم جديد"),
                   actions: [
                     if (controller.initAddUserModel?.userId != null)
                       ElevatedButton(
@@ -51,46 +49,30 @@ class AddUserView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: AddEditUserForm(
-                          userManagementViewController:
-                              userManagementViewController,
+                          userManagementViewController: userManagementViewController,
                           sellerViewController: sellerViewController,
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.only(bottom: .15 * context.screenHeight),
+                        padding: EdgeInsets.only(bottom: .15 * context.screenHeight),
                         child: AppButton(
-                          title: controller.initAddUserModel?.userId == null
-                              ? "إضافة"
-                              : "تعديل",
+                          title: controller.initAddUserModel?.userId == null ? "إضافة" : "تعديل",
                           onPressed: () {
                             if (controller.nameController.text.isEmpty) {
                               Get.snackbar("خطأ", "يرجى كتابة الاسم");
-                            } else if (controller.pinController.text.length !=
-                                6) {
+                            } else if (controller.pinController.text.length != 6) {
                               Get.snackbar("خطأ", "يرجى كتابة كلمة السر");
-                            } else if (controller
-                                    .initAddUserModel?.userSellerId ==
-                                null) {
+                            } else if (controller.initAddUserModel?.userSellerId == null) {
                               Get.snackbar("خطأ", "يرجى اختيار البائع");
-                            } else if (controller.initAddUserModel?.userRole ==
-                                null) {
+                            } else if (controller.initAddUserModel?.userRole == null) {
                               Get.snackbar("خطأ", "يرجى اختيار الصلاحيات");
                             } else {
                               controller.addUser();
-                              Get.snackbar(
-                                  "تمت العملية بنجاح",
-                                  controller.initAddUserModel?.userId == null
-                                      ? "تم اضافة الحساب"
-                                      : "تم تعديل الحساب");
+                              Get.snackbar("تمت العملية بنجاح", controller.initAddUserModel?.userId == null ? "تم اضافة الحساب" : "تم تعديل الحساب");
                             }
                           },
-                          iconData: controller.initAddUserModel?.userId == null
-                              ? Icons.add
-                              : Icons.edit,
-                          color: controller.initAddUserModel?.userId == null
-                              ? null
-                              : Colors.green,
+                          iconData: controller.initAddUserModel?.userId == null ? Icons.add : Icons.edit,
+                          color: controller.initAddUserModel?.userId == null ? null : Colors.green,
                         ),
                       )
                     ],

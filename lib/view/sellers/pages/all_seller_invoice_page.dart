@@ -1,27 +1,27 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/view/sellers/pages/add_seller.dart';
-import 'package:ba3_business_solutions/view/sellers/pages/seller_targets.dart';
+import 'package:ba3_business_solutions/view/sellers/pages/add_seller_page.dart';
+import 'package:ba3_business_solutions/view/sellers/pages/seller_targets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../core/constants/app_constants.dart';
-import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/seller/target_controller.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../core/shared/widgets/grid_column_item.dart';
 import '../../../core/utils/date_range_picker.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
-class AllSellerInvoice extends StatelessWidget {
+class AllSellerInvoicePage extends StatelessWidget {
   final String? oldKey;
 
-  AllSellerInvoice({super.key, this.oldKey});
-
-  List<DateTime>? dateRange = [];
+  const AllSellerInvoicePage({super.key, this.oldKey});
 
   @override
   Widget build(BuildContext context) {
-    SellersViewModel controller = Get.find<SellersViewModel>();
+    SellersController controller = Get.find<SellersController>();
     return Column(
       children: [
         const CustomWindowTitleBar(),
@@ -30,17 +30,16 @@ class AllSellerInvoice extends StatelessWidget {
             textDirection: TextDirection.rtl,
             child: Scaffold(
               appBar: AppBar(
-                title: Text(
-                    "سجل مبيعات: ${controller.allSellers[oldKey]?.sellerName ?? ""}"),
+                title: Text("سجل مبيعات: ${controller.allSellers[oldKey]?.sellerName ?? ""}"),
                 actions: [
                   const Text("فلتر"),
                   const SizedBox(
                     width: 20,
                   ),
                   DateRangePicker(
-                    onSubmit: (_) {
-                      dateRange = _;
-                      controller.filter(_, oldKey);
+                    onSubmit: (dates) {
+                      controller.dateRange = dates;
+                      controller.filter(dates, oldKey);
                     },
                   ),
                   const SizedBox(
@@ -48,7 +47,7 @@ class AllSellerInvoice extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        dateRange = null;
+                        controller.dateRange = null;
                         controller.initSellerPage(oldKey);
                         controller.update();
                       },
@@ -58,7 +57,7 @@ class AllSellerInvoice extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Get.to(() => AddSeller(
+                        Get.to(() => AddSellerPage(
                               oldKey: oldKey,
                             ));
                       },
@@ -68,9 +67,8 @@ class AllSellerInvoice extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Get.to(() => SellerTarget(
-                              sellerId: oldKey!,
-                            ));
+                        Get.find<TargetController>().initSeller(oldKey!);
+                        Get.to(() => SellerTargetPage(sellerId: oldKey!));
                       },
                       child: const Text("التارغيت")),
                   const SizedBox(
@@ -80,24 +78,18 @@ class AllSellerInvoice extends StatelessWidget {
               ),
               body: controller.allSellers.isEmpty
                   ? const CircularProgressIndicator()
-                  :
-                  // String model = controller.allAccounts.keys.toList()[index];
-                  // AccountModel accountModel=controller.accountListMyId[model]!;
-                  StreamBuilder(
+                  : StreamBuilder(
                       stream: controller.allSellers.stream,
                       builder: (context, snapshot) {
-                        return GetBuilder<SellersViewModel>(
-                            builder: (controller) {
-                          if (dateRange == null) {
+                        return GetBuilder<SellersController>(builder: (controller) {
+                          if (controller.dateRange == null) {
                             controller.initSellerPage(oldKey);
                           }
                           return SfDataGrid(
                             onCellTap: (DataGridCellTapDetails details) {
                               if (details.rowColumnIndex.rowIndex != 0) {
-                                final rowIndex =
-                                    details.rowColumnIndex.rowIndex - 1;
-                                var rowData =
-                                    controller.recordViewDataSource[rowIndex];
+                                final rowIndex = details.rowColumnIndex.rowIndex - 1;
+                                var rowData = controller.recordViewDataSource[rowIndex];
                                 String model = rowData.getCells()[0].value;
                                 print('Tapped Row Data: $model');
                                 Get.to(
@@ -110,27 +102,27 @@ class AllSellerInvoice extends StatelessWidget {
                                     Get.lazyPut(() => DiscountPlutoViewModel());
                                   }),
                                 );
-                                // logger(
-                                //     newData: ChequeModel(
-                                //       cheqId: model,
-                                //     ),
-                                //     transfersType: TransfersType.read);
                               }
                             },
                             columns: <GridColumn>[
                               GridColumn(
-                                  visible: false,
-                                  allowEditing: false,
-                                  columnName:
-                                      AppConstants.rowSellerAllInvoiceInvId,
-                                  label: const Text('ID')),
-                              // GridColumnItem(label: "الرمز التسلسلي", name: Const.rowSellerAllInvoiceInvId),
-                              GridColumnItem(
-                                  label: "قيمة الفاتورة",
-                                  name: AppConstants.rowSellerAllInvoiceAmount),
-                              GridColumnItem(
-                                  label: "تاريخ الفاتورة",
-                                  name: AppConstants.rowSellerAllInvoiceAmount),
+                                visible: false,
+                                allowEditing: false,
+                                columnName: AppConstants.rowSellerAllInvoiceInvId,
+                                label: const Text('ID'),
+                              ),
+                              gridColumnItem(
+                                label: "قيمة الفاتورة",
+                                name: AppConstants.rowSellerAllInvoiceAmount,
+                                color: Colors.blue.shade700,
+                                fontSize: 18,
+                              ),
+                              gridColumnItem(
+                                label: "تاريخ الفاتورة",
+                                name: AppConstants.rowSellerAllInvoiceAmount,
+                                color: Colors.blue.shade700,
+                                fontSize: 18,
+                              ),
                             ],
                             source: controller.recordViewDataSource,
                             allowEditing: false,
@@ -147,19 +139,4 @@ class AllSellerInvoice extends StatelessWidget {
       ],
     );
   }
-}
-
-GridColumn GridColumnItem({required label, name}) {
-  return GridColumn(
-      allowEditing: false,
-      columnName: name,
-      label: Container(
-          color: Colors.blue.shade700,
-          padding: const EdgeInsets.all(16.0),
-          alignment: Alignment.center,
-          child: Text(
-            style: const TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-            label.toString(),
-          )));
 }

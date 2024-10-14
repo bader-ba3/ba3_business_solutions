@@ -38,8 +38,7 @@ class AccountViewModel extends GetxController {
 
   List<String> aminCods = [];
 
-  initGlobalAccount(GlobalModel globalModel,
-      {String? oldAccountKey, List<String>? accountsId}) async {
+  initGlobalAccount(GlobalModel globalModel, {String? oldAccountKey, List<String>? accountsId}) async {
     // print(globalModel.toFullJson());
     if (globalModel.isDeleted != true && globalModel.invIsPending != true) {
       String? type;
@@ -63,27 +62,17 @@ class AccountViewModel extends GetxController {
           )
           .toList();
       for (int i = 0; i < currentEntry.length; i++) {
-        var recCredit = currentEntry[i].bondRecDebitAmount! -
-            currentEntry[i].bondRecCreditAmount!;
+        var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
         accountList[accountsId!.last]!.accRecord.add(
               AccountRecordModel(
-                  globalModel.invId ??
-                      globalModel.bondId ??
-                      globalModel.entryBondId,
+                  globalModel.invId ?? globalModel.bondId ?? globalModel.entryBondId,
                   currentEntry[i].bondRecAccount!,
                   recCredit.toString(),
                   0,
                   type,
                   date,
-                  type.startsWith("pat")
-                      ? globalModel.invCode
-                      : globalModel.bondCode,
-                  (accountList[accountsId.last]!
-                              .accRecord
-                              .lastOrNull
-                              ?.subBalance ??
-                          0) +
-                      recCredit,
+                  type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
+                  (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0) + recCredit,
                   currentEntry[i].bondRecDebitAmount,
                   currentEntry[i].bondRecCreditAmount!),
             );
@@ -91,23 +80,18 @@ class AccountViewModel extends GetxController {
     }
   }
 
-  initAccBalanceFromBond(GlobalModel globalModel,
-      {List<String>? accountsId}) async {
+  initAccBalanceFromBond(GlobalModel globalModel, {List<String>? accountsId}) async {
     List<EntryBondRecordModel>? currentEntry = globalModel.entryBondRecord!
         .where(
           (element) => accountsId!.contains(element.bondRecAccount),
         )
         .toList();
     if (accountsId!.contains(globalModel.cheqPrimeryAccount)) {
-      accountList[accountsId.last]!.finalBalance =
-          accountList[accountsId.last]!.finalBalance! +
-              double.parse(globalModel.cheqAllAmount!);
+      accountList[accountsId.last]!.finalBalance = accountList[accountsId.last]!.finalBalance! + double.parse(globalModel.cheqAllAmount!);
     }
     for (int i = 0; i < currentEntry.length; i++) {
-      var recCredit = currentEntry[i].bondRecDebitAmount! -
-          currentEntry[i].bondRecCreditAmount!;
-      accountList[accountsId.last]!.finalBalance =
-          accountList[accountsId.last]!.finalBalance! + recCredit;
+      var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
+      accountList[accountsId.last]!.finalBalance = accountList[accountsId.last]!.finalBalance! + recCredit;
     }
   }
 
@@ -115,17 +99,8 @@ class AccountViewModel extends GetxController {
     if (accountsId!.contains(globalModel.invPrimaryAccount)) {
       if (accountList[accountsId.last]!.finalBalance! > globalModel.invTotal!) {
         accountList[accountsId.last]!.accRecord.add(
-              AccountRecordModel(
-                  globalModel.invId,
-                  globalModel.invPrimaryAccount!,
-                  globalModel.invTotal!.toString(),
-                  0,
-                  globalModel.patternId,
-                  globalModel.invDate,
-                  globalModel.invCode,
-                  0,
-                  0,
-                  globalModel.invTotal!),
+              AccountRecordModel(globalModel.invId, globalModel.invPrimaryAccount!, globalModel.invTotal!.toString(), 0, globalModel.patternId,
+                  globalModel.invDate, globalModel.invCode, 0, 0, globalModel.invTotal!),
             );
       } else {
         accountList[accountsId.last]!.accRecord.add(
@@ -134,24 +109,17 @@ class AccountViewModel extends GetxController {
                   globalModel.invPrimaryAccount!,
                   globalModel.invTotal!.toString(),
                   accountList[accountsId.last]!.finalBalance! > 0
-                      ? globalModel.invTotal! -
-                          accountList[accountsId.last]!.finalBalance!
+                      ? globalModel.invTotal! - accountList[accountsId.last]!.finalBalance!
                       : globalModel.invTotal!,
                   globalModel.patternId,
                   globalModel.invDueDate,
                   globalModel.invCode,
-                  (accountList[accountsId.last]!
-                              .accRecord
-                              .lastOrNull
-                              ?.subBalance ??
-                          0) +
-                      globalModel.invTotal!,
+                  (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0) + globalModel.invTotal!,
                   0,
                   globalModel.invTotal!),
             );
       }
-      accountList[accountsId.last]!.finalBalance =
-          accountList[accountsId.last]!.finalBalance! - globalModel.invTotal!;
+      accountList[accountsId.last]!.finalBalance = accountList[accountsId.last]!.finalBalance! - globalModel.invTotal!;
     }
   }
 
@@ -160,26 +128,22 @@ class AccountViewModel extends GetxController {
       double accountBalance = getBalance(accountKey);
       if (accountBalance == 0) {
         for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =
-              AppConstants.paidStatusFullUsed;
+          accountList[accountKey]!.accRecord[i].isPaidStatus = AppConstants.paidStatusFullUsed;
         }
       }
       if (accountBalance == 0) {
         for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =
-              AppConstants.paidStatusFullUsed;
+          accountList[accountKey]!.accRecord[i].isPaidStatus = AppConstants.paidStatusFullUsed;
         }
       } else if (accountBalance > 0) {
         for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
-          accountList[accountKey]!.accRecord[i].isPaidStatus =
-              AppConstants.paidStatusFullUsed;
+          accountList[accountKey]!.accRecord[i].isPaidStatus = AppConstants.paidStatusFullUsed;
         }
       } else if (accountBalance < 0) {
         double total = 0;
         bool isFound = false;
         for (var i = 0; i < accountList[accountKey]!.accRecord.length; i++) {
-          AccountRecordModel element =
-              accountList[accountKey]!.accRecord.reversed.toList()[i];
+          AccountRecordModel element = accountList[accountKey]!.accRecord.reversed.toList()[i];
           element.isPaidStatus = null;
           if (double.parse(element.total!) < 0) {
             total = double.parse(element.total!).abs() + total;
@@ -217,17 +181,12 @@ class AccountViewModel extends GetxController {
   double debitValue = 0.0;
   double creditValue = 0.0;
 
-  Future<void> getAllBondForAccount(
-      List<String> modeKey, List<String> allDate) async {
+  Future<void> getAllBondForAccount(List<String> modeKey, List<String> allDate) async {
     accountList[modeKey.last]?.accRecord.clear();
-    List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
-        .where((element) {
-
-          return (allDate.contains(element.bondDate?.split(" ")[0]) ||
-                allDate.contains(element.invDate?.split(" ")[0])) ||
-            allDate.contains(element.cheqDate?.split(" ")[0]);
-        })
-        .toList();
+    List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values.where((element) {
+      return (allDate.contains(element.bondDate?.split(" ")[0]) || allDate.contains(element.invDate?.split(" ")[0])) ||
+          allDate.contains(element.cheqDate?.split(" ")[0]);
+    }).toList();
     for (var globalModel in globalModels) {
       initGlobalAccount(globalModel, accountsId: modeKey);
     }
@@ -251,13 +210,10 @@ class AccountViewModel extends GetxController {
     accountList[modeKey.last]!.finalBalance = 0;
     accountList[modeKey.last]?.accRecord.clear();
 
-    List<GlobalModel> globalBondAndCheck = HiveDataBase.globalModelBox.values
-        .where(
-            (element) => element.globalType != AppConstants.globalTypeInvoice)
-        .toList();
-    List<GlobalModel> globalInvoice = HiveDataBase.globalModelBox.values
-        .where((element) => element.invPayType == AppConstants.invPayTypeDue)
-        .toList();
+    List<GlobalModel> globalBondAndCheck =
+        HiveDataBase.globalModelBox.values.where((element) => element.globalType != AppConstants.globalTypeInvoice).toList();
+    List<GlobalModel> globalInvoice =
+        HiveDataBase.globalModelBox.values.where((element) => element.invPayType == AppConstants.invPayTypeDue).toList();
     for (var globalModel in globalBondAndCheck) {
       initAccBalanceFromBond(globalModel, accountsId: modeKey);
     }
@@ -277,10 +233,9 @@ class AccountViewModel extends GetxController {
 
   void deleteGlobalAccount(GlobalModel globalModel) {
     globalModel.bondRecord?.forEach((element) {
-      accountList[element.bondRecAccount]?.accRecord.removeWhere((e) =>
-          e.id == globalModel.entryBondId ||
-          e.id == globalModel.invId ||
-          e.id == globalModel.bondId);
+      accountList[element.bondRecAccount]
+          ?.accRecord
+          .removeWhere((e) => e.id == globalModel.entryBondId || e.id == globalModel.invId || e.id == globalModel.bondId);
       // calculateBalance(element.bondRecAccount!);
     });
     // initAccountViewPage();
@@ -303,19 +258,14 @@ class AccountViewModel extends GetxController {
       print("THE ACCOUNT IS READ FROM FIREBASE");
       print("-" * 500);
 
-      FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .get()
-          .then((value) {
-        RxMap<String, List<AccountRecordModel>> oldAccountList =
-            <String, List<AccountRecordModel>>{}.obs;
+      FirebaseFirestore.instance.collection(AppConstants.accountsCollection).get().then((value) {
+        RxMap<String, List<AccountRecordModel>> oldAccountList = <String, List<AccountRecordModel>>{}.obs;
         accountList.forEach((key, value) {
           oldAccountList[key] = value.accRecord;
         });
         accountList.clear();
         for (var element in value.docs) {
-          HiveDataBase.accountModelBox
-              .put(element.id, AccountModel.fromJson(element.data()));
+          HiveDataBase.accountModelBox.put(element.id, AccountModel.fromJson(element.data()));
           accountList[element.id] = AccountModel.fromJson(element.data());
           accountList[element.id]?.accRecord = oldAccountList[element.id] ?? [];
         }
@@ -327,7 +277,7 @@ class AccountViewModel extends GetxController {
       for (var element in HiveDataBase.accountModelBox.values) {
         if (element.accId == null) {
           print(element.toFullJson());
-          print("element.toFullJson()"*30);
+          print("element.toFullJson()" * 30);
         } else {
           accountList[element.accId!] = element;
           accountList[element.accId!]!.accRecord.clear();
@@ -388,17 +338,11 @@ class AccountViewModel extends GetxController {
   initAccountPage(modeKey) {
     lastAccountOpened = modeKey;
     if (accountList[modeKey]!.accAggregateList.isNotEmpty) {
-      aggregateList.assignAll(accountList[modeKey]!
-          .accAggregateList
-          .map((e) => getAccountModelFromId(e)!));
+      aggregateList.assignAll(accountList[modeKey]!.accAggregateList.map((e) => getAccountModelFromId(e)!));
     }
     dataGridController = DataGridController();
-    recordDataSource = AccountRecordDataSource(
-        accountRecordModel: (accountList[modeKey]?.accRecord ?? []),
-        accountModel: accountList[modeKey]!);
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then(
+    recordDataSource = AccountRecordDataSource(accountRecordModel: (accountList[modeKey]?.accRecord ?? []), accountModel: accountList[modeKey]!);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
       (value) {
         update();
       },
@@ -408,57 +352,37 @@ class AccountViewModel extends GetxController {
   ///----------------------------
 
   addNewAccount(AccountModel accountModel, {bool withLogger = false}) async {
-    if (accountList.values
-        .toList()
-        .map((e) => e.accCode)
-        .toList()
-        .contains(accountModel.accCode)) {
+    if (accountList.values.toList().map((e) => e.accCode).toList().contains(accountModel.accCode)) {
       Get.snackbar("فحص المطاييح", "هذا المطيح مستخدم من قبل");
       return;
     }
     String id = generateId(RecordType.account);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
     accountModel.accId ??= id;
-    accountModel.accCustomer = Get.find<CustomerPlutoEditViewModel>()
-        .handleSaveAll(accountModel.accId!);
+    accountModel.accCustomer = Get.find<CustomerPlutoEditViewModel>().handleSaveAll(accountModel.accId!);
 
     if (accountModel.accParentId == null) {
       accountModel.accIsParent = true;
     } else {
-      FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(accountModel.accParentId)
-          .update({
+      FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountModel.accParentId).update({
         'accChild': FieldValue.arrayUnion([accountModel.accId]),
       });
-      if (!accountList[accountModel.accParentId!]!
-          .accChild
-          .contains(accountModel.accId)) {
-        accountList[accountModel.accParentId!]!
-            .accChild
-            .add(accountModel.accId);
-        await changesViewModel.addChangeToChanges(
-            accountModel.toFullJson(), AppConstants.accountsCollection);
+      if (!accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
+        accountList[accountModel.accParentId!]!.accChild.add(accountModel.accId);
+        await changesViewModel.addChangeToChanges(accountModel.toFullJson(), AppConstants.accountsCollection);
       }
       accountModel.accIsParent = false;
     }
     for (var i = 0; i < accountModel.accAggregateList.length; i++) {
       if (!accountModel.accAggregateList[i].toString().startsWith('acc')) {
-        accountModel.accAggregateList[i] = accountList.values
-            .toList()
-            .firstWhere((e) => e.accName == accountModel.accAggregateList[i])
-            .accId;
+        accountModel.accAggregateList[i] = accountList.values.toList().firstWhere((e) => e.accName == accountModel.accAggregateList[i]).accId;
       }
     }
     accountModel.accAggregateList.assignAll(aggregateList.map((e) => e.accId));
     // if (withLogger) logger(newData: accountModel);
-    await FirebaseFirestore.instance
-        .collection(AppConstants.accountsCollection)
-        .doc(accountModel.accId)
-        .set(accountModel.toJson());
+    await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountModel.accId).set(accountModel.toJson());
 
-    await changesViewModel.addChangeToChanges(
-        accountModel.toFullJson(), AppConstants.accountsCollection);
+    await changesViewModel.addChangeToChanges(accountModel.toFullJson(), AppConstants.accountsCollection);
     accountList[accountModel.accId!] = accountModel;
     Get.snackbar("", " تم اضافة الحساب");
     // recordViewDataSource.updateDataGridSource();
@@ -535,8 +459,7 @@ class AccountViewModel extends GetxController {
     if (accountList.isEmpty) {
       return "0";
     } else {
-      lastCode =
-          int.parse(accountList.values.last.accCode!.replaceAll("F-", "")) + 1;
+      lastCode = int.parse(accountList.values.last.accCode!.replaceAll("F-", "")) + 1;
       while (allCode.contains(lastCode)) {
         lastCode++;
       }
@@ -551,8 +474,7 @@ class AccountViewModel extends GetxController {
       try {
         // all += double.parse(element.total!.toString());
         int? itemIndex = accountList[modelKey]!.accRecord.indexOf(element);
-        accountList[modelKey]!.accRecord[itemIndex].balance =
-            all + double.parse(element.total!.toString());
+        accountList[modelKey]!.accRecord[itemIndex].balance = all + double.parse(element.total!.toString());
         all = (accountList[modelKey]!.accRecord[itemIndex].balance)!;
       } finally {}
     }
@@ -566,17 +488,13 @@ class AccountViewModel extends GetxController {
   }
 
   buildSorce(String modelKey) {
-    accountRecordDataSource = AccountRecordDataSource(
-        accountRecordModel: accountList[modelKey]!.accRecord,
-        accountModel: accountList[modelKey]!);
+    accountRecordDataSource = AccountRecordDataSource(accountRecordModel: accountList[modelKey]!.accRecord, accountModel: accountList[modelKey]!);
     dataGridController = DataGridController();
     computeTotal(accountList[modelKey]!.accRecord);
   }
 
   bildAry(String modelKey) {
-    accountRecordDataSource = AccountRecordDataSource(
-        accountRecordModel: accountList[modelKey]!.accRecord,
-        accountModel: accountList[modelKey]!);
+    accountRecordDataSource = AccountRecordDataSource(accountRecordModel: accountList[modelKey]!.accRecord, accountModel: accountList[modelKey]!);
     dataGridController = DataGridController();
     computeTotal(accountList[modelKey]!.accRecord);
     update();
@@ -589,100 +507,62 @@ class AccountViewModel extends GetxController {
     }
   }
 
-  Future<void> updateAccount(AccountModel editProductModel,
-      {withLogger = false}) async {
+  Future<void> updateAccount(AccountModel editProductModel, {withLogger = false}) async {
     // if (withLogger) logger(oldData: accountList[editProductModel.accId]!, newData: editProductModel);
-    editProductModel.accCustomer = Get.find<CustomerPlutoEditViewModel>()
-        .handleSaveAll(editProductModel.accId!);
+    editProductModel.accCustomer = Get.find<CustomerPlutoEditViewModel>().handleSaveAll(editProductModel.accId!);
 
     if (accountList[editProductModel.accId]?.accParentId != null) {
-      await FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(accountList[editProductModel.accId]?.accParentId)
-          .update({
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
         'accChild': FieldValue.arrayRemove([editProductModel.accId]),
       });
     }
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[editProductModel.accId]?.accParentId != null) {
-      await FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(accountList[editProductModel.accId]?.accParentId)
-          .update({
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountList[editProductModel.accId]?.accParentId).update({
         'accChild': FieldValue.arrayRemove([editProductModel.accId]),
       });
-      if (accountList[editProductModel.accParentId!]!
-          .accChild
-          .contains(editProductModel.accId)) {
-        accountList[editProductModel.accParentId!]!
-            .accChild
-            .remove(editProductModel.accId);
-        await changesViewModel.addChangeToChanges(
-            editProductModel.toFullJson(), AppConstants.accountsCollection);
+      if (accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
+        accountList[editProductModel.accParentId!]!.accChild.remove(editProductModel.accId);
+        await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), AppConstants.accountsCollection);
       }
     }
     if (editProductModel.accParentId == null) {
       editProductModel.accIsParent = true;
     } else {
-      FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(editProductModel.accParentId)
-          .update({
+      FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(editProductModel.accParentId).update({
         'accChild': FieldValue.arrayUnion([editProductModel.accId]),
       });
-      if (!accountList[editProductModel.accParentId!]!
-          .accChild
-          .contains(editProductModel.accId)) {
-        accountList[editProductModel.accParentId!]!
-            .accChild
-            .add(editProductModel.accId);
-        await changesViewModel.addChangeToChanges(
-            editProductModel.toFullJson(), AppConstants.accountsCollection);
+      if (!accountList[editProductModel.accParentId!]!.accChild.contains(editProductModel.accId)) {
+        accountList[editProductModel.accParentId!]!.accChild.add(editProductModel.accId);
+        await changesViewModel.addChangeToChanges(editProductModel.toFullJson(), AppConstants.accountsCollection);
       }
       editProductModel.accIsParent = false;
     }
-    FirebaseFirestore.instance
-        .collection(AppConstants.accountsCollection)
-        .doc(editProductModel.accId)
-        .update(editProductModel.toJson());
+    FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(editProductModel.accId).update(editProductModel.toJson());
 
-    changesViewModel.addChangeToChanges(
-        editProductModel.toFullJson(), AppConstants.accountsCollection);
+    changesViewModel.addChangeToChanges(editProductModel.toFullJson(), AppConstants.accountsCollection);
     saveToHive(editProductModel);
     update();
   }
 
-  Future<void> deleteAccount(AccountModel accountModel,
-      {withLogger = false}) async {
+  Future<void> deleteAccount(AccountModel accountModel, {withLogger = false}) async {
     if (withLogger) logger(oldData: accountList[accountModel.accId]!);
     ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
 
     if (accountList[accountModel.accId]?.accParentId != null) {
-      await FirebaseFirestore.instance
-          .collection(AppConstants.accountsCollection)
-          .doc(accountList[accountModel.accId]?.accParentId)
-          .update({
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountList[accountModel.accId]?.accParentId).update({
         'accChild': FieldValue.arrayRemove([accountModel.accId]),
       });
 
-      if (accountList[accountModel.accParentId!]!
-          .accChild
-          .contains(accountModel.accId)) {
-        accountList[accountModel.accParentId!]!
-            .accChild
-            .remove(accountModel.accId);
-        await changesViewModel.addChangeToChanges(
-            accountModel.toFullJson(), AppConstants.accountsCollection);
+      if (accountList[accountModel.accParentId!]!.accChild.contains(accountModel.accId)) {
+        accountList[accountModel.accParentId!]!.accChild.remove(accountModel.accId);
+        await changesViewModel.addChangeToChanges(accountModel.toFullJson(), AppConstants.accountsCollection);
       }
     }
-    await FirebaseFirestore.instance
-        .collection(AppConstants.accountsCollection)
-        .doc(accountModel.accId)
-        .delete();
+    await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(accountModel.accId).delete();
 
-    changesViewModel.addRemoveChangeToChanges(
-        accountModel.toFullJson(), AppConstants.accountsCollection);
+    changesViewModel.addRemoveChangeToChanges(accountModel.toFullJson(), AppConstants.accountsCollection);
     accountList.removeWhere((key, value) => key == accountModel.accId);
     // initAccountViewPage();
     // Get.back();
@@ -693,11 +573,8 @@ class AccountViewModel extends GetxController {
   }
 
   void addAccountRecord({bondId, accountId, amount, type, date, code}) {
-    accountList[accountId]
-        ?.accRecord
-        .removeWhere((element) => element.id == bondId);
-    accountList[accountId]?.accRecord.add(AccountRecordModel(
-        bondId, accountId, amount, 0, type, date, code, 0, 0, 0));
+    accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
+    accountList[accountId]?.accRecord.add(AccountRecordModel(bondId, accountId, amount, 0, type, date, code, 0, 0, 0));
     calculateBalance(accountId);
     if (lastAccountOpened != null) {
       initAccountPage(lastAccountOpened!);
@@ -706,9 +583,7 @@ class AccountViewModel extends GetxController {
   }
 
   void deleteAccountRecordById(bondId, accountId) {
-    accountList[accountId]
-        ?.accRecord
-        .removeWhere((element) => element.id == bondId);
+    accountList[accountId]?.accRecord.removeWhere((element) => element.id == bondId);
     calculateBalance(accountId);
     if (lastAccountOpened != null) {
       initAccountPage(lastAccountOpened!);
@@ -743,10 +618,7 @@ class AccountViewModel extends GetxController {
 
   void initModel() {
     allCost.clear();
-    List<AccountModel> rootList = accountList.values
-        .toList()
-        .where((element) => element.accIsParent ?? false)
-        .toList();
+    List<AccountModel> rootList = accountList.values.toList().where((element) => element.accIsParent ?? false).toList();
     for (var element in rootList) {
       allCost.add(addToModel(element));
     }
@@ -756,8 +628,7 @@ class AccountViewModel extends GetxController {
     var list = element.accChild.map((e) {
       return addToModel(accountList[e]!);
     }).toList();
-    AccountTree model =
-        AccountTree.fromJson({"name": element.accName}, element.accId, list);
+    AccountTree model = AccountTree.fromJson({"name": element.accName}, element.accId, list);
     return model;
   }
 
@@ -786,12 +657,8 @@ class AccountViewModel extends GetxController {
       List<AccountTree> listAcc = treeController!.roots.toList();
       for (var i = 0; i < allper.length; i++) {
         if (listAcc.isNotEmpty) {
-          treeController?.expand(
-              listAcc.firstWhere((element) => element.id == allper[i]));
-          listAcc = listAcc
-                  .firstWhereOrNull((element) => element.id == allper[i])
-                  ?.list ??
-              [];
+          treeController?.expand(listAcc.firstWhere((element) => element.id == allper[i]));
+          listAcc = listAcc.firstWhereOrNull((element) => element.id == allper[i])?.list ?? [];
         }
       }
     }
@@ -804,10 +671,7 @@ class AccountViewModel extends GetxController {
   }
 
   void endRenameChild() {
-    FirebaseFirestore.instance
-        .collection(AppConstants.accountsCollection)
-        .doc(editItem)
-        .update({
+    FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(editItem).update({
       "accName": editCon?.text,
     });
     editItem = null;
@@ -832,9 +696,7 @@ class AccountViewModel extends GetxController {
     if (accountFound.isEmpty) {
       accountFound = accountList.values.where(
         (element) {
-          return (element.accName?.toLowerCase().contains(text.toLowerCase()) ??
-                  false) ||
-              (element.accCode?.contains(text) ?? false);
+          return (element.accName?.toLowerCase().contains(text.toLowerCase()) ?? false) || (element.accCode?.contains(text) ?? false);
         },
       ).toList();
     }
@@ -844,8 +706,7 @@ class AccountViewModel extends GetxController {
 
   void setBalance(List<AccountModel> currentPageData) async {
     for (var element in currentPageData) {
-      await HiveDataBase.accountModelBox.put(
-          element.accId, element..finalBalance = getBalance(element.accId!));
+      await HiveDataBase.accountModelBox.put(element.accId, element..finalBalance = getBalance(element.accId!));
     }
   }
 
@@ -860,10 +721,8 @@ class AccountViewModel extends GetxController {
 String getAccountIdFromText(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? acc = accountController.accountList.values
-        .toList()
-        .firstWhereOrNull(
-            (element) => element.accName == text || element.accCode == text);
+    AccountModel? acc =
+        accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == text || element.accCode == text);
     if (acc == null) {
       return '';
     } else {
@@ -877,9 +736,7 @@ String getAccountIdFromText(text) {
 AccountModel? getAccountIdFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    AccountModel? acc = accountController.accountList.values
-        .toList()
-        .firstWhereOrNull((element) => element.accName == text);
+    AccountModel? acc = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == text);
     return acc;
   } else {
     print("empty");
@@ -890,11 +747,8 @@ AccountModel? getAccountIdFromName(text) {
 List<AccountModel> getAccountModelsFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    List<AccountModel> acc = accountController.accountList.values
-        .toList()
-        .where((element) =>
-            element.accName!.contains(text) || element.accCode!.contains(text))
-        .toList();
+    List<AccountModel> acc =
+        accountController.accountList.values.toList().where((element) => element.accName!.contains(text) || element.accCode!.contains(text)).toList();
     if (acc.isEmpty) {
       print("empty");
       return [];
@@ -910,11 +764,7 @@ List<AccountModel> getAccountModelsFromName(text) {
 AccountModel? getAccountModelFromName(text) {
   var accountController = Get.find<AccountViewModel>();
   if (text != null && text != " " && text != "") {
-    return accountController.accountList.values
-        .toList()
-        .where((element) => element.accName == text)
-        .toList()
-        .firstOrNull;
+    return accountController.accountList.values.toList().where((element) => element.accName == text).toList().firstOrNull;
   } else {
     print("empty");
     return null;
@@ -943,21 +793,17 @@ AccountModel? getAccountModelFromId(id) {
   } else {
     return null;
   }
-
-  // /--------------------------------------------------------------
 }
 
 Future<String> getAccountComplete(text) async {
-  var _ = '';
+  var account = '';
   List accountPickList = [];
   Get.find<AccountViewModel>().accountList.forEach((key, value) {
     accountPickList.addIf(
         value.accType == AppConstants.accountTypeDefault &&
-            (value.accCode!.toLowerCase().contains(text.toLowerCase()) ||
-                value.accName!.toLowerCase().contains(text.toLowerCase())),
+            (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())),
         value.accName!);
   });
-  // print(accountPickList.length);
   if (accountPickList.length > 1) {
     await Get.defaultDialog(
       title: "Chose form dialog",
@@ -969,7 +815,7 @@ Future<String> getAccountComplete(text) async {
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
-                _ = accountPickList[index];
+                account = accountPickList[index];
                 Get.back();
               },
               child: Container(
@@ -988,11 +834,11 @@ Future<String> getAccountComplete(text) async {
       ),
     );
   } else if (accountPickList.length == 1) {
-    _ = accountPickList[0];
+    account = accountPickList[0];
   } else {
     Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
   }
-  return _;
+  return account;
 }
 
 Future<AccountModel?> getAccountCompleteID(thisText) async {
@@ -1002,8 +848,7 @@ Future<AccountModel?> getAccountCompleteID(thisText) async {
   Get.find<AccountViewModel>().accountList.forEach((key, value) {
     accountPickList.addIf(
         value.accType == AppConstants.accountTypeDefault &&
-            (value.accCode!.toLowerCase().contains(text.toLowerCase()) ||
-                value.accName!.toLowerCase().contains(text.toLowerCase())),
+            (value.accCode!.toLowerCase().contains(text.toLowerCase()) || value.accName!.toLowerCase().contains(text.toLowerCase())),
         value);
   });
   // print(accountPickList.length);

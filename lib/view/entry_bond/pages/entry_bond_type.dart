@@ -14,7 +14,7 @@ class EntryBondType extends StatefulWidget {
 }
 
 class _EntryBondTypeState extends State<EntryBondType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +27,9 @@ class _EntryBondTypeState extends State<EntryBondType> {
         body: Column(
           children: [
             Item("سند قيد", () {}),
-            if (checkPermission(
-                AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
+            if (checkPermission(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice))
               Item("عرض سندات القيد ", () {
-                checkPermissionForOperation(
-                        AppConstants.roleUserRead, AppConstants.roleViewBond)
-                    .then((value) {
+                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewBond).then((value) {
                   if (value) Get.to(() => const AllEntryBonds());
                 });
               }),
@@ -49,8 +46,7 @@ class _EntryBondTypeState extends State<EntryBondType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
                 child: Text(

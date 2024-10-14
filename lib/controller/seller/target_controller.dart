@@ -1,11 +1,14 @@
+import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/shared/widgets/target_pointer_widget.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../model/invoice/invoice_record_model.dart';
+import '../../model/seller/seller_model.dart';
 import '../../model/seller/task_model.dart';
 import '../product/product_view_model.dart';
 
@@ -20,7 +23,14 @@ class TargetController extends GetxController {
   TextEditingController quantityController = TextEditingController();
   late TaskModel taskModel;
   List<String> allUser = [];
+
   String? taskDate;
+  late ({Map<String, int> productsMap, double mobileTotal, double otherTotal}) sellerData;
+  SellerModel? sellerModel;
+
+  int num = 20000;
+  final GlobalKey<TargetPointerWidgetState> othersKey = GlobalKey<TargetPointerWidgetState>();
+  final GlobalKey<TargetPointerWidgetState> mobileKey = GlobalKey<TargetPointerWidgetState>();
 
   initTask([String? key]) {
     if (key == null) {
@@ -36,6 +46,11 @@ class TargetController extends GetxController {
       allUser.assignAll(taskModel.taskSellerListId);
       taskDate = taskModel.taskDate;
     }
+  }
+
+  initSeller(String sellerId) {
+    sellerData = checkTask(sellerId);
+    sellerModel = Get.find<SellersController>().allSellers[sellerId];
   }
 
   getAllTargets() {

@@ -17,7 +17,7 @@
 // import 'package:ba3_business_solutions/view/invoices/widget/qr_invoice.dart';
 // import 'package:ba3_business_solutions/view/accounts/widget/account_details.dart';
 // import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
-// import 'package:ba3_business_solutions/view/sellers/add_seller.dart';
+// import 'package:ba3_business_solutions/view/sellers/add_seller_page.dart';
 // import 'package:ba3_business_solutions/view/stores/add_store.dart';
 // import 'package:bitsdojo_window/bitsdojo_window.dart';
 // import 'package:flutter/material.dart';

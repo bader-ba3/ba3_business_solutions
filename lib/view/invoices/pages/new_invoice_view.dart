@@ -33,7 +33,7 @@ import '../../../model/invoice/invoice_record_model.dart';
 import '../../../model/patterens/pattern_model.dart';
 import '../../../model/store/store_model.dart';
 import '../../entry_bond/pages/entry_bond_details_view.dart';
-import '../../sellers/pages/add_seller.dart';
+import '../../sellers/pages/add_seller_page.dart';
 import '../../stores/pages/add_store.dart';
 
 class InvoiceView extends StatefulWidget {
@@ -472,7 +472,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                               AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull(
                                                   (element) => element.accName == invoiceController.secondaryAccountController.text);
                                               if (_ != null) {
-                                                Get.to(AddSeller(oldKey: _.accId!));
+                                                Get.to(AddSellerPage(oldKey: _.accId!));
                                               }
                                             }),
                                       ),

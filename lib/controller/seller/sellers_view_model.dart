@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
-import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_view_data_grid_source.dart';
+import 'package:ba3_business_solutions/model/seller/seller_model.dart';
+import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_data_grid_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,31 +12,27 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../model/global/global_model.dart';
 import '../user/user_management_model.dart';
 
-class SellersViewModel extends GetxController {
+class SellersController extends GetxController {
   late DataGridController dataViewGridController;
-  late AllSellerInvoiceViewDataGridSource recordViewDataSource =
-  AllSellerInvoiceViewDataGridSource(sellerRecModel: []);
+  late AllSellerInvoiceDataGridSource recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: []);
   RxMap<String, SellerModel> allSellers = <String, SellerModel>{}.obs;
 
-  SellersViewModel() {
+  List<DateTime>? dateRange = [];
+
+  SellersController() {
     getAllSeller();
   }
 
   void getAllSeller() {
-    FirebaseFirestore.instance
-        .collection(AppConstants.sellersCollection)
-        .snapshots()
-        .listen((event) {
-      RxMap<String, List<SellerRecModel>> oldSellerList =
-          <String, List<SellerRecModel>>{}.obs;
+    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).snapshots().listen((event) {
+      RxMap<String, List<SellerRecModel>> oldSellerList = <String, List<SellerRecModel>>{}.obs;
       allSellers.forEach((key, value) {
         oldSellerList[key] = value.sellerRecord ?? [];
       });
       allSellers.clear();
       for (var element in event.docs) {
         List<SellerRecModel> _ = allSellers[element.id]?.sellerRecord ?? [];
-        allSellers[element.id] =
-            SellerModel.fromJson(element.data(), element.id);
+        allSellers[element.id] = SellerModel.fromJson(element.data(), element.id);
         allSellers[element.id]?.sellerRecord = oldSellerList[element.id] ?? [];
       }
       // initChart();
@@ -45,9 +41,7 @@ class SellersViewModel extends GetxController {
   }
 
   addSeller(SellerModel model) {
-    List<SellerModel> _ = allSellers.values
-        .where((element) => element.sellerCode == model.sellerCode)
-        .toList();
+    List<SellerModel> _ = allSellers.values.where((element) => element.sellerCode == model.sellerCode).toList();
     if (_.isNotEmpty) {
       if (model.sellerId == null) {
         return;
@@ -57,46 +51,29 @@ class SellersViewModel extends GetxController {
     }
     var id = generateId(RecordType.sellers);
     model.sellerId ??= id;
-    FirebaseFirestore.instance
-        .collection(AppConstants.sellersCollection)
-        .doc(model.sellerId)
-        .set(model.toJson());
+    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).doc(model.sellerId).set(model.toJson());
   }
 
   deleteSeller(SellerModel model) {
-    FirebaseFirestore.instance
-        .collection(AppConstants.sellersCollection)
-        .doc(model.sellerId)
-        .delete();
+    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).doc(model.sellerId).delete();
   }
 
   void postRecord({userId, invId, amount, date}) {
     allSellers.values.map((e) => e.sellerRecord).toList().forEach((element) {
       element?.removeWhere((element) => element.selleRecInvId == invId);
     });
-    SellerRecModel seller = SellerRecModel(
-        selleRecUserId: userId,
-        selleRecInvId: invId,
-        selleRecAmount: amount.toString(),
-        selleRecInvDate: date);
+    SellerRecModel seller = SellerRecModel(selleRecUserId: userId, selleRecInvId: invId, selleRecAmount: amount.toString(), selleRecInvDate: date);
     if (allSellers[userId]?.sellerRecord == null) {
       allSellers[userId]?.sellerRecord = [seller];
     } else {
-      allSellers[userId]
-          ?.sellerRecord
-          ?.removeWhere((element) => element.selleRecInvId == invId);
+      allSellers[userId]?.sellerRecord?.removeWhere((element) => element.selleRecInvId == invId);
       allSellers[userId]?.sellerRecord?.add(seller);
     }
   }
 
   void deleteGlobalSeller(GlobalModel globalModel) {
-    allSellers[globalModel.invSeller]
-        ?.sellerRecord
-        ?.removeWhere((element) => element.selleRecInvId == globalModel.invId);
-    WidgetsFlutterBinding
-        .ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then((value) {
+    allSellers[globalModel.invSeller]?.sellerRecord?.removeWhere((element) => element.selleRecInvId == globalModel.invId);
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
       update();
     });
   }
@@ -107,8 +84,7 @@ class SellersViewModel extends GetxController {
 
   initSellerPage(key) {
     dataViewGridController = DataGridController();
-    recordViewDataSource = AllSellerInvoiceViewDataGridSource(
-        sellerRecModel: allSellers[key]!.sellerRecord!);
+    recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: allSellers[key]!.sellerRecord!);
     // update();
   }
 
@@ -118,18 +94,11 @@ class SellersViewModel extends GetxController {
     var _ = allSellers[key]
         ?.sellerRecord
         ?.where((e) =>
-    DateTime
-        .parse(e.selleRecInvDate!)
-        .millisecondsSinceEpoch <=
-        endDate.millisecondsSinceEpoch &&
-        DateTime
-            .parse(e.selleRecInvDate!)
-            .millisecondsSinceEpoch >=
-            startDate.millisecondsSinceEpoch)
+            DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch <= endDate.millisecondsSinceEpoch &&
+            DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch >= startDate.millisecondsSinceEpoch)
         .toList();
     dataViewGridController = DataGridController();
-    recordViewDataSource =
-        AllSellerInvoiceViewDataGridSource(sellerRecModel: _!);
+    recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: _!);
     update();
   }
 
@@ -179,15 +148,11 @@ class SellersViewModel extends GetxController {
     return randomColor;
   }
 
-  Map<String, Map<String, double>> sortNestedMaps(
-      Map<String, Map<String, double>> data) {
-    Map<String, Map<String, double>> sortedData =
-    Map.fromEntries(data.entries.toList());
+  Map<String, Map<String, double>> sortNestedMaps(Map<String, Map<String, double>> data) {
+    Map<String, Map<String, double>> sortedData = Map.fromEntries(data.entries.toList());
 
     sortedData.forEach((key, innerMap) {
-      var sortedInnerMap = Map.fromEntries(
-          innerMap.entries.toList()
-            ..sort((a, b) => a.key.compareTo(b.key)));
+      var sortedInnerMap = Map.fromEntries(innerMap.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
       sortedData[key] = sortedInnerMap;
     });
 
@@ -196,14 +161,12 @@ class SellersViewModel extends GetxController {
 }
 
 Future<String> getSellerComplete(text) async {
-  var sellerController = Get.find<SellersViewModel>();
+  var sellerController = Get.find<SellersController>();
   List<SellerModel> accountPickList = [];
   SellerModel? sellerModel;
   sellerController.allSellers.forEach((key, value) {
     accountPickList.addIf(
-        (value.sellerCode!.toLowerCase().contains(text.toLowerCase()) ||
-            value.sellerName!.toLowerCase().contains(text.toLowerCase())),
-        value);
+        (value.sellerCode!.toLowerCase().contains(text.toLowerCase()) || value.sellerName!.toLowerCase().contains(text.toLowerCase())), value);
   });
   if (accountPickList.length > 1) {
     await Get.defaultDialog(
@@ -241,8 +204,7 @@ Future<String> getSellerComplete(text) async {
     return "";
   }
   if (sellerModel!.sellerId != getMyUserSellerId()) {
-    if (await checkPermissionForOperation(
-        AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) {
+    if (await checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) {
       return sellerModel!.sellerName!;
     } else {
       return getSellerNameFromId(getMyUserSellerId()) ?? "";
@@ -253,12 +215,9 @@ Future<String> getSellerComplete(text) async {
 }
 
 String? getSellerIdFromText(text) {
-  var sellerController = Get.find<SellersViewModel>();
+  var sellerController = Get.find<SellersController>();
   if (text != null && text != " " && text != "") {
-    return sellerController.allSellers.values
-        .toList()
-        .firstWhereOrNull((element) => element.sellerName!.contains(text))
-        ?.sellerId;
+    return sellerController.allSellers.values.toList().firstWhereOrNull((element) => element.sellerName!.contains(text))?.sellerId;
   } else {
     return null;
   }
@@ -266,9 +225,7 @@ String? getSellerIdFromText(text) {
 
 String? getSellerNameFromId(id) {
   if (id != null && id != " " && id != "") {
-    return Get
-        .find<SellersViewModel>()
-        .allSellers[id]!.sellerName;
+    return Get.find<SellersController>().allSellers[id]!.sellerName;
   } else {
     return null;
   }

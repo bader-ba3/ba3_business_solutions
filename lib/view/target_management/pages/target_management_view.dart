@@ -19,13 +19,11 @@ class TargetManagementType extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Item("ادارة المهام", () {
+            item("ادارة المهام", () {
               Get.to(() => const TaskManagementType());
             }),
-            Item("معاينة التارجيت", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewTarget)
-                  .then((value) {
+            item("معاينة التارجيت", () {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTarget).then((value) {
                 if (value) Get.to(() => const AllTargets());
               });
             }),
@@ -35,15 +33,14 @@ class TargetManagementType extends StatelessWidget {
     );
   }
 
-  Widget Item(text, onTap) {
+  Widget item(text, onTap) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: InkWell(
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
                 child: Text(

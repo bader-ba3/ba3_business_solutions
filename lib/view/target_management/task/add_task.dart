@@ -32,7 +32,7 @@ class AddTaskView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    GetBuilder<SellersViewModel>(builder: (controller) {
+                    GetBuilder<SellersController>(builder: (controller) {
                       return Column(
                         children: [
                           const Text("المستخدمين :"),

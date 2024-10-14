@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../core/constants/app_constants.dart';
-import '../../patterns/pages/all_pattern.dart';
+import '../../../core/shared/widgets/grid_column_item.dart';
 import 'Store_details.dart';
 
 class AllStore extends StatelessWidget {

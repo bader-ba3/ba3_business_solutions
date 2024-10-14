@@ -14,7 +14,7 @@ class DueType extends StatefulWidget {
 }
 
 class _DueTypeState extends State<DueType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +27,7 @@ class _DueTypeState extends State<DueType> {
         body: Column(
           children: [
             Item("معاينة الاستحقاق", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewDue)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewDue).then((value) {
                 if (value) Get.to(() => AllDueView());
               });
             }),
@@ -46,9 +44,7 @@ class _DueTypeState extends State<DueType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Text(
               text,

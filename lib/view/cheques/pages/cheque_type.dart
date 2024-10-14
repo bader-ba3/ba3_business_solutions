@@ -15,7 +15,7 @@ class ChequeType extends StatefulWidget {
 }
 
 class _ChequeTypeState extends State<ChequeType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +31,12 @@ class _ChequeTypeState extends State<ChequeType> {
               Get.to(() => const AddCheque());
             }),
             Item("الشيكات المستحقة", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewCheques)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: false));
               });
             }),
             Item("معاينة الشيكات", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewCheques)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: true));
               });
             }),
@@ -57,8 +53,7 @@ class _ChequeTypeState extends State<ChequeType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
                 child: Text(

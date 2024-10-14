@@ -21,7 +21,7 @@ class AccountType extends StatefulWidget {
 }
 
 class _AccountTypeState extends State<AccountType> {
-  PatternViewModel patternController = Get.find<PatternViewModel>();
+  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,52 +45,40 @@ class _AccountTypeState extends State<AccountType> {
             //   });
             // }),
             item("كشف حساب", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(
                     context: Get.context!,
-                    builder: (BuildContext context) =>
-                        const AccountOptionDialog(),
+                    builder: (BuildContext context) => const AccountOptionDialog(),
                   );
                 }
               });
             }),
             item("معاينة الحسابات", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.to(() => const AllAccount());
                 }
               });
             }),
             item("شجرة الحسابات", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
             item("سجل استحقاق الشركاء", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) Get.to(() => const AllPartnerDueAccount());
               });
             }),
             item("المستحقات", () {
-              checkPermissionForOperation(
-                      AppConstants.roleUserRead, AppConstants.roleViewAccount)
-                  .then((value) {
+              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(
                     context: Get.context!,
-                    builder: (BuildContext context) =>
-                        const AccountDueOptionDialog(),
+                    builder: (BuildContext context) => const AccountDueOptionDialog(),
                   );
                 }
               });
@@ -108,14 +96,12 @@ class _AccountTypeState extends State<AccountType> {
         onTap: onTap,
         child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.all(30.0),
             child: Center(
               child: Text(
                 text,
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textDirection: TextDirection.rtl,
               ),
             )),

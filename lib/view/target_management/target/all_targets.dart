@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
-import 'package:ba3_business_solutions/view/sellers/pages/seller_targets.dart';
+import 'package:ba3_business_solutions/view/sellers/pages/seller_targets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class AllTargets extends StatelessWidget {
         appBar: AppBar(
           title: const Text("معاينة التارغتات"),
         ),
-        body: GetBuilder<SellersViewModel>(builder: (controller) {
+        body: GetBuilder<SellersController>(builder: (controller) {
           return controller.allSellers.isEmpty
               ? const Center(
                   child: Text("لا يوجد التارغتات بعد"),
@@ -49,7 +49,8 @@ class AllTargets extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => SellerTarget(sellerId: sellerModel.sellerId!));
+                                Get.find<TargetController>().initSeller(sellerModel.sellerId!);
+                                Get.to(() => SellerTargetPage(sellerId: sellerModel.sellerId!));
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),

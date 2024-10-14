@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
-import 'package:ba3_business_solutions/view/products/widget/add_product.dart';
+import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -9,22 +9,23 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
 import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/shared/widgets/grid_column_item.dart';
 import '../../../core/utils/hive.dart';
 import '../../../model/global/global_model.dart';
 import '../../../model/product/product_model.dart';
 import '../../../model/product/product_record_model.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
-class ProductDetails extends StatefulWidget {
+class ProductDetailsPage extends StatefulWidget {
   final String? oldKey;
 
-  const ProductDetails({super.key, this.oldKey});
+  const ProductDetailsPage({super.key, this.oldKey});
 
   @override
-  State<ProductDetails> createState() => _ProductDetailsState();
+  State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> {
+class _ProductDetailsPageState extends State<ProductDetailsPage> {
   List<ProductRecordModel> editedProductRecord = [];
   ProductViewModel productController = Get.find<ProductViewModel>();
 
@@ -45,15 +46,12 @@ class _ProductDetailsState extends State<ProductDetails> {
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text(
-                productController.productDataMap[widget.oldKey!]!.prodName ??
-                    ""),
+            title: Text(productController.productDataMap[widget.oldKey!]!.prodName ?? ""),
             actions: [
-              if (!productController
-                  .productDataMap[widget.oldKey!]!.prodIsGroup!)
+              if (!productController.productDataMap[widget.oldKey!]!.prodIsGroup!)
                 ElevatedButton(
                     onPressed: () {
-                      Get.to(AddProduct(
+                      Get.to(AddProductPage(
                         oldKey: widget.oldKey,
                       ));
                     },
@@ -61,17 +59,12 @@ class _ProductDetailsState extends State<ProductDetails> {
               const SizedBox(
                 width: 30,
               ),
-              if ((productController
-                          .productDataMap[widget.oldKey!]!.prodRecord ??
-                      [])
-                  .isEmpty)
+              if ((productController.productDataMap[widget.oldKey!]!.prodRecord ?? []).isEmpty)
                 ElevatedButton(
                     onPressed: () {
                       confirmDeleteWidget().then((value) {
                         if (value) {
-                          checkPermissionForOperation(AppConstants.roleUserDelete,
-                                  AppConstants.roleViewProduct)
-                              .then((value) {
+                          checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewProduct).then((value) {
                             if (value) {
                               productController.deleteProduct(withLogger: true);
                               Get.back();
@@ -105,21 +98,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                           // if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
                           //   return CircularProgressIndicator();
                           // } else {
-                          return GetBuilder<ProductViewModel>(
-                              builder: (controller) {
+                          return GetBuilder<ProductViewModel>(builder: (controller) {
                             initPage();
                             // controller.initGrid(snapshot.data);
                             return SfDataGrid(
                               onCellTap: (DataGridCellTapDetails _) {
                                 if (_.rowColumnIndex.rowIndex != 0) {
-                                  var invId = controller
-                                      .recordDataSource
-                                      .dataGridRows[
-                                          _.rowColumnIndex.rowIndex - 1]
+                                  var invId = controller.recordDataSource.dataGridRows[_.rowColumnIndex.rowIndex - 1]
                                       .getCells()
-                                      .firstWhere((element) =>
-                                          element.columnName ==
-                                          AppConstants.rowProductInvId)
+                                      .firstWhere((element) => element.columnName == AppConstants.rowProductInvId)
                                       .value;
                                   Get.to(
                                     () => InvoiceView(
@@ -127,10 +114,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       patternId: '',
                                     ),
                                     binding: BindingsBuilder(() {
-                                      Get.lazyPut(
-                                          () => InvoicePlutoViewModel());
-                                      Get.lazyPut(
-                                          () => DiscountPlutoViewModel());
+                                      Get.lazyPut(() => InvoicePlutoViewModel());
+                                      Get.lazyPut(() => DiscountPlutoViewModel());
                                     }),
                                   );
                                 }
@@ -142,32 +127,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                               navigationMode: GridNavigationMode.cell,
                               columnWidthMode: ColumnWidthMode.fill,
                               columns: <GridColumn>[
-                                GridColumnItem(
-                                    label: "المادة",
-                                    name: AppConstants.rowProductRecProduct),
-                                GridColumnItem(
-                                    label: "النوع",
-                                    name: AppConstants.rowProductType),
-                                GridColumnItem(
-                                    label: 'الكمية',
-                                    name: AppConstants.rowProductQuantity),
-                                GridColumnItem(
-                                    label: 'الكمية',
-                                    name: AppConstants.rowProductTotal),
-                                GridColumnItem(
-                                    label: 'التاريخ',
-                                    name: AppConstants.rowProductDate),
-                                // GridColumnItem(
-                                //     label: 'الرمز التسلسي للفاتورة',
-                                //     name: Const.rowProductInvId),
+                                gridColumnItem(label: "المادة", name: AppConstants.rowProductRecProduct, fontSize: 16),
+                                gridColumnItem(label: "النوع", name: AppConstants.rowProductType, fontSize: 16),
+                                gridColumnItem(label: 'الكمية', name: AppConstants.rowProductQuantity, fontSize: 16),
+                                gridColumnItem(label: 'الكمية', name: AppConstants.rowProductTotal, fontSize: 16),
+                                gridColumnItem(label: 'التاريخ', name: AppConstants.rowProductDate, fontSize: 16),
                                 GridColumn(
                                     visible: false,
                                     allowEditing: false,
                                     columnName: AppConstants.rowProductInvId,
                                     label: Container(
                                       decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(25)),
+                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(25)),
                                         color: Colors.grey,
                                       ),
                                       alignment: Alignment.center,
@@ -206,23 +177,6 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  GridColumn GridColumnItem({required label, name}) {
-    return GridColumn(
-        allowEditing: false,
-        columnName: name,
-        label: Container(
-            color: Colors.blue.shade800,
-            padding: const EdgeInsets.all(16.0),
-            alignment: Alignment.center,
-            child: Text(
-              label.toString(),
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-            )));
-  }
-
   initPage() async {
     if (widget.oldKey != null) {
       List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values
@@ -239,8 +193,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         }
       }
 
-      productController.productModel = ProductModel.fromJson(
-          productController.productDataMap[widget.oldKey!]!.toFullJson());
+      productController.productModel = ProductModel.fromJson(productController.productDataMap[widget.oldKey!]!.toFullJson());
       editedProductRecord.clear();
       productController.productModel?.prodRecord?.forEach((element) {
         editedProductRecord.add(ProductRecordModel.fromJson(element.toJson()));
@@ -252,9 +205,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       editedProductRecord = <ProductRecordModel>[];
     }
     productController.initProductPage(productController.productModel!);
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then(
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
       (value) {
         setState(() {});
       },

@@ -62,7 +62,7 @@ dependencies:
   flutter_tree_pro:
   tab_container:
   flutter_svg:
-  translator:
+  translator: ^1.0.0
   print_bluetooth_thermal:
   esc_pos_utils_plus:
   flutter_window_close:
@@ -74,6 +74,7 @@ dependencies:
   mailer: ^6.2.0
   barcode_widget: ^2.0.4
   printing: ^5.13.3
+
 
 
 
