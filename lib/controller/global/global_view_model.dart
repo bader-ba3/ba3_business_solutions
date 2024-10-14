@@ -190,10 +190,10 @@ class GlobalViewModel extends GetxController {
     update();
   }
 
-  void addGlobalBondToMemory(GlobalModel globalModel) {
+   addGlobalBondToMemory(GlobalModel globalModel)async {
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
-    HiveDataBase.globalModelBox.put(globalModel.bondId!, globalModel);
+     await   HiveDataBase.globalModelBox.put(globalModel.bondId!, globalModel);
     bondViewModel.allBondsItem[globalModel.bondId!] = globalModel;
     globalModel.entryBondId ??=generateId(RecordType.entryBond);
     entryBondViewModel.allEntryBonds[globalModel.entryBondId!] = globalModel;
@@ -237,11 +237,11 @@ class GlobalViewModel extends GetxController {
     sendEmailWithPdfAttachment(globalModel);
   }
 
-  void addGlobalInvoiceToMemory(GlobalModel globalModel) {
+   addGlobalInvoiceToMemory(GlobalModel globalModel) async{
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
 
-    HiveDataBase.globalModelBox.put(globalModel.invId!, globalModel);
+     await   HiveDataBase.globalModelBox.put(globalModel.invId!, globalModel);
     invoiceViewModel.invoiceModel[globalModel.invId!] = globalModel;
     globalModel.entryBondId ??=generateId(RecordType.entryBond);
     entryBondViewModel.allEntryBonds[globalModel.entryBondId!] = globalModel;
@@ -250,10 +250,10 @@ class GlobalViewModel extends GetxController {
     update();
   }
 
-  void addGlobalChequeToMemory(GlobalModel globalModel) {
+   addGlobalChequeToMemory(GlobalModel globalModel)async {
     // addGlobalToLocal(globalModel);
     // updateDataInAll(globalModel);
-    HiveDataBase.globalModelBox.put(globalModel.cheqId!, globalModel);
+     await    HiveDataBase.globalModelBox.put(globalModel.cheqId!, globalModel);
     chequeViewModel.allCheques[globalModel.cheqId!] = globalModel;
     globalModel.entryBondId ??=generateId(RecordType.entryBond);
     entryBondViewModel.allEntryBonds[globalModel.entryBondId!] = globalModel;

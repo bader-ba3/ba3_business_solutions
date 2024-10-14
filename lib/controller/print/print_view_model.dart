@@ -12,6 +12,7 @@ class PrintViewModel extends GetxController {
   Future<void> printFunction(GlobalModel globalModel,
       {WarrantyModel? warrantyModel}) async {
     List<BluetoothInfo> allBluetooth = await getBluetoots();
+    print(allBluetooth.toList());
 
     if (allBluetooth
         .map(
@@ -48,6 +49,8 @@ class PrintViewModel extends GetxController {
     }
   }
 
+
+
   // String _info = "";
   //  String _msj = '';
   bool connected = false;
@@ -59,6 +62,8 @@ class PrintViewModel extends GetxController {
     // });
     final List<BluetoothInfo> listResult =
         await PrintBluetoothThermal.pairedBluetooths;
+    // print(p)
+    print(await PrintBluetoothThermal.isPermissionBluetoothGranted);
 
     /*await Future.forEach(listResult, (BluetoothInfo bluetooth) {
       String name = bluetooth.name;
