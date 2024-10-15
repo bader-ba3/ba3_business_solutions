@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/controller/account/account_customer_controller.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/core/api/pdf_bond_api.dart';
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,7 +16,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../model/product/product_imei.dart';
 import '../../constants/app_constants.dart';
-import '../../utils/pdf_invoice_api.dart';
+import '../../api/pdf_invoice_api.dart';
 
 bool getIfAccountHaveCustomers(String accId) {
   if (accId.startsWith("acc")) {
@@ -492,14 +494,19 @@ void sendEmail(String url, String userEmail) async {
   }
 }
 
-Future<String> savePdfLocally(GlobalModel model, {bool? update, GlobalModel? invoiceOld}) async {
+Future<String> savePdfLocally(GlobalModel model, bool isBond, {bool? update, GlobalModel? invoiceOld}) async {
   try {
     // توليد ملف الـ PDF
-    final pdfFile = await PdfInvoiceApi.generate(model,update:update,invoiceOld:invoiceOld);
+    final Uint8List pdfFile;
+    if (!isBond) {
+      pdfFile = await PdfInvoiceApi.generate(model, update: update, invoiceOld: invoiceOld);
+    } else {
+      pdfFile = await PdfBondApi.generate(model, update: update, bondOld: invoiceOld);
+    }
 
     // الحصول على مسار المستندات
     final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
+    final path = isBond?'${directory.path}/bond_${DateTime.now().millisecondsSinceEpoch}.pdf':'${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
 
     // إنشاء ملف
     final file = File(path);
@@ -537,12 +544,12 @@ bool checkProdHaveImei(String prodId, String imei) {
       false;
 }
 
-void sendEmailWithPdfAttachment(GlobalModel model, {bool? update, GlobalModel? invoiceOld}) async {
+void sendEmailWithPdfAttachment(GlobalModel model,bool isBond, {bool? update, GlobalModel? invoiceOld}) async {
   String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
   String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
   // burjalarab000
   final smtpServer = gmail(username, password);
-  String pdfFilePath = await savePdfLocally(model,update: update,invoiceOld:invoiceOld);
+  String pdfFilePath = await savePdfLocally(model,isBond, update: update, invoiceOld: invoiceOld);
   final message = Message()
     ..from = Address(username, 'برج العرب للهواتف المتحركة')
     ..recipients.add("burjalarab000@gmail.com") // البريد الإلكتروني للمستلم
@@ -551,7 +558,7 @@ void sendEmailWithPdfAttachment(GlobalModel model, {bool? update, GlobalModel? i
     // إرفاق ملف PDF
     ..attachments.add(FileAttachment(File(pdfFilePath))
       ..location = Location.inline
-      ..fileName = 'invoice.pdf'); // اسم الملف في الرسالة
+      ..fileName = isBond?'bond.pdf':'invoice.pdf'); // اسم الملف في الرسالة
 
   try {
     final sendReport = await send(message, smtpServer);

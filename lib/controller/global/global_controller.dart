@@ -187,6 +187,8 @@ class GlobalController extends GetxController {
     ChangesController changesViewModel = Get.find<ChangesController>();
     addBondToFirebase(globalModel);
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.bondsCollection);
+
+    sendEmailWithPdfAttachment(globalModel, true);
     update();
   }
 
@@ -292,6 +294,8 @@ class GlobalController extends GetxController {
     ChangesController changesViewModel = Get.find<ChangesController>();
     await addBondToFirebase(globalModel);
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.bondsCollection);
+
+
     update();
   }
 

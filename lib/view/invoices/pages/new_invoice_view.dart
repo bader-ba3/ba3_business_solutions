@@ -912,7 +912,7 @@ class _InvoiceViewState extends State<InvoiceView> {
 
                                         globalController.addGlobalInvoice(_updateData(plutoEditController.invoiceRecord));
                                         addImeiToProducts(invoiceController.imeiMap);
-                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord));
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord),false,);
                                         // invoiceController.initModel=_updateData(plutoEditViewModel.invoiceRecord);
                                         plutoEditController.update();
                                       }
@@ -968,7 +968,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         await invoiceController.computeTotal(plutoEditController.invoiceRecord);
                                         invoiceController.initModel.invIsPending = false;
                                         globalController.updateGlobalInvoice(_updateData(plutoEditController.invoiceRecord));
-                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord));
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord),false,);
                                       }
                                     });
                                   }
@@ -1019,7 +1019,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       if (value) {
                                         addImeiToProducts(invoiceController.imeiMap);
                                         globalController.updateGlobalInvoice(_updateData(plutoEditController.invoiceRecord));
-                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord),
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditController.invoiceRecord),false,
                                             update: true, invoiceOld: invoiceController.initModel);
                                       }
                                     });

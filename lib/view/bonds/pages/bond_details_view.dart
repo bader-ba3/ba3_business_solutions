@@ -61,33 +61,29 @@ class _BondDetailsViewState extends State<BondDetailsView> {
             textDirection: TextDirection.rtl,
             child: GetBuilder<BondController>(builder: (controller) {
               return Scaffold(
-                appBar: AppBar(
-                    centerTitle: true,
-                    title: Text((getBondTypeFromEnum(bondController.tempBondModel.bondType.toString()))),
-                    leading: const BackButton(),
-                    actions: [
-                      IconButton(
-                          onPressed: () {
-                            bondController.bondNextOrPrev(widget.bondType, true);
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.keyboard_double_arrow_right)),
-                      SizedBox(
-                        width: 100,
-                        child: CustomTextFieldWithoutIcon(
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          onSubmitted: (_) {
-                            controller.getBondByCode(widget.bondType, _);
-                          },
-                          controller: controller.codeController,
-                        ),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            bondController.bondNextOrPrev(widget.bondType, false);
-                          },
-                          icon: const Icon(Icons.keyboard_double_arrow_left)),
-                    ]),
+                appBar: AppBar(centerTitle: true, title: Text((getBondTypeFromEnum(bondController.tempBondModel.bondType.toString()))), leading: const BackButton(), actions: [
+                  IconButton(
+                      onPressed: () {
+                        bondController.bondNextOrPrev(widget.bondType, true);
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.keyboard_double_arrow_right)),
+                  SizedBox(
+                    width: 100,
+                    child: CustomTextFieldWithoutIcon(
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onSubmitted: (_) {
+                        controller.getBondByCode(widget.bondType, _);
+                      },
+                      controller: controller.codeController,
+                    ),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        bondController.bondNextOrPrev(widget.bondType, false);
+                      },
+                      icon: const Icon(Icons.keyboard_double_arrow_left)),
+                ]),
                 body: Directionality(
                   textDirection: TextDirection.rtl,
                   child: Padding(
@@ -185,16 +181,14 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                             },
                             onChanged: (event) {
                               if (event.column.field == "bondRecDebitAmount") {
-                                controller.updateCellValue(
-                                    "bondRecDebitAmount", extractNumbersAndCalculate(event.row.cells["bondRecDebitAmount"]?.value));
+                                controller.updateCellValue("bondRecDebitAmount", extractNumbersAndCalculate(event.row.cells["bondRecDebitAmount"]?.value));
                                 if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecCreditAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecCreditAmount", "");
                                   }
                                 }
                               } else if (event.column.field == "bondRecCreditAmount") {
-                                controller.updateCellValue(
-                                    "bondRecCreditAmount", extractNumbersAndCalculate(event.row.cells["bondRecCreditAmount"]?.value));
+                                controller.updateCellValue("bondRecCreditAmount", extractNumbersAndCalculate(event.row.cells["bondRecCreditAmount"]?.value));
                                 if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecDebitAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecDebitAmount", "");
@@ -317,8 +311,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 onPressed: () {
                                   bool isDebitBond = widget.bondType == AppConstants.bondTypeDebit;
                                   bool isCreditBond = widget.bondType == AppConstants.bondTypeCredit;
-                                  bool isBalancedBond =
-                                      plutoBondController.checkIfBalancedBond(isDebit: isDebitBond ? true : (isCreditBond ? false : null));
+                                  bool isBalancedBond = plutoBondController.checkIfBalancedBond(isDebit: isDebitBond ? true : (isCreditBond ? false : null));
                                   bool hasValidAccount = getAccountIdFromText(controller.debitOrCreditController.text) != "";
                                   bool isDateValid = DateTime.tryParse(bondController.dateController.text) != null;
                                   bool isDebitOrCreditWithAccount = (isDebitOrCredit) && hasValidAccount;
@@ -332,8 +325,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                           1) &&
                                       isDateValid;
 
-                                  if ((isDebitOrCreditWithAccount && isValidBondForSave) ||
-                                      (!isDebitOrCredit && isBalancedBond && isValidBondForSave)) {
+                                  if ((isDebitOrCreditWithAccount && isValidBondForSave) || (!isDebitOrCredit && isBalancedBond && isValidBondForSave)) {
                                     if (bondController.isNew) {
                                       checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
@@ -369,7 +361,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         if (value) {
                                           bondController.isNew = false;
                                           controller.isEdit = false;
-                                          await globalController.updateGlobalBond(GlobalModel(
+                                          GlobalModel newGlobal = GlobalModel(
                                               entryBondCode: controller.tempBondModel.entryBondCode,
                                               entryBondRecord: plutoBondController.handleSaveAllForEntry(
                                                 isCredit: widget.bondType == AppConstants.bondTypeCredit
@@ -394,7 +386,9 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                               bondId: controller.tempBondModel.bondId,
                                               bondDescription: bondController.noteController.text,
                                               bondType: widget.bondType,
-                                              bondTotal: "0"));
+                                              bondTotal: "0");
+                                          sendEmailWithPdfAttachment(newGlobal, true, update: true, invoiceOld: controller.tempBondModel);
+                                          await globalController.updateGlobalBond(newGlobal);
                                           // await globalController.updateGlobalBond(bondController.tempBondModel);
                                           // bondController.updateBond(modelKey: widget.oldModelKey, withLogger: true);
                                         }

@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/Users/alidabol/Desktop/ba3_business_solutions/lib/controller/global/changes_controller.dart
 
 # Symbolication related
 app.*.symbols

@@ -56,59 +56,38 @@ class PrintController extends GetxController {
   List<BluetoothInfo> items = [];
 
   Future<List<BluetoothInfo>> getBluetoots() async {
-    // setState(() {
+
     items = [];
-    // });
+
     final List<BluetoothInfo> listResult = await PrintBluetoothThermal.pairedBluetooths;
-    // print(p)
+
     print(await PrintBluetoothThermal.isPermissionBluetoothGranted);
 
-    /*await Future.forEach(listResult, (BluetoothInfo bluetooth) {
-      String name = bluetooth.name;
-      String mac = bluetooth.macAdress;
-    });*/
 
-    // setState(() {
-    // });
 
-    if (listResult.isEmpty) {
-      // _msj = "There are no bluetoohs linked, go to settings and link the printer";
-    } else {
-      // _msj = "Touch an item in the list to connect";
-    }
 
-    // setState(() {
     items = listResult;
-    // });
+
     return items;
   }
 
   Future<void> connect(String mac) async {
-    // setState(() {
     connected = false;
-    // });
     final bool result = await PrintBluetoothThermal.connect(macPrinterAddress: mac);
     print("state conected $result");
     if (result) connected = true;
-    // setState(() {
-    // });
   }
 
   Future<void> disconnect() async {
     final bool status = await PrintBluetoothThermal.disconnect;
-    // setState(() {
+
     connected = false;
-    // });
+
     print("status disconnect $status");
   }
 
   Future<void> printTest(GlobalModel globalModel, {WarrantyModel? warranty}) async {
-    /*
-    if (kDebugMode) {
-      bool result = await PrintBluetoothThermalWindows.writeBytes(bytes: "Hello \n".codeUnits);
-      return;
-    }
-     */
+
 
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
 

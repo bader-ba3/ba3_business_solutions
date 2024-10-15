@@ -74,6 +74,11 @@ dependencies:
   mailer: ^6.2.0
   barcode_widget: ^2.0.4
   printing: ^5.13.3
+  permission_handler: ^11.3.1
+  flutter_splendid_ble: ^0.13.0
+  image: ^4.2.0
+
+
 
 
 
