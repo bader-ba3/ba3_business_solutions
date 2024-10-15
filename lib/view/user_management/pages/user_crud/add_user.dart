@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/helper/extensions/class_extensions/context_extensions.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/user_crud/time_details.dart';

@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 
 import 'warranty_record_model.dart';
 
@@ -8,11 +8,12 @@ class WarrantyModel {
   String? sellerId;
   String? invDate;
   String? invCode;
-  String? customerName, customerPhone,invNots;
+  String? customerName, customerPhone, invNots;
   bool? done;
   List<WarrantyRecordModel>? invRecords = [];
 
-  WarrantyModel({this.invId, this.sellerId, this.invDate, this.invRecords, this.done, this.customerName, this.customerPhone,this.invNots,this.invCode});
+  WarrantyModel(
+      {this.invId, this.sellerId, this.invDate, this.invRecords, this.done, this.customerName, this.customerPhone, this.invNots, this.invCode});
 
   // fromJson: تحويل JSON إلى WarrantyModel
   factory WarrantyModel.fromJson(Map<dynamic, dynamic> json) {
@@ -25,9 +26,7 @@ class WarrantyModel {
       done: json['done'] ?? false,
       sellerId: json['sellerId'] ?? "",
       invDate: json['invDate'] ?? "",
-      invRecords: (json['invRecords'] as List<dynamic>?)
-          ?.map((item) => WarrantyRecordModel.fromJson(item))
-          .toList() ?? <WarrantyRecordModel>[],
+      invRecords: (json['invRecords'] as List<dynamic>?)?.map((item) => WarrantyRecordModel.fromJson(item)).toList() ?? <WarrantyRecordModel>[],
     );
   }
 
@@ -52,7 +51,7 @@ class WarrantyModel {
       'اسم البائع': getSellerNameFromId(sellerId),
       'رقم الفاتورة': invCode,
       'البيان': invNots,
-      'التسليم': done==true?'تم التسليم':'لم يتم التسليم',
+      'التسليم': done == true ? 'تم التسليم' : 'لم يتم التسليم',
       'اسم الزبون': customerName,
       'رقم الزبون': customerPhone,
       'تاريخ الفاتورة': invDate,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/global/global_view_model.dart';
+import '../../../controller/global/global_controller.dart';
 
 class DrawerListTile extends StatelessWidget {
   const DrawerListTile({
@@ -17,7 +17,7 @@ class DrawerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GlobalViewModel>(builder: (controller) {
+    return GetBuilder<GlobalController>(builder: (controller) {
       return InkWell(
         onTap: press,
         child: Directionality(

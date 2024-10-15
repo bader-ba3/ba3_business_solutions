@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/view/report/widget/report_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -64,7 +64,7 @@ class ReportGridViewState extends State<ReportGridView> {
   @override
   void initState() {
     super.initState();
-    InvoiceViewModel invoiceController = Get.find<InvoiceViewModel>();
+    InvoiceController invoiceController = Get.find<InvoiceController>();
     for (var element in invoiceController.invoiceModel.values) {
       for (InvoiceRecordModel et in element.invRecords ?? []) {
         if (et.invRecProduct != null) {
@@ -109,9 +109,7 @@ class ReportGridViewState extends State<ReportGridView> {
         appBar: AppBar(
           title: const Text('تقرير المبيعات'),
           actions: [
-            ElevatedButton(
-                onPressed: () => bottomSheet(scaffoldKey),
-                child: const Text("إضافة حقول")),
+            ElevatedButton(onPressed: () => bottomSheet(scaffoldKey), child: const Text("إضافة حقول")),
             const SizedBox(
               width: 20,
             ),
@@ -146,12 +144,8 @@ class ReportGridViewState extends State<ReportGridView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                e == rowList.first
-                                    ? nameRowList[e.toString()] + '\n'
-                                    : nameRowList[e.toString()] + tab,
-                                textDirection: isArabic.hasMatch(e.toString())
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
+                                e == rowList.first ? nameRowList[e.toString()] + '\n' : nameRowList[e.toString()] + tab,
+                                textDirection: isArabic.hasMatch(e.toString()) ? TextDirection.rtl : TextDirection.ltr,
                               ),
                             ],
                           ),

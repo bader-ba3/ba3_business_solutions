@@ -1,15 +1,15 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/core/utils/date_month_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../model/seller/seller_model.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class AddTaskView extends StatelessWidget {
   final String? oldKey;

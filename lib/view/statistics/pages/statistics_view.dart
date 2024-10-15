@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 
 import 'package:ba3_business_solutions/view/statistics/widget/chart_widget2.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -26,7 +26,7 @@ class _StatisticsViewState extends State<StatisticsView> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(),
-        body: GetBuilder<AccountViewModel>(builder: (controller) {
+        body: GetBuilder<AccountController>(builder: (controller) {
           allMonth.clear();
           controller.accountList[widget.accountId]!.accRecord.toList().forEach(
             (element) {

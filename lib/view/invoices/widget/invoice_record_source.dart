@@ -1,5 +1,5 @@
-// import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
-// import 'package:ba3_business_solutions/controller/user_management_model.dart';
+// import 'package:ba3_business_solutions/controller/pattern_controller.dart';
+// import 'package:ba3_business_solutions/controller/user_management_controller.dart';
 // import 'package:ba3_business_solutions/model/pattern_model.dart';
 // import 'package:ba3_business_solutions/model/account_model.dart';
 // import 'package:ba3_business_solutions/model/product_record_model.dart';
@@ -10,8 +10,8 @@
 //
 // import '../../../Const/app_constants.dart';
 // import '../../../Dialogs/Search_Product_Text_Dialog.dart';
-// import '../../../controller/invoice_view_model.dart';
-// import '../../../controller/product_view_model.dart';
+// import '../../../controller/invoice_controller.dart';
+// import '../../../controller/product_controller.dart';
 // import '../../../model/invoice_record_model.dart';
 // import '../../../model/product_model.dart';
 // import 'package:math_expressions/math_expressions.dart';

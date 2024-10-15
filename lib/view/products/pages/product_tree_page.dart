@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../../../model/product/product_tree.dart';
 class ProductTreePage extends StatelessWidget {
   ProductTreePage({super.key});
 
-  final ProductViewModel productController = Get.find<ProductViewModel>();
+  final ProductController productController = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class ProductTreePage extends StatelessWidget {
                   ),
                 ],
               ),
-              body: GetBuilder<ProductViewModel>(builder: (controller) {
+              body: GetBuilder<ProductController>(builder: (controller) {
                 return productController.allProductTree.isEmpty
                     ? const CircularProgressIndicator()
                     : TreeView<ProductTree>(
@@ -135,7 +135,7 @@ class ProductTreePage extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition, ProductViewModel controller, entry) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, ProductController controller, entry) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/model/user/user_model.dart';
 import 'package:ba3_business_solutions/view/timer/pages/timer_view.dart';
 import 'package:flutter/material.dart';

@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_discount_record_model.dart';
 
-import '../../controller/account/account_view_model.dart';
-import '../../controller/pattern/pattern_model_view.dart';
-import '../../controller/seller/sellers_view_model.dart';
-import '../../controller/store/store_view_model.dart';
+import '../../controller/account/account_controller.dart';
+import '../../controller/pattern/pattern_controller.dart';
+import '../../controller/seller/sellers_controller.dart';
+import '../../controller/store/store_controller.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
 import '../bond/bond_record_model.dart';

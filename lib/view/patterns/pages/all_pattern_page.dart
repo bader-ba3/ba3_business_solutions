@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/view/patterns/pages/add_pattern_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

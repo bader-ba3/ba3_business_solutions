@@ -1,7 +1,7 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/view/target_management/task/add_task.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

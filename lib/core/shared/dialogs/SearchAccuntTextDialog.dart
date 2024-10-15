@@ -1,18 +1,16 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/model/account/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/shared/widgets/new_pluto.dart';
-import '../../../view/invoices/widget/custom_TextField.dart';
+import '../../../view/invoices/widget/custom_Text_field.dart';
 
 Future<String?> searchAccountTextDialog(String accountText) async {
-  TextEditingController accountTextController = TextEditingController()
-    ..text = accountText;
+  TextEditingController accountTextController = TextEditingController()..text = accountText;
 
   List<AccountModel> accountsForSearch;
-  accountsForSearch =
-      Get.find<AccountViewModel>().searchAccount(accountTextController.text);
+  accountsForSearch = Get.find<AccountController>().searchAccount(accountTextController.text);
   if (accountsForSearch.length == 1) {
     return accountsForSearch.first.accName!;
   } else if (accountsForSearch.isEmpty) {
@@ -21,7 +19,7 @@ Future<String?> searchAccountTextDialog(String accountText) async {
   await showDialog<String>(
       context: Get.context!,
       builder: (BuildContext context) => Dialog(
-            child: GetBuilder<AccountViewModel>(builder: (accountViewModel) {
+            child: GetBuilder<AccountController>(builder: (accountViewModel) {
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: Column(
@@ -36,8 +34,7 @@ Future<String?> searchAccountTextDialog(String accountText) async {
                           borderRadius: BorderRadius.circular(15),
                           child: CustomPlutoGridWithAppBar(
                             onSelected: (selected) {
-                              accountTextController.text =
-                                  selected.row?.cells["اسم الحساب"]!.value;
+                              accountTextController.text = selected.row?.cells["اسم الحساب"]!.value;
                               Get.back();
                             },
                             title: "اختيار حساب",

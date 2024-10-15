@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/shared/Widgets/new_pluto.dart';
-import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/discount_pluto_edit_controller.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import 'new_invoice_view.dart';
 
 class AllPendingInvoice extends StatelessWidget {
@@ -13,7 +13,7 @@ class AllPendingInvoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<InvoiceViewModel>(builder: (controller) {
+    return GetBuilder<InvoiceController>(builder: (controller) {
       return controller.invoiceModel.values
               .where(
                 (e) => e.invIsPending!,
@@ -36,8 +36,8 @@ class AllPendingInvoice extends StatelessWidget {
                     patternId: p0.row?.cells["النمط"]?.value,
                   ),
                   binding: BindingsBuilder(() {
-                    Get.lazyPut(() => InvoicePlutoViewModel());
-                    Get.lazyPut(() => DiscountPlutoViewModel());
+                    Get.lazyPut(() => InvoicePlutoController());
+                    Get.lazyPut(() => DiscountPlutoController());
                   }),
                 );
               },

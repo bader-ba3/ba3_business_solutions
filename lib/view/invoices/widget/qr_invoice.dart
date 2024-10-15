@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
 import 'package:flutter/material.dart';
@@ -217,7 +217,7 @@ class _QRScannerViewState extends State<QRScannerView> {
       print(scanData.format == BarcodeFormat.qrcode);
       if (scanData.code != null) {
         if (data.firstWhereOrNull((element) => element.prodBarcode == scanData.code) == null && scanData.format != BarcodeFormat.qrcode) {
-          ProductViewModel productViewController = Get.find<ProductViewModel>();
+          ProductController productViewController = Get.find<ProductController>();
 
           var _ = productViewController.productDataMap.values.toList().firstWhereOrNull((element) => element.prodBarcode == scanData.code);
           if (_ != null) {

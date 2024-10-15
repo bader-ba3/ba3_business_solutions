@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/account/account_view_model.dart';
+import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/shared/widgets/new_pluto.dart';
 import '../../bonds/pages/bond_details_view.dart';
 import '../../bonds/widget/bond_record_pluto_view_model.dart';
@@ -21,9 +21,9 @@ class AccountDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AccountViewModel>(initState: (state) {
+    return GetBuilder<AccountController>(initState: (state) {
       print(modelKey);
-      Get.find<AccountViewModel>().getAllBondForAccount(modelKey, listDate);
+      Get.find<AccountController>().getAllBondForAccount(modelKey, listDate);
     }, builder: (controller) {
       return Scaffold(
         body: Column(
@@ -62,7 +62,7 @@ class AccountDetails extends StatelessWidget {
                         patternId: p0.row?.cells["نوع السند"]?.value,
                       ),
                       binding: BindingsBuilder(() {
-                        Get.lazyPut(() => InvoicePlutoViewModel());
+                        Get.lazyPut(() => InvoicePlutoController());
                       }),
                     );
                   }

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/databsae/database_view_model.dart';
+import 'package:ba3_business_solutions/controller/databsae/database_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +7,7 @@ class DataBaseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DataBaseViewModel>(builder: (controller) {
+    return GetBuilder<DataBaseController>(builder: (controller) {
       return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(

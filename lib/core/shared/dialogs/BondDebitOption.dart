@@ -1,8 +1,8 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
+import 'package:ba3_business_solutions/controller/global/global_controller.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
+import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
@@ -29,9 +29,9 @@ class BondDebitDialog extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: GetBuilder<InvoiceViewModel>(initState: (state) {
-            Get.find<InvoiceViewModel>().invoiceForSearch = null;
-            Get.find<InvoiceViewModel>().totalPaidFromPartner = TextEditingController();
+          child: GetBuilder<InvoiceController>(initState: (state) {
+            Get.find<InvoiceController>().invoiceForSearch = null;
+            Get.find<InvoiceController>().totalPaidFromPartner = TextEditingController();
           }, builder: (controller) {
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -218,14 +218,14 @@ class BondDebitDialog extends StatelessWidget {
                         entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
                       }
 
-                      GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+                      GlobalController globalViewModel = Get.find<GlobalController>();
                       // print(GlobalModel(bondCode: Get.find<BondViewModel>().getNextBondCode(type: Const.bondTypeDebit), bondDate: DateTime.now().toIso8601String(), bondRecord: bondRecord, entryBondRecord: entryBondRecord, bondDescription: des, bondType: Const.bondTypeDebit, bondTotal: "0")
                       //     .toFullJson());bon1726403858683038
                       globalViewModel.updateGlobalInvoice(controller.invoiceForSearch!..invIsPaid = true);
                       await globalViewModel.addGlobalBond(
                         GlobalModel(
                           bondRecord: bondRecord,
-                          bondCode: Get.find<BondViewModel>().getNextBondCode(type: AppConstants.bondTypeDebit),
+                          bondCode: Get.find<BondController>().getNextBondCode(type: AppConstants.bondTypeDebit),
                           entryBondRecord: entryBondRecord,
                           bondDescription: des,
                           bondType: AppConstants.bondTypeDebit,

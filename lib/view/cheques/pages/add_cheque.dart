@@ -1,18 +1,18 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/cheque/cheque_view_model.dart';
-import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/bond/entry_bond_controller.dart';
+import 'package:ba3_business_solutions/controller/cheque/cheque_controller.dart';
+import 'package:ba3_business_solutions/controller/global/global_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/entry_bond/pages/entry_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/bond/bond_view_model.dart';
+import '../../../controller/bond/bond_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/utils/generate_id.dart';
 import '../../../model/bond/bond_record_model.dart';
@@ -31,7 +31,7 @@ class AddCheque extends StatefulWidget {
 }
 
 class _AddChequeState extends State<AddCheque> {
-  var chequeController = Get.find<ChequeViewModel>();
+  var chequeController = Get.find<ChequeController>();
 
   var nameController = TextEditingController();
   var numberController = TextEditingController();
@@ -88,7 +88,7 @@ class _AddChequeState extends State<AddCheque> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<ChequeViewModel>(builder: (controller) {
+      child: GetBuilder<ChequeController>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(
             title: Text(controller.initModel?.cheqName ?? "شيك جديد"),
@@ -280,7 +280,8 @@ class _AddChequeState extends State<AddCheque> {
                         "دفع إلى",
                         secondaryController,
                         onFieldSubmitted: (value) async {
-                          var a = await controller.getAccountComplete(value, chequeType == AppConstants.chequeTypeCatch ? AppConstants.accountTypeDefault : AppConstants.accountTypeDefault);
+                          var a = await controller.getAccountComplete(
+                              value, chequeType == AppConstants.chequeTypeCatch ? AppConstants.accountTypeDefault : AppConstants.accountTypeDefault);
                           secondaryController.text = a;
                           controller.initModel?.cheqSecoundryAccount = a;
                         },
@@ -344,8 +345,10 @@ class _AddChequeState extends State<AddCheque> {
                                       cheqType: chequeType,
                                       cheqRemainingAmount: allAmountController.text,
                                       entryBondRecord: [
-                                        EntryBondRecordModel("01", double.tryParse(allAmountController.text) ?? 0, 0, getAccountIdFromText(primaryController.text), des),
-                                        EntryBondRecordModel("02", 0, double.tryParse(allAmountController.text) ?? 0, getAccountIdFromText(secondaryController.text), des),
+                                        EntryBondRecordModel("01", double.tryParse(allAmountController.text) ?? 0, 0,
+                                            getAccountIdFromText(primaryController.text), des),
+                                        EntryBondRecordModel("02", 0, double.tryParse(allAmountController.text) ?? 0,
+                                            getAccountIdFromText(secondaryController.text), des),
                                       ]));
                                 } else {
                                   controller.addCheque(GlobalModel(
@@ -365,8 +368,10 @@ class _AddChequeState extends State<AddCheque> {
                                       cheqType: chequeType,
                                       cheqRemainingAmount: allAmountController.text,
                                       entryBondRecord: [
-                                        EntryBondRecordModel("01", double.tryParse(allAmountController.text) ?? 0, 0, getAccountIdFromText(primaryController.text), des),
-                                        EntryBondRecordModel("02", 0, double.tryParse(allAmountController.text) ?? 0, getAccountIdFromText(secondaryController.text), des),
+                                        EntryBondRecordModel("01", double.tryParse(allAmountController.text) ?? 0, 0,
+                                            getAccountIdFromText(primaryController.text), des),
+                                        EntryBondRecordModel("02", 0, double.tryParse(allAmountController.text) ?? 0,
+                                            getAccountIdFromText(secondaryController.text), des),
                                       ]));
                                 }
                               }
@@ -387,7 +392,7 @@ class _AddChequeState extends State<AddCheque> {
                               if (value) {
                                 checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewCheques).then((value) {
                                   if (value) {
-                                    var globalController = Get.find<GlobalViewModel>();
+                                    var globalController = Get.find<GlobalController>();
                                     globalController.deleteGlobal(controller.initModel!);
                                   }
                                 });
@@ -417,15 +422,21 @@ class _AddChequeState extends State<AddCheque> {
                         AppButton(
                           onPressed: () async {
                             if (controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid) {
-                              String des = controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid ? "سند دفع ${controller.initModel?.cheqName}" : "سند ارجاع قيمة  ${controller.initModel?.cheqName}";
+                              String des = controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid
+                                  ? "سند دفع ${controller.initModel?.cheqName}"
+                                  : "سند ارجاع قيمة  ${controller.initModel?.cheqName}";
                               List<BondRecordModel> bondRecord = [];
                               List<EntryBondRecordModel> entryBondRecord = [];
                               if (controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid) {
-                                bondRecord.add(BondRecordModel("00", 0, double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, getAccountIdFromText("اوراق الدفع"), des));
-                                bondRecord.add(BondRecordModel("01", double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, 0, getAccountIdFromText("المصرف"), des));
+                                bondRecord.add(BondRecordModel(
+                                    "00", 0, double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, getAccountIdFromText("اوراق الدفع"), des));
+                                bondRecord.add(BondRecordModel(
+                                    "01", double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, 0, getAccountIdFromText("المصرف"), des));
                               } else {
-                                bondRecord.add(BondRecordModel("00", 0, double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, getAccountIdFromText("المصرف"), des));
-                                bondRecord.add(BondRecordModel("01", double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, 0, getAccountIdFromText("اوراق الدفع"), des));
+                                bondRecord.add(BondRecordModel(
+                                    "00", 0, double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, getAccountIdFromText("المصرف"), des));
+                                bondRecord.add(BondRecordModel(
+                                    "01", double.tryParse(controller.initModel!.cheqAllAmount!) ?? 0, 0, getAccountIdFromText("اوراق الدفع"), des));
                               }
 
                               // bondRecord.add(BondRecordModel("03", controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
@@ -434,7 +445,7 @@ class _AddChequeState extends State<AddCheque> {
                                 entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
                               }
 
-                              GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+                              GlobalController globalViewModel = Get.find<GlobalController>();
                               String bondId = generateId(RecordType.bond);
                               await globalViewModel.addGlobalBond(
                                 GlobalModel(
@@ -442,7 +453,7 @@ class _AddChequeState extends State<AddCheque> {
                                   globalType: AppConstants.globalTypeBond,
                                   bondDate: DateTime.now().toString(),
                                   bondRecord: bondRecord,
-                                  bondCode: Get.find<BondViewModel>().getNextBondCode(type: AppConstants.bondTypeDebit),
+                                  bondCode: Get.find<BondController>().getNextBondCode(type: AppConstants.bondTypeDebit),
                                   entryBondRecord: entryBondRecord,
                                   bondDescription: des,
                                   bondType: AppConstants.bondTypeDebit,
@@ -467,14 +478,17 @@ class _AddChequeState extends State<AddCheque> {
                                   cheqType: chequeType,
                                   cheqRemainingAmount: allAmountController.text,
                                   entryBondRecord: [
-                                    EntryBondRecordModel("01", double.tryParse(allAmountController.text) ?? 0, 0, getAccountIdFromText(primaryController.text), des),
-                                    EntryBondRecordModel("02", 0, double.tryParse(allAmountController.text) ?? 0, getAccountIdFromText(secondaryController.text), des),
+                                    EntryBondRecordModel(
+                                        "01", double.tryParse(allAmountController.text) ?? 0, 0, getAccountIdFromText(primaryController.text), des),
+                                    EntryBondRecordModel(
+                                        "02", 0, double.tryParse(allAmountController.text) ?? 0, getAccountIdFromText(secondaryController.text), des),
                                   ]));
                             } else {}
                           },
                           title: controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid ? "دفع" : "ارجاع",
                           color: controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid ? Colors.black : Colors.red,
-                          iconData: controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid ? Icons.paid : Icons.real_estate_agent_outlined,
+                          iconData:
+                              controller.initModel?.cheqStatus == AppConstants.chequeStatusNotPaid ? Icons.paid : Icons.real_estate_agent_outlined,
                         ),
                         const SizedBox(
                           width: 50,

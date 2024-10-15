@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:ba3_business_solutions/model/account/account_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,9 +20,9 @@ class AllDueView extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
           appBar: AppBar(),
-          body: GetBuilder<AccountViewModel>(builder: (controller) {
+          body: GetBuilder<AccountController>(builder: (controller) {
             allList.clear();
-            InvoiceViewModel invoiceViewModel = Get.find<InvoiceViewModel>();
+            InvoiceController invoiceViewModel = Get.find<InvoiceController>();
             List<GlobalModel> allBuyInv =
                 invoiceViewModel.invoiceModel.values.where(
               (element) {

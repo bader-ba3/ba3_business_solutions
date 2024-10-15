@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/view/user_management/pages/user_crud/add_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../controller/user/user_management_model.dart';
+import '../../../../controller/user/user_management_controller.dart';
 import '../../../../core/shared/widgets/custom_window_title_bar.dart';
 
 class AllUserView extends StatefulWidget {

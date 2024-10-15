@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/warranty/warranty_controller.dart';
 import '../../../core/utils/date_picker.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class WarrantyPageTopBar extends StatelessWidget {
   const WarrantyPageTopBar({
@@ -27,15 +27,12 @@ class WarrantyPageTopBar extends StatelessWidget {
               width: Get.width * 0.45,
               child: Row(
                 children: [
-                  const SizedBox(
-                      width: 100,
-                      child: Text("تاريخ الفاتورة : ", style: TextStyle())),
+                  const SizedBox(width: 100, child: Text("تاريخ الفاتورة : ", style: TextStyle())),
                   Expanded(
                     child: DatePicker(
                       initDate: warrantyController.dateController,
                       onSubmit: (_) {
-                        warrantyController.dateController =
-                            _.toString().split(".")[0];
+                        warrantyController.dateController = _.toString().split(".")[0];
 
                         warrantyController.update();
                       },
@@ -51,8 +48,7 @@ class WarrantyPageTopBar extends StatelessWidget {
                 children: [
                   const SizedBox(width: 100, child: Text("رقم الجوال : ")),
                   Expanded(
-                    child: CustomTextFieldWithoutIcon(
-                        controller: warrantyController.mobileNumberController),
+                    child: CustomTextFieldWithoutIcon(controller: warrantyController.mobileNumberController),
                   ),
                 ],
               ),
@@ -70,9 +66,7 @@ class WarrantyPageTopBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: CustomTextFieldWithIcon(
-                        controller: warrantyController.customerNameController,
-                        onSubmitted: (text) async {},
-                        onIconPressed: () {}),
+                        controller: warrantyController.customerNameController, onSubmitted: (text) async {}, onIconPressed: () {}),
                   ),
                 ],
               ),
@@ -83,8 +77,7 @@ class WarrantyPageTopBar extends StatelessWidget {
                 children: [
                   const SizedBox(width: 100, child: Text("البيان")),
                   Expanded(
-                    child: CustomTextFieldWithoutIcon(
-                        controller: warrantyController.noteController),
+                    child: CustomTextFieldWithoutIcon(controller: warrantyController.noteController),
                   ),
                 ],
               ),

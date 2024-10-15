@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/user/cards_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +17,7 @@ class WriteCardView extends StatefulWidget {
 class _WriteCardViewState extends State<WriteCardView> {
   UserManagementController userViewController =
       Get.find<UserManagementController>();
-  CardsViewModel cardViewController = Get.find<CardsViewModel>();
+  CardsController cardViewController = Get.find<CardsController>();
 
   // TextEditingController cardController = TextEditingController();
   String? userId;

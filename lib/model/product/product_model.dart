@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/model/product/product_record_model.dart';
 
-import '../../controller/product/product_view_model.dart';
+import '../../controller/product/product_controller.dart';
 import '../../core/helper/functions/functions.dart';
 
 class ProductModel {
@@ -89,10 +89,8 @@ class ProductModel {
   }
 
   Map difference(ProductModel oldData) {
-    assert(oldData.prodId == prodId &&
-            oldData.prodId != null &&
-            prodId != null ||
-        oldData.prodId == prodId && oldData.prodId != null && prodId != null);
+    assert(
+        oldData.prodId == prodId && oldData.prodId != null && prodId != null || oldData.prodId == prodId && oldData.prodId != null && prodId != null);
     Map<String, dynamic> newChanges = {};
     Map<String, dynamic> oldChanges = {};
 
@@ -196,7 +194,11 @@ class ProductModel {
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
       'prodGroupPad': prodGroupPad,
-      'prodImei': prodImei?.map((e) => e.toJson(),).toList(),
+      'prodImei': prodImei
+          ?.map(
+            (e) => e.toJson(),
+          )
+          .toList(),
     };
   }
 
@@ -222,7 +224,11 @@ class ProductModel {
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
       'prodGroupPad': prodGroupPad,
-      'prodImei': prodImei?.map((e) => e.toJson(),).toList(),
+      'prodImei': prodImei
+          ?.map(
+            (e) => e.toJson(),
+          )
+          .toList(),
     };
   }
 
@@ -255,9 +261,7 @@ class ProductModel {
     return {
       'id': int.parse(prodId!.split("prod")[1]),
       'value': "$prodFullCode      $prodName",
-      'parentId': prodParentId != null && prodParentId!.startsWith("prod")
-          ? int.parse((prodParentId!.split("prod")[1]))
-          : "prod0"
+      'parentId': prodParentId != null && prodParentId!.startsWith("prod") ? int.parse((prodParentId!.split("prod")[1])) : "prod0"
       // 'parentId': int.parse((prodParentId?.split("prod").lastOrNull) != null
       //     ? (prodParentId?.split("prod").lastOrNull)??"1"
       //     : "1" ),

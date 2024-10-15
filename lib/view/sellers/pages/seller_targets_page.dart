@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/app_spacer.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/target_pointer_widget.dart';

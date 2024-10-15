@@ -1,10 +1,10 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
 import 'package:ba3_business_solutions/model/account/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/search_view_controller.dart';
+import '../../../controller/invoice/search_controller.dart';
 import '../../../main.dart';
 import '../../../view/accounts/pages/all_due_account.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
@@ -35,10 +35,7 @@ class AccountDueOptionDialog extends StatelessWidget {
                   title: "اسم الحساب :  ",
                   controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.accountForSearchController.text =
-                        await searchAccountTextDialog(
-                                controller.accountForSearchController.text) ??
-                            "";
+                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -62,8 +59,7 @@ class AccountDueOptionDialog extends StatelessWidget {
                   title: "موافق",
                   iconData: Icons.check,
                   onPressed: () {
-                    AccountModel? model = getAccountModelFromName(
-                        controller.accountForSearchController.text);
+                    AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
                     if (model != null) {
                       Get.to(() => AllDueAccount(
                             modelKey: model.accChild
@@ -74,8 +70,7 @@ class AccountDueOptionDialog extends StatelessWidget {
                                 [model.accId!],
                           ));
                     } else {
-                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ",
-                          icon: const Icon(Icons.error_outline));
+                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ", icon: const Icon(Icons.error_outline));
                     }
                   },
                 ),

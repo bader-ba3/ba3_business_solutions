@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../controller/user/user_management_model.dart';
+import '../../../../controller/user/user_management_controller.dart';
 
 class TimeDetails extends StatefulWidget {
   final String oldKey;

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/warranty/warranty_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const WarrantyAppBar({super.key});
@@ -25,9 +25,7 @@ class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: 16,
             )),
       ),
-      title: Text(warrantyController.billId == "1"
-          ? "فاتورة الضمان"
-          : "تفاصيل فاتورة الضمان"),
+      title: Text(warrantyController.billId == "1" ? "فاتورة الضمان" : "تفاصيل فاتورة الضمان"),
       actions: [
         SizedBox(
           height: AppConstants.constHeightTextField,
@@ -37,8 +35,7 @@ class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   IconButton(
                       onPressed: () {
-                        warrantyController.invNextOrPrev(
-                            warrantyController.invCodeController.text, true);
+                        warrantyController.invNextOrPrev(warrantyController.invCodeController.text, true);
                       },
                       icon: const Icon(Icons.keyboard_double_arrow_right)),
                   // const Text("Invoice Code : "),
@@ -55,8 +52,7 @@ class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       )),
                   IconButton(
                       onPressed: () {
-                        warrantyController.invNextOrPrev(
-                            warrantyController.invCodeController.text, false);
+                        warrantyController.invNextOrPrev(warrantyController.invCodeController.text, false);
 
                         // invoiceController.nextInv(widget.patternModel!.patId!, invoiceController.invCodeController.text);
                       },
@@ -74,6 +70,5 @@ class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(
-      kToolbarHeight); // This gives you the default AppBar height.
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // This gives you the default AppBar height.
 }

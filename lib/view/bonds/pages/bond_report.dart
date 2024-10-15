@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +21,7 @@ class _BondReportState extends State<BondReport> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(),
-        body: GetBuilder<BondViewModel>(
+        body: GetBuilder<BondController>(
           builder: (controller) {
             List<GlobalModel> allBond = controller.allBondsItem.values.toList();
             return Column(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/account/account_view_model.dart';
+import '../../../controller/account/account_controller.dart';
 import '../../../model/account/account_model.dart';
 
 class AccountViewDataGridSource extends DataGridSource {
@@ -17,7 +17,7 @@ class AccountViewDataGridSource extends DataGridSource {
   List<DataGridRow> get rows => accountMap.entries.map<DataGridRow>((entry) {
         String userId = entry.key;
         AccountModel account = entry.value;
-        var accountController = Get.find<AccountViewModel>();
+        var accountController = Get.find<AccountController>();
 
         // int? balance = accountRecordMap[userId]==null ||accountRecordMap[userId]!.isEmpty?0: accountRecordMap[userId]!.last.balance ;
         double balance = accountController.getBalance(userId);

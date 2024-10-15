@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,11 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class ProductBarcodeView extends StatefulWidget {
-  const ProductBarcodeView(
-      {super.key,
-      required this.name,
-      required this.price,
-      required this.barcode});
+  const ProductBarcodeView({super.key, required this.name, required this.price, required this.barcode});
 
   final String name, price, barcode;
 
@@ -49,10 +45,7 @@ class _ProductBarcodeViewState extends State<ProductBarcodeView> {
               width: Get.width / 2,
               // height: Get.height / 2,
               margin: const EdgeInsets.only(left: 10, right: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white, border: Border.all(color: Colors.black)),
               child: Column(
                 children: [
                   CustomTextFieldWithoutIcon(controller: nameController),
@@ -88,8 +81,7 @@ class _ProductBarcodeViewState extends State<ProductBarcodeView> {
             AppButton(
                 title: "print",
                 onPressed: () {
-                  _printBarcodeWithInfo(
-                      nameController.text, barcodeController.text);
+                  _printBarcodeWithInfo(nameController.text, barcodeController.text);
                 },
                 iconData: Icons.print)
           ],

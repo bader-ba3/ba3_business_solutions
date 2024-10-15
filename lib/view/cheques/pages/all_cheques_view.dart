@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/cheque/cheque_view_model.dart';
+import 'package:ba3_business_solutions/controller/cheque/cheque_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/custom_window_title_bar.dart';
 import 'package:ba3_business_solutions/view/cheques/pages/add_cheque.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class AllCheques extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ChequeViewModel>(builder: (controller) {
+    return GetBuilder<ChequeController>(builder: (controller) {
       return Column(
         children: [
           const CustomWindowTitleBar(),

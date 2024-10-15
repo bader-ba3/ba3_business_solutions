@@ -1,12 +1,12 @@
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/view/sellers/pages/add_seller_page.dart';
 import 'package:ba3_business_solutions/view/sellers/pages/seller_targets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/discount_pluto_edit_controller.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../controller/seller/target_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
@@ -98,8 +98,8 @@ class AllSellerInvoicePage extends StatelessWidget {
                                     patternId: '',
                                   ),
                                   binding: BindingsBuilder(() {
-                                    Get.lazyPut(() => InvoicePlutoViewModel());
-                                    Get.lazyPut(() => DiscountPlutoViewModel());
+                                    Get.lazyPut(() => InvoicePlutoController());
+                                    Get.lazyPut(() => DiscountPlutoController());
                                   }),
                                 );
                               }

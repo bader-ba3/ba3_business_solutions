@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
 import 'package:ba3_business_solutions/model/seller/task_model.dart';
@@ -6,7 +6,7 @@ import 'package:ba3_business_solutions/view/target_management/task/select_invent
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../model/user/user_model.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../controller/product/product_view_model.dart';
+import '../../controller/product/product_controller.dart';
 
 class InvoiceRecordModel {
   String? invRecId, invRecProduct, prodChoosePriceMethod;
@@ -36,17 +36,13 @@ class InvoiceRecordModel {
 
   InvoiceRecordModel.fromJsonPluto(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
-    invRecProduct =
-        getProductIdFromName(map['invRecProduct']) ?? map['invRecProduct'];
-    invRecQuantity = int.tryParse(
-        replaceArabicNumbersWithEnglish(map['invRecQuantity'].toString()));
-    invRecSubTotal = double.tryParse(
-        replaceArabicNumbersWithEnglish(map['invRecSubTotal'].toString()));
+    invRecProduct = getProductIdFromName(map['invRecProduct']) ?? map['invRecProduct'];
+    invRecQuantity = int.tryParse(replaceArabicNumbersWithEnglish(map['invRecQuantity'].toString()));
+    invRecSubTotal = double.tryParse(replaceArabicNumbersWithEnglish(map['invRecSubTotal'].toString()));
     invRecTotal = double.tryParse(map['invRecTotal'].toString());
     invRecVat = double.tryParse((map['invRecVat']).toString());
     invRecIsLocal = map['invRecIsLocal'];
-    invRecGift = int.tryParse(
-        replaceArabicNumbersWithEnglish(map['invRecGift'].toString()));
+    invRecGift = int.tryParse(replaceArabicNumbersWithEnglish(map['invRecGift'].toString()));
     invRecGiftTotal = map['invRecGiftTotal'];
   }
 
@@ -69,10 +65,7 @@ class InvoiceRecordModel {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is InvoiceRecordModel &&
-          runtimeType == other.runtimeType &&
-          invRecId == other.invRecId;
+      identical(this, other) || other is InvoiceRecordModel && runtimeType == other.runtimeType && invRecId == other.invRecId;
 
   Map<String, Map<String, dynamic>> getChanges(InvoiceRecordModel other) {
     Map<String, dynamic> newChanges = {};

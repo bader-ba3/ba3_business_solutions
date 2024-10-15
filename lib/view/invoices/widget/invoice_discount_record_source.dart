@@ -1,5 +1,5 @@
-// import 'package:ba3_business_solutions/controller/account_view_model.dart';
-// import 'package:ba3_business_solutions/controller/pattern_model_view.dart';
+// import 'package:ba3_business_solutions/controller/account_controller.dart';
+// import 'package:ba3_business_solutions/controller/pattern_controller.dart';
 // import 'package:ba3_business_solutions/model/account_model.dart';
 // import 'package:ba3_business_solutions/view/products/widget/product_details_page.dart';
 // import 'package:flutter/material.dart';
@@ -7,8 +7,8 @@
 // import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 //
 // import '../../../Const/app_constants.dart';
-// import '../../../controller/invoice_view_model.dart';
-// import '../../../controller/product_view_model.dart';
+// import '../../../controller/invoice_controller.dart';
+// import '../../../controller/product_controller.dart';
 // import '../../../model/invoice_discount_record_model.dart';
 // import '../../../model/product_model.dart';
 //

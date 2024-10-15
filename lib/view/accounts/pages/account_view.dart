@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,7 @@ class AllAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AccountViewModel>(builder: (controller) {
+    return GetBuilder<AccountController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع الحسابات",
         onLoaded: (e) {},

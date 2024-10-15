@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/inventory/inventory_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/inventory/inventory_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/app_menu_item.dart';
 import 'package:ba3_business_solutions/view/inventory/pages/add_inventory_view.dart';
 import 'package:ba3_business_solutions/view/inventory/pages/all_inventory_view.dart';

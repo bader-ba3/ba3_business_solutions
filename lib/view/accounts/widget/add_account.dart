@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../model/account/account_model.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class AddAccount extends StatefulWidget {
   final String? modelKey;
@@ -39,9 +39,8 @@ class _AddAccountState extends State<AddAccount> {
   bool accIsRoot = true;
   AccountModel accountModel = AccountModel();
   bool isNew = true;
-  AccountViewModel accountController = Get.find<AccountViewModel>();
-  CustomerPlutoEditViewModel customerPlutoEditViewModel =
-      Get.find<CustomerPlutoEditViewModel>();
+  AccountController accountController = Get.find<AccountController>();
+  CustomerPlutoEditViewModel customerPlutoEditViewModel = Get.find<CustomerPlutoEditViewModel>();
 
   @override
   void initState() {
@@ -49,8 +48,7 @@ class _AddAccountState extends State<AddAccount> {
     accParentId.text = widget.oldParent ?? '';
     if (widget.modelKey != null) {
       isNew = false;
-      accountModel = AccountModel.fromJson(
-          accountController.accountList[widget.modelKey]!.toJson());
+      accountModel = AccountModel.fromJson(accountController.accountList[widget.modelKey]!.toJson());
       nameController.text = accountModel.accName ?? "23232332";
       accountType = accountModel.accType ?? "23232332";
       notesController.text = accountModel.accComment ?? "23232332";
@@ -89,10 +87,7 @@ class _AddAccountState extends State<AddAccount> {
                     child: Row(
                       children: [
                         const Flexible(flex: 3, child: Text("رمز الحساب: ")),
-                        Flexible(
-                            flex: 3,
-                            child: CustomTextFieldWithoutIcon(
-                                controller: codeController)),
+                        Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: codeController)),
                       ],
                     ),
                   )
@@ -114,12 +109,8 @@ class _AddAccountState extends State<AddAccount> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const Flexible(
-                                    flex: 2, child: Text("اسم الحساب :")),
-                                Flexible(
-                                    flex: 3,
-                                    child: CustomTextFieldWithoutIcon(
-                                        controller: nameController)),
+                                const Flexible(flex: 2, child: Text("اسم الحساب :")),
+                                Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: nameController)),
                               ],
                             ),
                           ),
@@ -128,20 +119,16 @@ class _AddAccountState extends State<AddAccount> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const Flexible(
-                                    flex: 2, child: Text("نوع الحساب :")),
+                                const Flexible(flex: 2, child: Text("نوع الحساب :")),
                                 Flexible(
                                     flex: 3,
-                                    child: StatefulBuilder(
-                                        builder: (context, setstae) {
+                                    child: StatefulBuilder(builder: (context, setstae) {
                                       return DropdownButton(
                                         value: accountType,
                                         items: AppConstants.accountTypeList
                                             .map((e) => DropdownMenuItem(
                                                   value: e,
-                                                  child: Text(
-                                                      getAccountTypeFromEnum(
-                                                          e)),
+                                                  child: Text(getAccountTypeFromEnum(e)),
                                                 ))
                                             .toList(),
                                         onChanged: (value) {
@@ -164,10 +151,7 @@ class _AddAccountState extends State<AddAccount> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           const Flexible(flex: 1, child: Text("ملاحظات:")),
-                          Flexible(
-                              flex: 3,
-                              child: CustomTextFieldWithoutIcon(
-                                  controller: notesController)),
+                          Flexible(flex: 3, child: CustomTextFieldWithoutIcon(controller: notesController)),
                         ],
                       ),
                       const SizedBox(
@@ -189,8 +173,7 @@ class _AddAccountState extends State<AddAccount> {
                                 width: 300,
                                 child: TextFormField(
                                   controller: accParentId,
-                                  decoration: const InputDecoration(
-                                      fillColor: Colors.white, filled: true),
+                                  decoration: const InputDecoration(fillColor: Colors.white, filled: true),
                                   onFieldSubmitted: (_) async {
                                     List<String> result = searchText(_);
                                     if (result.isEmpty) {
@@ -208,34 +191,20 @@ class _AddAccountState extends State<AddAccount> {
                                                 itemBuilder: (context, index) {
                                                   return InkWell(
                                                     onTap: () {
-                                                      accParentId.text =
-                                                          result[index];
+                                                      accParentId.text = result[index];
                                                       Get.back();
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           "${index + 1}_ ",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 24,
-                                                              color: Colors.blue
-                                                                  .shade700),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
+                                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.blue.shade700),
+                                                          overflow: TextOverflow.ellipsis,
                                                         ),
                                                         Text(
                                                           result[index],
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 20),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
+                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                                          overflow: TextOverflow.ellipsis,
                                                         ),
                                                       ],
                                                     ),
@@ -279,59 +248,36 @@ class _AddAccountState extends State<AddAccount> {
                           ),
                           Container(
                             alignment: Alignment.center,
-                            child: GetBuilder<AccountViewModel>(
-                                builder: (accountController) {
+                            child: GetBuilder<AccountController>(builder: (accountController) {
                               return AppButton(
                                 onPressed: () async {
                                   if (checkInput()) {
-                                    await updateData(
-                                        nameController,
-                                        accountType!,
-                                        notesController,
-                                        idController,
-                                        accVat!,
-                                        codeController,
-                                        accParentId.text,
-                                        accIsRoot);
+                                    await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,
+                                        accParentId.text, accIsRoot);
                                     if (accountModel.accId == null) {
-                                      checkPermissionForOperation(
-                                              AppConstants.roleUserWrite,
-                                              AppConstants.roleViewAccount)
-                                          .then((value) {
+                                      checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewAccount).then((value) {
                                         if (value) {
-                                          accountController.addNewAccount(
-                                              accountModel,
-                                              withLogger: true);
+                                          accountController.addNewAccount(accountModel, withLogger: true);
                                         }
                                       });
                                     } else {
-                                      checkPermissionForOperation(
-                                              AppConstants.roleUserUpdate,
-                                              AppConstants.roleViewAccount)
-                                          .then((value) {
+                                      checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewAccount).then((value) {
                                         if (value) {
-                                          accountController.updateAccount(
-                                              accountModel,
-                                              withLogger: true);
+                                          accountController.updateAccount(accountModel, withLogger: true);
                                         }
                                       });
                                     }
                                   }
                                 },
-                                title: accountModel.accId == null
-                                    ? "إضافة "
-                                    : "تعديل ",
-                                iconData: accountModel.accId == null
-                                    ? Icons.add
-                                    : Icons.edit,
+                                title: accountModel.accId == null ? "إضافة " : "تعديل ",
+                                iconData: accountModel.accId == null ? Icons.add : Icons.edit,
                               );
                             }),
                           ),
                           if (accountModel.accId != null)
                             Container(
                               alignment: Alignment.center,
-                              child: GetBuilder<AccountViewModel>(
-                                  builder: (accountController) {
+                              child: GetBuilder<AccountController>(builder: (accountController) {
                                 return AppButton(
                                   onPressed: () async {},
                                   title: "الزبائن",
@@ -347,8 +293,7 @@ class _AddAccountState extends State<AddAccount> {
                       ),
                       Expanded(
                         // flex: 3,
-                        child: GetBuilder<CustomerPlutoEditViewModel>(
-                            builder: (logic) {
+                        child: GetBuilder<CustomerPlutoEditViewModel>(builder: (logic) {
                           return SizedBox(
                             height: 400,
                             width: Get.width,
@@ -356,8 +301,7 @@ class _AddAccountState extends State<AddAccount> {
                               controller: logic,
                               evenRowColor: Colors.green.shade200,
                               onChanged: (p0) {},
-                              onRowSecondaryTap:
-                                  (plutoGridOnRowSecondaryTapEvent) {},
+                              onRowSecondaryTap: (plutoGridOnRowSecondaryTapEvent) {},
                             ),
                           );
                         }),
@@ -373,15 +317,8 @@ class _AddAccountState extends State<AddAccount> {
     );
   }
 
-  updateData(
-      TextEditingController nameController,
-      String typeController,
-      TextEditingController notesController,
-      TextEditingController idController,
-      String accVat,
-      TextEditingController codeController,
-      String? accParentId,
-      bool isRoot) {
+  updateData(TextEditingController nameController, String typeController, TextEditingController notesController, TextEditingController idController,
+      String accVat, TextEditingController codeController, String? accParentId, bool isRoot) {
     accountModel.accCode = codeController.text;
     accountModel.accName = nameController.text;
     accountModel.accComment = notesController.text;
@@ -398,12 +335,10 @@ class _AddAccountState extends State<AddAccount> {
   late List<AccountModel> products = <AccountModel>[];
 
   List<String> searchText(String query) {
-    AccountViewModel accountController = Get.find<AccountViewModel>();
+    AccountController accountController = Get.find<AccountController>();
     products = accountController.accountList.values.toList().where((item) {
-      var name =
-          item.accName.toString().toLowerCase().contains(query.toLowerCase());
-      var code =
-          item.accCode.toString().toLowerCase().contains(query.toLowerCase());
+      var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
+      var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
       print(item.accCode);
       return name || code;
     }).toList();

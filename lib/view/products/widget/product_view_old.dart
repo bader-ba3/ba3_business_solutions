@@ -3,7 +3,7 @@ import 'package:ba3_business_solutions/view/products/pages/product_details_page.
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/product/product_view_model.dart';
+import '../../../controller/product/product_controller.dart';
 import '../../../core/shared/widgets/sliver_list_widget.dart';
 import '../../../model/product/product_model.dart';
 
@@ -14,7 +14,7 @@ class AllProductOLD extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: GetBuilder<ProductViewModel>(builder: (controller) {
+        child: GetBuilder<ProductController>(builder: (controller) {
           return SliverListWidget<ProductModel>(
             header: "المواد",
             hintText: "البحث عن منتج",

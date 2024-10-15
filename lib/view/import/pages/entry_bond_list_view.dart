@@ -1,8 +1,8 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/databsae/import_view_model.dart';
+import '../../../controller/databsae/import_controller.dart';
 import '../../../model/bond/entry_bond_record_model.dart';
 import '../../../model/global/global_model.dart';
 
@@ -11,7 +11,7 @@ class EntryBondListView extends StatelessWidget {
 
   EntryBondListView({super.key, required this.bondList});
 
-  final ImportViewModel importViewModel = Get.find<ImportViewModel>();
+  final ImportController importViewModel = Get.find<ImportController>();
 
   @override
   Widget build(BuildContext context) {

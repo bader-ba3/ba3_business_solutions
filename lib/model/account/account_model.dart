@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
 import 'package:ba3_business_solutions/model/account/account_record_model.dart';
 
-import '../../controller/account/account_view_model.dart';
+import '../../controller/account/account_controller.dart';
 import '../../core/helper/functions/functions.dart';
 
 class AccountModel {

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/account/account_view_model.dart';
-import '../../../controller/global/global_view_model.dart';
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/account/account_controller.dart';
+import '../../../controller/global/global_controller.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
@@ -35,17 +35,17 @@ class CustomBondDetailsView extends StatefulWidget {
 }
 
 class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
-  var bondController = Get.find<BondViewModel>();
+  var bondController = Get.find<BondController>();
   var i = 0;
   List<BondRecordModel> record = <BondRecordModel>[];
-  var globalController = Get.find<GlobalViewModel>();
+  var globalController = Get.find<GlobalController>();
 
   bool isNew = false;
   var newCodeController = TextEditingController();
 
   // var controller.userAccountController = TextEditingController();
   String defualtCode = '';
-  var accountController = Get.find<AccountViewModel>();
+  var accountController = Get.find<AccountController>();
 
   //late GlobalModel bondModel;
   @override
@@ -110,7 +110,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
         Expanded(
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: GetBuilder<BondViewModel>(builder: (controller) {
+            child: GetBuilder<BondController>(builder: (controller) {
               return Scaffold(
                 appBar: AppBar(
                     centerTitle: true,
@@ -382,7 +382,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                               if (snapshot.data == "null") {
                                 return const CircularProgressIndicator();
                               } else {
-                                return GetBuilder<BondViewModel>(
+                                return GetBuilder<BondController>(
                                     builder: (controller) {
                                   // if (controller.bondModel.originId != null) {
                                   // initPage();
@@ -623,7 +623,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
   late List<AccountModel> products = <AccountModel>[];
 
   List<String> searchText(String query) {
-    AccountViewModel accountController = Get.find<AccountViewModel>();
+    AccountController accountController = Get.find<AccountController>();
     products = accountController.accountList.values.toList().where((item) {
       var name =
           item.accName.toString().toLowerCase().contains(query.toLowerCase());

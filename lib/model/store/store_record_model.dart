@@ -1,17 +1,17 @@
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 
-import '../../controller/product/product_view_model.dart';
+import '../../controller/product/product_controller.dart';
 
 class StoreRecordModel {
   String? storeRecId;
   String? storeRecInvId;
-  Map<String, StoreRecProductModel>? storeRecProduct={};
+  Map<String, StoreRecProductModel>? storeRecProduct = {};
 
   StoreRecordModel({this.storeRecId, this.storeRecInvId, this.storeRecProduct});
 
   factory StoreRecordModel.fromJson(Map<dynamic, dynamic> json) {
     Map<dynamic, dynamic> storeRecProductJson = json['storeRecProduct'];
-    Map<String, StoreRecProductModel> storeRecProductMap={};
+    Map<String, StoreRecProductModel> storeRecProductMap = {};
 
     storeRecProductMap = storeRecProductJson.map((key, value) {
       return MapEntry(key, StoreRecProductModel.fromJson(value));
@@ -70,8 +70,9 @@ class StoreRecProductModel {
   }
 }
 
-class StoreRecordView{
-  String?  productId , total  ;
+class StoreRecordView {
+  String? productId, total;
+
   StoreRecordView({this.productId, this.total});
 
   String? affectedId() {
@@ -81,16 +82,17 @@ class StoreRecordView{
   String? affectedKey({String? type}) {
     return "productId";
   }
-  toMap(){
-    print(productId);
-    ProductModel productModel = getProductModelFromId(productId)??ProductModel(prodName: "XXXXXXXXXXX");///Isolate
-    return {
-      "id":productId,
-       "رمز المادة":productModel.prodFullCode,
-       "المادة":productModel.prodName,
-       "الكمية":total=="hello"?15:double.parse(total??"0").toInt()
-    };
-    
-  }
 
+  toMap() {
+    print(productId);
+    ProductModel productModel = getProductModelFromId(productId) ?? ProductModel(prodName: "XXXXXXXXXXX");
+
+    ///Isolate
+    return {
+      "id": productId,
+      "رمز المادة": productModel.prodFullCode,
+      "المادة": productModel.prodName,
+      "الكمية": total == "hello" ? 15 : double.parse(total ?? "0").toInt()
+    };
+  }
 }

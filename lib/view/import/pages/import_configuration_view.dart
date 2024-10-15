@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/account/account_view_model.dart';
-import '../../../controller/bond/bond_view_model.dart';
-import '../../../controller/global/global_view_model.dart';
-import '../../../controller/product/product_view_model.dart';
+import '../../../controller/account/account_controller.dart';
+import '../../../controller/bond/bond_controller.dart';
+import '../../../controller/global/global_controller.dart';
+import '../../../controller/product/product_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/generate_id.dart';
 import '../../../core/utils/hive.dart';
@@ -209,7 +209,9 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       var parentId = "F${element[setting["prodParentId"]]}";
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String? chechIsExist = isGroup ? getProductIdFromName("F-${element[setting["prodName"]].replaceAll("- ", "")}") : getProductIdFromName("F-" + element[setting["prodName"]]);
+      String? chechIsExist = isGroup
+          ? getProductIdFromName("F-${element[setting["prodName"]].replaceAll("- ", "")}")
+          : getProductIdFromName("F-" + element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -316,7 +318,8 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       var parentId = element[setting["prodParentId"]];
       // var isRoot = element[setting["prodParentId"]].isBlank;
       // print("code "+code);
-      String? chechIsExist = isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
+      String? chechIsExist =
+          isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
       // print("parentId "+parentId);
       // print("FullCode "+element[setting["prodCode"]]);
       // print("isRoot "+isRoot.toString());
@@ -650,8 +653,12 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       String cheqId = generateId(RecordType.cheque);
 
       await Future.delayed(const Duration(milliseconds: 100));
-      String cheqType = element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace ? AppConstants.chequeTypePay : AppConstants.chequeTypePay;
-      String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace ? AppConstants.chequeStatusPaid : AppConstants.chequeStatusNotPaid;
+      String cheqType = element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace
+          ? AppConstants.chequeTypePay
+          : AppConstants.chequeTypePay;
+      String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace
+          ? AppConstants.chequeStatusPaid
+          : AppConstants.chequeStatusNotPaid;
       // print(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""));
       // print(element[setting["cheqPrimeryAccount"]]);
       String cheqPrimeryAccount = getAccountIdFromText("اوراق الدفع");
@@ -665,7 +672,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
       String cheqBankAccount = getAccountIdFromText("المصرف");
       String des = "سند قيد مولد من شيك رقم $cheqCode";
       print(element[setting["cheqAllAmount"]].replaceAll(",", ""));
-      double cheqAllAmount = double.tryParse(element[setting["cheqAllAmount"]].replaceAll(",", ""))??0.0;
+      double cheqAllAmount = double.tryParse(element[setting["cheqAllAmount"]].replaceAll(",", "")) ?? 0.0;
       int year = int.parse(element[setting["cheqDate"]].toString().split("-")[2]);
       int min = int.parse(element[setting["cheqDate"]].toString().split("-")[1]);
       int sec = int.parse(element[setting["cheqDate"]].toString().split("-")[0]);
@@ -689,7 +696,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
           entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
         }
 
-        GlobalViewModel globalViewModel = Get.find<GlobalViewModel>();
+        GlobalController globalViewModel = Get.find<GlobalController>();
         bondId = generateId(RecordType.bond);
         await globalViewModel.addGlobalBond(
           GlobalModel(
@@ -697,7 +704,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
             globalType: AppConstants.globalTypeBond,
             bondDate: DateTime.now().toString(),
             bondRecord: bondRecord,
-            bondCode: Get.find<BondViewModel>().getNextBondCode(type: AppConstants.bondTypeDebit),
+            bondCode: Get.find<BondController>().getNextBondCode(type: AppConstants.bondTypeDebit),
             entryBondRecord: entryBondRecord,
             bondDescription: des,
             bondType: AppConstants.bondTypeDebit,

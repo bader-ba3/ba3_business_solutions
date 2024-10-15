@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/account/account_view_model.dart';
-import '../../../controller/pattern/pattern_model_view.dart';
-import '../../../controller/product/product_view_model.dart';
-import '../../../controller/seller/sellers_view_model.dart';
-import '../../../controller/store/store_view_model.dart';
+import '../../../controller/account/account_controller.dart';
+import '../../../controller/pattern/pattern_controller.dart';
+import '../../../controller/product/product_controller.dart';
+import '../../../controller/seller/sellers_controller.dart';
+import '../../../controller/store/store_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 
 class ReportDataSource extends DataGridSource {
@@ -24,11 +24,8 @@ class ReportDataSource extends DataGridSource {
   void buildDataGridRows(List employeesData, List<String> rowList) {
     this.rowList = rowList;
     datagridRows = employeesData
-        .map<DataGridRow>((e) => DataGridRow(
-            cells: rowList
-                .map((ea) => DataGridCell<String>(
-                    columnName: ea, value: getData(e[ea].toString())))
-                .toList()))
+        .map<DataGridRow>(
+            (e) => DataGridRow(cells: rowList.map((ea) => DataGridCell<String>(columnName: ea, value: getData(e[ea].toString()))).toList()))
         .toList();
   }
 
@@ -47,14 +44,9 @@ class ReportDataSource extends DataGridSource {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  dataGridCell.columnName == rowList.first
-                      ? '${dataGridCell.value}\n'
-                      : dataGridCell.value.toString() + tab,
+                  dataGridCell.columnName == rowList.first ? '${dataGridCell.value}\n' : dataGridCell.value.toString() + tab,
                   overflow: TextOverflow.ellipsis,
-                  textDirection:
-                      isArabic.hasMatch(dataGridCell.value.toString())
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
+                  textDirection: isArabic.hasMatch(dataGridCell.value.toString()) ? TextDirection.rtl : TextDirection.ltr,
                   style: const TextStyle(fontSize: 12),
                   maxLines: null,
                 ),

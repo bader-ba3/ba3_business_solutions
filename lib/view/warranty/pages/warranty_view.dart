@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/warranty/warranty_controller.dart';
-import '../../../controller/warranty/warranty_pluto_view_model.dart';
+import '../../../controller/warranty/warranty_pluto_controller.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../widgets/warranty_app_bar.dart';
 import '../widgets/warranty_page_bottom_bar.dart';
@@ -15,8 +15,8 @@ class WarrantyInvoiceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WarrantyPlutoViewModel plutoEditViewModel =
-        Get.find<WarrantyPlutoViewModel>();
+    WarrantyPlutoController plutoEditViewModel =
+        Get.find<WarrantyPlutoController>();
 
     return Column(
       children: [
@@ -37,7 +37,7 @@ class WarrantyInvoiceView extends StatelessWidget {
                       // flex: 3,
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GetBuilder<WarrantyPlutoViewModel>(
+                        child: GetBuilder<WarrantyPlutoController>(
                             builder: (warrantyPlutoViewModel) => WarrantyTable(
                                 warrantyPlutoViewModel:
                                     warrantyPlutoViewModel)),

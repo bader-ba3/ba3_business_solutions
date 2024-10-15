@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
-import '../../../controller/invoice/screen_view_model.dart';
-import '../../../controller/pattern/pattern_model_view.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
+import '../../../controller/invoice/screen_controller.dart';
+import '../../../controller/pattern/pattern_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../pages/new_invoice_view.dart';
 
@@ -15,7 +15,7 @@ class OpenedScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ScreenViewModel>(builder: (screenController) {
+    return GetBuilder<ScreenController>(builder: (screenController) {
       return Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -49,7 +49,7 @@ class OpenedScreenWidget extends StatelessWidget {
                             recentScreen: true,
                           ),
                           binding: BindingsBuilder(() {
-                            Get.lazyPut(() => InvoicePlutoViewModel());
+                            Get.lazyPut(() => InvoicePlutoController());
                             // Get.lazyPut(() => DiscountPlutoViewModel());
                           }),
                         );

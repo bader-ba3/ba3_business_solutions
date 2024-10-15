@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
 import 'package:ba3_business_solutions/view/products/pages/all_products_page.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_management_page.dart';
@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
 
-class ProductType extends StatelessWidget {
-  const ProductType({super.key});
+class ProductLayout extends StatelessWidget {
+  const ProductLayout({super.key});
 
   @override
   Widget build(BuildContext context) {

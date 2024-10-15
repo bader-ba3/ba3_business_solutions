@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
+import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/app_spacer.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/custom_window_title_bar.dart';
 import 'package:flutter/material.dart';

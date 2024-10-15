@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -10,21 +10,18 @@ class WarrantyRecordModel {
     this.invRecId,
     this.invRecProduct,
     this.invRecQuantity,
-
   });
 
   WarrantyRecordModel.fromJson(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
-    invRecProduct =map['invRecProduct'];
+    invRecProduct = map['invRecProduct'];
     invRecQuantity = int.tryParse(map['invRecQuantity'].toString());
-
   }
 
   WarrantyRecordModel.fromJsonPluto(Map<dynamic, dynamic> map) {
     invRecId = map['invRecId'];
-    invRecProduct =getProductIdFromName(map['invRecProduct'])??map['invRecProduct'];
+    invRecProduct = getProductIdFromName(map['invRecProduct']) ?? map['invRecProduct'];
     invRecQuantity = int.tryParse(replaceArabicNumbersWithEnglish(map['invRecQuantity'].toString()));
-
   }
 
   toJson() {
@@ -32,7 +29,6 @@ class WarrantyRecordModel {
       'invRecId': invRecId,
       'invRecProduct': invRecProduct,
       'invRecQuantity': invRecQuantity,
-
     };
   }
 
@@ -40,9 +36,8 @@ class WarrantyRecordModel {
   int get hashCode => invRecId.hashCode;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is WarrantyRecordModel && runtimeType == other.runtimeType && invRecId == other.invRecId;
-
-
+  bool operator ==(Object other) =>
+      identical(this, other) || other is WarrantyRecordModel && runtimeType == other.runtimeType && invRecId == other.invRecId;
 
   Map<PlutoColumn, dynamic> toEditedMap() {
     return {
@@ -53,7 +48,7 @@ class WarrantyRecordModel {
         width: 50,
         type: PlutoColumnType.text(),
         renderer: (rendererContext) {
-          if(rendererContext.row.cells["invRecProduct"]?.value!='') {
+          if (rendererContext.row.cells["invRecProduct"]?.value != '') {
             rendererContext.cell.value = rendererContext.rowIdx.toString();
             return Text(rendererContext.rowIdx.toString());
           }
@@ -67,8 +62,7 @@ class WarrantyRecordModel {
         checkReadOnly: (row, cell) {
           return false;
         },
-      ): getProductModelFromId(invRecProduct)?.prodName??invRecProduct,
-
+      ): getProductModelFromId(invRecProduct)?.prodName ?? invRecProduct,
       PlutoColumn(
         title: 'الكمية',
         field: 'invRecQuantity',
@@ -77,11 +71,6 @@ class WarrantyRecordModel {
           return cell.row.cells['invRecProduct']?.value == '';
         },
       ): invRecQuantity,
-
-
-
-
-
     };
   }
 }

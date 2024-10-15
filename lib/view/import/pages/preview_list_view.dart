@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../../core/shared/widgets/grid_column_item.dart';
+
 class PreviewView extends StatefulWidget {
   final List<List<String>> productList;
   final List<String> rows;
@@ -21,8 +23,7 @@ class _PreviewViewState extends State<PreviewView> {
   @override
   void initState() {
     super.initState();
-    recordViewDataSource = PreViewViewDataGridSource(
-        productList: widget.productList, rows: widget.rows);
+    recordViewDataSource = PreViewViewDataGridSource(productList: widget.productList, rows: widget.rows);
   }
 
   @override
@@ -32,10 +33,8 @@ class _PreviewViewState extends State<PreviewView> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  List<List<String>> data = recordViewDataSource!.dataGridRows
-                      .map((e) =>
-                          e.getCells().map((e) => e.value.toString()).toList())
-                      .toList();
+                  List<List<String>> data =
+                      recordViewDataSource!.dataGridRows.map((e) => e.getCells().map((e) => e.value.toString()).toList()).toList();
                   Get.to(() => ImportConfigurationView(
                         rows: widget.rows,
                         productList: data,
@@ -49,53 +48,21 @@ class _PreviewViewState extends State<PreviewView> {
                 child: Text("no data"),
               )
             : SfDataGrid(
-                // onCellTap: (DataGridCellTapDetails details) {
-                //   if (details.rowColumnIndex.rowIndex != 0) {
-                //     final rowIndex = details.rowColumnIndex.rowIndex - 1;
-                //     var rowData = recordViewDataSource[rowIndex];
-                //     String model = rowData.getCells()[0].value;
-                //     print('Tapped Row Data: $model');
-                //     seeDetails(model);
-                //     // logger(
-                //     //     newData: ChequeModel(
-                //     //       cheqId: model,
-                //     //     ),
-                //     //     transfersType: TransfersType.read);
-                //   }
-                // },
                 columns: List.generate(
-                    widget.rows.length,
-                    (index) => GridColumnItem(
-                        label: widget.rows[index], name: widget.rows[index])),
-                // columns: <GridColumn>[
-                //   GridColumnItem(label: "الاسم", name: Const.rowImportName),
-                //   GridColumnItem(label: "السعر", name: Const.rowImportPrice),
-                //   GridColumnItem(label: "الباركودات", name: Const.rowImportBarcode),
-                //   GridColumnItem(label: "رمز المادة", name: Const.rowImportCode),
-                //   GridColumnItem(label: "رمز المجموعة", name: Const.rowImportGroupCode),
-                //   GridColumnItem(label: "بخضع للضريبة", name: Const.rowImportHasVat),
-                // ],
+                  widget.rows.length,
+                  (index) => gridColumnItem(
+                    label: widget.rows[index],
+                    name: widget.rows[index],
+                  ),
+                ),
                 source: recordViewDataSource!,
                 allowEditing: true,
                 rowHeight: 75,
                 headerRowHeight: 60,
-
                 selectionMode: SelectionMode.single,
                 editingGestureType: EditingGestureType.tap,
                 navigationMode: GridNavigationMode.cell,
                 columnWidthMode: ColumnWidthMode.fill,
               ));
   }
-}
-
-GridColumn GridColumnItem({required label, name}) {
-  return GridColumn(
-      allowEditing: true,
-      columnName: name,
-      label: Container(
-          padding: const EdgeInsets.all(16.0),
-          alignment: Alignment.center,
-          child: Text(
-            label.toString(),
-          )));
 }

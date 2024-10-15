@@ -1,12 +1,13 @@
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tree_pro/flutter_tree.dart';
 import 'package:get/get.dart';
-import '../../../controller/product/product_view_model.dart';
+
+import '../../../controller/product/product_controller.dart';
+import '../../../core/utils/hive.dart';
 import '../../../model/inventory/inventory_model.dart';
 import '../../../model/product/product_model.dart';
-import '../../../core/utils/hive.dart';
 
 class NewInventoryView extends StatefulWidget {
   const NewInventoryView({super.key});
@@ -17,8 +18,7 @@ class NewInventoryView extends StatefulWidget {
 
 class _NewInventoryViewState extends State<NewInventoryView> {
   List<Map<String, dynamic>> treeListData = [];
-  TextEditingController dateInventoryController = TextEditingController(
-      text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
+  TextEditingController dateInventoryController = TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
   List allData = [];
 
   @override
@@ -30,16 +30,11 @@ class _NewInventoryViewState extends State<NewInventoryView> {
   loadData() async {
     // IsolateViewModel isolateViewModel = Get.find<IsolateViewModel>();
     // isolateViewModel.init();
-    ProductViewModel productViewModel = Get.find<ProductViewModel>();
+    ProductController productViewModel = Get.find<ProductController>();
 
-    ProductModel a = ProductModel(
-        prodName: "ALL DATA",
-        prodId: 'prod1',
-        prodParentId: "prod0",
-        prodFullCode: "0");
+    ProductModel a = ProductModel(prodName: "ALL DATA", prodId: 'prod1', prodParentId: "prod0", prodFullCode: "0");
 
-    List<ProductModel> dataList =
-        productViewModel.productDataMap.values.toList();
+    List<ProductModel> dataList = productViewModel.productDataMap.values.toList();
     dataList.add(a);
 
     List<Map<String, dynamic>> initialTreeData = [];
@@ -48,8 +43,7 @@ class _NewInventoryViewState extends State<NewInventoryView> {
     for (var element in dataList) {
       print(element.prodId);
       if (element.prodId != "prod1") {
-        ProductModel model =
-            getProductModelFromId(element.prodId) ?? ProductModel();
+        ProductModel model = getProductModelFromId(element.prodId) ?? ProductModel();
         initialTreeData.add(model.toTree());
       }
     }
@@ -94,8 +88,7 @@ class _NewInventoryViewState extends State<NewInventoryView> {
                       InventoryModel(
                           inventoryUserId: getMyUserUserId(),
                           inventoryId: generateId(RecordType.inventory),
-                          inventoryDate:
-                              DateTime.now().toString().split(" ")[0],
+                          inventoryDate: DateTime.now().toString().split(" ")[0],
                           inventoryName: dateInventoryController.text,
                           inventoryRecord: {},
                           inventoryTargetedProductList: {}));
@@ -127,8 +120,7 @@ class _NewInventoryViewState extends State<NewInventoryView> {
                       width: 400,
                       child: TextFormField(
                         controller: dateInventoryController,
-                        decoration:
-                            const InputDecoration(hintText: "اسم الجرد"),
+                        decoration: const InputDecoration(hintText: "اسم الجرد"),
                       )),
                 ],
               ),

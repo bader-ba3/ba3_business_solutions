@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,8 +11,8 @@ class ProductManagementPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<ProductViewModel>(initState: (state) {
-        Get.find<ProductViewModel>().initAllProduct();
+      child: GetBuilder<ProductController>(initState: (state) {
+        Get.find<ProductController>().initAllProduct();
         print("object");
       }, builder: (logic) {
         return Scaffold(

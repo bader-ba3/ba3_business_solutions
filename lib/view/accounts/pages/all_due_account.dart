@@ -2,9 +2,9 @@ import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/account/account_view_model.dart';
+import '../../../controller/account/account_controller.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/shared/widgets/new_pluto.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
@@ -15,9 +15,9 @@ class AllDueAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AccountViewModel>(initState: (state) {
+    return GetBuilder<AccountController>(initState: (state) {
       // Get.find<AccountViewModel>().getAllBondForAccount(modelKey, );
-      Get.find<AccountViewModel>().getAllDusAccount(
+      Get.find<AccountController>().getAllDusAccount(
         modelKey, /*listDate*/
       );
     }, builder: (controller) {
@@ -36,7 +36,7 @@ class AllDueAccount extends StatelessWidget {
                       patternId: p0.row?.cells["نوع الفاتورة"]?.value,
                     ),
                     binding: BindingsBuilder(() {
-                      Get.lazyPut(() => InvoicePlutoViewModel());
+                      Get.lazyPut(() => InvoicePlutoController());
                     }),
                   );
                 },

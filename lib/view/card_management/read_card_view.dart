@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/user/cards_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/model/user/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +13,7 @@ class ReadCardView extends StatefulWidget {
 }
 
 class _ReadCardViewState extends State<ReadCardView> {
-  CardsViewModel cardsViewController = Get.find<CardsViewModel>();
+  CardsController cardsViewController = Get.find<CardsController>();
 
   String? cardId;
   String? userId;

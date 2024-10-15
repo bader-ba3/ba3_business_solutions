@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/core/utils/logger.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
@@ -24,7 +24,7 @@ class AllProductOLDOLD extends StatelessWidget {
             //       child: const Text("create"))
             // ]
             ),
-        body: GetBuilder<ProductViewModel>(builder: (controller) {
+        body: GetBuilder<ProductController>(builder: (controller) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ListView.builder(

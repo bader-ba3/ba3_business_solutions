@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
-import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
+import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/databsae/import_view_model.dart';
+import '../../../controller/databsae/import_controller.dart';
 import '../../../model/global/global_model.dart';
 import '../../../model/invoice/invoice_record_model.dart';
 
@@ -14,7 +14,7 @@ class InvoiceListView extends StatelessWidget {
 
   InvoiceListView({super.key, required this.invoiceList});
 
-  final ImportViewModel importViewModel = Get.find<ImportViewModel>();
+  final ImportController importViewModel = Get.find<ImportController>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +44,8 @@ class InvoiceListView extends StatelessWidget {
                       Text(invoiceList[index].invId.toString()),
                       Text("المجموع: ${invoiceList[index].invTotal}"),
                       Text("الوقت: ${invoiceList[index].invDate}"),
-                      Text(
-                          "البائع:  ${getSellerNameFromId(invoiceList[index].invSeller.toString())}"),
-                      Text(
-                          "المستودع: ${getStoreNameFromId(invoiceList[index].invStorehouse.toString())}"),
+                      Text("البائع:  ${getSellerNameFromId(invoiceList[index].invSeller.toString())}"),
+                      Text("المستودع: ${getStoreNameFromId(invoiceList[index].invStorehouse.toString())}"),
                       Text(
                           "من: ${invoiceList[index].invPrimaryAccount == null ? "لا يوجد" : getAccountNameFromId(invoiceList[index].invPrimaryAccount.toString())}"),
                       Text(
@@ -128,18 +126,13 @@ class InvoiceListView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  for (InvoiceRecordModel e
-                      in invoiceList[index].invRecords ?? [])
+                  for (InvoiceRecordModel e in invoiceList[index].invRecords ?? [])
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              width: 100,
-                              child: Center(
-                                  child:
-                                      Text(e.invRecTotal!.toStringAsFixed(2)))),
+                          SizedBox(width: 100, child: Center(child: Text(e.invRecTotal!.toStringAsFixed(2)))),
                           const SizedBox(
                             width: 25,
                           ),
@@ -151,11 +144,7 @@ class InvoiceListView extends StatelessWidget {
                           const SizedBox(
                             width: 25,
                           ),
-                          SizedBox(
-                              width: 120,
-                              child: Center(
-                                  child:
-                                      Text(e.invRecVat!.toStringAsFixed(2)))),
+                          SizedBox(width: 120, child: Center(child: Text(e.invRecVat!.toStringAsFixed(2)))),
                           const SizedBox(
                             width: 25,
                           ),
@@ -167,11 +156,7 @@ class InvoiceListView extends StatelessWidget {
                           const SizedBox(
                             width: 25,
                           ),
-                          SizedBox(
-                              width: 100,
-                              child: Center(
-                                  child: Text(
-                                      e.invRecSubTotal!.toStringAsFixed(2)))),
+                          SizedBox(width: 100, child: Center(child: Text(e.invRecSubTotal!.toStringAsFixed(2)))),
                           const SizedBox(
                             width: 25,
                           ),
@@ -183,10 +168,7 @@ class InvoiceListView extends StatelessWidget {
                           const SizedBox(
                             width: 25,
                           ),
-                          SizedBox(
-                              width: 100,
-                              child:
-                                  Center(child: Text("${e.invRecQuantity} "))),
+                          SizedBox(width: 100, child: Center(child: Text("${e.invRecQuantity} "))),
                           const SizedBox(
                             width: 25,
                           ),
@@ -200,8 +182,7 @@ class InvoiceListView extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text(
-                            getProductNameFromId(e.invRecProduct.toString()) +
-                                e.invRecProduct.toString(),
+                            getProductNameFromId(e.invRecProduct.toString()) + e.invRecProduct.toString(),
                             textDirection: TextDirection.rtl,
                           )),
                           const SizedBox(
@@ -215,10 +196,7 @@ class InvoiceListView extends StatelessWidget {
                           const SizedBox(
                             width: 25,
                           ),
-                          SizedBox(
-                              width: 50,
-                              child:
-                                  Center(child: Text(e.invRecId.toString()))),
+                          SizedBox(width: 50, child: Center(child: Text(e.invRecId.toString()))),
                         ],
                       ),
                     ),

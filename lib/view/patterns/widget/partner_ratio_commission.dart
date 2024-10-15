@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/pattern/pattern_model_view.dart';
+import '../../../controller/pattern/pattern_controller.dart';
 import '../../../core/shared/widgets/app_spacer.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class PartnerRatioCommission extends StatelessWidget {
   const PartnerRatioCommission({

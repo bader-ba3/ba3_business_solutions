@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/app_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../invoices/widget/custom_TextField.dart';
+import '../../invoices/widget/custom_Text_field.dart';
 
 class AddStore extends StatelessWidget {
   const AddStore({super.key});

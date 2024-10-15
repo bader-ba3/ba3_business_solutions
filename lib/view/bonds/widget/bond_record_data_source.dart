@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/account/account_view_model.dart';
+import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
-final bondController = Get.find<BondViewModel>();
+final bondController = Get.find<BondController>();
 
 class BondRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
@@ -23,7 +23,7 @@ class BondRecordDataSource extends DataGridSource {
     addItem();
   }
 
-  final accountController = Get.find<AccountViewModel>();
+  final accountController = Get.find<AccountController>();
 
   buildRowInit(GlobalModel recordData) {
     recordData.bondRecord?.map((e) => print(e.bondRecAccount));
@@ -427,7 +427,7 @@ class BondRecordDataSource extends DataGridSource {
   late List<AccountModel> products = <AccountModel>[];
 
   List<String> searchText(String query) {
-    AccountViewModel accountController = Get.find<AccountViewModel>();
+    AccountController accountController = Get.find<AccountController>();
     products = accountController.accountList.values.toList().where((item) {
       var name =
           item.accName.toString().toLowerCase().contains(query.toLowerCase());

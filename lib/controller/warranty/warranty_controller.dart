@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/warranty/warranty_pluto_view_model.dart';
+import 'package:ba3_business_solutions/controller/warranty/warranty_pluto_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,8 +7,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../model/warranty/warranty_model.dart';
-import '../global/changes_view_model.dart';
-import '../user/user_management_model.dart';
+import '../global/changes_controller.dart';
+import '../user/user_management_controller.dart';
 
 class WarrantyController extends GetxController {
   Map<String, WarrantyModel> warrantyMap = {};
@@ -26,7 +26,7 @@ class WarrantyController extends GetxController {
     this.billId = billId;
     if (billId != "1") {
       buildInvInit(billId);
-      Get.find<WarrantyPlutoViewModel>()
+      Get.find<WarrantyPlutoController>()
           .getRows(warrantyMap[billId]?.invRecords?.toList() ?? []);
     } else {
       getInit();
@@ -70,7 +70,7 @@ class WarrantyController extends GetxController {
     dateController = initModel.invDate ?? '';
     invCodeController.text = initModel.invCode ?? '';
 
-    Get.find<WarrantyPlutoViewModel>().getRows(initModel.invRecords ?? []);
+    Get.find<WarrantyPlutoController>().getRows(initModel.invRecords ?? []);
     isNew = false;
     WidgetsFlutterBinding
         .ensureInitialized()
@@ -139,7 +139,7 @@ class WarrantyController extends GetxController {
     warrantyMap[initModel.invId!] = initModel;
 
     await addInvoiceToFirebase();
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    ChangesController changesViewModel = Get.find<ChangesController>();
     changesViewModel.addChangeToChanges(
         initModel.toJson(), AppConstants.warrantyCollection);
     isNew = false;
@@ -161,7 +161,7 @@ class WarrantyController extends GetxController {
     initModel.customerName = customerNameController.text;
     initModel.done = done;
     initModel.invDate = dateController;
-    initModel.invRecords = Get.find<WarrantyPlutoViewModel>().handleSaveAll();
+    initModel.invRecords = Get.find<WarrantyPlutoController>().handleSaveAll();
 
     await saveInvoice();
   }
@@ -180,7 +180,7 @@ class WarrantyController extends GetxController {
     HiveDataBase.globalModelBox.delete(initModel.invId);
     warrantyMap.remove(initModel.invId);
 
-    ChangesViewModel changesViewModel = Get.find<ChangesViewModel>();
+    ChangesController changesViewModel = Get.find<ChangesController>();
     changesViewModel.addRemoveChangeToChanges(
         initModel.toJson(), AppConstants.warrantyCollection);
     update();

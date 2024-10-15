@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/widgets/grid_column_item.dart';
-import 'Store_details.dart';
+import 'store_details.dart';
 
 class AllStore extends StatelessWidget {
   const AllStore({super.key});

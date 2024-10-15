@@ -1,12 +1,12 @@
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 
 class AddSellerPage extends StatefulWidget {

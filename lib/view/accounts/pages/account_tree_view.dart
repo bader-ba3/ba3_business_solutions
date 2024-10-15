@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
@@ -12,7 +12,7 @@ import '../../../model/account/account_tree.dart';
 class AccountTreeView extends StatelessWidget {
   AccountTreeView({super.key});
 
-  final AccountViewModel accountController = Get.find<AccountViewModel>();
+  final AccountController accountController = Get.find<AccountController>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class AccountTreeView extends StatelessWidget {
               body: StreamBuilder(
                   stream: accountController.accountList.stream,
                   builder: (context, snapshot) {
-                    return GetBuilder<AccountViewModel>(builder: (controller) {
+                    return GetBuilder<AccountController>(builder: (controller) {
                       return accountController.allCost.isEmpty
                           ? const CircularProgressIndicator()
                           : TreeView<AccountTree>(
@@ -148,7 +148,7 @@ class AccountTreeView extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition, AccountViewModel controller, TreeEntry<AccountTree> entry) {
+  void showContextMenu(BuildContext parentContext, Offset tapPosition, AccountController controller, TreeEntry<AccountTree> entry) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(

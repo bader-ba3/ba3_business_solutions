@@ -1,8 +1,8 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/databsae/import_view_model.dart';
+import '../../../controller/databsae/import_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../model/bond/bond_record_model.dart';
 import '../../../model/global/global_model.dart';
@@ -10,12 +10,11 @@ import '../../../model/global/global_model.dart';
 class BondListView extends StatelessWidget {
   final List<GlobalModel> bondList;
 
-  BondListView({super.key, required this.bondList});
-
-  final ImportViewModel importViewModel = Get.find<ImportViewModel>();
+  const BondListView({super.key, required this.bondList});
 
   @override
   Widget build(BuildContext context) {
+    final ImportController importViewModel = Get.find<ImportController>();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -41,8 +40,7 @@ class BondListView extends StatelessWidget {
                       Text(bondList[index].bondId.toString()),
                       Text("المجموع: ${bondList[index].bondTotal}"),
                       Text("الوقت: ${bondList[index].bondDate}"),
-                      Text(
-                          "نوع الفاتورة: ${getBondTypeFromEnum(bondList[index].bondType.toString())}"),
+                      Text("نوع الفاتورة: ${getBondTypeFromEnum(bondList[index].bondType.toString())}"),
                       Text("الرمز: ${bondList[index].bondCode}"),
                       Text("الرمز: ${bondList[index].bondType}"),
                       Text("origin: ${bondList[index].originAmenId}"),
@@ -118,25 +116,19 @@ class BondListView extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SizedBox(
-                              width: 50,
-                              child: Text(e.bondRecDescription.toString())),
+                          SizedBox(width: 50, child: Text(e.bondRecDescription.toString())),
                           Container(
                             height: 30,
                             width: 2,
                             color: Colors.grey.shade300,
                           ),
-                          SizedBox(
-                              width: 50,
-                              child: Text(e.bondRecCreditAmount.toString())),
+                          SizedBox(width: 50, child: Text(e.bondRecCreditAmount.toString())),
                           Container(
                             height: 30,
                             width: 2,
                             color: Colors.grey.shade300,
                           ),
-                          SizedBox(
-                              width: 50,
-                              child: Text(e.bondRecDebitAmount.toString())),
+                          SizedBox(width: 50, child: Text(e.bondRecDebitAmount.toString())),
                           Container(
                             height: 30,
                             width: 2,
@@ -147,15 +139,12 @@ class BondListView extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  if (getAccountNameFromId(e.bondRecAccount) ==
-                                      "")
+                                  if (getAccountNameFromId(e.bondRecAccount) == "")
                                     Text(
                                       "غير موجود${e.bondRecAccount}",
                                       style: const TextStyle(color: Colors.red),
                                     ),
-                                  Expanded(
-                                      child: Text(
-                                          "${e.bondRecAccount} ${getAccountNameFromId(e.bondRecAccount)}")),
+                                  Expanded(child: Text("${e.bondRecAccount} ${getAccountNameFromId(e.bondRecAccount)}")),
                                 ],
                               )),
                           Container(
@@ -163,8 +152,7 @@ class BondListView extends StatelessWidget {
                             width: 2,
                             color: Colors.grey.shade300,
                           ),
-                          SizedBox(
-                              width: 50, child: Text(e.bondRecId.toString())),
+                          SizedBox(width: 50, child: Text(e.bondRecId.toString())),
                         ],
                       ),
                     ),

@@ -1,4 +1,4 @@
-import '../../controller/account/account_view_model.dart';
+import '../../controller/account/account_controller.dart';
 
 class EntryBondRecordModel {
   String? bondRecId, bondRecAccount, bondRecDescription, invId;

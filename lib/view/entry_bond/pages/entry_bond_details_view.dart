@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dart';
-import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
+import 'package:ba3_business_solutions/controller/bond/entry_bond_controller.dart';
+import 'package:ba3_business_solutions/controller/global/global_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/custom_bond_details_view.dart';
@@ -12,8 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/discount_pluto_edit_controller.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../model/bond/bond_record_model.dart';
 import '../../bonds/pages/bond_details_view.dart';
 
@@ -30,8 +30,8 @@ class EntryBondDetailsView extends StatefulWidget {
 }
 
 class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
-  var entryBondController = Get.find<EntryBondViewModel>();
-  var globalController = Get.find<GlobalViewModel>();
+  var entryBondController = Get.find<EntryBondController>();
+  var globalController = Get.find<GlobalController>();
   var i = 0;
   List<BondRecordModel> record = <BondRecordModel>[];
   var newCodeController = TextEditingController();
@@ -56,7 +56,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<EntryBondViewModel>(builder: (controller) {
+      child: GetBuilder<EntryBondController>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(
               centerTitle: true,
@@ -156,7 +156,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                     child: StreamBuilder(
                         stream: controller.allEntryBonds.stream,
                         builder: (context, snapshot) {
-                          return GetBuilder<BondViewModel>(
+                          return GetBuilder<BondController>(
                               builder: (controller) {
                             return SfDataGrid(
                               horizontalScrollPhysics:
@@ -196,7 +196,7 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                     const Spacer(),
                     const Text("المجموع"),
                     const SizedBox(width: 30),
-                    GetBuilder<BondViewModel>(builder: (controller) {
+                    GetBuilder<BondController>(builder: (controller) {
                       double _ =
                           entryBondController.tempBondModel.entryBondRecord
                                   ?.map(
@@ -247,8 +247,8 @@ class _EntryBondDetailsViewState extends State<EntryBondDetailsView> {
                               patternId: controller.tempBondModel.patternId!,
                             ),
                             binding: BindingsBuilder(() {
-                              Get.lazyPut(() => InvoicePlutoViewModel());
-                              Get.lazyPut(() => DiscountPlutoViewModel());
+                              Get.lazyPut(() => InvoicePlutoController());
+                              Get.lazyPut(() => DiscountPlutoController());
                             }),
                           );
                         } else if (controller.tempBondModel.globalType ==

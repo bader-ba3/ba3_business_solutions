@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/model/account/account_model.dart';
 import 'package:ba3_business_solutions/model/account/account_record_model.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class AccountRecordDataSource extends DataGridSource {
       {required List<AccountRecordModel> accountRecordModel,
       required AccountModel accountModel}) {
     dataGridRows.clear();
-    var accountController = Get.find<AccountViewModel>();
+    var accountController = Get.find<AccountController>();
 
     List<AccountRecordModel> allRecord = [];
     allRecord.addAll(accountRecordModel);

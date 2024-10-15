@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/bond/entry_bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/bond/entry_bond_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,7 @@ class AllEntryBonds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<EntryBondViewModel>(builder: (controller) {
+    return GetBuilder<EntryBondController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع سندات القيد",
         type: AppConstants.globalTypeStartersBond,

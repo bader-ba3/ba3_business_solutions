@@ -1,26 +1,25 @@
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/invoice/discount_pluto_edit_controller.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/Widgets/new_pluto.dart';
-import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
 import 'new_invoice_view.dart';
 
 class AllInvoice extends StatelessWidget {
-  const AllInvoice(
-      {super.key, required this.listDate, required this.productName});
+  const AllInvoice({super.key, required this.listDate, required this.productName});
 
   final List<String> listDate;
   final String? productName;
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<InvoiceViewModel>(builder: (controller) {
+    return GetBuilder<InvoiceController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع الفواتير",
         type: AppConstants.globalTypeInvoice,
@@ -33,8 +32,8 @@ class AllInvoice extends StatelessWidget {
               patternId: p0.row?.cells["النمط"]?.value,
             ),
             binding: BindingsBuilder(() {
-              Get.lazyPut(() => InvoicePlutoViewModel());
-              Get.lazyPut(() => DiscountPlutoViewModel());
+              Get.lazyPut(() => InvoicePlutoController());
+              Get.lazyPut(() => DiscountPlutoController());
             }),
           );
           /*   Get.to(() => InvoiceView(
@@ -44,14 +43,10 @@ class AllInvoice extends StatelessWidget {
         },
         modelList: controller.invoiceModel.values.where(
           (element) {
-            if (!HiveDataBase.getWithFree() &&
-                getPatTypeFromId(element.patternId!) ==
-                    AppConstants.invoiceTypeBuy) {
+            if (!HiveDataBase.getWithFree() && getPatTypeFromId(element.patternId!) == AppConstants.invoiceTypeBuy) {
               return element.invRecords!.where(
                 (element) {
-                  return getProductModelFromId(element.invRecProduct)
-                          ?.prodIsLocal ==
-                      false;
+                  return getProductModelFromId(element.invRecProduct)?.prodIsLocal == false;
                 },
               ).isEmpty;
             } else {
@@ -61,12 +56,10 @@ class AllInvoice extends StatelessWidget {
         ).where(
           (element) {
             if (productName != null && productName != "") {
-              return listDate
-                      .contains((element.invDate?.split(" ")[0] ?? "")) &&
+              return listDate.contains((element.invDate?.split(" ")[0] ?? "")) &&
                   (element.invRecords
                           ?.where(
-                            (invRecord) =>
-                                invRecord.invRecProduct == productName,
+                            (invRecord) => invRecord.invRecProduct == productName,
                           )
                           .isNotEmpty ??
                       false);

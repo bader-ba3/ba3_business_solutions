@@ -1,10 +1,10 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/seller/sellers_view_model.dart';
+import '../../../controller/seller/sellers_controller.dart';
 
 class AllInventoryView extends StatefulWidget {
   final InventoryModel inventoryModel;
@@ -30,29 +30,22 @@ class _AllInventoryViewState extends State<AllInventoryView> {
                   isAll = !isAll;
                   setState(() {});
                 },
-                child: Text(
-                    isAll ? "عرض المواد التي تم جردها" : "عرض جميع المواد")),
+                child: Text(isAll ? "عرض المواد التي تم جردها" : "عرض جميع المواد")),
             const SizedBox(
               width: 10,
             ),
           ],
           title: const Text("معاينة الجرد"),
         ),
-        body: GetBuilder<ProductViewModel>(builder: (controller) {
+        body: GetBuilder<ProductController>(builder: (controller) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView.builder(
-              itemCount: isAll
-                  ? widget
-                      .inventoryModel.inventoryTargetedProductList.keys.length
-                  : widget.inventoryModel.inventoryRecord.length,
+              itemCount: isAll ? widget.inventoryModel.inventoryTargetedProductList.keys.length : widget.inventoryModel.inventoryRecord.length,
               itemBuilder: (context, index) {
                 ProductModel productModel = getProductModelFromId(isAll
-                        ? widget
-                            .inventoryModel.inventoryTargetedProductList.keys
-                            .toList()[index]
-                        : widget.inventoryModel.inventoryRecord.keys
-                            .toList()[index]) ??
+                        ? widget.inventoryModel.inventoryTargetedProductList.keys.toList()[index]
+                        : widget.inventoryModel.inventoryRecord.keys.toList()[index]) ??
                     ProductModel(prodId: "prod1723066749939566");
                 int count = controller.getCountOfProduct(productModel);
                 return Padding(
@@ -70,10 +63,7 @@ class _AllInventoryViewState extends State<AllInventoryView> {
                           ),
                           Expanded(
                               child: Text(
-                            getSellerNameFromId(widget.inventoryModel
-                                    .inventoryTargetedProductList.values
-                                    .toList()[index])
-                                .toString(),
+                            getSellerNameFromId(widget.inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
                             style: const TextStyle(fontSize: 18),
                           )),
                           const SizedBox(
@@ -117,17 +107,13 @@ class _AllInventoryViewState extends State<AllInventoryView> {
                                 width: 10,
                               ),
                               Text(
-                                widget.inventoryModel
-                                        .inventoryRecord[productModel.prodId] ??
-                                    "0",
+                                widget.inventoryModel.inventoryRecord[productModel.prodId] ?? "0",
                                 style: const TextStyle(fontSize: 18),
                               ),
                               const SizedBox(
                                 width: 20,
                               ),
-                              if (widget.inventoryModel
-                                      .inventoryRecord[productModel.prodId!] !=
-                                  null)
+                              if (widget.inventoryModel.inventoryRecord[productModel.prodId!] != null)
                                 Icon(
                                   Icons.check,
                                   color: Colors.green.shade700,

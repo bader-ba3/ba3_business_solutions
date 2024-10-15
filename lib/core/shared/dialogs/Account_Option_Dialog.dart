@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/model/account/account_model.dart';
@@ -6,7 +6,7 @@ import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/search_view_controller.dart';
+import '../../../controller/invoice/search_controller.dart';
 import '../../../view/accounts/pages/account_details.dart';
 import '../../helper/functions/functions.dart';
 import '../../services/Get_Date_From_String.dart';
@@ -37,10 +37,7 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "اسم الحساب :  ",
                   controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.accountForSearchController.text =
-                        await searchAccountTextDialog(
-                                controller.accountForSearchController.text) ??
-                            "";
+                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -48,8 +45,7 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "من تاريخ :  ",
                   controller: controller.startDateForSearchController,
                   onSubmitted: (text) async {
-                    controller.startDateForSearchController.text =
-                        getDateFromString(text);
+                    controller.startDateForSearchController.text = getDateFromString(text);
                     controller.update();
                   },
                 ),
@@ -57,8 +53,7 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "الى تاريخ :  ",
                   controller: controller.endDateForSearchController,
                   onSubmitted: (text) async {
-                    controller.endDateForSearchController.text =
-                        getDateFromString(text);
+                    controller.endDateForSearchController.text = getDateFromString(text);
                     controller.update();
                   },
                 ),
@@ -66,14 +61,10 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "موافق",
                   iconData: Icons.check,
                   onPressed: () {
-                    AccountModel? model = getAccountModelFromName(
-                        controller.accountForSearchController.text);
+                    AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
                     if (model != null) {
                       List<String> listDate = getDatesBetween(
-                          DateTime.parse(
-                              controller.startDateForSearchController.text),
-                          DateTime.parse(
-                              controller.endDateForSearchController.text));
+                          DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text));
 
                       Get.to(() => AccountDetails(
                             modelKey: model.accChild
@@ -85,8 +76,7 @@ class AccountOptionDialog extends StatelessWidget {
                             listDate: listDate,
                           ));
                     } else {
-                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ",
-                          icon: const Icon(Icons.error_outline));
+                      Get.snackbar("خطأ ادخال", "يرجى ادخال اسم الحساب ", icon: const Icon(Icons.error_outline));
                     }
                   },
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
-import '../../../controller/pattern/pattern_model_view.dart';
+import '../../../controller/pattern/pattern_controller.dart';
 
 class ColorsPicker extends StatelessWidget {
   const ColorsPicker({super.key, required this.patternController});

@@ -1,12 +1,12 @@
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:ba3_business_solutions/view/patterns/widget/partner_ratio_commission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/pattern/pattern_model_view.dart';
+import '../../../controller/pattern/pattern_controller.dart';
 import 'add_pattern_type.dart';
 
 class AddPatternForm extends StatelessWidget {

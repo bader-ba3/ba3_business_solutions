@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../../controller/pluto/pluto_view_model.dart';
+import '../../../controller/pluto/pluto_controller.dart';
 
 class CustomPlutoGrid extends StatelessWidget {
   const CustomPlutoGrid(
@@ -26,7 +26,7 @@ class CustomPlutoGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: GetBuilder<PlutoViewModel>(builder: (controller) {
+      child: GetBuilder<PlutoController>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/sellers/pages/seller_targets_page.dart';

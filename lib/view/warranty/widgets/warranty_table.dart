@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../../controller/warranty/warranty_pluto_view_model.dart';
+import '../../../controller/warranty/warranty_pluto_controller.dart';
 import '../../../core/shared/widgets/Custom_Pluto_With_Edite.dart';
 import '../../../core/shared/widgets/custom_pluto_short_cut.dart';
 import '../../../core/shared/widgets/get_product_enter_short_cut.dart';
@@ -14,7 +14,7 @@ class WarrantyTable extends StatelessWidget {
     required this.warrantyPlutoViewModel,
   });
 
-  final WarrantyPlutoViewModel warrantyPlutoViewModel;
+  final WarrantyPlutoController warrantyPlutoViewModel;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
+import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import '../../core/utils/hive.dart';
 import '../../model/invoice/invoice_record_model.dart';
 import '../../model/seller/seller_model.dart';
 import '../../model/seller/task_model.dart';
-import '../product/product_view_model.dart';
+import '../product/product_controller.dart';
 
 class TargetController extends GetxController {
   RxMap<String, TaskModel> allTarget = <String, TaskModel>{}.obs;
@@ -157,7 +157,7 @@ class TargetController extends GetxController {
   List accountPickList = [];
 
   Future<String> getComplete(text) async {
-    ProductViewModel productController = Get.find<ProductViewModel>();
+    ProductController productController = Get.find<ProductController>();
     var _ = '';
     accountPickList = [];
     productController.productDataMap.forEach((key, value) {

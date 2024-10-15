@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/controller/inventory/inventory_view_model.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/store/store_view_model.dart';
+import 'package:ba3_business_solutions/controller/inventory/inventory_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/seller/sellers_view_model.dart';
+import '../../../controller/seller/sellers_controller.dart';
 import '../../../core/constants/app_constants.dart';
 
 class AddInventoryView extends StatefulWidget {
@@ -62,7 +62,7 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                   ),*/
                   // if (prodList.isNotEmpty)
                   Expanded(
-                    child: GetBuilder<ProductViewModel>(
+                    child: GetBuilder<ProductController>(
                       builder: (productController) {
                         return ListView.builder(
                             itemCount: inventoryModel.inventoryTargetedProductList.length,
@@ -223,11 +223,6 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                       },
                     ),
                   )
-                  // else
-                  //   Expanded(
-                  //       child: Center(
-                  //     child: Text(isNotFound ? "لم يتم العثور على المنتج" : "ابحث عن المنتج المطلوب "),
-                  //   )),
                 ],
               ),
             ),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 import '../Widgets/custom_window_title_bar.dart';
-import '../../../controller/pluto/pluto_view_model.dart';
+import '../../../controller/pluto/pluto_controller.dart';
 
 class CustomPlutoGridWithAppBar extends StatelessWidget {
   const CustomPlutoGridWithAppBar(
@@ -31,7 +31,7 @@ class CustomPlutoGridWithAppBar extends StatelessWidget {
         Expanded(
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: GetBuilder<PlutoViewModel>(builder: (controller) {
+            child: GetBuilder<PlutoController>(builder: (controller) {
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,

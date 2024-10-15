@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:ba3_business_solutions/controller/account/account_customer_view_model.dart';
-import 'package:ba3_business_solutions/controller/account/account_view_model.dart';
-import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_controller.dart';
+import 'package:ba3_business_solutions/controller/account/account_customer_controller.dart';
+import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +26,7 @@ bool getIfAccountHaveCustomers(String accId) {
 
 bool getCustomerHaveVAT(String customerName) {
   bool withVAT = true;
-  withVAT = Get.find<AccountCustomerViewModel>()
+  withVAT = Get.find<AccountCustomerController>()
           .customerMap
           .values
           .where(
@@ -521,13 +521,13 @@ Future<String> savePdfLocally(GlobalModel model, {bool? update, GlobalModel? inv
 addImeiToProducts(Map<String, ProductImei> imeiMap) async {
   imeiMap.forEach(
     (key, value) async {
-      await Get.find<ProductViewModel>().updateProduct(Get.find<ProductViewModel>().productDataMap[key]!..prodImei?.add(value));
+      await Get.find<ProductController>().updateProduct(Get.find<ProductController>().productDataMap[key]!..prodImei?.add(value));
     },
   );
 }
 
 bool checkProdHaveImei(String prodId, String imei) {
-  return Get.find<ProductViewModel>()
+  return Get.find<ProductController>()
           .productDataMap[prodId]!
           .prodImei
           ?.map(

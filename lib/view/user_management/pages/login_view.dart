@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:ba3_business_solutions/controller/global/global_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/global/global_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:pinput/pinput.dart';
 
-import '../../../controller/user/cards_view_model.dart';
+import '../../../controller/user/cards_controller.dart';
 import '../../../core/constants/app_constants.dart';
 
 class LoginView extends StatefulWidget {
@@ -42,7 +42,7 @@ class _LoginViewState extends State<LoginView> {
             }
           }
           var cardId = id.toUpperCase();
-          CardsViewModel cardViewController = Get.find<CardsViewModel>();
+          CardsController cardViewController = Get.find<CardsController>();
           if (cardViewController.allCards.containsKey(cardId)) {
             userViewController.cardNumber = cardId;
             userViewController.checkUserStatus();
@@ -146,8 +146,8 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 GetBuilder<UserManagementController>(
                   builder: (controller) {
-                    if (Get.isRegistered<GlobalViewModel>()) {
-                      GlobalViewModel globalModel = Get.find<GlobalViewModel>();
+                    if (Get.isRegistered<GlobalController>()) {
+                      GlobalController globalModel = Get.find<GlobalController>();
                       return Obx(
                         () {
                           return Text(

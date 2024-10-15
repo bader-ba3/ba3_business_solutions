@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/account/account_customer_view_model.dart';
+import 'package:ba3_business_solutions/controller/account/account_customer_controller.dart';
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,7 @@ Future<AccountCustomer> accountCustomerDialog(
         )
         .toList();
   } else {
-    customers = Get.find<AccountCustomerViewModel>()
+    customers = Get.find<AccountCustomerController>()
         .customerMap
         .values
         .where(

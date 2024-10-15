@@ -1,8 +1,8 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/search_view_controller.dart';
+import '../../../controller/invoice/search_controller.dart';
 import '../../../main.dart';
 import '../../../view/invoices/pages/all_invoices.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
@@ -36,10 +36,7 @@ class InvoiceOptionDialog extends StatelessWidget {
                   title: "المادة :  ",
                   controller: controller.productForSearchController,
                   onSubmitted: (text) async {
-                    controller.productForSearchController.text =
-                        await searchProductTextDialog(
-                                controller.productForSearchController.text) ??
-                            "";
+                    controller.productForSearchController.text = await searchProductTextDialog(controller.productForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -47,8 +44,7 @@ class InvoiceOptionDialog extends StatelessWidget {
                   title: "من تاريخ :  ",
                   controller: controller.startDateForSearchController,
                   onSubmitted: (text) async {
-                    controller.startDateForSearchController.text =
-                        getDateFromString(text);
+                    controller.startDateForSearchController.text = getDateFromString(text);
                     controller.update();
                   },
                 ),
@@ -56,8 +52,7 @@ class InvoiceOptionDialog extends StatelessWidget {
                   title: "الى تاريخ :  ",
                   controller: controller.endDateForSearchController,
                   onSubmitted: (text) async {
-                    controller.endDateForSearchController.text =
-                        getDateFromString(text);
+                    controller.endDateForSearchController.text = getDateFromString(text);
                     controller.update();
                   },
                 ),
@@ -67,12 +62,8 @@ class InvoiceOptionDialog extends StatelessWidget {
                   onPressed: () {
                     Get.to(() => AllInvoice(
                         listDate: getDatesBetween(
-                            DateTime.parse(
-                                controller.startDateForSearchController.text),
-                            DateTime.parse(
-                                controller.endDateForSearchController.text)),
-                        productName: getProductIdFromName(
-                            controller.productForSearchController.text)));
+                            DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text)),
+                        productName: getProductIdFromName(controller.productForSearchController.text)));
                   },
                 ),
               ],

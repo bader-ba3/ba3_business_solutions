@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/pattern/pattern_model_view.dart';
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/pattern/pattern_controller.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 

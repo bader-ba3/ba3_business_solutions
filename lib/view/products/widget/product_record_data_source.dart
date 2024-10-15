@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/model/product/product_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,7 @@ class ProductRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
-  ProductViewModel productController = Get.find<ProductViewModel>();
+  ProductController productController = Get.find<ProductController>();
   int total = 0;
 
   ProductRecordDataSource({required ProductModel productModel}) {
@@ -20,28 +20,18 @@ class ProductRecordDataSource extends DataGridSource {
     List<ProductRecordModel> allRec = [];
     allRec.addAll(productModel.prodRecord ?? []);
     productModel.prodChild?.forEach((element) {
-      allRec
-          .addAll(productController.productDataMap[element]?.prodRecord ?? []);
+      allRec.addAll(productController.productDataMap[element]?.prodRecord ?? []);
     });
     //total = allRec.map((e)=>int.parse(e.prodRecQuantity??"0")).toList().reduce((value, element) => value+element,);
     dataGridRows = allRec.map<DataGridRow>((e) {
       total = total + int.parse(e.prodRecQuantity ?? "0");
       return DataGridRow(cells: [
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductRecProduct,
-            value: getProductNameFromId(e.prodRecProduct)),
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductType,
-            value: getInvoicePatternFromInvId(e.invId)),
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductQuantity,
-            value: e.prodRecQuantity),
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductTotal, value: total.toString()),
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductDate, value: e.prodRecDate),
-        DataGridCell<String>(
-            columnName: AppConstants.rowProductInvId, value: e.invId),
+        DataGridCell<String>(columnName: AppConstants.rowProductRecProduct, value: getProductNameFromId(e.prodRecProduct)),
+        DataGridCell<String>(columnName: AppConstants.rowProductType, value: getInvoicePatternFromInvId(e.invId)),
+        DataGridCell<String>(columnName: AppConstants.rowProductQuantity, value: e.prodRecQuantity),
+        DataGridCell<String>(columnName: AppConstants.rowProductTotal, value: total.toString()),
+        DataGridCell<String>(columnName: AppConstants.rowProductDate, value: e.prodRecDate),
+        DataGridCell<String>(columnName: AppConstants.rowProductInvId, value: e.invId),
       ]);
     }).toList();
   }
@@ -74,8 +64,7 @@ class ProductRecordDataSource extends DataGridSource {
   }
 
   @override
-  Future<bool> canSubmitCell(DataGridRow dataGridRow,
-      RowColumnIndex rowColumnIndex, GridColumn column) async {
+  Future<bool> canSubmitCell(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
     // Return false, to retain in edit mode.
     return false; // or super.canSubmitCell(dataGridRow, rowColumnIndex, column);
   }

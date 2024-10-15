@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/controller/bond/bond_view_model.dart';
+import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +14,7 @@ class AllBonds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<BondViewModel>(builder: (controller) {
+    return GetBuilder<BondController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع السندات",
         onLoaded: (e) {},

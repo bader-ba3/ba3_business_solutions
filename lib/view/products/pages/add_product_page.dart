@@ -1,12 +1,12 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/invoices/widget/custom_TextField.dart';
+import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:ba3_business_solutions/view/products/widget/barcode_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
@@ -39,7 +39,7 @@ class _AddProductPageState extends State<AddProductPage> {
   // bool prodIsRoot=false;
   late ProductModel editedProduct;
   List<ProductRecordModel> editedProductRecord = [];
-  ProductViewModel productController = Get.find<ProductViewModel>();
+  ProductController productController = Get.find<ProductController>();
   bool isEdit = false;
   bool hasVat = true;
   bool isGroup = false;

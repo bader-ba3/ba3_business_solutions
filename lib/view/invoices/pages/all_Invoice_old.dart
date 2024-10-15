@@ -1,10 +1,10 @@
 /*
-import 'package:ba3_business_solutions/controller/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import '../../Widgets/discount_pluto_edit_view_model.dart';
-import '../../Widgets/invoice_pluto_edit_view_model.dart';
+import '../../Widgets/discount_pluto_edit_controller.dart';
+import '../../Widgets/invoice_pluto_edit_controller.dart';
 import '../accounts/acconts_view_old.dart';
 import 'new_invoice_view.dart';
 

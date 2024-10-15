@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/account/account_view_model.dart';
+import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../model/account/account_model.dart';
 
@@ -18,7 +18,7 @@ class EntryBondRecordDataSource extends DataGridSource {
     addItem();
   }
 
-  final accountController = Get.find<AccountViewModel>();
+  final accountController = Get.find<AccountController>();
 
   buildRowInit(GlobalModel recordData) {
     dataGridRows = (recordData.entryBondRecord ?? [])
@@ -345,7 +345,7 @@ class EntryBondRecordDataSource extends DataGridSource {
   late List<AccountModel> products = <AccountModel>[];
 
   List<String> searchText(String query) {
-    AccountViewModel accountController = Get.find<AccountViewModel>();
+    AccountController accountController = Get.find<AccountController>();
     products = accountController.accountList.values.toList().where((item) {
       var name =
           item.accName.toString().toLowerCase().contains(query.toLowerCase());

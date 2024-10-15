@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/invoice_view_model.dart';
-import '../../../controller/print/print_view_model.dart';
-import '../../../controller/user/user_management_model.dart';
+import '../../../controller/invoice/invoice_controller.dart';
+import '../../../controller/print/print_controller.dart';
+import '../../../controller/user/user_management_controller.dart';
 import '../../../controller/warranty/warranty_controller.dart';
-import '../../../controller/warranty/warranty_pluto_view_model.dart';
+import '../../../controller/warranty/warranty_pluto_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
 import '../../../model/global/global_model.dart';
@@ -18,7 +18,7 @@ class WarrantyPageBottomBar extends StatelessWidget {
     required this.warrantyController,
   });
 
-  final WarrantyPlutoViewModel plutoEditViewModel;
+  final WarrantyPlutoController plutoEditViewModel;
   final WarrantyController warrantyController;
 
   @override
@@ -91,7 +91,7 @@ class WarrantyPageBottomBar extends StatelessWidget {
               onPressed: () async {
                 plutoEditViewModel.handleSaveAll();
 
-                PrintViewModel printViewModel = Get.find<PrintViewModel>();
+                PrintController printViewModel = Get.find<PrintController>();
                 printViewModel.printFunction(GlobalModel(),
                     warrantyModel: warrantyController.initModel);
               },

@@ -1,10 +1,11 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
+
+import '../../controller/product/product_controller.dart';
+import '../../controller/seller/sellers_controller.dart';
 
 class PdfInvoiceApi {
   static Future<Uint8List> generate(GlobalModel invoice, {bool? update, GlobalModel? invoiceOld}) async {

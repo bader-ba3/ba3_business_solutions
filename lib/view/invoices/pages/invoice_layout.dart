@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_view_model.dart';
-import 'package:ba3_business_solutions/controller/pattern/pattern_model_view.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_pluto_edit_controller.dart';
+import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/controller/warranty/warranty_controller.dart';
 import 'package:ba3_business_solutions/core/router/app_routes.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/search_view_controller.dart';
+import '../../../controller/invoice/search_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
 import '../../../model/patterens/pattern_model.dart';
@@ -77,7 +77,7 @@ class InvoiceLayout extends StatelessWidget {
                                 patternId: i.key,
                               ),
                               binding: BindingsBuilder(() {
-                                Get.lazyPut(() => InvoicePlutoViewModel());
+                                Get.lazyPut(() => InvoicePlutoController());
                                 // Get.lazyPut(() => DiscountPlutoViewModel());
                               }),
                             );

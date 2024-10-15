@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +13,7 @@ class CustomProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProductViewModel>(builder: (controller) {
+    return GetBuilder<ProductController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع المواد",
         onLoaded: (e) {},

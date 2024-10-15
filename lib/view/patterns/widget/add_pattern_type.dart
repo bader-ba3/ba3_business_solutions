@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/pattern/pattern_model_view.dart';
+import '../../../controller/pattern/pattern_controller.dart';
 import '../../../core/constants/app_constants.dart';
 
 class AddPatternType extends StatelessWidget {

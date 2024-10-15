@@ -1,9 +1,9 @@
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/controller/invoice/invoice_view_model.dart';
+import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/shared/widgets/new_pluto.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
@@ -12,7 +12,7 @@ class AllPartnerDueAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<InvoiceViewModel>(builder: (controller) {
+    return GetBuilder<InvoiceController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         type: AppConstants.globalTypeAccountDue,
         title: "الفواتير المستحقة على الشركاء",
@@ -28,7 +28,7 @@ class AllPartnerDueAccount extends StatelessWidget {
                     patternId: "",
                   ),
               binding: BindingsBuilder(
-                () => Get.lazyPut(() => InvoicePlutoViewModel()),
+                () => Get.lazyPut(() => InvoicePlutoController()),
               ));
         },
         modelList: controller.invoiceModel.values.where(

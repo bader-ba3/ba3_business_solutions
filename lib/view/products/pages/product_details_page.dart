@@ -1,13 +1,13 @@
-import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
-import 'package:ba3_business_solutions/controller/user/user_management_model.dart';
+import 'package:ba3_business_solutions/controller/product/product_controller.dart';
+import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
 import 'package:ba3_business_solutions/view/products/pages/add_product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../controller/invoice/discount_pluto_edit_view_model.dart';
-import '../../../controller/invoice/invoice_pluto_edit_view_model.dart';
+import '../../../controller/invoice/discount_pluto_edit_controller.dart';
+import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/widgets/grid_column_item.dart';
 import '../../../core/utils/hive.dart';
@@ -27,7 +27,7 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   List<ProductRecordModel> editedProductRecord = [];
-  ProductViewModel productController = Get.find<ProductViewModel>();
+  ProductController productController = Get.find<ProductController>();
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           // if (snapshot.data == null || snapshot.connectionState == ConnectionState.waiting) {
                           //   return CircularProgressIndicator();
                           // } else {
-                          return GetBuilder<ProductViewModel>(builder: (controller) {
+                          return GetBuilder<ProductController>(builder: (controller) {
                             initPage();
                             // controller.initGrid(snapshot.data);
                             return SfDataGrid(
@@ -114,8 +114,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       patternId: '',
                                     ),
                                     binding: BindingsBuilder(() {
-                                      Get.lazyPut(() => InvoicePlutoViewModel());
-                                      Get.lazyPut(() => DiscountPlutoViewModel());
+                                      Get.lazyPut(() => InvoicePlutoController());
+                                      Get.lazyPut(() => DiscountPlutoController());
                                     }),
                                   );
                                 }
