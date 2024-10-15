@@ -1,5 +1,3 @@
-
-
 import 'package:ba3_business_solutions/controller/product/product_view_model.dart';
 import 'package:ba3_business_solutions/controller/seller/sellers_view_model.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
@@ -8,23 +6,36 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-
 class PdfInvoiceApi {
-  static Future<Uint8List> generate(GlobalModel invoice) async {
+  static Future<Uint8List> generate(GlobalModel invoice, {bool? update, GlobalModel? invoiceOld}) async {
     final data = await rootBundle.load('assets/NotoSansArabic-Regular.ttf');
 
     // final file=await File('assets/NotoSansArabic-Regular.ttf').readAsBytes();
     final font = Font.ttf(data.buffer.asByteData());
     final image = await rootBundle.load('assets/logo.jpg');
     final pdf = Document();
-    print(invoice.invRecords);
-    print(invoice.invSeller);
+
     pdf.addPage(MultiPage(
       build: (context) => [
         // buildHeader(invoice),
+        if (update == true) ...[
+          Text("This bill Update"),
+          buildTitle(invoiceOld!, image, font),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          Text("invoice.info.description"),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          buildInvoice(invoiceOld),
+          Divider(),
+          buildTotal(invoiceOld),
+          Divider(),
+          Text("**************End"),
+          Divider(),
+          Divider(),
+        ],
         buildTitle(invoice, image, font),
         SizedBox(height: 0.5 * PdfPageFormat.cm),
         Text("invoice.info.description"),
+
         SizedBox(height: 0.5 * PdfPageFormat.cm),
         buildInvoice(invoice),
         Divider(),
@@ -59,7 +70,7 @@ class PdfInvoiceApi {
             Row(children: [
               Text("Seller Name: "),
               Text(
-                getSellerNameFromId(invoice.invSeller)??"",
+                getSellerNameFromId(invoice.invSeller) ?? "",
                 style: TextStyle(font: font),
                 textDirection: TextDirection.rtl,
               ),
@@ -72,14 +83,7 @@ class PdfInvoiceApi {
       ]);
 
   static Widget buildInvoice(GlobalModel invoice) {
-    final headers = [
-      'Item Name',
-      'Barcode',
-      'Quantity',
-      'Unit Price',
-      'VAT',
-      'Total'
-    ];
+    final headers = ['Item Name', 'Barcode', 'Quantity', 'Unit Price', 'VAT', 'Total'];
 
     // إنشاء البيانات بشكل قائمة من القوائم
     List<List<dynamic>> data = invoice.invRecords!.map((item) {

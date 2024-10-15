@@ -234,7 +234,7 @@ class GlobalViewModel extends GetxController {
     invoiceViewModel.invoiceModel[globalModel.invId!] = globalModel;
 
     invoiceViewModel.update();
-    sendEmailWithPdfAttachment(globalModel);
+    // sendEmailWithPdfAttachment(globalModel);
   }
 
    addGlobalInvoiceToMemory(GlobalModel globalModel) async{
@@ -281,7 +281,7 @@ class GlobalViewModel extends GetxController {
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.invoicesCollection);
 
     update();
-    sendEmailWithPdfAttachment(globalModel);
+
   }
 
   Future<void> updateGlobalBond(GlobalModel globalModel) async {

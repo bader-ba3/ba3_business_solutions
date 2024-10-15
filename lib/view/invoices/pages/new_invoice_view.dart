@@ -126,10 +126,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                     GestureDetector(
                       onTap: () async {
                         plutoEditViewModel.handleSaveAll(withOutProud: patternModel!.patFullName == "مبيعات بدون اصل");
-                        if (plutoEditViewModel.invoiceRecord.firstOrNull?.invRecProduct != null &&
-                            _updateData(plutoEditViewModel.invoiceRecord).invIsPending == null) {
-                          screenViewModel.openedScreen[widget.billId == "1" ? _updateData(plutoEditViewModel.invoiceRecord).invId! : widget.billId] =
-                              _updateData(plutoEditViewModel.invoiceRecord);
+                        if (plutoEditViewModel.invoiceRecord.firstOrNull?.invRecProduct != null && _updateData(plutoEditViewModel.invoiceRecord).invIsPending == null) {
+                          screenViewModel.openedScreen[widget.billId == "1" ? _updateData(plutoEditViewModel.invoiceRecord).invId! : widget.billId] = _updateData(plutoEditViewModel.invoiceRecord);
                           screenViewModel.update();
                         }
 
@@ -184,8 +182,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 Expanded(
                                   child: Container(
                                       height: AppConstants.constHeightTextField,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white, border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
+                                      decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black38), borderRadius: BorderRadius.circular(8)),
                                       child: DropdownButton(
                                         padding: const EdgeInsets.symmetric(horizontal: 8),
                                         underline: const SizedBox(),
@@ -287,8 +284,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     ],
                                   ),
                                 ),
-                                if (patternModel?.patType != AppConstants.invoiceTypeSalesWithPartner &&
-                                    invoiceController.selectedPayType == AppConstants.invPayTypeDue)
+                                if (patternModel?.patType != AppConstants.invoiceTypeSalesWithPartner && invoiceController.selectedPayType == AppConstants.invPayTypeDue)
                                   SizedBox(
                                     width: Get.width * 0.45,
                                     child: Row(
@@ -326,21 +322,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                                             child: CustomTextFieldWithIcon(
                                                 controller: invoiceController.secondaryAccountController,
                                                 onSubmitted: (text) async {
-                                                  invoiceController.secondaryAccountController.text =
-                                                      await getAccountComplete(invoiceController.secondaryAccountController.text);
+                                                  invoiceController.secondaryAccountController.text = await getAccountComplete(invoiceController.secondaryAccountController.text);
                                                   if (getIfAccountHaveCustomers(invoiceController.secondaryAccountController.text)) {
-                                                    invoiceController.invCustomerAccountController.text =
-                                                        getAccountCustomers(invoiceController.secondaryAccountController.text)
-                                                            .first
-                                                            .customerAccountName!;
+                                                    invoiceController.invCustomerAccountController.text = getAccountCustomers(invoiceController.secondaryAccountController.text).first.customerAccountName!;
                                                     invoiceController.changeCustomer();
                                                   }
                                                   // invoiceController.getAccountComplete();
                                                   // invoiceController.changeSecAccount();
                                                 },
                                                 onIconPressed: () {
-                                                  AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull(
-                                                      (element) => element.accName == invoiceController.secondaryAccountController.text);
+                                                  AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
                                                   if (_ != null) {
                                                     // Get.to(AccountDetails(modelKey: _.accId!));
                                                   }
@@ -366,19 +357,16 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           child: CustomTextFieldWithIcon(
                                               controller: invoiceController.primaryAccountController,
                                               onSubmitted: (text) async {
-                                                invoiceController.primaryAccountController.text =
-                                                    await getAccountComplete(invoiceController.primaryAccountController.text);
+                                                invoiceController.primaryAccountController.text = await getAccountComplete(invoiceController.primaryAccountController.text);
                                                 if (getIfAccountHaveCustomers(invoiceController.primaryAccountController.text)) {
-                                                  invoiceController.invCustomerAccountController.text =
-                                                      getAccountCustomers(invoiceController.primaryAccountController.text).first.customerAccountName!;
+                                                  invoiceController.invCustomerAccountController.text = getAccountCustomers(invoiceController.primaryAccountController.text).first.customerAccountName!;
                                                   invoiceController.changeCustomer();
                                                 }
                                                 // invoiceController.getAccountComplete();
                                                 // invoiceController.changeSecAccount();
                                               },
                                               onIconPressed: () {
-                                                AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull(
-                                                    (element) => element.accName == invoiceController.primaryAccountController.text);
+                                                AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.primaryAccountController.text);
                                                 if (_ != null) {
                                                   // Get.to(AccountDetails(modelKey: _.accId!));
                                                 }
@@ -400,9 +388,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                               invoiceController.getStoreComplete();
                                             },
                                             onIconPressed: () {
-                                              StoreModel? _ = storeController.storeMap.values
-                                                  .toList()
-                                                  .firstWhereOrNull((element) => element.stName == invoiceController.storeController.text);
+                                              StoreModel? _ = storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == invoiceController.storeController.text);
                                               if (_ != null) {
                                                 Get.find<StoreController>().initStore(_.stId!);
                                                 Get.to(const AddStore());
@@ -437,8 +423,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                               invoiceController.changeCustomer();
                                             },
                                             onIconPressed: () {
-                                              AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull(
-                                                  (element) => element.accName == invoiceController.invCustomerAccountController.text);
+                                              AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.invCustomerAccountController.text);
                                               if (_ != null) {
                                                 // Get.to(AccountDetails(modelKey: _.accId!));
                                               }
@@ -469,8 +454,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                               invoiceController.sellerController.text = seller;
                                             },
                                             onIconPressed: () {
-                                              AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull(
-                                                  (element) => element.accName == invoiceController.secondaryAccountController.text);
+                                              AccountModel? _ = accountController.accountList.values.toList().firstWhereOrNull((element) => element.accName == invoiceController.secondaryAccountController.text);
                                               if (_ != null) {
                                                 Get.to(AddSellerPage(oldKey: _.accId!));
                                               }
@@ -532,9 +516,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                             invoiceController.getStoreComplete();
                                           },
                                           onIconPressed: () {
-                                            StoreModel? _ = storeController.storeMap.values
-                                                .toList()
-                                                .firstWhereOrNull((element) => element.stName == invoiceController.storeController.text);
+                                            StoreModel? _ = storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == invoiceController.storeController.text);
                                             if (_ != null) {
                                               Get.find<StoreController>().initStore(_.stId!);
                                               Get.to(const AddStore());
@@ -557,9 +539,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                             invoiceController.getStoreComplete();
                                           },
                                           onIconPressed: () {
-                                            StoreModel? _ = storeController.storeMap.values
-                                                .toList()
-                                                .firstWhereOrNull((element) => element.stName == invoiceController.storeNewController.text);
+                                            StoreModel? _ = storeController.storeMap.values.toList().firstWhereOrNull((element) => element.stName == invoiceController.storeNewController.text);
                                             if (_ != null) {
                                               Get.find<StoreController>().initStore(_.stId!);
                                               Get.to(const AddStore());
@@ -608,10 +588,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                               onRowSecondaryTap: (event) {
                                 if (event.cell.column.field == "invRecSubTotal") {
                                   if (getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) != null) {
-                                    controller.showContextMenuSubTotal(
-                                        index: event.rowIdx,
-                                        productModel: getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!)!,
-                                        tapPosition: event.offset);
+                                    controller.showContextMenuSubTotal(index: event.rowIdx, productModel: getProductModelFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!)!, tapPosition: event.offset);
                                   }
                                 }
                                 if (event.cell.column.field == "invRecProduct") {
@@ -622,12 +599,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         content: CustomTextFieldWithoutIcon(
                                           controller: imeiController,
                                           onSubmitted: (p0) {
-                                            if (!checkProdHaveImei(
-                                                getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '', p0)) {
-                                              invoiceController.imeiMap[
-                                                  getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ??
-                                                      'sd'] = ProductImei(
-                                                  imei: p0, invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
+                                            if (!checkProdHaveImei(getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '', p0)) {
+                                              invoiceController.imeiMap[getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? 'sd'] = ProductImei(imei: p0, invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
                                               Get.back();
                                             }
                                           },
@@ -636,14 +609,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           AppButton(
                                               title: "اضافة",
                                               onPressed: () {
-                                                if (!checkProdHaveImei(
-                                                    getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '',
-                                                    imeiController.text)) {
-                                                  invoiceController.imeiMap[
-                                                      getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ??
-                                                          'sd'] = ProductImei(
-                                                      imei: imeiController.text,
-                                                      invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
+                                                if (!checkProdHaveImei(getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? '', imeiController.text)) {
+                                                  invoiceController.imeiMap[getProductIdFromName(controller.stateManager.currentRow?.cells['invRecProduct']?.value!) ?? 'sd'] = ProductImei(imei: imeiController.text, invId: "${patternModel!.patName!}: ${invoiceController.invCodeController.text}");
                                                   Get.back();
                                                 }
                                               },
@@ -671,8 +638,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 }
                               },
                               onChanged: (PlutoGridOnChangedEvent event) async {
-                                String quantityNum =
-                                    extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString() ?? '');
+                                String quantityNum = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecQuantity"]?.value?.toString() ?? '');
                                 String? subTotalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecSubTotal"]?.value);
                                 String? totalStr = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecTotal"]?.value);
                                 String? vat = extractNumbersAndCalculate(controller.stateManager.currentRow!.cells["invRecVat"]?.value ?? "0");
@@ -730,13 +696,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           children: [
                                             Text(
                                               patternModel?.patName == "م Tabby"
-                                                  ? (((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                                                              patternModel!.patPartnerCommission!) *
-                                                          1.05)
-                                                      .toStringAsFixed(2)
-                                                  : ((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                                                          patternModel!.patPartnerCommission!)
-                                                      .toStringAsFixed(2),
+                                                  ? (((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!) * 1.05).toStringAsFixed(2)
+                                                  : ((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!).toStringAsFixed(2),
                                               style: const TextStyle(fontSize: 30, color: Colors.white),
                                             ),
                                             const Text(
@@ -755,15 +716,8 @@ class _InvoiceViewState extends State<InvoiceView> {
                                           children: [
                                             Text(
                                               patternModel?.patName == "م Tabby"
-                                                  ? (controller.computeWithVatTotal() -
-                                                          (((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                                                                  patternModel!.patPartnerCommission!) *
-                                                              1.05))
-                                                      .toStringAsFixed(2)
-                                                  : (controller.computeWithVatTotal() -
-                                                          ((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                                                              patternModel!.patPartnerCommission!))
-                                                      .toStringAsFixed(2),
+                                                  ? (controller.computeWithVatTotal() - (((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!) * 1.05)).toStringAsFixed(2)
+                                                  : (controller.computeWithVatTotal() - ((controller.computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!)).toStringAsFixed(2),
                                               style: const TextStyle(fontSize: 30, color: Colors.white),
                                             ),
                                             const Text(
@@ -884,22 +838,17 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا الحساب غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty &&
-                                      patternModel!.patType != AppConstants.invoiceTypeAdd &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeAdd && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ تعباية", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ تعباية", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى إضافة مواد الى الفاتورة");
                                   } else if (invoiceController.checkAllDiscountRecords()) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في الحسميات");
-                                  } else if (patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner &&
-                                      controller.invPartnerCodeController.text.isEmpty) {
+                                  } else if (patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner && controller.invPartnerCodeController.text.isEmpty) {
                                     Get.snackbar("خطأ تعباية", "يرجى تصحيح الخطأ في رقم فاتورة الشريك");
                                   } else {
                                     checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInvoice).then((value) async {
@@ -911,6 +860,7 @@ class _InvoiceViewState extends State<InvoiceView> {
 
                                         globalController.addGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
                                         addImeiToProducts(invoiceController.imeiMap);
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditViewModel.invoiceRecord));
                                         // invoiceController.initModel=_updateData(plutoEditViewModel.invoiceRecord);
                                         screenViewModel.update();
                                       }
@@ -942,13 +892,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
                                   } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
@@ -966,6 +914,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                         await invoiceController.computeTotal(plutoEditViewModel.invoiceRecord);
                                         invoiceController.initModel.invIsPending = false;
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditViewModel.invoiceRecord));
                                       }
                                     });
                                   }
@@ -986,16 +935,13 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
                                     // } else if (!invoiceController.checkAccountComplete(invoiceController.invCustomerAccountController.text)) {
                                     //   Get.snackbar("فحص المطاييح", "هذا العميل غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord
                                       .where(
@@ -1016,6 +962,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                       if (value) {
                                         addImeiToProducts(invoiceController.imeiMap);
                                         globalController.updateGlobalInvoice(_updateData(plutoEditViewModel.invoiceRecord));
+                                        sendEmailWithPdfAttachment(_updateData(plutoEditViewModel.invoiceRecord), update: true, invoiceOld: invoiceController.initModel);
                                       }
                                     });
                                   }
@@ -1036,14 +983,11 @@ class _InvoiceViewState extends State<InvoiceView> {
                                     Get.snackbar("فحص ", "هذا المستودع غير موجود من قبل");
                                   } else if (!invoiceController.checkStoreNewComplete() && patternModel!.patType == AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص المطاييح", "هذا المستودع غير موجود من قبل");
-                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (!invoiceController.checkAccountComplete(invoiceController.secondaryAccountController.text) && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("فحص ", "هذا الحساب غير موجود من قبل");
-                                  } else if (invoiceController.primaryAccountController.text.isEmpty &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text.isEmpty && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "يرجى كتابة حساب البائع");
-                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text &&
-                                      patternModel!.patType != AppConstants.invoiceTypeChange) {
+                                  } else if (invoiceController.primaryAccountController.text == invoiceController.secondaryAccountController.text && patternModel!.patType != AppConstants.invoiceTypeChange) {
                                     Get.snackbar("خطأ ", "لا يمكن تشابه البائع و المشتري");
                                   } else if (plutoEditViewModel.invoiceRecord
                                       .where(
@@ -1114,8 +1058,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                                 )
                             ]
                           ],
-                          if (patternModel!.patName == AppConstants.invoiceTypeSalesWithPartner ||
-                              controller.selectedPayType == AppConstants.invPayTypeDue)
+                          if (patternModel!.patName == AppConstants.invoiceTypeSalesWithPartner || controller.selectedPayType == AppConstants.invPayTypeDue)
                             AppButton(
                               iconData: Icons.more_horiz_outlined,
                               title: 'المزيد',
@@ -1245,15 +1188,11 @@ class _InvoiceViewState extends State<InvoiceView> {
         invReturnDate: invoiceController.invReturnDateController.text,
         invGiftAccount: invoiceController.initModel.invGiftAccount,
         invSecGiftAccount: invoiceController.initModel.invSecGiftAccount,
-        invVatAccount: patternModel?.patType == AppConstants.invoiceTypeBuy
-            ? getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة")
-            : getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة"),
+        invVatAccount: patternModel?.patType == AppConstants.invoiceTypeBuy ? getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة") : getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة"),
         invPayType: invoiceController.selectedPayType,
         invIsPaid: invoiceController.selectedPayType == AppConstants.invPayTypeDue ? getInvIsPay(patternModel!.patType!) : true,
         invPartnerCode: invoiceController.invPartnerCodeController.text,
-        invDueDate: patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner
-            ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0]
-            : invoiceController.invDueDateController,
+        invDueDate: patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner ? getDueDate(getPatNameFromId(widget.patternId)).toIso8601String().split(".")[0] : invoiceController.invDueDateController,
         invDiscountRecord: /*invoiceController.discountRecords*/ [],
         invIsPending: invoiceController.initModel.invIsPending,
         // invVatAccount: getVatAccountFromPatternId(patternModel!.patId!),
@@ -1264,31 +1203,22 @@ class _InvoiceViewState extends State<InvoiceView> {
         patternId: patternModel!.patId!,
         invType: patternModel!.patType!,
         invTotal: Get.find<InvoicePlutoViewModel>().computeWithVatTotal(),
-        invFullCode: invoiceController.initModel.invId == null
-            ? "${patternModel!.patName!}: ${invoiceController.invCodeController.text}"
-            : invoiceController.initModel.invFullCode,
+        invFullCode: invoiceController.initModel.invId == null ? "${patternModel!.patName!}: ${invoiceController.invCodeController.text}" : invoiceController.initModel.invFullCode,
         invId: invoiceController.initModel.invId ?? generateId(RecordType.invoice),
         invStorehouse: getStoreIdFromText(invoiceController.storeController.text),
         invSecStorehouse: getStoreIdFromText(invoiceController.storeNewController.text),
         invComment: invoiceController.noteController.text,
         invPrimaryAccount: getAccountIdFromText(invoiceController.primaryAccountController.text),
         invSecondaryAccount: getAccountIdFromText(invoiceController.secondaryAccountController.text),
-        invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty
-            ? ""
-            : getAccountIdFromText(invoiceController.invCustomerAccountController.text),
+        invCustomerAccount: invoiceController.invCustomerAccountController.text.isEmpty ? "" : getAccountIdFromText(invoiceController.invCustomerAccountController.text),
         invCode: invoiceController.invCodeController.text,
         invSeller: getSellerIdFromText(invoiceController.sellerController.text),
         invDate: isEditDate ? invoiceController.dateController : DateTime.now().toString().split(".").first,
         invMobileNumber: invoiceController.mobileNumberController.text,
         invTotalPartner: patternModel?.patType == AppConstants.invoiceTypeSalesWithPartner
             ? patternModel?.patName == "م Tabby"
-                ? Get.find<InvoicePlutoViewModel>().computeWithVatTotal() -
-                    (((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                            patternModel!.patPartnerCommission!) *
-                        1.05)
-                : Get.find<InvoicePlutoViewModel>().computeWithVatTotal() -
-                    ((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) +
-                        patternModel!.patPartnerCommission!)
+                ? Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - (((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!) * 1.05)
+                : Get.find<InvoicePlutoViewModel>().computeWithVatTotal() - ((Get.find<InvoicePlutoViewModel>().computeWithVatTotal() * (patternModel!.patPartnerRatio! / 100)) + patternModel!.patPartnerCommission!)
             : 0,
         globalType: AppConstants.globalTypeInvoice);
   }
@@ -1305,9 +1235,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(color),
-            shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))))),
+        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(color), shape: const WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))))),
         onPressed: onPressed,
         child: SizedBox(
           width: 100,

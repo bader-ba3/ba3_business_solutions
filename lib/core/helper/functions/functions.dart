@@ -492,10 +492,10 @@ void sendEmail(String url, String userEmail) async {
   }
 }
 
-Future<String> savePdfLocally(GlobalModel model) async {
+Future<String> savePdfLocally(GlobalModel model, {bool? update, GlobalModel? invoiceOld}) async {
   try {
     // توليد ملف الـ PDF
-    final pdfFile = await PdfInvoiceApi.generate(model);
+    final pdfFile = await PdfInvoiceApi.generate(model,update:update,invoiceOld:invoiceOld);
 
     // الحصول على مسار المستندات
     final directory = await getApplicationDocumentsDirectory();
@@ -537,15 +537,15 @@ bool checkProdHaveImei(String prodId, String imei) {
       false;
 }
 
-void sendEmailWithPdfAttachment(GlobalModel model) async {
+void sendEmailWithPdfAttachment(GlobalModel model, {bool? update, GlobalModel? invoiceOld}) async {
   String username = 'ba3rak.ae@gmail.com'; // بريدك الإلكتروني
   String password = 'ggicttcumjanxath'; // كلمة المرور للتطبيق
   // burjalarab000
   final smtpServer = gmail(username, password);
-  String pdfFilePath = await savePdfLocally(model);
+  String pdfFilePath = await savePdfLocally(model,update: update,invoiceOld:invoiceOld);
   final message = Message()
     ..from = Address(username, 'برج العرب للهواتف المتحركة')
-    ..recipients.add("burjalarab000@gmail.com") // البريد الإلكتروني للمستلم
+    ..recipients.add("alidabol567@gmail.com") // البريد الإلكتروني للمستلم
     ..subject = 'الموضوع:فاتورتك الألكترونية من برج العرب للهواتف المتحركة بتاريخ ${Timestamp.now().toDate()}'
     ..html = "<h1>شكرا لك لزيارتك محل برج العرب للهواتف المتحركة</h1>\n<p>لمراجعة الفاتورة يمكنك تتبع الرابط التالي \n </p>"
     // إرفاق ملف PDF

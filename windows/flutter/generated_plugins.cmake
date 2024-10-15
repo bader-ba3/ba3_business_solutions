@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   flutter_platform_alert
   flutter_window_close
+  permission_handler_windows
   printing
 )
 

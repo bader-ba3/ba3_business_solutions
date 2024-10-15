@@ -1198,6 +1198,8 @@ PODS:
   - FirebaseSharedSwift (11.3.0)
   - flutter_platform_alert (0.0.1):
     - FlutterMacOS
+  - flutter_splendid_ble (0.0.1):
+    - FlutterMacOS
   - flutter_window_close (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
@@ -1316,6 +1318,7 @@ DEPENDENCIES:
   - cloud_firestore (from `Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos`)
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - flutter_platform_alert (from `Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos`)
+  - flutter_splendid_ble (from `Flutter/ephemeral/.symlinks/plugins/flutter_splendid_ble/macos`)
   - flutter_window_close (from `Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
@@ -1348,6 +1351,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
   flutter_platform_alert:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos
+  flutter_splendid_ble:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_splendid_ble/macos
   flutter_window_close:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos
   FlutterMacOS:
@@ -1372,6 +1377,7 @@ SPEC CHECKSUMS:
   FirebaseFirestoreInternal: ad9b9ee2d3d430c8f31333a69b3b6737a7206232
   FirebaseSharedSwift: d39c2ad64a11a8d936ce25a42b00df47078bb59c
   flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
+  flutter_splendid_ble: 3d354bf348111185422aa57d61af061aed2efdd6
   flutter_window_close: a0f4f388e956ebafa866e3e171ce837c166eab9c
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
@@ -1382,6 +1388,6 @@ SPEC CHECKSUMS:
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
 
-PODFILE CHECKSUM: ebd4484585a0d7bc022aaecd743fb4a450f70847
+PODFILE CHECKSUM: 9cfcd286e70ac9e878d273e6feccfed355e85fb7
 
 COCOAPODS: 1.15.2

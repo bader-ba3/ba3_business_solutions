@@ -5,8 +5,12 @@ import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:image/image.dart' as img;
+
 
 class PrintViewModel extends GetxController {
   Future<void> printFunction(GlobalModel globalModel,
@@ -65,6 +69,8 @@ class PrintViewModel extends GetxController {
     // print(p)
     print(await PrintBluetoothThermal.isPermissionBluetoothGranted);
 
+
+
     /*await Future.forEach(listResult, (BluetoothInfo bluetooth) {
       String name = bluetooth.name;
       String mac = bluetooth.macAdress;
@@ -122,7 +128,7 @@ class PrintViewModel extends GetxController {
         List<int> ticket = await testTextWarranty(warranty);
         result = await PrintBluetoothThermal.writeBytes(ticket);
       } else {
-        List<int> ticket = await testText(globalModel);
+        List<int> ticket = await invoicePrint(globalModel);
         result = await PrintBluetoothThermal.writeBytes(ticket);
       }
 
@@ -144,7 +150,7 @@ class PrintViewModel extends GetxController {
     return bytes;
   }
 
-  Future<List<int>> testText(GlobalModel globalModel) async {
+  Future<List<int>> invoicePrint(GlobalModel globalModel) async {
     List<int> bytes = [];
     // Using default profile
     final profile = await CapabilityProfile.load();
@@ -155,10 +161,10 @@ class PrintViewModel extends GetxController {
     bytes += generator.text('Tax Invoice',
         styles: const PosStyles(align: PosAlign.center), linesAfter: 1);
 
-    // final ByteData data = await rootBundle.load('assets/logo.jpg');
-    // final Uint8List bytesImg = data.buffer.asUint8List();
-    // img.Image? image = img.decodeImage(bytesImg);
-    // bytes += generator.imageRaster(image!);
+    final ByteData data = await rootBundle.load('assets/logo.jpg');
+    final Uint8List bytesImg = data.buffer.asUint8List();
+    img.Image? image = img.decodeImage(bytesImg);
+    bytes += generator.imageRaster(image!);
 
     bytes += generator.text("Burj AlArab Mobile Phone",
         styles: const PosStyles(align: PosAlign.center, bold: true));
