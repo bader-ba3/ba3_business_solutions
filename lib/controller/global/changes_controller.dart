@@ -44,11 +44,11 @@ class ChangesController extends GetxController {
   }
 
   listenChanges() {
-    FirebaseFirestore.instance.collection(AppConstants.changesCollection).where("ali", isEqualTo: null).snapshots().listen((value) async {
+    FirebaseFirestore.instance.collection(AppConstants.changesCollection).where(AppConstants.userName, isEqualTo: null).snapshots().listen((value) async {
       // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
       for (var element in value.docs) {
-        if (element.data()["ali"] == null) {
+        if (element.data()[AppConstants.userName] == null) {
           print(element['changeType']);
           if (element['changeType'] == AppConstants.productsCollection) {
             ProductController productViewModel = Get.find<ProductController>();
@@ -91,8 +91,8 @@ class ChangesController extends GetxController {
           } else {
             print("UNKNOWN CHANGE " * 20);
           }
-          if (element.data()["ali"] == null || element.data()["abd"] == null) {
-            FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(element.id).set({"ali": true, ...element.data()});
+          if (element.data()[AppConstants.userName] == null /*|| element.data()["abd"] == null*/) {
+            FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(element.id).set({AppConstants.userName: true, ...element.data()});
           } else if (element.data()["abd"] != null) {
             // FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
           }
@@ -109,7 +109,7 @@ class ChangesController extends GetxController {
     String lastChangesIndex = getLastChangesIndexWithPad();
     print(lastChangesIndex);
     await FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(lastChangesIndex).set({
-      "ali": true,
+      AppConstants.userName: true,
       "changeType": changeType,
       "changeId": lastChangesIndex,
       ...json,

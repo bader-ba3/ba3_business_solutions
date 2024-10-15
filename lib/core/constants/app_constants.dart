@@ -257,6 +257,7 @@ abstract class AppConstants {
   static const secondTimeOut = "secondTimeEnter";
   static const breakTime = "secondTimeEnter";
 
+
   static const allRolePage = [
     AppConstants.roleViewBond,
     AppConstants.roleViewAccount,
@@ -284,4 +285,6 @@ abstract class AppConstants {
     AppConstants.accountTypeFinalAccount,
     AppConstants.accountTypeAggregateAccount
   ];
+
+  static const userName = "ali";
 }
