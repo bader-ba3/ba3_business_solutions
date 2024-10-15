@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,6 +9,7 @@ import 'package:ba3_business_solutions/controller/product/product_controller.dar
 import 'package:ba3_business_solutions/core/api/pdf_bond_api.dart';
 import 'package:ba3_business_solutions/model/account/account_customer.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mailer/mailer.dart';
@@ -17,7 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../model/product/product_imei.dart';
 import '../../constants/app_constants.dart';
 import '../../api/pdf_invoice_api.dart';
-
+import 'package:http/http.dart' as http;
 bool getIfAccountHaveCustomers(String accId) {
   if (accId.startsWith("acc")) {
     return getAccountModelFromId(accId)?.accCustomer?.firstOrNull != null;
@@ -569,4 +571,60 @@ void sendEmailWithPdfAttachment(GlobalModel model,bool isBond, {bool? update, Gl
       print('مشكلة: ${p.code}: ${p.msg}');
     }
   }
+}
+
+Future<String> checkArabicWithTranslate(String data) async {
+  bool isArabic = false;
+
+  // فحص ما إذا كان النص عربيًا
+  for (var c in data.codeUnits) {
+    if (c >= 0x0600 && c <= 0x06FF) {
+      isArabic = true;
+      break;
+    }
+  }
+
+  // إذا كان النص عربيًا، نقوم بالترجمة باستخدام Google Translate
+  if (isArabic) {
+    String translatedText = await translateText(data, 'ar', 'en');
+    return translatedText;
+  } else {
+    return data;
+  }
+}
+
+
+// دالة تستخدم Google Translate API للترجمة
+Future<String> translateText(String text, String fromLang, String toLang) async {
+  String apiKey = 'AIzaSyAil4Csq27_oCC_BzF7ZMetUEyNM665VqQ'; // استبدل بـ API KEY الخاص بك
+  final url = Uri.parse(
+      'https://translation.googleapis.com/language/translate/v2?key=$apiKey');
+
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: json.encode({
+      'q': text,
+      'source': fromLang,
+      'target': toLang,
+      'format': 'text',
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    String translatedText = jsonResponse['data']['translations'][0]['translatedText'];
+    return translatedText;
+  } else {
+    throw Exception('Failed to translate text');
+  }
+
+
+
+}
+setEnglishNameForProduct(ProductModel prod){
+
+  Get.find<ProductController>().updateProduct(prod);
 }

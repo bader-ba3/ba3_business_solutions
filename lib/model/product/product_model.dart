@@ -6,6 +6,7 @@ import '../../core/helper/functions/functions.dart';
 
 class ProductModel {
   String? prodId,
+  prodEngName,
       prodName,
       prodCode,
       prodFullCode,
@@ -46,10 +47,12 @@ class ProductModel {
     this.prodGroupPad,
     this.prodAverageBuyPrice,
     this.prodImei,
+    this.prodEngName,
   });
 
   ProductModel.fromJson(Map<dynamic, dynamic> map) {
     prodId = map['prodId'];
+    prodEngName = map['prodEngName'];
     prodName = map['prodName'];
     prodCode = map['prodCode'];
     prodFullCode = map['prodFullCode'];
@@ -193,6 +196,7 @@ class ProductModel {
       'prodFullCode': prodFullCode,
       'prodIsGroup': prodIsGroup,
       'prodIsLocal': prodIsLocal,
+      'prodEngName': prodEngName,
       'prodGroupPad': prodGroupPad,
       'prodImei': prodImei
           ?.map(
@@ -237,6 +241,7 @@ class ProductModel {
       'الرقم التسلسلي': prodId.toString(),
       'رمز المادة': prodFullCode.toString(),
       'اسم المادة': prodName.toString(),
+      'الاسم اللاتيني': prodEngName.toString(),
       // 'prodCode': prodCode,
       'اسم الاب': getProductNameFromId(prodParentId),
       'سعر المستهلك': prodCustomerPrice.toString(),

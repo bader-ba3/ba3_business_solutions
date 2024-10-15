@@ -131,6 +131,19 @@ class InvoicePlutoController extends GetxController {
 
     return total;
   }
+  double computeProFit() {
+    double total = 0.0, prodCost=0.0;
+    for (var record in stateManager.rows) {
+
+      ProductModel? productModel=getProductModelFromName(record.toJson()["invRecProduct"]);
+      if (productModel!=null) {
+        prodCost=(double.tryParse(productModel.prodCostPrice.toString())??0.0)*(double.tryParse(record.toJson()["invRecQuantity"].toString())??0.0);
+        total += (double.tryParse(record.toJson()["invRecTotal"].toString()) ?? 0)-prodCost;
+      }
+    }
+
+    return total;
+  }
 
   double getPrice({type, prodName}) {
     ProductController productController = Get.find<ProductController>();

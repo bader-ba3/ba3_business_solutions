@@ -21,6 +21,7 @@ class GlobalModel {
       bondCode,
       bondType,
       invId,
+  invProFit,
       invName,
       invSubTotal,
       invPrimaryAccount,
@@ -84,6 +85,7 @@ class GlobalModel {
       if (cheqPaidEntryBond != null) 'cheqPaidEntryBond': cheqPaidEntryBond,
 
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
+      if (invProFit != null) 'invProFit': invProFit,
       if (isDeleted != null) 'isDeleted': isDeleted,
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (invReturnCode != null) 'invReturnCode': invReturnCode,
@@ -160,6 +162,7 @@ class GlobalModel {
       if (invPartnerCode != null) 'invPartnerCode': invPartnerCode,
       if (addedTotal != null) 'addedTotal': addedTotal,
       if (invIsPaid != null) 'invIsPaid': invIsPaid,
+      if (invProFit != null) 'invProFit': invProFit,
       if (isDeleted != null) 'isDeleted': isDeleted,
       if (firstPay != null) 'firstPay': firstPay,
       if (invId != null) 'invId': invId,
@@ -275,6 +278,7 @@ class GlobalModel {
       invPartnerCode: json['invPartnerCode'],
       discountTotal: json['discountTotal'],
       cheqDeuDate: json['cheqDeuDate'],
+      invProFit: json['invProFit'],
       cheqPaidEntryBond: json['cheqPaidEntryBond'],
       firstPay: json['firstPay'],
       addedTotal: json['addedTotal'],
@@ -340,141 +344,7 @@ class GlobalModel {
     );
   }
 
-  // Map difference(GlobalModel oldData) {
-  //   Map<String, Map<String, dynamic>> finalMap = {
-  //     "oldData": {"bondRecord": [], "invRecords": []},
-  //     "newData": {"bondRecord": [], "invRecords": []}
-  //   };
-  //   assert(oldData.bondId == bondId && oldData.bondId != null && bondId != null || oldData.invId == invId && oldData.invId != null && invId != null);
-  //   print("_ _ " * 20);
-  //   print(invRecords);
-  //   print(invRecords?.length);
-  //
-  //   if (bondRecord != null || oldData.bondRecord != null || (bondRecord?.isNotEmpty ?? false) || (oldData.bondRecord?.isNotEmpty ?? false)) {
-  //     for (BondRecordModel newItem in bondRecord!) {
-  //       if (oldData.bondRecord!.contains(newItem)) {
-  //         BondRecordModel oldItem = oldData.bondRecord![oldData.bondRecord!.indexOf(newItem)];
-  //         Map<String, Map<String, dynamic>> changes = oldItem.getChanges(newItem);
-  //         if (changes['newData']!.isNotEmpty) {
-  //           finalMap['newData']?['bondRecord']?.add(changes['newData']!);
-  //           finalMap['oldData']?['bondRecord']?.add(changes['oldData']!);
-  //         } else {
-  //           print("its empty");
-  //         }
-  //       }
-  //       if (!oldData.bondRecord!.contains(newItem)) {
-  //         finalMap['newData']?['bondRecord']?.add(newItem.toJson());
-  //       }
-  //     }
-  //   }
-  //   if (invRecords != null || oldData.invRecords != null || (invRecords?.isNotEmpty ?? false) || (oldData.invRecords?.isNotEmpty ?? false)) {
-  //     for (InvoiceRecordModel newItem in invRecords!) {
-  //       if (oldData.invRecords!.contains(newItem)) {
-  //         InvoiceRecordModel oldItem = oldData.invRecords![oldData.invRecords!.indexOf(newItem)];
-  //         Map<String, Map<String, dynamic>> changes = oldItem.getChanges(newItem);
-  //         if (changes['newData']!.isNotEmpty) {
-  //           finalMap['newData']?['invRecords']?.add(changes['newData']!);
-  //           finalMap['oldData']?['invRecords']?.add(changes['oldData']!);
-  //         } else {
-  //           print("its empty");
-  //         }
-  //       }
-  //       if (!oldData.invRecords!.contains(newItem)) {
-  //         finalMap['newData']?['invRecords']?.add(newItem.toJson());
-  //       }
-  //     }
-  //     for (InvoiceRecordModel newItem in oldData.invRecords!) {
-  //       if (!invRecords!.contains(newItem)) {
-  //         finalMap['oldData']?['invRecords']?.add(newItem.toJson());
-  //       }
-  //     }
-  //   }
-  //   if (bondCode != oldData.bondCode) {
-  //     finalMap['newData']?['bondCode'] = bondCode;
-  //     finalMap['oldData']?['bondCode'] = oldData.bondCode;
-  //   }
-  //   if (bondDescription != oldData.bondDescription) {
-  //     finalMap['newData']?['bondDescription'] = bondDescription;
-  //     finalMap['oldData']?['bondDescription'] = oldData.bondDescription;
-  //   }
-  //   if (bondDate != oldData.bondDate) {
-  //     finalMap['newData']?['bondDate'] = bondDate;
-  //     finalMap['oldData']?['bondDate'] = oldData.bondDate;
-  //   }
-  //   if (bondTotal != oldData.bondTotal) {
-  //     finalMap['newData']?['bondTotal'] = bondTotal;
-  //     finalMap['oldData']?['bondTotal'] = oldData.bondTotal;
-  //   }
-  //   if (invComment != oldData.invComment) {
-  //     finalMap['newData']?['invComment'] = invComment;
-  //     finalMap['oldData']?['invComment'] = oldData.invComment;
-  //   }
-  //   if (invTotal != oldData.invTotal) {
-  //     finalMap['newData']?['invTotal'] = invTotal;
-  //     finalMap['oldData']?['invTotal'] = oldData.invTotal;
-  //   }
-  //   if (invTotal != oldData.invTotal) {
-  //     finalMap['newData']?['invTotal'] = invTotal;
-  //     finalMap['oldData']?['invTotal'] = oldData.invTotal;
-  //   }
-  //   if (invSubTotal != oldData.invSubTotal) {
-  //     finalMap['newData']?['invSubTotal'] = invSubTotal;
-  //     finalMap['oldData']?['invSubTotal'] = oldData.invSubTotal;
-  //   }
-  //   if (invPrimaryAccount != oldData.invPrimaryAccount) {
-  //     finalMap['newData']?['invPrimaryAccount'] = invPrimaryAccount;
-  //     finalMap['oldData']?['invPrimaryAccount'] = oldData.invPrimaryAccount;
-  //   }
-  //   if (invSecondaryAccount != oldData.invSecondaryAccount) {
-  //     finalMap['newData']?['invSecondaryAccount'] = invSecondaryAccount;
-  //     finalMap['oldData']?['invSecondaryAccount'] = oldData.invSecondaryAccount;
-  //   }
-  //   if (invStorehouse != oldData.invStorehouse) {
-  //     finalMap['newData']?['invStorehouse'] = invStorehouse;
-  //     finalMap['oldData']?['invStorehouse'] = oldData.invStorehouse;
-  //   }
-  //   if (invType != oldData.invType) {
-  //     finalMap['newData']?['invType'] = invType;
-  //     finalMap['oldData']?['invType'] = oldData.invType;
-  //   }
-  //   if (invoiceAccount != oldData.invoiceAccount) {
-  //     finalMap['newData']?['invoiceAccount'] = invoiceAccount;
-  //     finalMap['oldData']?['invoiceAccount'] = oldData.invoiceAccount;
-  //   }
-  //   if (originId != oldData.originId) {
-  //     finalMap['newData']?['originId'] = originId;
-  //     finalMap['oldData']?['originId'] = oldData.originId;
-  //   }
-  //   if (invCode != oldData.invCode) {
-  //     finalMap['newData']?['invCode'] = invCode;
-  //     finalMap['oldData']?['invCode'] = oldData.invCode;
-  //   }
-  //   if (patternId != oldData.patternId) {
-  //     finalMap['newData']?['patternId'] = patternId;
-  //     finalMap['oldData']?['patternId'] = oldData.patternId;
-  //   }
-  //   if (invSeller != oldData.invSeller) {
-  //     finalMap['newData']?['invSeller'] = invSeller;
-  //     finalMap['oldData']?['invSeller'] = oldData.invSeller;
-  //   }
-  //   if (invDate != oldData.invDate) {
-  //     finalMap['newData']?['invDate'] = invDate;
-  //     finalMap['oldData']?['invDate'] = oldData.invDate;
-  //   }
-  //   if (invMobileNumber != oldData.invMobileNumber) {
-  //     finalMap['newData']?['invMobileNumber'] = invMobileNumber;
-  //     finalMap['oldData']?['invMobileNumber'] = oldData.invMobileNumber;
-  //   }
-  //   if (finalMap['newData']?['bondRecord'].length == 0 && finalMap['oldData']?['bondRecord'].length == 0) {
-  //     finalMap['newData']?.remove('bondRecord');
-  //     finalMap['oldData']?.remove('bondRecord');
-  //   }
-  //   if (finalMap['newData']?['invRecords'].length == 0 && finalMap['oldData']?['invRecords'].length == 0) {
-  //     finalMap['newData']?.remove('invRecords');
-  //     finalMap['oldData']?.remove('invRecords');
-  //   }
-  //   return finalMap;
-  // }
+
 
   String? affectedId() {
     return invId ?? bondId;
@@ -494,6 +364,7 @@ class GlobalModel {
     this.cheqPaidEntryBond,
     this.invReturnCode,
     this.invIsPaid,
+    this.invProFit,
     this.originAmenId,
     this.bondDescription,
     this.bondTotal,
@@ -568,6 +439,7 @@ class GlobalModel {
         'النوع': getInvTypeFromEnum(invType ?? ""),
         "حساب البائع": getSellerNameFromId(invSeller), //Isolate
         'وصف': invComment ?? '',
+        'ربح الفاتورة': invProFit ?? '',
       };
     } else if (type == AppConstants.globalTypeBond) {
       return {

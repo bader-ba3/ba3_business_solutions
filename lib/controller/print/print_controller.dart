@@ -1,3 +1,6 @@
+
+
+
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/model/global/global_model.dart';
 import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
@@ -10,10 +13,12 @@ import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
+import '../../core/helper/functions/functions.dart';
+
 class PrintController extends GetxController {
   Future<void> printFunction(GlobalModel globalModel, {WarrantyModel? warrantyModel}) async {
     List<BluetoothInfo> allBluetooth = await getBluetoots();
-    print(allBluetooth.toList());
+
 
     if (allBluetooth
         .map(
@@ -147,8 +152,12 @@ class PrintController extends GetxController {
       double modelSubTotal = modelSubTotalWithVat / 1.05;
 
       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;
-      String text = checkArabicWithTranslate(productModel.prodName!);
-      bytes += generator.text(text.length < 64 ? text : text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
+      String text=productModel.prodEngName??'';
+      if(text=='') {
+        await setEnglishNameForProduct(productModel..prodEngName=await checkArabicWithTranslate(productModel.prodName!));
+        text=await checkArabicWithTranslate(productModel.prodName!);
+      }
+      bytes += generator.text(text.length < 64 ? text :text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
       bytes += generator.text(productModel.prodBarcode ?? "", styles: const PosStyles(align: PosAlign.left));
       double totalOfLine = model.invRecTotal!;
       total = totalOfLine + total;
@@ -171,75 +180,9 @@ class PrintController extends GetxController {
     bytes +=
         generator.text('Total: ' + (natTotal + vatTotal).toStringAsFixed(2) + " AED", styles: const PosStyles(align: PosAlign.right, bold: true));
     bytes += generator.text("UAE, Rak, Sadaf Roundabout", styles: const PosStyles(align: PosAlign.center));
-    bytes += generator.text("0568666411", styles: const PosStyles(align: PosAlign.center));
+    bytes += generator.text("+971568666411", styles: const PosStyles(align: PosAlign.center));
     bytes += generator.text("Thanks For Visiting BA3", styles: const PosStyles(align: PosAlign.center, bold: true));
-    // final file = base64Encode(a!.toList());
-    // print(a.length);
-    // bytes +=  generator.image(decodeImage(a)!);
-// Using `GS v 0` (obsolete)
-// Using `GS ( L`
-//     bytes +=  generator.imageRaster(img.decodeImage(a)!, imageFn: PosImageFn.graphics);
-    //Using `ESC *`
-    //bytes += generator.image(image!);
-    // bytes += generator.text('مرحبا', styles: PosStyles(codeTable: 'WPC1256'));
-    //  const utf8Encoder = Utf8Encoder();
-    //  final encodedStr = utf8Encoder.convert('مرحبا');
-
-    //  generator.textEncoded(Uint8List.fromList([
-
-    //  ]));
-    //  bytes += generator.text('Regular: aA bB cC dD eE fF gG hH iI jJ kK lL mM nN oO pP qQ rR sS tT uU vV wW xX yY zZ');
-    // bytes += generator.text('Special 1: ñÑ àÀ èÈ éÉ üÜ çÇ ôÔ', styles: PosStyles(codeTable: 'CP1252'));
-    // bytes += generator.text('Special 2: blåbærgrød', styles: PosStyles(codeTable: 'CP1252'));
-    //
-    // bytes += generator.text('Bold text', styles: PosStyles(bold: true));
-    // bytes += generator.text('Reverse text', styles: PosStyles(reverse: true));
-    // bytes += generator.text('Underlined text', styles: PosStyles(underline: true), linesAfter: 1);
-    // bytes += generator.text('Align left', styles: PosStyles(align: PosAlign.left));
-    // bytes += generator.text('Align center', styles: PosStyles(align: PosAlign.center));
-    // bytes += generator.text('Align right', styles: PosStyles(align: PosAlign.right), linesAfter: 1);
-
-    // bytes += generator.row([
-    //   PosColumn(
-    //     text: 'col3',
-    //     width: 3,
-    //     styles: PosStyles(align: PosAlign.center, underline: true),
-    //   ),
-    //   PosColumn(
-    //     text: 'col6',
-    //     width: 6,
-    //     styles: PosStyles(align: PosAlign.center, underline: true),
-    //   ),
-    //   PosColumn(
-    //     text: 'col3',
-    //     width: 3,
-    //     styles: PosStyles(align: PosAlign.center, underline: true),
-    //   ),
-    // ]);
-
-    //barcode
-
-    // final List<int> barData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 4];
-    // bytes += generator.barcode(Barcode.upcA(barData));
-    //
-    // //QR code
-    // bytes += generator.qrcode('example.com');
-    //
-    // bytes += generator.text(
-    //   'Text size 50%',
-    //   styles: PosStyles(
-    //     fontType: PosFontType.fontB,
-    //   ),
-    // );
-    // bytes += generator.text(
-    //   'Text size 100%',
-    //   styles: PosStyles(
-    //     fontType: PosFontType.fontA,
-    //   ),
-    // );
-
     bytes += generator.feed(2);
-    //bytes += generator.cut();
     return bytes;
   }
 
@@ -248,16 +191,18 @@ class PrintController extends GetxController {
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
     bytes += generator.reset();
-
     bytes += generator.text('Warranty Invoice', styles: const PosStyles(align: PosAlign.center), linesAfter: 1);
-
     bytes += generator.text("Burj AlArab Mobile Phone", styles: const PosStyles(align: PosAlign.center, bold: true));
     bytes += generator.text("Date: ${globalModel.invDate}", styles: const PosStyles(align: PosAlign.left));
     bytes += generator.text("IN NO: ${globalModel.invId}", styles: const PosStyles(align: PosAlign.left));
 
     for (WarrantyRecordModel model in globalModel.invRecords ?? []) {
       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;
-      String text = checkArabicWithTranslate(productModel.prodName!);
+      String text=productModel.prodEngName??'';
+      if(text=='') {
+        await setEnglishNameForProduct(productModel..prodEngName=await checkArabicWithTranslate(productModel.prodName!));
+        text=await checkArabicWithTranslate(productModel.prodName!);
+      }
       bytes += generator.text(text.length < 64 ? text : text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
       bytes += generator.text(productModel.prodBarcode ?? "", styles: const PosStyles(align: PosAlign.left));
     }
@@ -313,7 +258,7 @@ class PrintController extends GetxController {
     return total;
   }
 
-  String checkArabicWithTranslate(String data) {
+  /*String checkArabicWithTranslate(String data) {
     bool isArabic = false;
     for (var c in data.codeUnits) {
       if (c >= 0x0600 && c <= 0x06E0) {
@@ -357,5 +302,8 @@ class PrintController extends GetxController {
     } else {
       return data;
     }
-  }
+  }*/
+
+
+
 }
