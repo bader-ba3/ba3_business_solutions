@@ -25,6 +25,7 @@ import '../../view/products/widget/product_record_data_source.dart';
 class ProductController extends GetxController {
   // RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
   RxMap<String, ProductModel> productDataMap = <String, ProductModel>{}.obs;
+  RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
   late ProductRecordDataSource recordDataSource;
 
   ProductModel? productModel;
@@ -33,17 +34,24 @@ class ProductController extends GetxController {
     getAllProduct();
   }
 
-  bool isLoadingInitAllProduct=true;
-initAllProduct()async{
-  isLoadingInitAllProduct=false;
-  update();
-    HiveDataBase.globalModelBox.values.where((element) => element.globalType==AppConstants.globalTypeInvoice,).forEach((global) {
-      initGlobalProduct(global);
-    },);
-    print( HiveDataBase.globalModelBox.values.where((element) => element.globalType==AppConstants.globalTypeInvoice,).length)
-;  isLoadingInitAllProduct=true;
-  update();
-}
+  bool isLoadingInitAllProduct = true;
+
+  initAllProduct() async {
+    isLoadingInitAllProduct = false;
+    update();
+    HiveDataBase.globalModelBox.values
+        .where(
+      (element) => element.globalType == AppConstants.globalTypeInvoice,
+    )
+        .forEach(
+      (global) {
+        initGlobalProduct(global);
+      },
+    );
+    isLoadingInitAllProduct = true;
+    update();
+  }
+
   initGlobalProduct(GlobalModel globalModel) async {
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
     Map<String, List> allRecTotal = {};
@@ -62,28 +70,19 @@ initAllProduct()async{
 
     allRecTotal.forEach((key, value) {
       var recCredit = value.reduce((value, element) => value + element);
-      if (productDataMap[key] != null) {
 
-        bool isStoreProduct = productDataMap[key]!.prodType == AppConstants.productTypeStore;
-        InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
-        // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
-        if (productDataMap[key]?.prodRecord == null) {
-          productDataMap[key]?.prodRecord = [
-            ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse)
-          ];
-        } else {
-          productDataMap[key]?.prodRecord?.removeWhere((element) => element.invId == globalModel.invId);
-          productDataMap[key]
-              ?.prodRecord
-              ?.add(ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse));
-        }
+      bool isStoreProduct = productDataMap[key]?.prodType == AppConstants.productTypeStore;
+      InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
+      // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
+      if (productRecordMap[key] == null) {
+        productRecordMap[key] = [
+          ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse)
+        ];
+      } else {
+        productRecordMap[key]?.removeWhere((element) => element.invId == globalModel.invId);
+        productRecordMap[key]
+            ?.add(ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse));
       }
-      //WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-      //   update();
-      // initModel();
-      // initPage();
-      // go(lastIndex);
-      // });
     });
   }
 
@@ -443,7 +442,7 @@ initAllProduct()async{
 
   updateProduct(ProductModel editProductModel, {withLogger = false}) async {
     ChangesController changesViewModel = Get.find<ChangesController>();
-    editProductModel.prodRecord=[];
+    editProductModel.prodRecord = [];
     var fullCode = '';
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;

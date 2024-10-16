@@ -697,7 +697,7 @@ class GlobalController extends GetxController {
       invoiceViewModel.initGlobalInvoice(globalModel);
     }
     if (globalModel.invType != AppConstants.invoiceTypeChange) {
-      // accountViewModel.initGlobalAccount(globalModel);
+      accountViewModel.initGlobalAccount(globalModel);
       productController.initGlobalProduct(globalModel);
     }
     if (globalModel.globalType == AppConstants.globalTypeBond) {

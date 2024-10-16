@@ -101,8 +101,7 @@ class InvoiceController extends GetxController {
     PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       if (getIfAccountHaveCustomers(secondaryAccountController.text)) {
-        customer =
-            await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
+        customer = await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
         customer = await accountCustomerDialog(text: invCustomerAccountController.text);
@@ -111,8 +110,7 @@ class InvoiceController extends GetxController {
       }
     } else {
       if (getIfAccountHaveCustomers(primaryAccountController.text)) {
-        customer =
-            await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
+        customer = await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
         customer = await accountCustomerDialog(text: invCustomerAccountController.text);
@@ -355,22 +353,25 @@ class InvoiceController extends GetxController {
   ScreenController screenViewModel = Get.find<ScreenController>();
 
   initCodeList(patternId) {
-    nextPrevList =
-        Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+    nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
   }
 
   String getNextCodeInv() {
-    int _ = 0;
+    int code = 0;
     if (nextPrevList.isEmpty) {
       return "0";
     } else {
-      _ = int.parse(nextPrevList.keys.where((e) => !e.contains("F-")).last);
-      while (nextPrevList.containsKey(_.toString())) {
-        _++;
+      code = int.parse(nextPrevList.keys.where((e) => !e.contains("F-")).last);
+
+      for(var max in nextPrevList.keys){
+        if(code<=(int.tryParse(max)??0)){
+          code=(int.tryParse(max)??0)+1;
+        }
       }
+
     }
 
-    return _.toString();
+    return code.toString();
   }
 
   //int old inv
@@ -432,6 +433,7 @@ class InvoiceController extends GetxController {
   }
 
   buildInvInitRecent(GlobalModel model) {
+    initCodeList(initModel.patternId);
     initModel = model;
     PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     Get.find<InvoicePlutoController>().typeBile = patternModel.patType!;
@@ -466,16 +468,14 @@ class InvoiceController extends GetxController {
     mobileNumberController.text = initModel.invMobileNumber ?? "";
     noteController.text = initModel.invComment!;
     entryBondIdController.text = initModel.entryBondId ?? "";
-    if (initModel.invCode != "0") {
-      invCodeController.text = initModel.invCode!;
-    } else {
-      invCodeController.text = getNextCodeInv();
-    }
+
+    invCodeController.text = getNextCodeInv();
+
     firstPayController.text = initModel.firstPay.toString();
     dateController = initModel.invDate;
     invDueDateController = initModel.invDueDate;
     // dateController = initModel.invDate!;
-    initCodeList(initModel.patternId);
+
     selectedPayType = initModel.invPayType;
     // buildSourceRecent(initModel);
     // buildDiscountSourceRecent(initModel);
@@ -485,10 +485,7 @@ class InvoiceController extends GetxController {
 
   bool checkAllRecord() {
     for (var element in records) {
-      return (element.invRecProduct == "" ||
-          element.invRecProduct == null ||
-          (element.invRecQuantity == 0 && element.invRecGift == 0) ||
-          element.invRecQuantity == null);
+      return (element.invRecProduct == "" || element.invRecProduct == null || (element.invRecQuantity == 0 && element.invRecGift == 0) || element.invRecQuantity == null);
     }
     return false;
   }
@@ -501,10 +498,7 @@ class InvoiceController extends GetxController {
     storePickList = [];
 
     storeViewController.storeMap.forEach((key, value) {
-      storePickList.addIf(
-          value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) ||
-              value.stName!.toLowerCase().contains(storeController.text.toLowerCase()),
-          value.stName!);
+      storePickList.addIf(value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) || value.stName!.toLowerCase().contains(storeController.text.toLowerCase()), value.stName!);
     });
     if (storePickList.length > 1) {
       await Get.defaultDialog(

@@ -93,9 +93,9 @@ class ChangesController extends GetxController {
           }
           if (element.data()[AppConstants.userName] == null /*|| element.data()["abd"] == null*/) {
             FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(element.id).set({AppConstants.userName: true, ...element.data()});
-          } else if (element.data()["abd"] != null) {
+          } /*else if (element.data()["abd"] != null) {
             // FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
-          }
+          }*/
         }
       }
     });

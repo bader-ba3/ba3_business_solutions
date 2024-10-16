@@ -68,7 +68,7 @@ class AccountDetails extends StatelessWidget {
                   }
                 },
                 // modelList: controller.currentViewAccount,
-                modelList: controller.accountList[modelKey.last]?.accRecord ?? [],
+                modelList: controller.accountRecordList[modelKey.last] ?? [],
               ),
             ),
             Padding(

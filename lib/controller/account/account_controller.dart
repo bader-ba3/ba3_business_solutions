@@ -24,6 +24,7 @@ class AccountController extends GetxController {
   late AccountRecordDataSource accountRecordDataSource;
   late AccountRecordDataSource recordDataSource;
   RxMap<String, AccountModel> accountList = <String, AccountModel>{}.obs;
+  RxMap<String, List<AccountRecordModel>> accountRecordList = <String, List<AccountRecordModel>>{}.obs;
   late DataGridController dataGridController;
 
   // final CollectionReference _accountCollectionRef = FirebaseFirestore.instance.collection(Const.accountsCollection);
@@ -40,6 +41,7 @@ class AccountController extends GetxController {
 
   initGlobalAccount(GlobalModel globalModel, {String? oldAccountKey, List<String>? accountsId}) async {
     // print(globalModel.toFullJson());
+
     if (globalModel.isDeleted != true && globalModel.invIsPending != true) {
       String? type;
       String? date;
@@ -63,7 +65,7 @@ class AccountController extends GetxController {
           .toList();
       for (int i = 0; i < currentEntry.length; i++) {
         var recCredit = currentEntry[i].bondRecDebitAmount! - currentEntry[i].bondRecCreditAmount!;
-        accountList[accountsId!.last]!.accRecord.add(
+        accountRecordList[accountsId!.last]?.add(
               AccountRecordModel(
                   globalModel.invId ?? globalModel.bondId ?? globalModel.entryBondId,
                   currentEntry[i].bondRecAccount!,
@@ -72,7 +74,7 @@ class AccountController extends GetxController {
                   type,
                   date,
                   type.startsWith("pat") ? globalModel.invCode : globalModel.bondCode,
-                  (accountList[accountsId.last]!.accRecord.lastOrNull?.subBalance ?? 0) + recCredit,
+                  (accountRecordList[accountsId.last]!.lastOrNull?.subBalance ?? 0) + recCredit,
                   currentEntry[i].bondRecDebitAmount,
                   currentEntry[i].bondRecCreditAmount!),
             );
@@ -191,7 +193,9 @@ class AccountController extends GetxController {
   double creditValue = 0.0;
 
   Future<void> getAllBondForAccount(List<String> modeKey, List<String> allDate) async {
-    accountList[modeKey.last]?.accRecord.clear();
+
+    accountRecordList[modeKey.last]=[];
+    accountRecordList[modeKey.last]?.clear();
     List<GlobalModel> globalModels = HiveDataBase.globalModelBox.values.where((element) {
       return (allDate.contains(element.bondDate?.split(" ")[0]) || allDate.contains(element.invDate?.split(" ")[0])) ||
           allDate.contains(element.cheqDate?.split(" ")[0]);
@@ -201,12 +205,12 @@ class AccountController extends GetxController {
     }
 
     // searchValue = accountList[modeKey.last]?.accRecord.lastOrNull?.subBalance ?? 0;
-    debitValue = accountList[modeKey.last]?.accRecord.fold(
+    debitValue = accountRecordList[modeKey.last]?.fold(
               0.0,
               (previousValue, element) => element.debit! + previousValue!,
             ) ??
         0;
-    creditValue = accountList[modeKey.last]?.accRecord.fold(
+    creditValue = accountRecordList[modeKey.last]?.fold(
               0.0,
               (previousValue, element) => element.credit! + previousValue!,
             ) ??
@@ -217,7 +221,8 @@ class AccountController extends GetxController {
   double getAllDusAccount(List<String> modeKey) {
     double dues = 0;
     accountList[modeKey.last]!.finalBalance = 0;
-    accountList[modeKey.last]?.accRecord.clear();
+    accountRecordList[modeKey.last]=[];
+    accountRecordList[modeKey.last]?.clear();
 
     List<GlobalModel> globalBondAndCheck =
         HiveDataBase.globalModelBox.values.where((element) => element.globalType != AppConstants.globalTypeInvoice).toList();
@@ -428,18 +433,19 @@ class AccountController extends GetxController {
 
   double getBalance(String userId) {
     double total = 0;
-    accountList[userId]?.accRecord.clear();
+    accountRecordList[userId]=[];
+    accountRecordList[userId]?.clear();
 
     for (var globalModel in HiveDataBase.globalModelBox.values.toList()) {
       initGlobalAccount(globalModel, accountsId: [userId]);
     }
 
-    debitValue = accountList[userId]?.accRecord.fold(
+    debitValue = accountRecordList[userId]?.fold(
               0.0,
               (previousValue, element) => element.debit! + previousValue!,
             ) ??
         0;
-    creditValue = accountList[userId]?.accRecord.fold(
+    creditValue = accountRecordList[userId]?.fold(
               0.0,
               (previousValue, element) => element.credit! + previousValue!,
             ) ??
@@ -451,8 +457,8 @@ class AccountController extends GetxController {
 
   int getCount(userId) {
     int count = 0;
-    if (accountList[userId]!.accRecord.isNotEmpty) {
-      count = accountList[userId]!.accRecord.length;
+    if (accountRecordList[userId]!.isNotEmpty) {
+      count = accountRecordList[userId]!.length;
     }
     return count;
   }
