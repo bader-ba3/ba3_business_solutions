@@ -1,5 +1,5 @@
-import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/BondDebitOption.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/app_menu_item.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_pluto_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,15 +7,8 @@ import 'package:get/get.dart';
 import '../../../core/constants/app_constants.dart';
 import 'bond_details_view.dart';
 
-class BondLayout extends StatefulWidget {
+class BondLayout extends StatelessWidget {
   const BondLayout({super.key});
-
-  @override
-  State<BondLayout> createState() => _BondLayoutState();
-}
-
-class _BondLayoutState extends State<BondLayout> {
-  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,52 +22,62 @@ class _BondLayoutState extends State<BondLayout> {
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
           children: [
-            Item("سند يومية", () {
-              Get.to(
-                () => const BondDetailsView(
-                  bondType: AppConstants.bondTypeDaily,
-                ),
-                binding: BindingsBuilder(() {
-                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDaily));
+            AppMenuItem(
+                text: "سند يومية",
+                onTap: () {
+                  Get.to(
+                    () => const BondDetailsView(
+                      bondType: AppConstants.bondTypeDaily,
+                    ),
+                    binding: BindingsBuilder(() {
+                      Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDaily));
+                    }),
+                  );
                 }),
-              );
-            }),
-            Item("سند دفع", () {
-              Get.to(
-                () => const BondDetailsView(
-                  bondType: AppConstants.bondTypeDebit,
-                ),
-                binding: BindingsBuilder(() {
-                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDebit));
+            AppMenuItem(
+                text: "سند دفع",
+                onTap: () {
+                  Get.to(
+                    () => const BondDetailsView(
+                      bondType: AppConstants.bondTypeDebit,
+                    ),
+                    binding: BindingsBuilder(() {
+                      Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeDebit));
+                    }),
+                  );
                 }),
-              );
-            }),
-            Item("سند قبض", () {
-              Get.to(
-                () => const BondDetailsView(
-                  bondType: AppConstants.bondTypeCredit,
-                ),
-                binding: BindingsBuilder(() {
-                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeCredit));
+            AppMenuItem(
+                text: "سند قبض",
+                onTap: () {
+                  Get.to(
+                    () => const BondDetailsView(
+                      bondType: AppConstants.bondTypeCredit,
+                    ),
+                    binding: BindingsBuilder(() {
+                      Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeCredit));
+                    }),
+                  );
                 }),
-              );
-            }),
-            Item("سند دفع اجل", () {
-              showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => BondDebitDialog(),
-              );
-            }),
-            Item("قيد افتتاحي", () {
-              Get.to(
-                () => const BondDetailsView(
-                  bondType: AppConstants.bondTypeStart,
-                ),
-                binding: BindingsBuilder(() {
-                  Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeStart));
+            AppMenuItem(
+                text: "سند دفع اجل",
+                onTap: () {
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => BondDebitDialog(),
+                  );
                 }),
-              );
-            }),
+            AppMenuItem(
+                text: "قيد افتتاحي",
+                onTap: () {
+                  Get.to(
+                    () => const BondDetailsView(
+                      bondType: AppConstants.bondTypeStart,
+                    ),
+                    binding: BindingsBuilder(() {
+                      Get.lazyPut(() => BondRecordPlutoViewModel(AppConstants.bondTypeStart));
+                    }),
+                  );
+                }),
 /*            if (checkPermission(Const.roleUserAdmin, Const.roleViewInvoice))
               Item("عرض جميع السندات", () {
                 checkPermissionForOperation(Const.roleUserRead, Const.roleViewBond).then((value) {
@@ -89,25 +92,6 @@ class _BondLayoutState extends State<BondLayout> {
             }),*/
           ],
         ),
-      ),
-    );
-  }
-
-  Widget Item(text, onTap) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            padding: const EdgeInsets.all(30.0),
-            child: Center(
-                child: Text(
-              text,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textDirection: TextDirection.rtl,
-            ))),
       ),
     );
   }

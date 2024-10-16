@@ -1,4 +1,3 @@
-import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/Account_Option_Dialog.dart';
 import 'package:ba3_business_solutions/view/accounts/pages/account_tree_view.dart';
@@ -13,15 +12,8 @@ import '../../../core/shared/dialogs/AccountDueOption.dart';
 import '../widget/customer_pluto_edit_view.dart';
 import 'partner_due_account.dart';
 
-class AccountLayout extends StatefulWidget {
+class AccountLayout extends StatelessWidget {
   const AccountLayout({super.key});
-
-  @override
-  State<AccountLayout> createState() => _AccountLayoutState();
-}
-
-class _AccountLayoutState extends State<AccountLayout> {
-  PatternController patternController = Get.find<PatternController>();
 
   @override
   Widget build(BuildContext context) {

@@ -80,6 +80,15 @@ class AccountController extends GetxController {
     }
   }
 
+  List<String> searchText(String query) {
+    List<AccountModel> products = accountList.values.toList().where((item) {
+      var name = item.accName.toString().toLowerCase().contains(query.toLowerCase());
+      var code = item.accCode.toString().toLowerCase().contains(query.toLowerCase());
+      return name || code;
+    }).toList();
+    return products.map((e) => e.accName!).toList();
+  }
+
   initAccBalanceFromBond(GlobalModel globalModel, {List<String>? accountsId}) async {
     List<EntryBondRecordModel>? currentEntry = globalModel.entryBondRecord!
         .where(
