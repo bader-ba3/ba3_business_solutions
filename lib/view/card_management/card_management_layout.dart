@@ -1,37 +1,10 @@
-import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/view/card_management/read_card_view.dart';
 import 'package:ba3_business_solutions/view/card_management/write_card_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CardManagementLayout extends StatefulWidget {
+class CardManagementLayout extends StatelessWidget {
   const CardManagementLayout({super.key});
-
-  @override
-  State<CardManagementLayout> createState() => _CardManagementLayoutState();
-}
-
-class _CardManagementLayoutState extends State<CardManagementLayout> {
-  bool isAdmin = false;
-  UserManagementController userManagementViewController = Get.find<UserManagementController>();
-
-  @override
-  void initState() {
-    super.initState();
-    // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-    //   checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewCard).then((value) {
-    //     print(value);
-    //     if (value) {
-    //       isAdmin = true;
-    //       setState(() {
-
-    //       });
-    //     }
-    //   });
-    // });
-
-    // userManagementViewController.initAllUser();
-  }
 
   @override
   Widget build(BuildContext context) {

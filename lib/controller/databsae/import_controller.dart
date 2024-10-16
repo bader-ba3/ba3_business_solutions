@@ -10,11 +10,14 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../core/utils/loading_dialog.dart';
+import '../../model/account/account_customer.dart';
+import '../../model/account/account_model.dart';
 import '../../model/bond/bond_record_model.dart';
 import '../../model/bond/entry_bond_record_model.dart';
 import '../../model/global/global_model.dart';
 import '../../model/invoice/invoice_record_model.dart';
 import '../../model/patterens/pattern_model.dart';
+import '../../model/product/product_model.dart';
 import '../../view/import/pages/bond_list_view.dart';
 import '../../view/import/pages/entry_bond_list_view.dart';
 import '../../view/import/pages/invoice_list_view.dart';
@@ -1985,6 +1988,419 @@ class ImportController extends GetxController {
         // print(invoiceViewModel.map((e) => e.value.toFullJson(),));
       }*/
       print("---end--" * 30);
+    }
+  }
+
+  Future<void> addProduct(List<List<String>> productList, Map setting) async {
+    List<ProductModel> finalData = [];
+    for (var element in productList) {
+      bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
+      var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
+      var parentId = element[setting["prodParentId"]];
+
+      String? chechIsExist =
+          isGroup ? getProductIdFromName(element[setting["prodName"]].replaceAll("- ", "")) : getProductIdFromName(element[setting["prodName"]]);
+
+      if (chechIsExist == "" || chechIsExist == null) {
+        finalData.add(ProductModel(
+            prodId: generateId(RecordType.product),
+            prodName: element[setting["prodName"]],
+            // prodCode: element[setting["prodCode"]],
+            prodCode: code,
+            prodBarcode: element[setting["prodBarcode"]],
+            // prodIsLocal: !element[setting["prodName"]].contains("مستعمل"),
+            prodIsLocal: true,
+            prodFullCode: "L${element[setting["prodCode"]]}",
+            // prodGroupCode: element[setting["prodGroupCode"]],
+            //todo
+            prodCustomerPrice: element[setting['prodCustomerPrice']],
+            prodWholePrice: element[setting['prodWholePrice']],
+            prodRetailPrice: element[setting['prodRetailPrice']],
+            prodCostPrice: element[setting['prodCostPrice']],
+            prodMinPrice: element[setting['prodMinPrice']],
+            prodType: element[setting['prodType']].removeAllWhitespace ==
+                    "خد"
+                        "مية"
+                ? AppConstants.productTypeService
+                : AppConstants.productTypeStore,
+            // prodParentId : element[setting['prodParentId']].isBlank!?null:parentId,
+            // prodIsParent : element[setting['prodParentId']].isBlank,
+            prodParentId: parentId.isBlank! ? null : getProductIdFromFullName("L" + parentId),
+            prodIsParent: parentId.isBlank,
+            prodIsGroup: isGroup));
+      }
+    }
+    var i = 0;
+
+    print(finalData.length);
+    print("--" * 30);
+    for (var i in finalData) {
+      print(i.toFullJson());
+    }
+    print("--" * 30);
+
+    for (var element in finalData) {
+      i++;
+      print("$i OF ${finalData.length}");
+      print(element.toJson());
+      await FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(element.prodId).set(element.toJson());
+      HiveDataBase.productModelBox.put(element.prodId, element);
+      print(element.prodParentId);
+      if (element.prodParentId != null && element.prodParentId != '') {
+        ProductModel parentModel = getProductModelFromId(element.prodParentId!)!;
+        parentModel.prodChild?.add(element.prodId);
+        HiveDataBase.productModelBox.put(parentModel.prodId, parentModel);
+        FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(parentModel.prodId).update({
+          'prodChild': FieldValue.arrayUnion([element.prodId]),
+        });
+      }
+    }
+  }
+
+  Future<void> addProductFree(List<List<String>> productList, Map setting) async {
+    List<ProductModel> finalData = [];
+    for (var element in productList) {
+      //print(element[setting["prodName"]]);
+      bool isGroup = !(element[setting['prodType']].removeAllWhitespace == "خدمية" || element[setting['prodType']].removeAllWhitespace == "مستودعية");
+      var code = element[setting["prodCode"]].replaceAll(element[setting["prodParentId"]], "");
+      var parentId = "F${element[setting["prodParentId"]]}";
+      // var isRoot = element[setting["prodParentId"]].isBlank;
+      // print("code "+code);
+      String? chechIsExist = isGroup
+          ? getProductIdFromName("F-${element[setting["prodName"]].replaceAll("- ", "")}")
+          : getProductIdFromName("F-" + element[setting["prodName"]]);
+
+      if (chechIsExist == "" || chechIsExist == null) {
+        finalData.add(ProductModel(
+            prodId: generateId(RecordType.product),
+            prodName: "F-${element[setting["prodName"]]}",
+            // prodCode: element[setting["prodCode"]],
+            prodCode: code,
+            prodBarcode: element[setting["prodBarcode"]],
+            // prodIsLocal: !element[setting["prodName"]].contains("مستعمل"),
+            prodIsLocal: false,
+            prodFullCode: "F${element[setting["prodCode"]]}",
+            // prodGroupCode: element[setting["prodGroupCode"]],
+            //todo
+            prodCustomerPrice: element[setting['prodCustomerPrice']],
+            prodWholePrice: element[setting['prodWholePrice']],
+            prodRetailPrice: element[setting['prodRetailPrice']],
+            prodCostPrice: element[setting['prodCostPrice']],
+            prodMinPrice: element[setting['prodMinPrice']],
+            prodType: element[setting['prodType']].removeAllWhitespace == "خدمية" ? AppConstants.productTypeService : AppConstants.productTypeStore,
+            prodParentId: parentId.isBlank! ? null : parentId,
+            prodIsParent: parentId.isBlank,
+            prodIsGroup: isGroup));
+      }
+    }
+    var i = 0;
+
+    print(finalData.length);
+    print("--" * 30);
+    for (var i in finalData) {
+      if (i.prodIsGroup!) {
+        print(i.toFullJson());
+      }
+    }
+    print("--" * 30);
+
+    for (var element in finalData) {
+      i++;
+      print(element.toJson());
+
+      ///FireBse Todo
+      await FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(element.prodId).set(element.toJson());
+      HiveDataBase.productModelBox.put(element.prodId, element);
+    }
+  }
+
+  Future<void> addAccountWithCustomer(List<List<String>> productList, Map setting) async {
+    // AccountViewModel accountViewModel = Get.find<AccountViewModel>();
+    List<AccountModel> finalData = [];
+    for (var element in productList) {
+      if (element[setting["accCode"]] != '') {
+        bool accIsParent = element[setting['accParentId']].isEmpty;
+
+        if (accIsParent) {
+          finalData.add(AccountModel(
+            // accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+            accId: generateId(RecordType.account),
+            accName: (element[setting["accName"]].replaceAll("-", "")),
+            accCode: element[setting["accCode"]].replaceAll("-", ""),
+            accComment: '',
+            accType: AppConstants.accountTypeDefault,
+            accVat: 'GCC',
+            accParentId: null,
+            accIsParent: true,
+          ));
+        } else {
+          String accIds = generateId(RecordType.account);
+          finalData
+              .where(
+                (e) => e.accName == element[setting["accParentId"]].replaceAll("-", ""),
+              )
+              .first
+              .accChild
+              .add(accIds);
+          finalData.add(AccountModel(
+            accId: accIds,
+            accName: (element[setting["accName"]].replaceAll("-", "")),
+            accCode: element[setting["accCode"]].replaceAll("-", ""),
+            accComment: '',
+            accType: AppConstants.accountTypeDefault,
+            accVat: 'GCC',
+            accParentId: finalData
+                .where(
+                  (e) => e.accName == element[setting["accParentId"]].replaceAll("-", ""),
+                )
+                .first
+                .accId,
+            accIsParent: accIsParent,
+          ));
+        }
+      } else {
+        // print(element[setting["accName"]]);
+        if (finalData.last.accCustomer == null) {
+          finalData.last.accCustomer = [
+            AccountCustomer(
+              customerAccountId: generateId(RecordType.accCustomer),
+              customerAccountName: element[setting["accName"]],
+              customerCardNumber: element[setting["customerCardNumber"]],
+              customerVAT: element[setting["customerVAT"]],
+              mainAccount: finalData.last.accId,
+            )
+          ];
+        } else {
+          finalData.last.accCustomer!.add(AccountCustomer(
+            customerAccountId: generateId(RecordType.accCustomer),
+            customerAccountName: element[setting["accName"]],
+            customerCardNumber: element[setting["customerCardNumber"]],
+            customerVAT: element[setting["customerVAT"]],
+            mainAccount: finalData.last.accId,
+          ));
+        }
+      }
+    }
+    print(finalData.length);
+    int i = 0;
+    // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc("set").set({"s":"s"});
+    for (var element in finalData) {
+      i++;
+
+      // print(element.toJson());
+      print(i);
+
+      await HiveDataBase.accountModelBox.put(element.accId, element);
+      for (AccountCustomer customer in element.accCustomer ?? []) {
+        await HiveDataBase.accountCustomerBox.put(customer.customerAccountId, customer);
+      }
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(element.accId).set(element.toJson(), SetOptions(merge: true));
+    }
+  }
+
+  Future<void> addAccountWithOutCustomer(List<List<String>> productList, Map setting) async {
+    // AccountViewModel accountViewModel = Get.find<AccountViewModel>();
+    List<AccountModel> finalData = [];
+    for (var element in productList) {
+      if (getAccountIdFromName(element[setting["accName"]]) == null) {
+        // print(element[setting["accName"]]);
+        if (element[setting["accCode"]] != '') {
+          bool accIsParent = element[setting['accParentId']].isEmpty;
+
+          if (accIsParent) {
+            finalData.add(AccountModel(
+              // accId: getAccountIdFromText(element[setting["accName"]].replaceAll("-", "")),
+              accId: generateId(RecordType.account),
+              accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
+              accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
+              accComment: '',
+              accType: AppConstants.accountTypeDefault,
+              accVat: 'GCC',
+              accParentId: null,
+              accIsParent: true,
+            ));
+          } else {
+            String accIds = generateId(RecordType.account);
+            if (finalData
+                    .where(
+                      (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
+                    )
+                    .firstOrNull !=
+                null) {
+              finalData
+                  .where(
+                    (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
+                  )
+                  .firstOrNull
+                  ?.accChild
+                  .add(accIds);
+              finalData.add(AccountModel(
+                accId: accIds,
+                accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
+                accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
+                accComment: '',
+                accType: AppConstants.accountTypeDefault,
+                accVat: 'GCC',
+                accParentId: finalData
+                    .where(
+                      (e) => e.accName == element[setting["accParentId"]] /*.replaceAll("-", "")*/,
+                    )
+                    .first
+                    .accId,
+                accIsParent: accIsParent,
+              ));
+            } else {
+              AccountModel parent = getAccountIdFromName(element[setting["accParentId"]])!;
+              HiveDataBase.accountModelBox.put(parent.accId, parent..accChild.add(accIds));
+              FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(parent.accId).set({
+                "accChild": FieldValue.arrayUnion([accIds])
+              }, SetOptions(merge: true));
+              finalData.add(AccountModel(
+                accId: accIds,
+                accName: (element[setting["accName"]] /*.replaceAll("-", "")*/),
+                accCode: element[setting["accCode"]] /*.replaceAll("-", "")*/,
+                accComment: '',
+                accType: AppConstants.accountTypeDefault,
+                accVat: 'GCC',
+                accParentId: parent.accId,
+                accIsParent: accIsParent,
+              ));
+            }
+          }
+        } else {
+          // print(element[setting["accName"]]);
+          if (finalData.last.accCustomer == null) {
+            finalData.last.accCustomer = [
+              AccountCustomer(
+                customerAccountId: generateId(RecordType.accCustomer),
+                customerAccountName: element[setting["accName"]],
+                customerCardNumber: element[setting["customerCardNumber"]],
+                customerVAT: element[setting["customerVAT"]],
+                mainAccount: finalData.last.accId,
+              )
+            ];
+          } else {
+            finalData.last.accCustomer!.add(AccountCustomer(
+              customerAccountId: generateId(RecordType.accCustomer),
+              customerAccountName: element[setting["accName"]],
+              customerCardNumber: element[setting["customerCardNumber"]],
+              customerVAT: element[setting["customerVAT"]],
+              mainAccount: finalData.last.accId,
+            ));
+          }
+        }
+      }
+    }
+    print(finalData.length);
+    int i = 0;
+    // await FirebaseFirestore.instance.collection(Const.accountsCollection).doc("set").set({"s":"s"});
+    for (var element in finalData) {
+      i++;
+
+      // print(element.toJson());
+      print(i);
+
+      await HiveDataBase.accountModelBox.put(element.accId, element);
+
+      await FirebaseFirestore.instance.collection(AppConstants.accountsCollection).doc(element.accId).set(element.toJson(), SetOptions(merge: true));
+    }
+  }
+
+  Future<void> addCheque(List<List<String>> productList, Map setting) async {
+    List<GlobalModel> finalData = [];
+    var cheqCode = 0;
+    for (var i = 0; i < productList.length; i++) {
+      List<String> element = productList[i];
+      cheqCode++;
+      String cheqId = generateId(RecordType.cheque);
+
+      await Future.delayed(const Duration(milliseconds: 100));
+      String cheqType = element[setting["cheqType"]].removeAllWhitespace == "شيكات مدفوعة".removeAllWhitespace
+          ? AppConstants.chequeTypePay
+          : AppConstants.chequeTypePay;
+      String cheqStatus = element[setting["cheqStatus"]].removeAllWhitespace == "مدفوعة".removeAllWhitespace
+          ? AppConstants.chequeStatusPaid
+          : AppConstants.chequeStatusNotPaid;
+      // print(element[setting["cheqPrimeryAccount"]].replaceAll("-", ""));
+      // print(element[setting["cheqPrimeryAccount"]]);
+      String cheqPrimeryAccount = getAccountIdFromText("اوراق الدفع");
+      // print(element[setting["cheqSecoundryAccount"]].toString().split("-")[1]);
+      // print(element[setting["cheqSecoundryAccount"]].toString().split("-")[0]);
+
+      String cheqSecoundryAccount = getAccountIdFromText(element[setting["cheqSecoundryAccount"]].toString().replaceAll("-", ""));
+      if (cheqSecoundryAccount == '') {
+        print(element[setting["cheqSecoundryAccount"]]);
+      }
+      String cheqBankAccount = getAccountIdFromText("المصرف");
+      String des = "سند قيد مولد من شيك رقم $cheqCode";
+      print(element[setting["cheqAllAmount"]].replaceAll(",", ""));
+      double cheqAllAmount = double.tryParse(element[setting["cheqAllAmount"]].replaceAll(",", "")) ?? 0.0;
+      int year = int.parse(element[setting["cheqDate"]].toString().split("-")[2]);
+      int min = int.parse(element[setting["cheqDate"]].toString().split("-")[1]);
+      int sec = int.parse(element[setting["cheqDate"]].toString().split("-")[0]);
+      int yearDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[2]);
+      int minDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[1]);
+      int secDue = int.parse(element[setting["cheqDateDue"]].toString().split("-")[0]);
+      DateTime cheqDate = DateTime(year, min, sec);
+      DateTime cheqDateDue = DateTime(yearDue, minDue, secDue);
+      String bondId = '';
+      if (cheqStatus == AppConstants.chequeStatusPaid) {
+        String des = "سند دفع " "${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}";
+        List<BondRecordModel> bondRecord = [];
+        List<EntryBondRecordModel> entryBondRecord = [];
+
+        bondRecord.add(BondRecordModel("00", 0, double.tryParse(cheqAllAmount.toString()) ?? 0, getAccountIdFromText("اوراق الدفع"), des));
+        bondRecord.add(BondRecordModel("01", double.tryParse(cheqAllAmount.toString()) ?? 0, 0, getAccountIdFromText("المصرف"), des));
+
+        // bondRecord.add(BondRecordModel("03", controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text), 0, patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!, des));
+
+        for (var element in bondRecord) {
+          entryBondRecord.add(EntryBondRecordModel.fromJson(element.toJson()));
+        }
+
+        GlobalController globalViewModel = Get.find<GlobalController>();
+        bondId = generateId(RecordType.bond);
+        await globalViewModel.addGlobalBond(
+          GlobalModel(
+            bondId: bondId,
+            globalType: AppConstants.globalTypeBond,
+            bondDate: DateTime.now().toString(),
+            bondRecord: bondRecord,
+            bondCode: Get.find<BondController>().getNextBondCode(type: AppConstants.bondTypeDebit),
+            entryBondRecord: entryBondRecord,
+            bondDescription: des,
+            bondType: AppConstants.bondTypeDebit,
+            bondTotal: "0",
+          ),
+        );
+      }
+      finalData.add(GlobalModel(
+        cheqAllAmount: cheqAllAmount.toString(),
+        cheqBankAccount: cheqBankAccount,
+        bondId: bondId,
+        cheqCode: cheqCode.toString(),
+        cheqDate: cheqDate.toString(),
+        cheqDeuDate: cheqDateDue.toString(),
+        entryBondId: generateId(RecordType.entryBond),
+        cheqId: cheqId,
+        cheqName: "${element[setting["cheqType"]]}رقم الورقة ${element[setting["cheqNum"]]}",
+        cheqPrimeryAccount: cheqPrimeryAccount,
+        cheqSecoundryAccount: cheqSecoundryAccount,
+        entryBondRecord: [
+          EntryBondRecordModel("01", cheqAllAmount, 0, cheqPrimeryAccount, des),
+          EntryBondRecordModel("02", 0, cheqAllAmount, cheqSecoundryAccount, des),
+        ],
+        cheqRemainingAmount: cheqStatus == AppConstants.chequeStatusPaid ? "0" : cheqAllAmount.toString(),
+        cheqStatus: cheqStatus,
+        cheqType: cheqType,
+        globalType: AppConstants.globalTypeCheque,
+      ));
+    }
+    print(finalData.length);
+    for (var element in finalData) {
+      print(element.toFullJson());
+
+      HiveDataBase.globalModelBox.put(element.cheqId, element);
     }
   }
 }

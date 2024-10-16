@@ -6,13 +6,13 @@ import '../../../controller/cost/cost_center_controller.dart';
 import '../../../model/cost/cost_center_tree.dart';
 
 void showContextMenu(
-  BuildContext parentContext,
+  BuildContext context,
   Offset tapPosition,
   CostCenterController controller,
   final TreeEntry<CostCenterTree> entry,
 ) {
   showMenu(
-    context: parentContext,
+    context: context,
     position: RelativeRect.fromLTRB(
       tapPosition.dx,
       tapPosition.dy,
