@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:get/get.dart';
 
-import '../../../controller/cost/cost_center_controller.dart';
 import '../../../model/cost/cost_center_tree.dart';
 
 void showContextMenu(
   BuildContext context,
   Offset tapPosition,
-  CostCenterController controller,
+
   final TreeEntry<CostCenterTree> entry,
 ) {
   showMenu(
@@ -42,21 +40,5 @@ void showContextMenu(
         ),
       ),
     ],
-  ).then((value) {
-    if (value == 'rename') {
-      controller.startRenameChild(entry.node.id);
-    } else if (value == 'delete') {
-      controller.removeChild(parent: entry.parent?.node.id, id: entry.node.id);
-    } else if (value == "add") {
-      var con = TextEditingController();
-      Get.defaultDialog(content: TextFormField(controller: con), actions: [
-        ElevatedButton(
-            onPressed: () {
-              Get.back();
-              controller.addChild(parent: entry.node.id, name: con.text);
-            },
-            child: const Text("yes"))
-      ]);
-    }
-  });
+  );
 }

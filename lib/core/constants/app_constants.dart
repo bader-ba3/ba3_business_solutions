@@ -287,4 +287,6 @@ abstract class AppConstants {
   ];
 
   static const userName = "ali";
+
+  static const prodViewTypeSearch="prodViewTypeSearch";
 }

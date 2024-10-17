@@ -15,7 +15,6 @@ import '../../core/helper/init_app/init_app.dart';
 import '../../view/user_management/pages/account_management_view.dart';
 import '../account/account_controller.dart';
 import '../cheque/cheque_controller.dart';
-import '../cost/cost_center_controller.dart';
 import '../invoice/invoice_controller.dart';
 import '../product/product_controller.dart';
 import '../seller/sellers_controller.dart';
@@ -31,7 +30,6 @@ class DataBaseController extends GetxController {
   getAllDataBase() {
     FirebaseFirestore.instance.collection(AppConstants.settingCollection).doc(AppConstants.dataCollection).snapshots().listen((value) {
       // databaseList.clear();
-      print(value.data());
       databaseList = (value.data()?['dataList'] as List).map((e) => e.toString()).toList();
 
       WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
@@ -52,7 +50,6 @@ class DataBaseController extends GetxController {
     Get.put(SellersController(), permanent: true);
     Get.put(InvoiceController(), permanent: true);
     Get.put(ChequeController(), permanent: true);
-    Get.put(CostCenterController(), permanent: true);
     // Get.put(CameraService(),permanent: true);
     // Get.put(FaceDetectorService(),permanent: true);
     // Get.put(MLService(),permanent: true);

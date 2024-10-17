@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../../core/shared/widgets/new_pluto.dart';
 import '../../../controller/product/product_controller.dart';
 import '../../../view/invoices/widget/custom_Text_field.dart';
+import '../../constants/app_constants.dart';
 
 Future<String?> searchProductTextDialog(String productText) async {
   TextEditingController productTextController = TextEditingController()..text = productText;
@@ -35,6 +36,7 @@ Future<String?> searchProductTextDialog(String productText) async {
                             clipBehavior: Clip.hardEdge,
                             borderRadius: BorderRadius.circular(15),
                             child: CustomPlutoGridWithAppBar(
+                              type: AppConstants.prodViewTypeSearch,
                               onSelected: (selected) {
                                 productTextController.text = getProductNameFromId(selected.row?.cells["الرقم التسلسلي"]!.value);
                                 Get.back();

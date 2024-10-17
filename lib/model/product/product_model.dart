@@ -1,5 +1,7 @@
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/model/product/product_record_model.dart';
+import 'package:get/get.dart';
 
 import '../../controller/product/product_controller.dart';
 import '../../core/helper/functions/functions.dart';
@@ -52,7 +54,7 @@ class ProductModel {
 
   ProductModel.fromJson(Map<dynamic, dynamic> map) {
     prodId = map['prodId'];
-    prodEngName = map['prodEngName'];
+    prodEngName = map['prodEngName']??'';
     prodName = map['prodName'];
     prodCode = map['prodCode'];
     prodFullCode = map['prodFullCode'];
@@ -236,13 +238,30 @@ class ProductModel {
     };
   }
 
-  Map<String, dynamic> toMap() {
-    return {
+  Map<String, dynamic> toMap({String? type}) {
+    if(type==AppConstants.prodViewTypeSearch) {
+      return {
+
+        'الرقم التسلسلي': prodId.toString(),
+        'رمز المادة': prodFullCode.toString(),
+        'اسم المادة': prodName.toString(),
+        'الاسم اللاتيني': prodEngName.toString(),
+        "الكمية":Get.find<ProductController>().getQuantityProd(prodId!),
+        'سعر المبيع': prodRetailPrice.toString(),
+        'سعر الكلفة': prodCostPrice.toString(),
+        'الباركود': prodBarcode.toString(),
+
+
+      };
+    } else {
+      return {
+
       'الرقم التسلسلي': prodId.toString(),
       'رمز المادة': prodFullCode.toString(),
       'اسم المادة': prodName.toString(),
       'الاسم اللاتيني': prodEngName.toString(),
-      // 'prodCode': prodCode,
+      "الكمية":Get.find<ProductController>().getQuantityProd(prodId!),
+
       'اسم الاب': getProductNameFromId(prodParentId),
       'سعر المستهلك': prodCustomerPrice.toString(),
       'سعر الجملة': prodWholePrice.toString(),
@@ -250,16 +269,11 @@ class ProductModel {
       'سعر الكلفة': prodCostPrice.toString(),
       'اقل سعر مسموح': prodMinPrice.toString(),
       'الباركود': prodBarcode.toString(),
-      // 'prodGroupCode': prodGroupCode,
       'النوع': getProductTypeFromEnum(prodType ?? "").toString(),
 
-      // 'prodIsParent': prodIsParent,
-      // 'prodChild': prodChild,
-      // 'prodRecord': prodRecord,
-      // 'prodIsGroup': prodIsGroup,
-      // 'prodIsLocal': prodIsLocal,
-      // 'prodGroupPad': prodGroupPad,
+
     };
+    }
   }
 
   Map<String, dynamic> toTree() {

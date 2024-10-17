@@ -17,6 +17,7 @@ class AllProductsPage extends StatelessWidget {
     return GetBuilder<ProductController>(builder: (controller) {
       return CustomPlutoGridWithAppBar(
         title: "جميع المواد",
+        type: '',
         onLoaded: (e) {},
         onSelected: (p0) {
           // Get.to(() => ProductDetails(

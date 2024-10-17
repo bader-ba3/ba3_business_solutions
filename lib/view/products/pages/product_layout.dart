@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../user_management/pages/user_management_layout.dart';
 
 class ProductLayout extends StatelessWidget {
   const ProductLayout({super.key});
@@ -24,7 +25,7 @@ class ProductLayout extends StatelessWidget {
             item("إضافة مادة", () {
               Get.to(() => const AddProductPage());
             }),
-            item("معاينة المواد(الشكل الجديد)", () {
+            item("معاينة المواد", () {
               checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
                 if (value) Get.to(() => const AllProductsPage());
               });
@@ -45,22 +46,4 @@ class ProductLayout extends StatelessWidget {
     );
   }
 
-  Widget item(text, onTap) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            padding: const EdgeInsets.all(30.0),
-            child: Center(
-                child: Text(
-              text,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textDirection: TextDirection.rtl,
-            ))),
-      ),
-    );
-  }
 }

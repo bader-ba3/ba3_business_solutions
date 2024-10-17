@@ -2,7 +2,6 @@ import 'package:ba3_business_solutions/controller/account/account_controller.dar
 import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/controller/bond/entry_bond_controller.dart';
 import 'package:ba3_business_solutions/controller/cheque/cheque_controller.dart';
-import 'package:ba3_business_solutions/controller/cost/cost_center_controller.dart';
 import 'package:ba3_business_solutions/controller/databsae/import_controller.dart';
 import 'package:ba3_business_solutions/controller/inventory/inventory_controller.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
@@ -14,7 +13,6 @@ import 'package:ba3_business_solutions/controller/seller/target_controller.dart'
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
 import 'package:get/get.dart';
-
 import '../../controller/account/account_customer_controller.dart';
 import '../../controller/databsae/database_controller.dart';
 import '../../controller/global/changes_controller.dart';
@@ -41,7 +39,6 @@ class GetBinding extends Bindings {
     Get.put(SellersController());
     Get.put(InvoiceController());
     Get.put(ChequeController());
-    Get.put(CostCenterController());
     Get.put(InventoryController());
     Get.put(AccountCustomerController());
 

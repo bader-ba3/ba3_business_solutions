@@ -26,9 +26,13 @@ class ProductController extends GetxController {
   // RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
   RxMap<String, ProductModel> productDataMap = <String, ProductModel>{}.obs;
   RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
+
+  Map<String, List<ProductRecordModel>> prodListForSearch = {};
   late ProductRecordDataSource recordDataSource;
 
   ProductModel? productModel;
+
+  getListForSearch() {}
 
   ProductController() {
     getAllProduct();
@@ -52,23 +56,84 @@ class ProductController extends GetxController {
     update();
   }
 
+  List<ProductRecordModel> getAllCustomInvProduct({required String prodId, required String invType}) {
+    return productRecordMap[prodId]
+            ?.where(
+              (element) => element.prodInvType == invType,
+            )
+            .toList() ??
+        [];
+  }
+
+  int getQuantityProd(String prodId) {
+    int quantity = 0;
+
+    int allSales = getAllCustomInvProduct(prodId: prodId, invType: AppConstants.invoiceTypeSales)
+        .map(
+          (e) => int.tryParse(e.prodRecQuantity.toString()) ?? 0,
+        )
+        .fold(
+          0,
+          (previousValue, element) => element + previousValue,
+        );
+    int allBuy = getAllCustomInvProduct(prodId: prodId, invType: AppConstants.invoiceTypeBuy)
+        .map(
+          (e) => int.tryParse(e.prodRecQuantity.toString()) ?? 0,
+        )
+        .fold(
+          0,
+          (previousValue, element) => element + previousValue,
+        );
+
+    quantity = allSales - allBuy;
+    return quantity;
+  }
+
   initGlobalProduct(GlobalModel globalModel) async {
     // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
-    Map<String, List> allRecTotal = {};
+    // Map<String, List> allRecTotal = {};
 
-    bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
-    int correctQuantity = isPay ? 1 : -1;
+    // bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
+    // int correctQuantity = isPay ? 1 : -1;
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
-        if (allRecTotal[globalModel.invRecords![i].invRecProduct] == null) {
-          allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1))];
+        if (productRecordMap[globalModel.invRecords![i].invRecProduct] == null) {
+          productRecordMap[globalModel.invRecords![i].invRecProduct!] = [
+            ProductRecordModel(
+              globalModel.invId,
+              globalModel.invType,
+              globalModel.invRecords![i].invRecProduct!,
+              (globalModel.invRecords![i].invRecQuantity ?? 1).toString(),
+              globalModel.invRecords![i].invRecId,
+              globalModel.invRecords![i].invRecTotal.toString(),
+              globalModel.invRecords![i].invRecSubTotal.toString(),
+              globalModel.invDate,
+              globalModel.invRecords![i].invRecVat.toString(),
+              globalModel.invStorehouse,
+              globalModel.invType,
+            )
+          ];
+          // allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1))];
         } else {
-          allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1)));
+          productRecordMap[globalModel.invRecords![i].invRecProduct!]!.add(ProductRecordModel(
+            globalModel.invId,
+            globalModel.invType,
+            globalModel.invRecords![i].invRecProduct!,
+            (globalModel.invRecords![i].invRecQuantity ?? 1).toString(),
+            globalModel.invRecords![i].invRecId,
+            globalModel.invRecords![i].invRecTotal.toString(),
+            globalModel.invRecords![i].invRecSubTotal.toString(),
+            globalModel.invDate,
+            globalModel.invRecords![i].invRecVat.toString(),
+            globalModel.invStorehouse,
+            globalModel.invType,
+          ));
+          // allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1)));
         }
       }
     }
 
-    allRecTotal.forEach((key, value) {
+/*    allRecTotal.forEach((key, value) {
       var recCredit = value.reduce((value, element) => value + element);
 
       bool isStoreProduct = productDataMap[key]?.prodType == AppConstants.productTypeStore;
@@ -76,14 +141,37 @@ class ProductController extends GetxController {
       // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
       if (productRecordMap[key] == null) {
         productRecordMap[key] = [
-          ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse)
+          ProductRecordModel(
+            globalModel.invId,
+            globalModel.invType,
+            key,
+            (isStoreProduct ? recCredit : "0").toString(),
+            element.invRecId,
+            element.invRecTotal.toString(),
+            element.invRecSubTotal.toString(),
+            globalModel.invDate,
+            element.invRecVat.toString(),
+            globalModel.invStorehouse,
+            globalModel.invType,
+          )
         ];
       } else {
         productRecordMap[key]?.removeWhere((element) => element.invId == globalModel.invId);
-        productRecordMap[key]
-            ?.add(ProductRecordModel(globalModel.invId, globalModel.invType, key, (isStoreProduct ? recCredit : "0").toString(), element.invRecId, element.invRecTotal.toString(), element.invRecSubTotal.toString(), globalModel.invDate, element.invRecVat.toString(), globalModel.invStorehouse));
+        productRecordMap[key]?.add(ProductRecordModel(
+          globalModel.invId,
+          globalModel.invType,
+          key,
+          (isStoreProduct ? recCredit : "0").toString(),
+          element.invRecId,
+          element.invRecTotal.toString(),
+          element.invRecSubTotal.toString(),
+          globalModel.invDate,
+          element.invRecVat.toString(),
+          globalModel.invStorehouse,
+          globalModel.invType,
+        ));
       }
-    });
+    });*/
   }
 
   double getAvreageBuy(ProductModel productModel) {

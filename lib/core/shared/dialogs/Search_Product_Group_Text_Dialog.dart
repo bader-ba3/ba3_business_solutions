@@ -1,3 +1,4 @@
+import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/model/product/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,7 @@ Future<String?> searchProductGroupTextDialog(String productGroupText) async {
                             clipBehavior: Clip.hardEdge,
                             borderRadius: BorderRadius.circular(15),
                             child: CustomPlutoGridWithAppBar(
+                              type: AppConstants.prodViewTypeSearch,
                               onSelected: (selected) {
                                 productTextController.text = selected.row?.cells["الرقم التسلسلي"]!.value;
                                 Get.back();
