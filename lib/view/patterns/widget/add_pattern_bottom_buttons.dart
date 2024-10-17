@@ -42,13 +42,13 @@ class AddPatternBottomButtons extends StatelessWidget {
               Get.snackbar("خطأ", "يرجى كتابة المستودع");
             } else {
               if (patternController.editPatternModel?.patId != null) {
-                checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewPattern).then((value) {
+                hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewPattern).then((value) {
                   if (value) {
                     patternController.editPattern();
                   }
                 });
               } else {
-                checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewPattern).then((value) {
+                hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewPattern).then((value) {
                   if (value) patternController.addPattern();
                 });
               }
@@ -61,7 +61,7 @@ class AddPatternBottomButtons extends StatelessWidget {
           AppButton(
             title: "حذف",
             onPressed: () {
-              checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewPattern).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewPattern).then((value) {
                 if (value) {
                   patternController.deletePattern();
                 }

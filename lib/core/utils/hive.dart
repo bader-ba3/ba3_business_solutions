@@ -4,18 +4,18 @@ import 'package:ba3_business_solutions/core/adapter/product_model_adapter.dart';
 import 'package:ba3_business_solutions/core/adapter/product_record_model_adapter.dart';
 import 'package:ba3_business_solutions/core/adapter/store_model_adapter.dart';
 import 'package:ba3_business_solutions/core/adapter/warranty_adapter.dart';
-import 'package:ba3_business_solutions/model/account/account_customer.dart';
-import 'package:ba3_business_solutions/model/account/account_model.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
-import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
-import 'package:ba3_business_solutions/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/data/model/account/account_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/inventory/inventory_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../data/model/store/store_model.dart';
+import '../../data/model/warranty/warranty_model.dart';
 import '../adapter/account_customer_adapter.dart';
 import '../adapter/account_model_adapter.dart';
 import '../adapter/inventory_model_adapter.dart';
-import '../../model/warranty/warranty_model.dart';
-import '../../model/store/store_model.dart';
 
 class HiveDataBase {
   static late Box<GlobalModel> globalModelBox;
@@ -57,8 +57,7 @@ class HiveDataBase {
     Hive.registerAdapter(InventoryModelAdapter());
     productModelBox = await Hive.openBox<ProductModel>("AllProduct");
     warrantyModelBox = await Hive.openBox<WarrantyModel>("AllWarranty");
-    accountCustomerBox =
-        await Hive.openBox<AccountCustomer>("AllCustomerAccount");
+    accountCustomerBox = await Hive.openBox<AccountCustomer>("AllCustomerAccount");
     accountModelBox = await Hive.openBox<AccountModel>("AllAccount");
     storeModelBox = await Hive.openBox<StoreModel>("AllStore");
     lastChangesIndexBox = await Hive.openBox<int>("lastChangesIndex");
@@ -73,8 +72,7 @@ class HiveDataBase {
     timerDateBox = await Hive.openBox<String>("TimerDate");
     isNewUser = await Hive.openBox<bool>("IsNewUser");
     if (constBox.get("myReadFlag") == null) {
-      constBox.put(
-          "myReadFlag", "readFlag${DateTime.now().microsecondsSinceEpoch}");
+      constBox.put("myReadFlag", "readFlag${DateTime.now().microsecondsSinceEpoch}");
     }
     if (lastChangesIndexBox.get("lastChangesIndex") == null) {
       lastChangesIndexBox.put("lastChangesIndex", 0);

@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
-import 'package:ba3_business_solutions/model/seller/seller_model.dart';
+import 'package:ba3_business_solutions/data/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/sellers/widget/all_seller_invoice_data_grid_source.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../model/global/global_model.dart';
+import '../../data/model/global/global_model.dart';
+import '../../data/repositories/seller/seller_repository.dart';
 import '../user/user_management_controller.dart';
 
 class SellersController extends GetxController {
@@ -19,198 +19,165 @@ class SellersController extends GetxController {
 
   List<DateTime>? dateRange = [];
 
-  SellersController() {
-    getAllSeller();
+  SellersController(this._sellersRepository) {
+    getAllSellers();
   }
 
-  void getAllSeller() {
-    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).snapshots().listen((event) {
-      RxMap<String, List<SellerRecModel>> oldSellerList = <String, List<SellerRecModel>>{}.obs;
-      allSellers.forEach((key, value) {
-        oldSellerList[key] = value.sellerRecord ?? [];
-      });
-      allSellers.clear();
-      for (var element in event.docs) {
-        List<SellerRecModel> _ = allSellers[element.id]?.sellerRecord ?? [];
-        allSellers[element.id] = SellerModel.fromJson(element.data(), element.id);
-        allSellers[element.id]?.sellerRecord = oldSellerList[element.id] ?? [];
-      }
-      // initChart();
+  final SellersRepository _sellersRepository;
+
+  void getAllSellers() {
+    _sellersRepository.getAllSellers().listen((sellers) {
+      // Preserve existing seller records
+      final oldSellerList = {
+        for (var entry in allSellers.entries) entry.key: entry.value.sellerRecord ?? [],
+      };
+
+      // Clear and update allSellers with new data and restore old records
+      allSellers.assignAll(
+        {
+          for (var entry in sellers.entries) entry.key: entry.value..sellerRecord = oldSellerList[entry.key] ?? [],
+        },
+      );
       update();
     });
   }
 
-  addSeller(SellerModel model) {
-    List<SellerModel> _ = allSellers.values.where((element) => element.sellerCode == model.sellerCode).toList();
-    if (_.isNotEmpty) {
-      if (model.sellerId == null) {
-        return;
-      } else if (model.sellerId != null && model.sellerId != _.first.sellerId) {
+  void addSeller(SellerModel model) async {
+    List<SellerModel> existingSellers = allSellers.values.where((element) => element.sellerCode == model.sellerCode).toList();
+
+    if (existingSellers.isNotEmpty) {
+      if (model.sellerId == null || model.sellerId != existingSellers.first.sellerId) {
         return;
       }
     }
-    var id = generateId(RecordType.sellers);
-    model.sellerId ??= id;
-    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).doc(model.sellerId).set(model.toJson());
+
+    model.sellerId ??= generateId(RecordType.sellers);
+    final result = await _sellersRepository.addSeller(model);
+    result.fold(
+      (failure) => Get.snackbar('Error', failure.message), // Handle error
+      (_) => Get.snackbar('Success', 'Seller added successfully'),
+    );
   }
 
-  deleteSeller(SellerModel model) {
-    FirebaseFirestore.instance.collection(AppConstants.sellersCollection).doc(model.sellerId).delete();
+  void deleteSeller(SellerModel model) async {
+    final result = await _sellersRepository.deleteSeller(model.sellerId);
+    result.fold(
+      (failure) => Get.snackbar('Error', failure.message),
+      (_) => Get.snackbar('Success', 'Seller deleted successfully'),
+    );
   }
 
   void postRecord({userId, invId, amount, date}) {
     allSellers.values.map((e) => e.sellerRecord).toList().forEach((element) {
-      element?.removeWhere((element) => element.selleRecInvId == invId);
+      element?.removeWhere((record) => record.selleRecInvId == invId);
     });
-    SellerRecModel seller = SellerRecModel(selleRecUserId: userId, selleRecInvId: invId, selleRecAmount: amount.toString(), selleRecInvDate: date);
+
+    SellerRecModel sellerRecord = SellerRecModel(
+      selleRecUserId: userId,
+      selleRecInvId: invId,
+      selleRecAmount: amount.toString(),
+      selleRecInvDate: date,
+    );
+
     if (allSellers[userId]?.sellerRecord == null) {
-      allSellers[userId]?.sellerRecord = [seller];
+      allSellers[userId]?.sellerRecord = [sellerRecord];
     } else {
-      allSellers[userId]?.sellerRecord?.removeWhere((element) => element.selleRecInvId == invId);
-      allSellers[userId]?.sellerRecord?.add(seller);
+      allSellers[userId]?.sellerRecord?.removeWhere((record) => record.selleRecInvId == invId);
+      allSellers[userId]?.sellerRecord?.add(sellerRecord);
     }
+
+    update();
   }
 
   void deleteGlobalSeller(GlobalModel globalModel) {
-    allSellers[globalModel.invSeller]?.sellerRecord?.removeWhere((element) => element.selleRecInvId == globalModel.invId);
+    allSellers[globalModel.invSeller]?.sellerRecord?.removeWhere((record) => record.selleRecInvId == globalModel.invId);
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
       update();
     });
   }
 
-  // void deleteRecord({userId, invId}) {
-  //   FirebaseFirestore.instance.collection(Const.sellersCollection).doc(userId).collection(Const.recordCollection).doc(invId).delete();
-  // }
-
   initSellerPage(key) {
     dataViewGridController = DataGridController();
     recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: allSellers[key]!.sellerRecord!);
-    // update();
   }
 
   void filter(List<DateTime> list, key) {
     var startDate = DateTime.parse(list[0].toString().split(" ")[0]);
     var endDate = DateTime.parse(list[1].toString().split(" ")[0]);
-    var _ = allSellers[key]
+    var filteredRecords = allSellers[key]
         ?.sellerRecord
         ?.where((e) =>
             DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch <= endDate.millisecondsSinceEpoch &&
             DateTime.parse(e.selleRecInvDate!).millisecondsSinceEpoch >= startDate.millisecondsSinceEpoch)
         .toList();
     dataViewGridController = DataGridController();
-    recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: _!);
+    recordViewDataSource = AllSellerInvoiceDataGridSource(sellerRecModel: filteredRecords!);
     update();
   }
 
-  Map<String, Map<String, double>> userMoney = {};
-  Map<String, Color> colorMap = {};
-  double high = 0;
-
-  // initChart(){
-  //   userMoney.clear();
-  //   colorMap.clear();
-  //   high=0;
-  //   allSellers[getMyUserSellerId()]?.sellerRecord?.forEach((element) {
-  //     var month=element.selleRecInvDate!.split("-")[1];
-  //     var day=element.selleRecInvDate!.split("-")[2];
-  //     if(userMoney[month]==null){
-  //       userMoney[month]={};
-  //     }
-  //     userMoney[month]?[day]=(userMoney[month]?[day]??0)+double.parse(element.selleRecAmount!);
-  //     if(high<(userMoney[month]?[day]??0)){
-  //       high=(userMoney[month]?[day]??0);
-  //     }
-  //   });
-  //
-  //   // userMoney=sortNestedMaps(userMoney);
-  //
-  //   userMoney=sortNestedMaps(userMoney);
-  //   userMoney.forEach((key, value) {
-  //     colorMap[key]=getRandomColor();
-  //   });
-  //   // WidgetsFlutterBinding.ensureInitialized()
-  //   //     .waitUntilFirstFrameRasterized
-  //   //     .then((value) {
-  //   //   update();
-  //   // });
-  //   // update();
-  // }
-
   Color getRandomColor() {
     Random random = Random();
-
-    // Generate random values for the RGB components
-    int red = random.nextInt(256);
-    int green = random.nextInt(256);
-    int blue = random.nextInt(256);
-    Color randomColor = Color.fromARGB(255, red, green, blue);
-
-    return randomColor;
+    return Color.fromARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
   }
 
-  Map<String, Map<String, double>> sortNestedMaps(Map<String, Map<String, double>> data) {
-    Map<String, Map<String, double>> sortedData = Map.fromEntries(data.entries.toList());
+  Future<String> selectSeller(String searchText) async {
+    List<SellerModel> filteredSellers = [];
+    SellerModel? selectedSeller;
 
-    sortedData.forEach((key, innerMap) {
-      var sortedInnerMap = Map.fromEntries(innerMap.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
-      sortedData[key] = sortedInnerMap;
+    // Filter sellers based on input text (code or name)
+    allSellers.forEach((key, seller) {
+      filteredSellers.addIf(
+          seller.sellerCode!.toLowerCase().contains(searchText.toLowerCase()) || seller.sellerName!.toLowerCase().contains(searchText.toLowerCase()),
+          seller);
     });
 
-    return sortedData;
-  }
-}
-
-Future<String> getSellerComplete(text) async {
-  var sellerController = Get.find<SellersController>();
-  List<SellerModel> accountPickList = [];
-  SellerModel? sellerModel;
-  sellerController.allSellers.forEach((key, value) {
-    accountPickList.addIf(
-        (value.sellerCode!.toLowerCase().contains(text.toLowerCase()) || value.sellerName!.toLowerCase().contains(text.toLowerCase())), value);
-  });
-  if (accountPickList.length > 1) {
-    await Get.defaultDialog(
-      title: "اختر احد البائعين",
-      content: SizedBox(
-        height: Get.height / 2,
-        width: Get.height / 2,
-        child: ListView.builder(
-          itemCount: accountPickList.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                Get.back();
-                sellerModel = accountPickList[index];
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                margin: const EdgeInsets.all(8),
-                width: 500,
-                child: Center(
-                  child: Text(
-                    accountPickList[index].sellerName ?? "",
+    // If more than one seller matches, show a dialog to select one
+    if (filteredSellers.length > 1) {
+      await Get.defaultDialog(
+        title: "اختر احد البائعين",
+        content: SizedBox(
+          height: Get.height / 2,
+          width: Get.height / 2,
+          child: ListView.builder(
+            itemCount: filteredSellers.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Get.back();
+                  selectedSeller = filteredSellers[index];
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.all(8),
+                  width: 500,
+                  child: Center(
+                    child: Text(filteredSellers[index].sellerName ?? ""),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
-    );
-  } else if (accountPickList.length == 1) {
-    sellerModel = accountPickList[0];
-  } else {
-    Get.snackbar("فحص المطاييح", "هذا المطيح غير موجود من قبل");
-    return "";
-  }
-  if (sellerModel!.sellerId != getMyUserSellerId()) {
-    if (await checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) {
-      return sellerModel!.sellerName!;
+      );
+    } else if (filteredSellers.length == 1) {
+      // If only one seller matches, auto-select
+      selectedSeller = filteredSellers[0];
     } else {
-      return getSellerNameFromId(getMyUserSellerId()) ?? "";
+      // No sellers matched
+      Get.snackbar("فحص البائعين", "البائع غير موجود");
+      return "";
     }
-  } else {
-    return sellerModel!.sellerName!;
+
+    // Validate permissions or return the seller name
+    if (selectedSeller!.sellerId != getCurrentUserSellerId()) {
+      if (await hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice)) {
+        return selectedSeller!.sellerName!;
+      } else {
+        return getSellerNameById(getCurrentUserSellerId()) ?? "";
+      }
+    } else {
+      return selectedSeller!.sellerName!;
+    }
   }
 }
 
@@ -223,7 +190,7 @@ String? getSellerIdFromText(text) {
   }
 }
 
-String? getSellerNameFromId(id) {
+String? getSellerNameById(id) {
   if (id != null && id != " " && id != "") {
     return Get.find<SellersController>().allSellers[id]!.sellerName;
   } else {

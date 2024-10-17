@@ -1,12 +1,12 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/app_spacer.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/functions/functions.dart';
-import '../../../model/bond/bond_record_model.dart';
+import '../../../data/model/bond/bond_record_model.dart';
 
 class BondReport extends StatelessWidget {
   const BondReport({super.key});

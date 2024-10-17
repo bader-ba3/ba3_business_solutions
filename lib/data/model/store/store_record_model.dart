@@ -1,6 +1,6 @@
-import 'package:ba3_business_solutions/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
 
-import '../../controller/product/product_controller.dart';
+import '../../../controller/product/product_controller.dart';
 
 class StoreRecordModel {
   String? storeRecId;

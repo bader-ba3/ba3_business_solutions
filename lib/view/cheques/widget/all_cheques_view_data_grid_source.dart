@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

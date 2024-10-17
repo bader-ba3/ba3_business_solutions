@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/databsae/import_controller.dart';
-import '../../../model/bond/entry_bond_record_model.dart';
-import '../../../model/global/global_model.dart';
+import '../../../data/model/bond/entry_bond_record_model.dart';
+import '../../../data/model/global/global_model.dart';
 
 class EntryBondListView extends StatelessWidget {
   final List<GlobalModel> bondList;

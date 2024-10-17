@@ -6,7 +6,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
-import '../../../model/product/product_tree.dart';
+import '../../../data/model/product/product_tree.dart';
 
 class ProductTreePage extends StatelessWidget {
   ProductTreePage({super.key});

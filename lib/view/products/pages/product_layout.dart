@@ -26,17 +26,17 @@ class ProductLayout extends StatelessWidget {
               Get.to(() => const AddProductPage());
             }),
             item("معاينة المواد", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
                 if (value) Get.to(() => const AllProductsPage());
               });
             }),
             item("شجرة المواد", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
                 if (value) Get.to(() => ProductTreePage());
               });
             }),
             item("إدارة المخزون ", () {
-              checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewProduct).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewProduct).then((value) {
                 if (value) Get.to(() => const ProductManagementPage());
               });
             }),
@@ -45,5 +45,4 @@ class ProductLayout extends StatelessWidget {
       ),
     );
   }
-
 }

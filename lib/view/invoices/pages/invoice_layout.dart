@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import '../../../controller/invoice/search_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
-import '../../../model/patterens/pattern_model.dart';
+import '../../../data/model/patterens/pattern_model.dart';
 import '../../Warranty/pages/all_warranty_invoices.dart';
 import 'all_pending_invoices.dart';
 
@@ -148,7 +148,7 @@ class InvoiceLayout extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       if (value) {
                         Get.to(
                           () => const AllWarrantyInvoices(),
@@ -174,7 +174,7 @@ class InvoiceLayout extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       // if (value) Get.to(() => const AllInvoice());
                       if (value) {
                         Get.find<SearchViewController>().initController();
@@ -202,7 +202,7 @@ class InvoiceLayout extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
                 child: InkWell(
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInvoice).then((value) {
                       if (value) Get.to(() => const AllPendingInvoice());
                     });
                   },

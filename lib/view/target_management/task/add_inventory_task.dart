@@ -1,14 +1,14 @@
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
-import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
-import 'package:ba3_business_solutions/model/seller/task_model.dart';
+import 'package:ba3_business_solutions/data/model/inventory/inventory_model.dart';
+import 'package:ba3_business_solutions/data/model/seller/task_model.dart';
 import 'package:ba3_business_solutions/view/target_management/task/select_inventory_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/user/user_model.dart';
+import '../../../data/model/user/user_model.dart';
 
 class AddInventoryTaskView extends StatefulWidget {
   final String? oldKey;
@@ -133,11 +133,11 @@ class _AddInventoryTaskViewState extends State<AddInventoryTaskView> {
                           Get.snackbar("خطأ", "يرجى إضافة مستخدمين");
                         } else {
                           if (taskModel.taskId != null) {
-                            checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                            hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
                               if (value) controller.updateTask(taskModel);
                             });
                           } else {
-                            checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                            hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
                               if (value) controller.addTask(taskModel);
                             });
                           }

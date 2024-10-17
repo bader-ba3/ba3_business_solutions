@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
-import 'package:ba3_business_solutions/model/store/store_record_model.dart';
+import 'package:ba3_business_solutions/data/model/store/store_record_model.dart';
 import 'package:ba3_business_solutions/view/products/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

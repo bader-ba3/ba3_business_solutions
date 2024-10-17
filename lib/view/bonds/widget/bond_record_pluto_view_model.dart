@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
-import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
-import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/entry_bond_record_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';

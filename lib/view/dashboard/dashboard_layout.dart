@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../controller/account/account_controller.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../core/utils/hive.dart';
-import '../../model/account/account_model.dart';
+import '../../data/model/account/account_model.dart';
 
 class DashboardLayout extends StatelessWidget {
   const DashboardLayout({super.key});

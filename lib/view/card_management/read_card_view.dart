@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
-import 'package:ba3_business_solutions/model/user/card_model.dart';
+import 'package:ba3_business_solutions/data/model/user/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -46,20 +46,15 @@ class _ReadCardViewState extends State<ReadCardView> {
       print(cardId);
       NfcManager.instance.stopSession();
     });
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then((value) => {
-              Get.defaultDialog(
-                  title: "جارِ قراءة البطاقة",
-                  content: const Text("يرجى تقريب البطاقة"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text("إلغاء"))
-                  ])
-            });
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => {
+          Get.defaultDialog(title: "جارِ قراءة البطاقة", content: const Text("يرجى تقريب البطاقة"), actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text("إلغاء"))
+          ])
+        });
   }
 
   @override
@@ -73,13 +68,9 @@ class _ReadCardViewState extends State<ReadCardView> {
               ? const Text("هذه البطاقة غير معرفة")
               : Column(
                   children: [
-                    const Text("رقم البطاقة",
-                        style: TextStyle(fontSize: 22),
-                        textDirection: TextDirection.ltr),
+                    const Text("رقم البطاقة", style: TextStyle(fontSize: 22), textDirection: TextDirection.ltr),
                     const SizedBox(height: 10),
-                    Text(cardModel!.cardId.toString(),
-                        style: const TextStyle(fontSize: 22),
-                        textDirection: TextDirection.ltr),
+                    Text(cardModel!.cardId.toString(), style: const TextStyle(fontSize: 22), textDirection: TextDirection.ltr),
                     const SizedBox(
                       height: 40,
                     ),

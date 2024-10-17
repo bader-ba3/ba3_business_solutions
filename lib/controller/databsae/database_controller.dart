@@ -12,6 +12,8 @@ import 'package:get/get.dart';
 
 import '../../core/bindings/bindings.dart';
 import '../../core/helper/init_app/init_app.dart';
+import '../../data/datasources/seller/seller_firestore_service.dart';
+import '../../data/repositories/seller/seller_repository.dart';
 import '../../view/user_management/pages/account_management_view.dart';
 import '../account/account_controller.dart';
 import '../cheque/cheque_controller.dart';
@@ -47,7 +49,7 @@ class DataBaseController extends GetxController {
     Get.put(ProductController(), permanent: true);
     Get.put(BondController(), permanent: true);
     Get.put(PatternController(), permanent: true);
-    Get.put(SellersController(), permanent: true);
+    Get.put(SellersController(SellersRepository(SellersFireStoreService())), permanent: true);
     Get.put(InvoiceController(), permanent: true);
     Get.put(ChequeController(), permanent: true);
     // Get.put(CameraService(),permanent: true);

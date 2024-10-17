@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/view/products/pages/product_details_page.
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../model/product/product_model.dart';
+import '../../../data/model/product/product_model.dart';
 
 class AllProductOLDOLD extends StatelessWidget {
   const AllProductOLDOLD({super.key});

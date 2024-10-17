@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/core/utils/confirm_delete_dialog.dart';
-import 'package:ba3_business_solutions/model/seller/seller_model.dart';
+import 'package:ba3_business_solutions/data/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
 import 'package:flutter/material.dart';
@@ -318,11 +318,11 @@ class _AddSellerPageState extends State<AddSellerPage> {
                   onPressed: () {
                     if (nameController.text.isNotEmpty && codeController.text.isNotEmpty) {
                       if (model.sellerId == null) {
-                        checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewSeller).then((value) {
+                        hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewSeller).then((value) {
                           if (value) sellerController.addSeller(model);
                         });
                       } else {
-                        checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewSeller).then((value) {
+                        hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewSeller).then((value) {
                           if (value) sellerController.addSeller(model);
                         });
                       }
@@ -340,7 +340,7 @@ class _AddSellerPageState extends State<AddSellerPage> {
                       onPressed: () {
                         confirmDeleteWidget().then((value) {
                           if (value) {
-                            checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewSeller).then((value) {
+                            hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewSeller).then((value) {
                               if (value) {
                                 sellerController.deleteSeller(model);
                                 Get.back();

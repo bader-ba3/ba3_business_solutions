@@ -1,10 +1,7 @@
-import 'package:ba3_business_solutions/model/warranty/warranty_model.dart';
+import 'package:ba3_business_solutions/data/model/warranty/warranty_model.dart';
 import 'package:hive/hive.dart';
 
-
-
-
-class WarrantyAdapter extends TypeAdapter<WarrantyModel>{
+class WarrantyAdapter extends TypeAdapter<WarrantyModel> {
   @override
   WarrantyModel read(BinaryReader reader) {
     return WarrantyModel.fromJson(reader.read());

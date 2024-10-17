@@ -48,7 +48,7 @@ class WarrantyModel {
   Map<String, dynamic> toMap() {
     return {
       'invId': invId,
-      'اسم البائع': getSellerNameFromId(sellerId),
+      'اسم البائع': getSellerNameById(sellerId),
       'رقم الفاتورة': invCode,
       'البيان': invNots,
       'التسليم': done == true ? 'تم التسليم' : 'لم يتم التسليم',

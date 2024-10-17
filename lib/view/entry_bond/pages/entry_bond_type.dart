@@ -27,7 +27,7 @@ class EntryBondType extends StatelessWidget {
               AppMenuItem(
                   text: 'عرض سندات القيد',
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewBond).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewBond).then((value) {
                       if (value) Get.to(() => const AllEntryBonds());
                     });
                   }),

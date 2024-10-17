@@ -1,12 +1,12 @@
 import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
-import 'package:ba3_business_solutions/model/product/product_record_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../core/constants/app_constants.dart';
-import '../../../model/product/product_model.dart';
+import '../../../data/model/product/product_model.dart';
 
 class ProductRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];

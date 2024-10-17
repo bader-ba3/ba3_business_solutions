@@ -1,12 +1,12 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
-import 'package:ba3_business_solutions/model/account/account_record_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
-import '../../model/global/global_model.dart';
+import '../../data/model/global/global_model.dart';
 
 class AllDueView extends StatelessWidget {
   AllDueView({super.key});

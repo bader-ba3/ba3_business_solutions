@@ -1,12 +1,12 @@
-import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
-import 'package:ba3_business_solutions/model/invoice/invoice_discount_record_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/entry_bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/invoice/invoice_discount_record_model.dart';
 
-import '../../controller/account/account_controller.dart';
-import '../../controller/pattern/pattern_controller.dart';
-import '../../controller/seller/sellers_controller.dart';
-import '../../controller/store/store_controller.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/helper/functions/functions.dart';
+import '../../../controller/account/account_controller.dart';
+import '../../../controller/pattern/pattern_controller.dart';
+import '../../../controller/seller/sellers_controller.dart';
+import '../../../controller/store/store_controller.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/helper/functions/functions.dart';
 import '../bond/bond_record_model.dart';
 import '../cheque/cheque_rec_model.dart';
 import '../invoice/invoice_record_model.dart';
@@ -21,7 +21,7 @@ class GlobalModel {
       bondCode,
       bondType,
       invId,
-  invProFit,
+      invProFit,
       invName,
       invSubTotal,
       invPrimaryAccount,
@@ -54,7 +54,7 @@ class GlobalModel {
   List<BondRecordModel>? bondRecord = [];
   List<InvoiceRecordModel>? invRecords = [];
   List<InvoiceDiscountRecordModel>? invDiscountRecord = [];
-  bool? invIsPending, invIsPaid ,isDeleted;
+  bool? invIsPending, invIsPaid, isDeleted;
 
   String? cheqId,
       cheqName,
@@ -106,16 +106,13 @@ class GlobalModel {
       if (invTotal != null) 'invTotal': invTotal,
       if (invSubTotal != null) 'invSubTotal': invSubTotal,
       if (invPrimaryAccount != null) 'invPrimaryAccount': invPrimaryAccount,
-      if (invSecondaryAccount != null)
-        'invSecondaryAccount': invSecondaryAccount,
+      if (invSecondaryAccount != null) 'invSecondaryAccount': invSecondaryAccount,
       if (invStorehouse != null) 'invStorehouse': invStorehouse,
       if (invComment != null) 'invComment': invComment,
       if (invType != null) 'invType': invType,
       if (originId != null) 'originId': originId,
       // if (invRecords != null) "invRecords": invRecords?.map((record) => record.toJson()).toList(),
-      if (invDiscountRecord != null)
-        "invDiscountRecord":
-            invDiscountRecord?.map((record) => record.toJson()).toList(),
+      if (invDiscountRecord != null) "invDiscountRecord": invDiscountRecord?.map((record) => record.toJson()).toList(),
       if (invCode != null) "invCode": invCode,
       if (patternId != null) "patternId": patternId,
       if (invSeller != null) "invSeller": invSeller,
@@ -135,11 +132,9 @@ class GlobalModel {
       if (cheqId != null) 'cheqId': cheqId,
       if (cheqName != null) 'cheqName': cheqName,
       if (cheqAllAmount != null) 'cheqAllAmount': cheqAllAmount,
-      if (cheqRemainingAmount != null)
-        'cheqRemainingAmount': cheqRemainingAmount,
+      if (cheqRemainingAmount != null) 'cheqRemainingAmount': cheqRemainingAmount,
       if (cheqPrimeryAccount != null) 'cheqPrimeryAccount': cheqPrimeryAccount,
-      if (cheqSecoundryAccount != null)
-        'cheqSecoundryAccount': cheqSecoundryAccount,
+      if (cheqSecoundryAccount != null) 'cheqSecoundryAccount': cheqSecoundryAccount,
       if (cheqCode != null) 'cheqCode': cheqCode,
       if (cheqDate != null) 'cheqDate': cheqDate,
       if (cheqStatus != null) 'cheqStatus': cheqStatus,
@@ -176,24 +171,19 @@ class GlobalModel {
       if (bondCode != null) 'bondCode': bondCode,
       if (bondType != null) 'bondType': bondType,
       if (discountTotal != null) 'discountTotal': discountTotal,
-      if (bondRecord != null)
-        "bondRecord": bondRecord?.map((record) => record.toJson()).toList(),
+      if (bondRecord != null) "bondRecord": bondRecord?.map((record) => record.toJson()).toList(),
       if (invName != null) 'invName': invName,
       if (invTotal != null) 'invTotal': invTotal,
       if (invSubTotal != null) 'invSubTotal': invSubTotal,
       if (invPrimaryAccount != null) 'invPrimaryAccount': invPrimaryAccount,
-      if (invSecondaryAccount != null)
-        'invSecondaryAccount': invSecondaryAccount,
+      if (invSecondaryAccount != null) 'invSecondaryAccount': invSecondaryAccount,
       if (invStorehouse != null) 'invStorehouse': invStorehouse,
       if (invComment != null) 'invComment': invComment,
       if (invType != null) 'invType': invType,
       if (invPayType != null) 'invPayType': invPayType,
       if (originId != null) 'originId': originId,
-      if (invRecords != null)
-        "invRecords": invRecords?.map((record) => record.toJson()).toList(),
-      if (invDiscountRecord != null)
-        "invDiscountRecord":
-            invDiscountRecord?.map((record) => record.toJson()).toList(),
+      if (invRecords != null) "invRecords": invRecords?.map((record) => record.toJson()).toList(),
+      if (invDiscountRecord != null) "invDiscountRecord": invDiscountRecord?.map((record) => record.toJson()).toList(),
       if (invCode != null) "invCode": invCode,
       if (patternId != null) "patternId": patternId,
       if (invSeller != null) "invSeller": invSeller,
@@ -208,23 +198,18 @@ class GlobalModel {
       if (cheqId != null) 'cheqId': cheqId,
       if (cheqName != null) 'cheqName': cheqName,
       if (cheqAllAmount != null) 'cheqAllAmount': cheqAllAmount,
-      if (cheqRemainingAmount != null)
-        'cheqRemainingAmount': cheqRemainingAmount,
+      if (cheqRemainingAmount != null) 'cheqRemainingAmount': cheqRemainingAmount,
       if (cheqPrimeryAccount != null) 'cheqPrimeryAccount': cheqPrimeryAccount,
-      if (cheqSecoundryAccount != null)
-        'cheqSecoundryAccount': cheqSecoundryAccount,
+      if (cheqSecoundryAccount != null) 'cheqSecoundryAccount': cheqSecoundryAccount,
       if (cheqCode != null) 'cheqCode': cheqCode,
       if (cheqDate != null) 'cheqDate': cheqDate,
       if (cheqStatus != null) 'cheqStatus': cheqStatus,
       if (cheqType != null) 'cheqType': cheqType,
       if (cheqBankAccount != null) 'cheqBankAccount': cheqBankAccount,
-      if (cheqRecords != null)
-        "cheqRecords": cheqRecords?.map((record) => record.toJson()).toList(),
+      if (cheqRecords != null) "cheqRecords": cheqRecords?.map((record) => record.toJson()).toList(),
       if (entryBondId != null) 'entryBondId': entryBondId,
       if (entryBondCode != null) 'entryBondCode': entryBondCode,
-      if (entryBondRecord != null)
-        "entryBondRecord":
-            entryBondRecord?.map((record) => record.toJson()).toList(),
+      if (entryBondRecord != null) "entryBondRecord": entryBondRecord?.map((record) => record.toJson()).toList(),
       if (invGiftAccount != null) "invGiftAccount": invGiftAccount,
       if (invSecGiftAccount != null) "invSecGiftAccount": invSecGiftAccount,
     };
@@ -241,36 +226,18 @@ class GlobalModel {
         invRecordList.add(InvoiceRecordModel.fromJson(e.data()));
       }
     },);*/
-    List<BondRecordModel>? bondRecordList = json['bondRecord'] == null
+    List<BondRecordModel>? bondRecordList =
+        json['bondRecord'] == null ? [] : json['bondRecord']?.map<BondRecordModel>((dynamic e) => BondRecordModel.fromJson(e)).toList();
+    List<InvoiceRecordModel>? invRecordList =
+        json['invRecords'] == null ? [] : json['invRecords']?.map<InvoiceRecordModel>((dynamic e) => InvoiceRecordModel.fromJson(e)).toList();
+    List<ChequeRecModel>? cheqRecord =
+        json['cheqRecords'] == null ? [] : json['cheqRecords']?.map<ChequeRecModel>((dynamic e) => ChequeRecModel.fromJson(e)).toList();
+    List<EntryBondRecordModel>? entryBondRecord = json['entryBondRecord'] == null
         ? []
-        : json['bondRecord']
-            ?.map<BondRecordModel>((dynamic e) => BondRecordModel.fromJson(e))
-            .toList();
-    List<InvoiceRecordModel>? invRecordList = json['invRecords'] == null
+        : json['entryBondRecord']?.map<EntryBondRecordModel>((dynamic e) => EntryBondRecordModel.fromJson(e)).toList();
+    List<InvoiceDiscountRecordModel>? invDiscountRecord = json['invDiscountRecord'] == null
         ? []
-        : json['invRecords']
-            ?.map<InvoiceRecordModel>(
-                (dynamic e) => InvoiceRecordModel.fromJson(e))
-            .toList();
-    List<ChequeRecModel>? cheqRecord = json['cheqRecords'] == null
-        ? []
-        : json['cheqRecords']
-            ?.map<ChequeRecModel>((dynamic e) => ChequeRecModel.fromJson(e))
-            .toList();
-    List<EntryBondRecordModel>? entryBondRecord =
-        json['entryBondRecord'] == null
-            ? []
-            : json['entryBondRecord']
-                ?.map<EntryBondRecordModel>(
-                    (dynamic e) => EntryBondRecordModel.fromJson(e))
-                .toList();
-    List<InvoiceDiscountRecordModel>? invDiscountRecord =
-        json['invDiscountRecord'] == null
-            ? []
-            : json['invDiscountRecord']
-                ?.map<InvoiceDiscountRecordModel>(
-                    (dynamic e) => InvoiceDiscountRecordModel.fromJson(e))
-                .toList();
+        : json['invDiscountRecord']?.map<InvoiceDiscountRecordModel>((dynamic e) => InvoiceDiscountRecordModel.fromJson(e)).toList();
     return GlobalModel(
       globalId: json['globalId'],
       bondId: json['bondId'],
@@ -283,15 +250,11 @@ class GlobalModel {
       firstPay: json['firstPay'],
       addedTotal: json['addedTotal'],
       isDeleted: json['isDeleted'],
-      invIsPaid:
-          json['invIsPaid'] ?? json['invPayType'] == AppConstants.invPayTypeCash
-              ? true
-              : false,
+      invIsPaid: json['invIsPaid'] ?? json['invPayType'] == AppConstants.invPayTypeCash ? true : false,
       originAmenId: json['originAmenId'],
       bondDescription: json['bondDescription'],
       bondTotal: json['bondTotal'],
-      invDueDate:
-          json['invDueDate'] ?? json['bondDate'] ?? json['invDate'] ?? '',
+      invDueDate: json['invDueDate'] ?? json['bondDate'] ?? json['invDate'] ?? '',
       bondDate: json['bondDate'],
       bondCode: json['bondCode'],
       invReturnCode: json['invReturnCode'],
@@ -300,9 +263,7 @@ class GlobalModel {
       bondRecord: bondRecordList,
       invId: json['invId'],
       invName: json['invName'],
-      invTotal: json['invTotal'] == null
-          ? null
-          : double.parse(json['invTotal'].toString()),
+      invTotal: json['invTotal'] == null ? null : double.parse(json['invTotal'].toString()),
       invSubTotal: json['invSubTotal'],
       invPrimaryAccount: json['invPrimaryAccount'],
       invSecondaryAccount: json['invSecondaryAccount'],
@@ -343,8 +304,6 @@ class GlobalModel {
       entryBondRecord: entryBondRecord,
     );
   }
-
-
 
   String? affectedId() {
     return invId ?? bondId;
@@ -437,7 +396,7 @@ class GlobalModel {
 
         "حساب العميل": getAccountNameFromId(invCustomerAccount), //Isolate
         'النوع': getInvTypeFromEnum(invType ?? ""),
-        "حساب البائع": getSellerNameFromId(invSeller), //Isolate
+        "حساب البائع": getSellerNameById(invSeller), //Isolate
         'وصف': invComment ?? '',
         'ربح الفاتورة': invProFit ?? '',
       };
@@ -539,10 +498,7 @@ class GlobalModel {
       'AmenCode': originAmenId,
       'bondType': getBondTypeFromEnum(bondType ?? ""),
       'bondDate': bondDate,
-      'bondTotal': bondRecord
-          ?.map((e) => e.bondRecDebitAmount)
-          .reduce((value, element) => value! + element!)!
-          .toStringAsFixed(2),
+      'bondTotal': bondRecord?.map((e) => e.bondRecDebitAmount).reduce((value, element) => value! + element!)!.toStringAsFixed(2),
       'bondDescription': bondDescription,
     };
   }
@@ -553,10 +509,7 @@ class GlobalModel {
       'AmenCode': originAmenId,
       'bondType': getBondTypeFromEnum(bondType ?? ""),
       'bondDate': bondDate,
-      'bondTotal': entryBondRecord
-          ?.map((e) => e.bondRecDebitAmount)
-          .reduce((value, element) => value! + element!)!
-          .toStringAsFixed(2),
+      'bondTotal': entryBondRecord?.map((e) => e.bondRecDebitAmount).reduce((value, element) => value! + element!)!.toStringAsFixed(2),
       'bondDescription': bondDescription,
     };
   }

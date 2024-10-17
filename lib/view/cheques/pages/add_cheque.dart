@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/functions/functions.dart';
-import '../../../model/global/global_model.dart';
+import '../../../data/model/global/global_model.dart';
 import '../widget/add_cheque_buttons.dart';
 
 class AddCheque extends StatefulWidget {

@@ -31,12 +31,12 @@ class _ChequeLayoutState extends State<ChequeLayout> {
               Get.to(() => const AddCheque());
             }),
             Item("الشيكات المستحقة", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: false));
               });
             }),
             Item("معاينة الشيكات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewCheques).then((value) {
                 if (value) Get.to(() => const AllCheques(isAll: true));
               });
             }),

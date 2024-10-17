@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
-import '../../../model/seller/task_model.dart';
+import '../../../data/model/seller/task_model.dart';
 
 class SellerTargetPage extends StatelessWidget {
   final String sellerId;

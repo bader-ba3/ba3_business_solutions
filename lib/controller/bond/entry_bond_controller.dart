@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/entry_bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/view/entry_bond/pages/entry_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/entry_bond/widget/bond_record_data_source.dart';

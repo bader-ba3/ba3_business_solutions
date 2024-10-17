@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
-import '../../model/warranty/warranty_model.dart';
+import '../../data/model/warranty/warranty_model.dart';
 import '../global/changes_controller.dart';
 import '../user/user_management_controller.dart';
 
@@ -26,8 +26,7 @@ class WarrantyController extends GetxController {
     this.billId = billId;
     if (billId != "1") {
       buildInvInit(billId);
-      Get.find<WarrantyPlutoController>()
-          .getRows(warrantyMap[billId]?.invRecords?.toList() ?? []);
+      Get.find<WarrantyPlutoController>().getRows(warrantyMap[billId]?.invRecords?.toList() ?? []);
     } else {
       getInit();
     }
@@ -43,8 +42,7 @@ class WarrantyController extends GetxController {
   WarrantyModel initModel = WarrantyModel();
 
   void getInvByInvCode(String text) {
-    List<WarrantyModel> inv =
-    warrantyMap.values.where((element) => element.invCode == text).toList();
+    List<WarrantyModel> inv = warrantyMap.values.where((element) => element.invCode == text).toList();
 
     if (inv.isNotEmpty) {
       buildInvInit(inv.first.invId!);
@@ -72,11 +70,8 @@ class WarrantyController extends GetxController {
 
     Get.find<WarrantyPlutoController>().getRows(initModel.invRecords ?? []);
     isNew = false;
-    WidgetsFlutterBinding
-        .ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then(
-          (value) {
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+      (value) {
         update();
       },
     );
@@ -85,12 +80,12 @@ class WarrantyController extends GetxController {
   void getInit() {
     if (warrantyMap.keys.isNotEmpty) {
       invCodeController.text = (int.parse(warrantyMap.values
-          .map(
-            (e) => e.invCode,
-      )
-          .lastOrNull ??
-          "0") +
-          1)
+                      .map(
+                        (e) => e.invCode,
+                      )
+                      .lastOrNull ??
+                  "0") +
+              1)
           .toString();
     } else {
       invCodeController.text = "1";
@@ -106,10 +101,10 @@ class WarrantyController extends GetxController {
   void invNextOrPrev(invCode, bool isPrev) {
     List<WarrantyModel> inv = warrantyMap.values.toList();
     int currentPosition = inv.indexOf(inv
-        .where(
-          (element) => element.invCode == invCode,
-    )
-        .firstOrNull ??
+            .where(
+              (element) => element.invCode == invCode,
+            )
+            .firstOrNull ??
         inv.last);
 
     if (isPrev) {
@@ -117,7 +112,7 @@ class WarrantyController extends GetxController {
         if (inv
             .where(
               (element) => element.invCode == invCode,
-        )
+            )
             .isNotEmpty) {
           buildInvInit(inv[currentPosition - 1].invId!);
         } else {
@@ -140,8 +135,7 @@ class WarrantyController extends GetxController {
 
     await addInvoiceToFirebase();
     ChangesController changesViewModel = Get.find<ChangesController>();
-    changesViewModel.addChangeToChanges(
-        initModel.toJson(), AppConstants.warrantyCollection);
+    changesViewModel.addChangeToChanges(initModel.toJson(), AppConstants.warrantyCollection);
     isNew = false;
     update();
   }
@@ -173,16 +167,12 @@ class WarrantyController extends GetxController {
       update();
       return;
     }
-    FirebaseFirestore.instance
-        .collection(AppConstants.warrantyCollection)
-        .doc(initModel.invId)
-        .set({"isDeleted": true}, SetOptions(merge: true));
+    FirebaseFirestore.instance.collection(AppConstants.warrantyCollection).doc(initModel.invId).set({"isDeleted": true}, SetOptions(merge: true));
     HiveDataBase.globalModelBox.delete(initModel.invId);
     warrantyMap.remove(initModel.invId);
 
     ChangesController changesViewModel = Get.find<ChangesController>();
-    changesViewModel.addRemoveChangeToChanges(
-        initModel.toJson(), AppConstants.warrantyCollection);
+    changesViewModel.addRemoveChangeToChanges(initModel.toJson(), AppConstants.warrantyCollection);
     update();
   }
 

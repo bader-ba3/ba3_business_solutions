@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import '../../model/global/global_model.dart';
+import '../../data/model/global/global_model.dart';
 
 class GlobalModelAdapter extends TypeAdapter<GlobalModel> {
   @override

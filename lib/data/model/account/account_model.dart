@@ -1,8 +1,8 @@
-import 'package:ba3_business_solutions/model/account/account_customer.dart';
-import 'package:ba3_business_solutions/model/account/account_record_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/data/model/account/account_record_model.dart';
 
-import '../../controller/account/account_controller.dart';
-import '../../core/helper/functions/functions.dart';
+import '../../../controller/account/account_controller.dart';
+import '../../../core/helper/functions/functions.dart';
 
 class AccountModel {
   String? accId, accName, accComment, accType, accCode, accVat, accParentId;

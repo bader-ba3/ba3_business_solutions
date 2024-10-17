@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/account/account_model.dart';
+import '../../../data/model/account/account_model.dart';
 
 class StatisticsLayout extends StatefulWidget {
   const StatisticsLayout({super.key});
@@ -99,7 +99,7 @@ class _StatisticsLayoutState extends State<StatisticsLayout> {
             ),
             for (var i in HiveDataBase.statisticBox.values.toList())
               item("معاينة ${i["accName"]}", () {
-                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewStore).then((value) {
+                hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewStore).then((value) {
                   if (value) {
                     Get.to(() => StatisticsView(accountId: i["accId"]!));
                   }

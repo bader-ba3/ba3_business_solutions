@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
-import 'package:ba3_business_solutions/model/user/user_model.dart';
+import 'package:ba3_business_solutions/data/model/user/user_model.dart';
 import 'package:ba3_business_solutions/view/timer/pages/timer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,33 +30,25 @@ class AllTimeView extends StatelessWidget {
                     itemCount: controller.allUserList.values.length,
                     itemBuilder: (context, index) {
                       late StopWatchTimer stopWatchTimer;
-                      UserModel userModel =
-                          controller.allUserList.values.toList()[index];
+                      UserModel userModel = controller.allUserList.values.toList()[index];
                       stopWatchTimer = StopWatchTimer(
                         mode: StopWatchMode.countUp,
                       );
                       int totalSec = 0;
                       bool isClosed = false;
-                      if (userModel.userTimeList?.length ==
-                          userModel.userDateList?.length) {
+                      if (userModel.userTimeList?.length == userModel.userDateList?.length) {
                         isClosed = true;
                       }
-                      for (var i = 0;
-                          i < (userModel.userDateList?.length ?? 0);
-                          i++) {
+                      for (var i = 0; i < (userModel.userDateList?.length ?? 0); i++) {
                         DateTime date = userModel.userDateList![i];
-                        int time =
-                            userModel.userTimeList!.elementAtOrNull(i) ?? 0;
-                        if (DateTime.now().toString().split(" ")[0] ==
-                            date.toString().split(" ")[0]) {
+                        int time = userModel.userTimeList!.elementAtOrNull(i) ?? 0;
+                        if (DateTime.now().toString().split(" ")[0] == date.toString().split(" ")[0]) {
                           totalSec += time;
                         }
                       }
                       if (isClosed) {
                       } else {
-                        totalSec += DateTime.now()
-                            .difference(userModel.userDateList!.last)
-                            .inSeconds;
+                        totalSec += DateTime.now().difference(userModel.userDateList!.last).inSeconds;
                         stopWatchTimer.onStartTimer();
                       }
                       stopWatchTimer.setPresetSecondTime(totalSec);
@@ -70,52 +62,37 @@ class AllTimeView extends StatelessWidget {
                             },
                             child: Container(
                               padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(10)),
+                              decoration: BoxDecoration(color: Colors.grey.withOpacity(0.15), borderRadius: BorderRadius.circular(10)),
                               height: 140,
                               width: 140,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     userModel.userName ?? "",
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                   Text(
-                                    getUserStatusFromEnum(
-                                        userModel.userStatus ?? ""),
+                                    getUserStatusFromEnum(userModel.userStatus ?? ""),
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,
-                                        color: userModel.userStatus ==
-                                                AppConstants.userStatusOnline
-                                            ? Colors.green
-                                            : Colors.orange),
+                                        color: userModel.userStatus == AppConstants.userStatusOnline ? Colors.green : Colors.orange),
                                   ),
                                   StreamBuilder<int>(
                                     stream: stopWatchTimer.rawTime,
                                     initialData: stopWatchTimer.rawTime.value,
                                     builder: (context, snap) {
                                       final value = snap.data!;
-                                      final displayTime =
-                                          StopWatchTimer.getDisplayTime(value,
-                                              milliSecond: false);
+                                      final displayTime = StopWatchTimer.getDisplayTime(value, milliSecond: false);
                                       return Container(
                                         height: 75,
                                         width: 300,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
+                                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
                                         child: Center(
                                           child: Text(
                                             displayTime,
-                                            style: const TextStyle(
-                                                fontSize: 40,
-                                                fontFamily: 'Helvetica',
-                                                fontWeight: FontWeight.bold),
+                                            style: const TextStyle(fontSize: 40, fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       );
@@ -125,9 +102,7 @@ class AllTimeView extends StatelessWidget {
                                     backgroundColor: Colors.white,
                                     radius: 40,
                                     child: Icon(
-                                      stopWatchTimer.isRunning
-                                          ? Icons.stop
-                                          : Icons.play_arrow,
+                                      stopWatchTimer.isRunning ? Icons.stop : Icons.play_arrow,
                                       size: 40,
                                     ),
                                   ),

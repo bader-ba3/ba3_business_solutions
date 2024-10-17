@@ -15,8 +15,8 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
-import '../../../model/inventory/inventory_model.dart';
-import '../../../model/product/product_model.dart';
+import '../../../data/model/inventory/inventory_model.dart';
+import '../../../data/model/product/product_model.dart';
 import '../widgets/custom_pluto_grid.dart';
 
 class AddNewInventoryView extends StatefulWidget {

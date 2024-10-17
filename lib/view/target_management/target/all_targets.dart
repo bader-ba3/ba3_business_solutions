@@ -1,12 +1,12 @@
 import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
-import 'package:ba3_business_solutions/model/seller/seller_model.dart';
+import 'package:ba3_business_solutions/data/model/seller/seller_model.dart';
 import 'package:ba3_business_solutions/view/sellers/pages/seller_targets_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
-import '../../../model/seller/task_model.dart';
+import '../../../data/model/seller/task_model.dart';
 
 class AllTargets extends StatelessWidget {
   const AllTargets({super.key});

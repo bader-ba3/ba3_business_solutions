@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
-import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,7 +8,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/account/account_model.dart';
+import '../../../data/model/account/account_model.dart';
 
 final bondController = Get.find<BondController>();
 

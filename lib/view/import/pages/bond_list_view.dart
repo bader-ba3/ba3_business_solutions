@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 
 import '../../../controller/databsae/import_controller.dart';
 import '../../../core/helper/functions/functions.dart';
-import '../../../model/bond/bond_record_model.dart';
-import '../../../model/global/global_model.dart';
+import '../../../data/model/bond/bond_record_model.dart';
+import '../../../data/model/global/global_model.dart';
 
 class BondListView extends StatelessWidget {
   final List<GlobalModel> bondList;

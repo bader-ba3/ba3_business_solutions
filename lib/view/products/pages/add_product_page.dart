@@ -10,8 +10,8 @@ import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
-import '../../../model/product/product_model.dart';
-import '../../../model/product/product_record_model.dart';
+import '../../../data/model/product/product_model.dart';
+import '../../../data/model/product/product_record_model.dart';
 
 class AddProductPage extends StatefulWidget {
   final String? oldKey;
@@ -66,7 +66,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   child: const Text("تجاهل")),
               ElevatedButton(
                   onPressed: () {
-                    checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
                       if (value) {
                         productController.updateProduct(editedProduct, withLogger: true);
                         Get.back();
@@ -327,7 +327,7 @@ class _AddProductPageState extends State<AddProductPage> {
                           onPressed: () {
                             if (checkInput()) {
                               if (editedProduct.prodId == null) {
-                                checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewProduct).then((value) {
+                                hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewProduct).then((value) {
                                   if (value) {
                                     print("object");
                                     productController.createProduct(editedProduct, withLogger: true);
@@ -335,7 +335,7 @@ class _AddProductPageState extends State<AddProductPage> {
                                   }
                                 });
                               } else {
-                                checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
+                                hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewProduct).then((value) {
                                   if (value) {
                                     productController.updateProduct(editedProduct, withLogger: false);
                                     isEdit = false;

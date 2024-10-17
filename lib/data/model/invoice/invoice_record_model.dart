@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../controller/product/product_controller.dart';
+import '../../../controller/product/product_controller.dart';
 
 class InvoiceRecordModel {
   String? invRecId, invRecProduct, prodChoosePriceMethod;

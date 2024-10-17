@@ -27,7 +27,7 @@ class _DueTypeState extends State<DueType> {
         body: Column(
           children: [
             Item("معاينة الاستحقاق", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewDue).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewDue).then((value) {
                 if (value) Get.to(() => AllDueView());
               });
             }),

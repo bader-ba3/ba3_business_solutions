@@ -1,9 +1,9 @@
 import 'package:ba3_business_solutions/core/utils/hive.dart';
 import 'package:ba3_business_solutions/core/utils/logger.dart';
-import 'package:ba3_business_solutions/model/account/account_customer.dart';
-import 'package:ba3_business_solutions/model/account/account_model.dart';
-import 'package:ba3_business_solutions/model/account/account_tree.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/data/model/account/account_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_tree.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
-import '../../model/account/account_record_model.dart';
-import '../../model/bond/entry_bond_record_model.dart';
+import '../../data/model/account/account_record_model.dart';
+import '../../data/model/bond/entry_bond_record_model.dart';
 import '../../view/accounts/widget/account_record_data_source.dart';
 import '../../view/accounts/widget/account_view_data_grid_source.dart';
 import '../global/changes_controller.dart';

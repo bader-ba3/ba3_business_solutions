@@ -19,7 +19,7 @@ class TimeLayout extends StatelessWidget {
         body: Column(
           children: [
             Item("المؤقت", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTimer).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTimer).then((value) {
                 if (value) Get.to(() => const AllTimeView());
               });
             }),

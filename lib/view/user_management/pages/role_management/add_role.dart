@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
-import 'package:ba3_business_solutions/model/user/role_model.dart';
+import 'package:ba3_business_solutions/data/model/user/role_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,11 +27,9 @@ class _AddRoleViewState extends State<AddRoleView> {
     if (widget.oldKey == null) {
       userManagementController.roleModel = RoleModel(roles: {});
     } else {
-      userManagementController.roleModel = RoleModel.fromJson(
-          userManagementController.allRole[widget.oldKey]!.toJson());
+      userManagementController.roleModel = RoleModel.fromJson(userManagementController.allRole[widget.oldKey]!.toJson());
       allMap = userManagementController.roleModel?.roles ?? {};
-      nameController.text =
-          userManagementController.allRole[widget.oldKey]?.roleName ?? "";
+      nameController.text = userManagementController.allRole[widget.oldKey]?.roleName ?? "";
     }
     super.initState();
   }
@@ -51,18 +49,13 @@ class _AddRoleViewState extends State<AddRoleView> {
                   title: Text(controller.roleModel?.roleName ?? "دور جديد"),
                   actions: [
                     AppButton(
-                        title: controller.roleModel?.roleId == null
-                            ? "إضافة"
-                            : "تعديل",
+                        title: controller.roleModel?.roleId == null ? "إضافة" : "تعديل",
                         onPressed: () {
-                          if (controller.roleModel?.roleName?.isNotEmpty ??
-                              false) {
+                          if (controller.roleModel?.roleName?.isNotEmpty ?? false) {
                             controller.addRole();
                           }
                         },
-                        iconData: controller.roleModel?.roleId == null
-                            ? Icons.add
-                            : Icons.edit),
+                        iconData: controller.roleModel?.roleId == null ? Icons.add : Icons.edit),
                     const SizedBox(width: 10),
                   ],
                 ),
@@ -91,28 +84,17 @@ class _AddRoleViewState extends State<AddRoleView> {
                             children: [
                               Text(
                                 "${getPageNameFromEnum(i.toString())}:",
-                                style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                               ),
                               Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 50),
+                                padding: const EdgeInsets.symmetric(horizontal: 50),
                                 child: Column(
                                   children: [
-                                    checkBoxWidget(i, AppConstants.roleUserRead,
-                                        controller),
-                                    checkBoxWidget(i,
-                                        AppConstants.roleUserWrite, controller),
-                                    checkBoxWidget(
-                                        i,
-                                        AppConstants.roleUserUpdate,
-                                        controller),
-                                    checkBoxWidget(
-                                        i,
-                                        AppConstants.roleUserDelete,
-                                        controller),
-                                    checkBoxWidget(i,
-                                        AppConstants.roleUserAdmin, controller),
+                                    checkBoxWidget(i, AppConstants.roleUserRead, controller),
+                                    checkBoxWidget(i, AppConstants.roleUserWrite, controller),
+                                    checkBoxWidget(i, AppConstants.roleUserUpdate, controller),
+                                    checkBoxWidget(i, AppConstants.roleUserDelete, controller),
+                                    checkBoxWidget(i, AppConstants.roleUserAdmin, controller),
                                   ],
                                 ),
                               ),
@@ -139,9 +121,7 @@ class _AddRoleViewState extends State<AddRoleView> {
               checkColor: Colors.white,
               overlayColor: const WidgetStatePropertyAll(Colors.white),
               side: const BorderSide(color: Colors.black),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: const BorderSide(color: Colors.white)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: const BorderSide(color: Colors.white)),
               value: (allMap[keys]?.contains(text) ?? false),
               onChanged: (_) {
                 if (_!) {

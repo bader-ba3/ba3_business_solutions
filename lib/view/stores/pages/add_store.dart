@@ -83,7 +83,7 @@ class AddStore extends StatelessWidget {
                           ),
                           onPressed: () {
                             if (storeController.nameController.text.isNotEmpty && storeController.codeController.text.isNotEmpty) {
-                              checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewStore).then((value) {
+                              hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewStore).then((value) {
                                 if (value) {
                                   storeController.editStore();
                                 }
@@ -100,7 +100,7 @@ class AddStore extends StatelessWidget {
                           ),
                           onPressed: () {
                             if (storeController.nameController.text.isNotEmpty && storeController.codeController.text.isNotEmpty) {
-                              checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewStore).then((value) {
+                              hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewStore).then((value) {
                                 if (value) storeController.addNewStore();
                               });
                             } else {

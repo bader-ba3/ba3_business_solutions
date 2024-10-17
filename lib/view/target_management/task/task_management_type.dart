@@ -28,7 +28,7 @@ class TaskManagementType extends StatelessWidget {
             //   Get.to(()=>AddInventoryTaskView());
             // }),
             Item("معاينة التاسكات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
                 if (value) Get.to(() => const AllTaskView());
               });
             }),

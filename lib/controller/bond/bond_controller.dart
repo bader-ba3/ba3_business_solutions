@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/controller/global/global_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_details_view.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/custom_bond_details_view.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_pluto_view_model.dart';
@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../core/utils/generate_id.dart';
-import '../../model/bond/bond_record_model.dart';
+import '../../data/model/bond/bond_record_model.dart';
 import '../../view/bonds/widget/bond_record_data_source.dart';
 import '../../view/bonds/widget/custom_bond_record_data_source.dart';
 

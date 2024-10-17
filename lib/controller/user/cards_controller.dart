@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-import '../../model/user/card_model.dart';
+import '../../data/model/user/card_model.dart';
 
 class CardsController extends GetxController {
   Map<String, CardModel> allCards = {};

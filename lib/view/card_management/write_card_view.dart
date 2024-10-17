@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-import '../../model/user/card_model.dart';
+import '../../data/model/user/card_model.dart';
 
 class WriteCardView extends StatefulWidget {
   const WriteCardView({super.key});
@@ -15,8 +15,7 @@ class WriteCardView extends StatefulWidget {
 }
 
 class _WriteCardViewState extends State<WriteCardView> {
-  UserManagementController userViewController =
-      Get.find<UserManagementController>();
+  UserManagementController userViewController = Get.find<UserManagementController>();
   CardsController cardViewController = Get.find<CardsController>();
 
   // TextEditingController cardController = TextEditingController();
@@ -49,21 +48,16 @@ class _WriteCardViewState extends State<WriteCardView> {
       print(cardId);
       NfcManager.instance.stopSession();
     });
-    WidgetsFlutterBinding.ensureInitialized()
-        .waitUntilFirstFrameRasterized
-        .then((value) => {
-              Get.defaultDialog(
-                  title: "جارِ قراءة البطاقة",
-                  content: const Text("يرجى تقريب البطاقة"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                          NfcManager.instance.stopSession();
-                        },
-                        child: const Text("إلغاء"))
-                  ])
-            });
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) => {
+          Get.defaultDialog(title: "جارِ قراءة البطاقة", content: const Text("يرجى تقريب البطاقة"), actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                  NfcManager.instance.stopSession();
+                },
+                child: const Text("إلغاء"))
+          ])
+        });
   }
 
   @override
@@ -110,11 +104,7 @@ class _WriteCardViewState extends State<WriteCardView> {
                         FirebaseFirestore.instance
                             .collection("Cards")
                             .doc(cardId)
-                            .set({
-                          "userId": userId,
-                          "cardId": cardId,
-                          "isDisabled": isDisabled
-                        }, SetOptions(merge: true));
+                            .set({"userId": userId, "cardId": cardId, "isDisabled": isDisabled}, SetOptions(merge: true));
                         //   NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
                         //     Get.back();
                         //   var ndef = Ndef.from(tag);

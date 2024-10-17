@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
-import '../../../model/inventory/inventory_model.dart';
+import '../../../data/model/inventory/inventory_model.dart';
 import 'add_new_inventory_view.dart';
 
 class InventoryLayout extends StatelessWidget {
@@ -54,7 +54,7 @@ class InventoryLayout extends StatelessWidget {
                         ))
                     : InkWell(
                         onTap: () async {
-                          checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInventory).then((value) async {
+                          hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInventory).then((value) async {
                             if (value) {
                               await Get.to(() => const AddNewInventoryView());
                               // selectedInventory = HiveDataBase.inventoryModelBox.get("0");
@@ -81,7 +81,7 @@ class InventoryLayout extends StatelessWidget {
                     AppMenuItem(
                         text: "إكمال الجرد",
                         onTap: () {
-                          checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInventory).then((value) async {
+                          hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInventory).then((value) async {
                             if (value) {
                               await Get.to(() => AddInventoryView(inventoryModel: selectedInventory));
                               // selectedInventory = HiveDataBase.inventoryModelBox.get("0");
@@ -92,7 +92,7 @@ class InventoryLayout extends StatelessWidget {
                     AppMenuItem(
                         text: "معاينة الجرد",
                         onTap: () {
-                          checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInventory).then((value) {
+                          hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewInventory).then((value) {
                             if (value) {
                               Get.to(() => AllInventoryView(inventoryModel: selectedInventory));
                             }
@@ -101,7 +101,7 @@ class InventoryLayout extends StatelessWidget {
                     AppMenuItem(
                         text: "إنهاء الجرد",
                         onTap: () {
-                          checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInventory).then((value) {
+                          hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInventory).then((value) {
                             if (value) {
                               print(selectedInventory.toJson());
                               FirebaseFirestore.instance
@@ -118,7 +118,7 @@ class InventoryLayout extends StatelessWidget {
                     AppMenuItem(
                         text: "حذف الجرد",
                         onTap: () {
-                          checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewInventory).then((value) {
+                          hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewInventory).then((value) {
                             if (value) {
                               confirmDeleteWidget().then((value) {
                                 if (value) {
@@ -138,7 +138,7 @@ class InventoryLayout extends StatelessWidget {
               AppMenuItem(
                   text: "معاينة الجرد قديم",
                   onTap: () {
-                    checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInventory).then((value) {
+                    hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInventory).then((value) {
                       if (value) {
                         Get.defaultDialog(
                             title: "إختر احد الجرود",

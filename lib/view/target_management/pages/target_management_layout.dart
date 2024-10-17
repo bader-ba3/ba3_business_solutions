@@ -23,7 +23,7 @@ class TargetManagementLayout extends StatelessWidget {
               Get.to(() => const TaskManagementType());
             }),
             item("معاينة التارجيت", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTarget).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTarget).then((value) {
                 if (value) Get.to(() => const AllTargets());
               });
             }),

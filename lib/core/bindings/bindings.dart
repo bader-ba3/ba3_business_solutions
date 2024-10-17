@@ -21,10 +21,17 @@ import '../../controller/invoice/search_controller.dart';
 import '../../controller/pluto/pluto_controller.dart';
 import '../../controller/user/user_management_controller.dart';
 import '../../controller/warranty/warranty_controller.dart';
+import '../../data/datasources/seller/seller_firestore_service.dart';
+import '../../data/datasources/seller/target_firestore_service.dart';
+import '../../data/repositories/seller/seller_repository.dart';
+import '../../data/repositories/seller/target_repository.dart';
 
 class GetBinding extends Bindings {
   @override
   void dependencies() {
+    final targetRepo = TargetRepository(TargetFireStoreService());
+    final sellersRepo = SellersRepository(SellersFireStoreService());
+
     Get.put(ScreenController());
     // Get.put(GlobalViewModel());
     Get.put(SearchViewController());
@@ -36,7 +43,7 @@ class GetBinding extends Bindings {
     Get.put(StoreController());
     Get.put(BondController());
     Get.put(PatternController());
-    Get.put(SellersController());
+    Get.put(SellersController(sellersRepo));
     Get.put(InvoiceController());
     Get.put(ChequeController());
     Get.put(InventoryController());
@@ -51,6 +58,6 @@ class GetBinding extends Bindings {
     // Lazy controllers with fenix
     Get.lazyPut(() => WarrantyController(), fenix: true);
     Get.lazyPut(() => ChangesController(), fenix: true);
-    Get.lazyPut(() => TargetController(), fenix: true);
+    Get.lazyPut(() => TargetController(targetRepo), fenix: true);
   }
 }

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_controller.dart';
-import '../../../model/account/account_model.dart';
+import '../../../data/model/account/account_model.dart';
 
 class AccountViewDataGridSource extends DataGridSource {
   final Map<String, AccountModel> accountMap;

@@ -15,7 +15,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/invoice/discount_pluto_edit_controller.dart';
 import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
-import '../../../model/bond/bond_record_model.dart';
+import '../../../data/model/bond/bond_record_model.dart';
 import '../../bonds/pages/bond_details_view.dart';
 
 class EntryBondDetailsView extends StatefulWidget {

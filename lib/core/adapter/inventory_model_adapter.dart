@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import '../../model/inventory/inventory_model.dart';
+import '../../data/model/inventory/inventory_model.dart';
 
 class InventoryModelAdapter extends TypeAdapter<InventoryModel> {
   @override

@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 
-import '../../core/helper/functions/functions.dart';
+import '../../../core/helper/functions/functions.dart';
 
 class PatternModel {
   String? patName,

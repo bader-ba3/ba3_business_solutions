@@ -1,8 +1,8 @@
 import 'package:ba3_business_solutions/controller/inventory/inventory_controller.dart';
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
-import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
-import 'package:ba3_business_solutions/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/inventory/inventory_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,7 +93,7 @@ class _AddInventoryViewState extends State<AddInventoryView> {
                                         ),
                                         Expanded(
                                             child: Text(
-                                          getSellerNameFromId(inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
+                                          getSellerNameById(inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
                                           style: const TextStyle(fontSize: 18),
                                         )),
                                         const SizedBox(

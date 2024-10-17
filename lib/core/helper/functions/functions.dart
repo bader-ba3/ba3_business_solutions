@@ -7,16 +7,16 @@ import 'package:ba3_business_solutions/controller/account/account_customer_contr
 import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
 import 'package:ba3_business_solutions/core/api/pdf_bond_api.dart';
-import 'package:ba3_business_solutions/model/account/account_customer.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
-import 'package:ba3_business_solutions/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../model/product/product_imei.dart';
+import '../../../data/model/product/product_imei.dart';
 import '../../constants/app_constants.dart';
 import '../../api/pdf_invoice_api.dart';
 import 'package:http/http.dart' as http;

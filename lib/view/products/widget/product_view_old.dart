@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/product/product_controller.dart';
 import '../../../core/shared/widgets/sliver_list_widget.dart';
-import '../../../model/product/product_model.dart';
+import '../../../data/model/product/product_model.dart';
 
 class AllProductOLD extends StatelessWidget {
   const AllProductOLD({super.key});

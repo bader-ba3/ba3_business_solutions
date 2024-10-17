@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../../model/invoice/invoice_record_model.dart';
+import '../../../data/model/invoice/invoice_record_model.dart';
 
 class ReportGridView extends StatefulWidget {
   const ReportGridView({super.key});

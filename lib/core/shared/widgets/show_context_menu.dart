@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
-import '../../../model/cost/cost_center_tree.dart';
+import '../../../data/model/cost/cost_center_tree.dart';
 
 void showContextMenu(
   BuildContext context,

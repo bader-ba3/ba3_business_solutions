@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/helper/functions/functions.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';

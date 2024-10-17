@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
-import 'package:ba3_business_solutions/model/inventory/inventory_model.dart';
-import 'package:ba3_business_solutions/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/inventory/inventory_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,7 +63,7 @@ class _AllInventoryViewState extends State<AllInventoryView> {
                           ),
                           Expanded(
                               child: Text(
-                            getSellerNameFromId(widget.inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
+                            getSellerNameById(widget.inventoryModel.inventoryTargetedProductList.values.toList()[index]).toString(),
                             style: const TextStyle(fontSize: 18),
                           )),
                           const SizedBox(

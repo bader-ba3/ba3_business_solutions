@@ -37,7 +37,7 @@ class AccountLayout extends StatelessWidget {
             //   });
             // }),
             item("كشف حساب", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(
@@ -48,24 +48,24 @@ class AccountLayout extends StatelessWidget {
               });
             }),
             item("معاينة الحسابات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.to(() => const AllAccount());
                 }
               });
             }),
             item("شجرة الحسابات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) Get.to(() => AccountTreeView());
               });
             }),
             item("سجل استحقاق الشركاء", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) Get.to(() => const AllPartnerDueAccount());
               });
             }),
             item("المستحقات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewAccount).then((value) {
                 if (value) {
                   Get.find<SearchViewController>().initController();
                   showDialog<String>(

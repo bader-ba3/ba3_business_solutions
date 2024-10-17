@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../../model/invoice/invoice_discount_record_model.dart';
+import '../../data/model/invoice/invoice_discount_record_model.dart';
 
 class DiscountPlutoController extends GetxController {
   DiscountPlutoController() {

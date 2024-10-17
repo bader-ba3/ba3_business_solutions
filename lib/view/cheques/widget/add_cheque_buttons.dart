@@ -13,9 +13,9 @@ import 'package:get/get.dart';
 import '../../../controller/bond/bond_controller.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/utils/generate_id.dart';
-import '../../../model/bond/bond_record_model.dart';
-import '../../../model/bond/entry_bond_record_model.dart';
-import '../../../model/global/global_model.dart';
+import '../../../data/model/bond/bond_record_model.dart';
+import '../../../data/model/bond/entry_bond_record_model.dart';
+import '../../../data/model/global/global_model.dart';
 import '../../bonds/pages/bond_details_view.dart';
 import '../../bonds/widget/bond_record_pluto_view_model.dart';
 
@@ -59,7 +59,7 @@ class AddChequeButtons extends StatelessWidget {
             } else if (getAccountIdFromText(secondaryController.text) == '') {
               Get.snackbar("خطأ", "يرجى كتابة المعلومات");
             } else {
-              checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewCheques).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewCheques).then((value) {
                 if (value) {
                   String des = "سند قيد مولد من شيك رقم ${numberController.text}";
                   if (controller.initModel!.cheqId == null) {
@@ -125,7 +125,7 @@ class AddChequeButtons extends StatelessWidget {
             onPressed: () {
               confirmDeleteWidget().then((value) {
                 if (value) {
-                  checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewCheques).then((value) {
+                  hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewCheques).then((value) {
                     if (value) {
                       var globalController = Get.find<GlobalController>();
                       globalController.deleteGlobal(controller.initModel!);

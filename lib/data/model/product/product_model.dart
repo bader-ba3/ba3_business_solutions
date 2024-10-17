@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/product/product_imei.dart';
-import 'package:ba3_business_solutions/model/product/product_record_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_imei.dart';
+import 'package:ba3_business_solutions/data/model/product/product_record_model.dart';
 import 'package:get/get.dart';
 
-import '../../controller/product/product_controller.dart';
-import '../../core/helper/functions/functions.dart';
+import '../../../controller/product/product_controller.dart';
+import '../../../core/helper/functions/functions.dart';
 
 class ProductModel {
   String? prodId,

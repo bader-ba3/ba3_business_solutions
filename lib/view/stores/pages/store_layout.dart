@@ -25,7 +25,7 @@ class StoreLayout extends StatelessWidget {
               Get.to(() => const AddStore());
             }),
             item("معاينة المستودعات", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewStore).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewStore).then((value) {
                 if (value) Get.to(() => const AllStore());
               });
             }),

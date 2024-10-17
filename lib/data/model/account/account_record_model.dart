@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 
-import '../../core/helper/functions/functions.dart';
+import '../../../core/helper/functions/functions.dart';
 
 class AccountRecordModel {
   String? id, total, account, isPaidStatus, accountRecordType, date, code;

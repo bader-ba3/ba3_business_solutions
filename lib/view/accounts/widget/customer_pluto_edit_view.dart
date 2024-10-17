@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/model/account/account_customer.dart';
+import 'package:ba3_business_solutions/data/model/account/account_customer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';

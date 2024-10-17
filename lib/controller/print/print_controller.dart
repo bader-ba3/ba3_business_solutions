@@ -1,12 +1,9 @@
-
-
-
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
-import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
-import 'package:ba3_business_solutions/model/product/product_model.dart';
-import 'package:ba3_business_solutions/model/warranty/warranty_model.dart';
-import 'package:ba3_business_solutions/model/warranty/warranty_record_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/invoice/invoice_record_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_model.dart';
+import 'package:ba3_business_solutions/data/model/warranty/warranty_model.dart';
+import 'package:ba3_business_solutions/data/model/warranty/warranty_record_model.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -18,7 +15,6 @@ import '../../core/helper/functions/functions.dart';
 class PrintController extends GetxController {
   Future<void> printFunction(GlobalModel globalModel, {WarrantyModel? warrantyModel}) async {
     List<BluetoothInfo> allBluetooth = await getBluetoots();
-
 
     if (allBluetooth
         .map(
@@ -61,15 +57,11 @@ class PrintController extends GetxController {
   List<BluetoothInfo> items = [];
 
   Future<List<BluetoothInfo>> getBluetoots() async {
-
     items = [];
 
     final List<BluetoothInfo> listResult = await PrintBluetoothThermal.pairedBluetooths;
 
     print(await PrintBluetoothThermal.isPermissionBluetoothGranted);
-
-
-
 
     items = listResult;
 
@@ -92,8 +84,6 @@ class PrintController extends GetxController {
   }
 
   Future<void> printTest(GlobalModel globalModel, {WarrantyModel? warranty}) async {
-
-
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
 
     if (conexionStatus) {
@@ -152,12 +142,12 @@ class PrintController extends GetxController {
       double modelSubTotal = modelSubTotalWithVat / 1.05;
 
       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;
-      String text=productModel.prodEngName??'';
-      if(text=='') {
-        await setEnglishNameForProduct(productModel..prodEngName=await checkArabicWithTranslate(productModel.prodName!));
-        text=await checkArabicWithTranslate(productModel.prodName!);
+      String text = productModel.prodEngName ?? '';
+      if (text == '') {
+        await setEnglishNameForProduct(productModel..prodEngName = await checkArabicWithTranslate(productModel.prodName!));
+        text = await checkArabicWithTranslate(productModel.prodName!);
       }
-      bytes += generator.text(text.length < 64 ? text :text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
+      bytes += generator.text(text.length < 64 ? text : text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
       bytes += generator.text(productModel.prodBarcode ?? "", styles: const PosStyles(align: PosAlign.left));
       double totalOfLine = model.invRecTotal!;
       total = totalOfLine + total;
@@ -198,10 +188,10 @@ class PrintController extends GetxController {
 
     for (WarrantyRecordModel model in globalModel.invRecords ?? []) {
       ProductModel productModel = getProductModelFromId(model.invRecProduct)!;
-      String text=productModel.prodEngName??'';
-      if(text=='') {
-        await setEnglishNameForProduct(productModel..prodEngName=await checkArabicWithTranslate(productModel.prodName!));
-        text=await checkArabicWithTranslate(productModel.prodName!);
+      String text = productModel.prodEngName ?? '';
+      if (text == '') {
+        await setEnglishNameForProduct(productModel..prodEngName = await checkArabicWithTranslate(productModel.prodName!));
+        text = await checkArabicWithTranslate(productModel.prodName!);
       }
       bytes += generator.text(text.length < 64 ? text : text.substring(0, 64), styles: const PosStyles(align: PosAlign.left));
       bytes += generator.text(productModel.prodBarcode ?? "", styles: const PosStyles(align: PosAlign.left));
@@ -258,7 +248,7 @@ class PrintController extends GetxController {
     return total;
   }
 
-  /*String checkArabicWithTranslate(String data) {
+/*String checkArabicWithTranslate(String data) {
     bool isArabic = false;
     for (var c in data.codeUnits) {
       if (c >= 0x0600 && c <= 0x06E0) {
@@ -303,7 +293,4 @@ class PrintController extends GetxController {
       return data;
     }
   }*/
-
-
-
 }

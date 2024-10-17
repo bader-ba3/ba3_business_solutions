@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/databsae/import_controller.dart';
-import '../../../model/global/global_model.dart';
-import '../../../model/invoice/invoice_record_model.dart';
+import '../../../data/model/global/global_model.dart';
+import '../../../data/model/invoice/invoice_record_model.dart';
 
 class InvoiceListView extends StatelessWidget {
   final List<GlobalModel> invoiceList;
@@ -44,7 +44,7 @@ class InvoiceListView extends StatelessWidget {
                       Text(invoiceList[index].invId.toString()),
                       Text("المجموع: ${invoiceList[index].invTotal}"),
                       Text("الوقت: ${invoiceList[index].invDate}"),
-                      Text("البائع:  ${getSellerNameFromId(invoiceList[index].invSeller.toString())}"),
+                      Text("البائع:  ${getSellerNameById(invoiceList[index].invSeller.toString())}"),
                       Text("المستودع: ${getStoreNameFromId(invoiceList[index].invStorehouse.toString())}"),
                       Text(
                           "من: ${invoiceList[index].invPrimaryAccount == null ? "لا يوجد" : getAccountNameFromId(invoiceList[index].invPrimaryAccount.toString())}"),

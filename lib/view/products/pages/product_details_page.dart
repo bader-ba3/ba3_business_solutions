@@ -11,9 +11,9 @@ import '../../../controller/invoice/invoice_pluto_edit_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/shared/widgets/grid_column_item.dart';
 import '../../../core/utils/hive.dart';
-import '../../../model/global/global_model.dart';
-import '../../../model/product/product_model.dart';
-import '../../../model/product/product_record_model.dart';
+import '../../../data/model/global/global_model.dart';
+import '../../../data/model/product/product_model.dart';
+import '../../../data/model/product/product_record_model.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -64,7 +64,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     onPressed: () {
                       confirmDeleteWidget().then((value) {
                         if (value) {
-                          checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewProduct).then((value) {
+                          hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewProduct).then((value) {
                             if (value) {
                               productController.deleteProduct(withLogger: true);
                               Get.back();

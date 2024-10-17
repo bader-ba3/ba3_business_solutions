@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import '../../../controller/product/product_controller.dart';
 import '../../../core/utils/hive.dart';
-import '../../../model/inventory/inventory_model.dart';
-import '../../../model/product/product_model.dart';
+import '../../../data/model/inventory/inventory_model.dart';
+import '../../../data/model/product/product_model.dart';
 
 class NewInventoryView extends StatefulWidget {
   const NewInventoryView({super.key});

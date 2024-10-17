@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-import '../../../model/user/user_model.dart';
+import '../../../data/model/user/user_model.dart';
 
 class TimerView extends StatefulWidget {
   final String oldKey;
@@ -16,8 +16,7 @@ class TimerView extends StatefulWidget {
 
 class _TimerViewState extends State<TimerView> {
   late StopWatchTimer _stopWatchTimer;
-  UserManagementController userManagementViewModel =
-      Get.find<UserManagementController>();
+  UserManagementController userManagementViewModel = Get.find<UserManagementController>();
 
   @override
   void initState() {
@@ -34,30 +33,19 @@ class _TimerViewState extends State<TimerView> {
     for (var i = 0; i < (userModel.userDateList?.length ?? 0); i++) {
       DateTime date = userModel.userDateList![i];
       int time = userModel.userTimeList!.elementAtOrNull(i) ?? 0;
-      if (DateTime.now().toString().split(" ")[0] ==
-          date.toString().split(" ")[0]) {
+      if (DateTime.now().toString().split(" ")[0] == date.toString().split(" ")[0]) {
         totalSec += time;
       } else {}
     }
     if (isClosed) {
     } else {
-      if (userModel.userDateList!.last.toString().split(" ")[0] ==
-          DateTime.now().toString().split(" ")[0]) {
-        totalSec +=
-            DateTime.now().difference(userModel.userDateList!.last).inSeconds;
+      if (userModel.userDateList!.last.toString().split(" ")[0] == DateTime.now().toString().split(" ")[0]) {
+        totalSec += DateTime.now().difference(userModel.userDateList!.last).inSeconds;
       } else {
-        int customTime = DateTime.parse(DateTime.now().toString().split(" ")[0])
-            .difference(userModel.userDateList!.last)
-            .inSeconds;
-        userManagementViewModel.startTimeReport(
-            userId: getMyUserUserId(),
-            customDate:
-                DateTime.parse(DateTime.now().toString().split(" ")[0]));
-        userManagementViewModel.sendTimeReport(
-            userId: getMyUserUserId(), customTime: customTime);
-        totalSec += (DateTime.now().difference(
-                DateTime.parse(DateTime.now().toString().split(" ")[0])))
-            .inSeconds;
+        int customTime = DateTime.parse(DateTime.now().toString().split(" ")[0]).difference(userModel.userDateList!.last).inSeconds;
+        userManagementViewModel.startTimeReport(userId: getMyUserUserId(), customDate: DateTime.parse(DateTime.now().toString().split(" ")[0]));
+        userManagementViewModel.sendTimeReport(userId: getMyUserUserId(), customTime: customTime);
+        totalSec += (DateTime.now().difference(DateTime.parse(DateTime.now().toString().split(" ")[0]))).inSeconds;
       }
       _stopWatchTimer.onStartTimer();
     }
@@ -105,32 +93,24 @@ class _TimerViewState extends State<TimerView> {
                           height: 100,
                           child: Text(
                             "المؤقت",
-                            style: TextStyle(
-                                fontSize: 35, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                           )),
                       StreamBuilder<int>(
                         stream: _stopWatchTimer.rawTime,
                         initialData: _stopWatchTimer.rawTime.value,
                         builder: (context, snap) {
                           final value = snap.data!;
-                          final displayTime = StopWatchTimer.getDisplayTime(
-                              value,
-                              milliSecond: false);
+                          final displayTime = StopWatchTimer.getDisplayTime(value, milliSecond: false);
                           return Column(
                             children: <Widget>[
                               Container(
                                 height: 100,
                                 width: 400,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
                                 child: Center(
                                   child: Text(
                                     displayTime,
-                                    style: const TextStyle(
-                                        fontSize: 40,
-                                        fontFamily: 'Helvetica',
-                                        fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontSize: 40, fontFamily: 'Helvetica', fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -143,23 +123,19 @@ class _TimerViewState extends State<TimerView> {
                         onTap: _stopWatchTimer.isRunning
                             ? () {
                                 _stopWatchTimer.onStopTimer();
-                                userManagementViewModel.sendTimeReport(
-                                    userId: widget.oldKey);
+                                userManagementViewModel.sendTimeReport(userId: widget.oldKey);
                                 setState(() {});
                               }
                             : () {
                                 _stopWatchTimer.onStartTimer();
-                                userManagementViewModel.startTimeReport(
-                                    userId: widget.oldKey);
+                                userManagementViewModel.startTimeReport(userId: widget.oldKey);
                                 setState(() {});
                               },
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 50,
                           child: Icon(
-                            _stopWatchTimer.isRunning
-                                ? Icons.stop
-                                : Icons.play_arrow,
+                            _stopWatchTimer.isRunning ? Icons.stop : Icons.play_arrow,
                             size: 50,
                           ),
                         ),

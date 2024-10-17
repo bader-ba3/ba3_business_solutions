@@ -4,8 +4,8 @@ import 'package:ba3_business_solutions/controller/global/changes_controller.dart
 import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
-import 'package:ba3_business_solutions/model/product/product_record_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_record_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
@@ -17,9 +17,9 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/logger.dart';
-import '../../model/invoice/invoice_record_model.dart';
-import '../../model/product/product_model.dart';
-import '../../model/product/product_tree.dart';
+import '../../data/model/invoice/invoice_record_model.dart';
+import '../../data/model/product/product_model.dart';
+import '../../data/model/product/product_tree.dart';
 import '../../view/products/widget/product_record_data_source.dart';
 
 class ProductController extends GetxController {

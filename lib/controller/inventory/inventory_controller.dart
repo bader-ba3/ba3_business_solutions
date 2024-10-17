@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../model/inventory/inventory_model.dart';
-import '../../model/product/product_model.dart';
+import '../../data/model/inventory/inventory_model.dart';
+import '../../data/model/product/product_model.dart';
 
 class InventoryController extends GetxController {
   Map<String, InventoryModel> allInventory = {};

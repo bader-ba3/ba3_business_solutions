@@ -7,7 +7,7 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
-import '../../../model/account/account_tree.dart';
+import '../../../data/model/account/account_tree.dart';
 
 class AccountTreeView extends StatelessWidget {
   AccountTreeView({super.key});

@@ -1,7 +1,7 @@
 import 'package:ba3_business_solutions/controller/bond/bond_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/date_picker.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -14,8 +14,8 @@ import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
 import '../../../core/shared/widgets/grid_column_item.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
-import '../../../model/account/account_model.dart';
-import '../../../model/bond/bond_record_model.dart';
+import '../../../data/model/account/account_model.dart';
+import '../../../data/model/bond/bond_record_model.dart';
 
 class CustomBondDetailsView extends StatefulWidget {
   const CustomBondDetailsView({
@@ -217,7 +217,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                                       onPressed: () async {
                                         confirmDeleteWidget().then((value) {
                                           if (value) {
-                                            checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
+                                            hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
                                               if (value) {
                                                 globalController.deleteGlobal(bondController.tempBondModel);
                                                 Get.back();
@@ -410,7 +410,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                             var validate2 = bondController.checkValidate();
                             if (isNew) {
                               if (validate2 == null) {
-                                checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
+                                hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
                                   if (value) {
                                     print(bondController.tempBondModel.bondRecord?.map((e) => e.toJson()));
                                     await globalController.addGlobalBond(bondController.tempBondModel);
@@ -424,7 +424,7 @@ class _CustomBondDetailsViewState extends State<CustomBondDetailsView> {
                               }
                             } else if (controller.bondModel.originId == null) {
                               if (validate2 == null) {
-                                checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
+                                hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
                                   if (value) {
                                     GlobalModel temp = GlobalModel.fromJson(bondController.tempBondModel.toFullJson());
                                     bondController.tempBondModel.bondRecord?.removeWhere((element) => element.bondRecId == "X");

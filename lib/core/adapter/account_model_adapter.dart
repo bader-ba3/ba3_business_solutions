@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import '../../model/account/account_model.dart';
+import '../../data/model/account/account_model.dart';
 
 class AccountModelAdapter extends TypeAdapter<AccountModel> {
   @override

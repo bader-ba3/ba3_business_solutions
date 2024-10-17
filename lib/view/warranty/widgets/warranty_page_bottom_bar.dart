@@ -8,7 +8,7 @@ import '../../../controller/warranty/warranty_controller.dart';
 import '../../../controller/warranty/warranty_pluto_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
-import '../../../model/global/global_model.dart';
+import '../../../data/model/global/global_model.dart';
 import '../../invoices/pages/new_invoice_view.dart';
 
 class WarrantyPageBottomBar extends StatelessWidget {
@@ -32,9 +32,7 @@ class WarrantyPageBottomBar extends StatelessWidget {
           AppButton(
               title: 'جديد',
               onPressed: () async {
-                checkPermissionForOperation(AppConstants.roleUserWrite,
-                        AppConstants.roleViewInvoice)
-                    .then((value) {
+                hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewInvoice).then((value) {
                   if (value) {
                     warrantyController.getInit();
                     warrantyController.update();
@@ -57,12 +55,9 @@ class WarrantyPageBottomBar extends StatelessWidget {
                 title: "تعديل",
                 onPressed: () async {
                   plutoEditViewModel.handleSaveAll();
-                  checkPermissionForOperation(AppConstants.roleUserUpdate,
-                          AppConstants.roleViewInvoice)
-                      .then((value) async {
+                  hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewInvoice).then((value) async {
                     if (value) {
-                      warrantyController.updateInvoice(
-                          isAdd: false, done: false);
+                      warrantyController.updateInvoice(isAdd: false, done: false);
                     }
                   });
                 },
@@ -75,12 +70,9 @@ class WarrantyPageBottomBar extends StatelessWidget {
                 onPressed: () async {
                   plutoEditViewModel.handleSaveAll();
 
-                  checkPermissionForOperation(AppConstants.roleUserAdmin,
-                          AppConstants.roleViewInvoice)
-                      .then((value) async {
+                  hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewInvoice).then((value) async {
                     if (value) {
-                      warrantyController.updateInvoice(
-                          isAdd: false, done: true);
+                      warrantyController.updateInvoice(isAdd: false, done: true);
                     }
                   });
                 },
@@ -92,17 +84,13 @@ class WarrantyPageBottomBar extends StatelessWidget {
                 plutoEditViewModel.handleSaveAll();
 
                 PrintController printViewModel = Get.find<PrintController>();
-                printViewModel.printFunction(GlobalModel(),
-                    warrantyModel: warrantyController.initModel);
+                printViewModel.printFunction(GlobalModel(), warrantyModel: warrantyController.initModel);
               },
             ),
             AppButton(
                 title: "E-Invoice",
                 onPressed: () {
-                  showEInvoiceDialog(
-                      mobileNumber:
-                          warrantyController.initModel.customerPhone ?? "",
-                      invId: warrantyController.initModel.invId!);
+                  showEInvoiceDialog(mobileNumber: warrantyController.initModel.customerPhone ?? "", invId: warrantyController.initModel.invId!);
                 },
                 iconData: Icons.link),
             AppButton(
@@ -112,9 +100,7 @@ class WarrantyPageBottomBar extends StatelessWidget {
               onPressed: () async {
                 confirmDeleteWidget().then((value) {
                   if (value) {
-                    checkPermissionForOperation(AppConstants.roleUserDelete,
-                            AppConstants.roleViewInvoice)
-                        .then((value) async {
+                    hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewInvoice).then((value) async {
                       if (value) {
                         warrantyController.deleteInvoice();
                         Get.back();

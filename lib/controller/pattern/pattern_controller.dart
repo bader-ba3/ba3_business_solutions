@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
+import 'package:ba3_business_solutions/data/model/patterens/pattern_model.dart';
 import 'package:ba3_business_solutions/view/patterns/widget/pattern_source_code.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

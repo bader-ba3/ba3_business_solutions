@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/confirm_delete_dialog.dart';
-import '../../../model/seller/task_model.dart';
+import '../../../data/model/seller/task_model.dart';
 
 class AllTaskView extends StatelessWidget {
   const AllTaskView({super.key});
@@ -93,7 +93,7 @@ class AllTaskView extends StatelessWidget {
                                       itemCount: model.value.taskSellerListId.length,
                                       itemBuilder: (context, index) {
                                         String seller = model.value.taskSellerListId[index];
-                                        return Text(getSellerNameFromId(seller).toString());
+                                        return Text(getSellerNameById(seller).toString());
                                       },
                                     ),
                                   ));
@@ -104,7 +104,7 @@ class AllTaskView extends StatelessWidget {
                         ),
                         IconButton(
                             onPressed: () async {
-                              checkPermissionForOperation(
+                              hasPermissionForOperation(
                                 AppConstants.roleUserUpdate,
                                 AppConstants.roleViewTask,
                               ).then((value) async {
@@ -125,7 +125,7 @@ class AllTaskView extends StatelessWidget {
                             onPressed: () async {
                               confirmDeleteWidget().then((value) {
                                 if (value) {
-                                  checkPermissionForOperation(
+                                  hasPermissionForOperation(
                                     AppConstants.roleUserDelete,
                                     AppConstants.roleViewTask,
                                   ).then((value) async {

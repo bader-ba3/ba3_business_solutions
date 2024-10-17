@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/generate_id.dart';
-import '../../model/global/global_model.dart';
-import '../../model/warranty/warranty_model.dart';
+import '../../data/model/global/global_model.dart';
+import '../../data/model/warranty/warranty_model.dart';
 import '../account/account_controller.dart';
 import '../product/product_controller.dart';
 import '../store/store_controller.dart';
@@ -44,7 +44,11 @@ class ChangesController extends GetxController {
   }
 
   listenChanges() {
-    FirebaseFirestore.instance.collection(AppConstants.changesCollection).where(AppConstants.userName, isEqualTo: null).snapshots().listen((value) async {
+    FirebaseFirestore.instance
+        .collection(AppConstants.changesCollection)
+        .where(AppConstants.userName, isEqualTo: null)
+        .snapshots()
+        .listen((value) async {
       // print("The Number Of Changes: " + value.docs.length.toString());
       print("I listen to Change!!!");
       for (var element in value.docs) {
@@ -92,7 +96,10 @@ class ChangesController extends GetxController {
             print("UNKNOWN CHANGE " * 20);
           }
           if (element.data()[AppConstants.userName] == null /*|| element.data()["abd"] == null*/) {
-            FirebaseFirestore.instance.collection(AppConstants.changesCollection).doc(element.id).set({AppConstants.userName: true, ...element.data()});
+            FirebaseFirestore.instance
+                .collection(AppConstants.changesCollection)
+                .doc(element.id)
+                .set({AppConstants.userName: true, ...element.data()});
           } /*else if (element.data()["abd"] != null) {
             // FirebaseFirestore.instance.collection(AppStrings.changesCollection).doc(element.id).delete();
           }*/

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 import '../../../controller/user/user_management_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/seller/seller_model.dart';
+import '../../../data/model/seller/seller_model.dart';
 import '../../invoices/widget/custom_Text_field.dart';
 
 class AddTaskView extends StatelessWidget {
@@ -86,25 +86,21 @@ class AddTaskView extends StatelessWidget {
                             child: Row(
                               children: [
                                 const Text("المادة :"),
-                                const SizedBox(
-                                  width: 25,
-                                ),
+                                const SizedBox(width: 25),
                                 Expanded(
                                   child: CustomTextFieldWithIcon(
                                     controller: targetController.productNameController,
                                     onSubmitted: (text) async {
-                                      var a = await targetController.getComplete(text);
-                                      if (a.isNotEmpty) {
-                                        targetController.taskModel.taskProductId = getProductIdFromName(a);
-                                        targetController.productNameController.text = a;
+                                      var selectedProductName = await targetController.fetchMatchingProducts(text);
+                                      if (selectedProductName.isNotEmpty) {
+                                        targetController.taskModel.taskProductId = getProductIdFromName(selectedProductName);
+                                        targetController.productNameController.text = selectedProductName;
                                         targetController.update();
                                       }
                                     },
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 25,
-                                ),
+                                const SizedBox(width: 25),
                                 if (targetController.taskModel.taskProductId != null) const Icon(Icons.check),
                               ],
                             ),
@@ -197,11 +193,11 @@ class AddTaskView extends StatelessWidget {
                               targetController.taskModel.taskSellerListId = targetController.allUser;
                               targetController.taskModel.taskDate = targetController.taskDate;
                               if (targetController.taskModel.taskId != null) {
-                                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                                hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
                                   if (value) targetController.updateTask(targetController.taskModel);
                                 });
                               } else {
-                                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
+                                hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewTask).then((value) {
                                   if (value) targetController.addTask(targetController.taskModel);
                                 });
                               }

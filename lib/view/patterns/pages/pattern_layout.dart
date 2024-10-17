@@ -31,7 +31,7 @@ class PatternLayout extends StatelessWidget {
             AppMenuItem(
               text: "معاينة الانماط",
               onTap: () {
-                checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewPattern).then((value) {
+                hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewPattern).then((value) {
                   if (value) Get.to(() => const AllPatternPage());
                 });
               },

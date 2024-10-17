@@ -22,7 +22,7 @@ class _UserManagementLayoutState extends State<UserManagementLayout> {
   void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-      checkPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewUserManagement).then((value) {
+      hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewUserManagement).then((value) {
         print(value);
         if (value) {
           isAdmin = true;

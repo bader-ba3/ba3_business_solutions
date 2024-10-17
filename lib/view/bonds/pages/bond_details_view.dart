@@ -5,7 +5,7 @@ import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_short_cut.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/custom_pluto_with_edite.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/bond_record_pluto_view_model.dart';
 import 'package:ba3_business_solutions/view/bonds/widget/get_account_enter_pluto_action.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
@@ -335,7 +335,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                   if ((isDebitOrCreditWithAccount && isValidBondForSave) ||
                                       (!isDebitOrCredit && isBalancedBond && isValidBondForSave)) {
                                     if (bondController.isNew) {
-                                      checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           await globalController.addGlobalBond(GlobalModel(
                                               bondCode: controller.codeController.text,
@@ -364,7 +364,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         }
                                       });
                                     } else {
-                                      checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           bondController.isNew = false;
                                           controller.isEdit = false;
@@ -416,7 +416,7 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 onPressed: () async {
                                   confirmDeleteWidget().then((value) {
                                     if (value) {
-                                      checkPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
                                         if (value) {
                                           globalController.deleteGlobal(bondController.tempBondModel);
                                           Get.back();

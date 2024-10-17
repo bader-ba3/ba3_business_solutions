@@ -3,8 +3,8 @@ import 'seller_time_model.dart';
 class SellerModel {
   String? sellerName, sellerCode, sellerId;
   List<SellerRecModel>? sellerRecord = [];
-  Map<String , SellerTargetArchive> sellerTargetArchive= {};
-  List<String>? sellerDayOff=[];
+  Map<String, SellerTargetArchive> sellerTargetArchive = {};
+  List<String>? sellerDayOff = [];
   SellerTimeModel? sellerTime;
 
   SellerModel({
@@ -26,18 +26,18 @@ class SellerModel {
     };
   }
 
-  SellerModel.fromJson(Map<String, dynamic> json, this.sellerId) {
+  SellerModel.fromJson(Map<String, dynamic> json) {
+    sellerId = json['sellerId'];
     sellerName = json['sellerName'];
     sellerCode = json['sellerCode'];
-    sellerTime = SellerTimeModel.fromJson(json['sellerTime']??{});
-    sellerDayOff = (json['sellerDayOff'] as List<dynamic>?)
-        ?.map((e) => e.toString())
-        .toList() ?? [];
+    sellerTime = SellerTimeModel.fromJson(json['sellerTime'] ?? {});
+    sellerDayOff = (json['sellerDayOff'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [];
   }
 }
 
 class SellerRecModel {
   String? selleRecInvId, selleRecAmount, selleRecUserId, selleRecInvDate;
+
   SellerRecModel({
     this.selleRecInvId,
     this.selleRecAmount,
@@ -64,17 +64,25 @@ class SellerRecModel {
   }
 }
 
-class SellerTargetArchive{
- late String mobileTarget , otherTarget  ;
- late bool isHitTarget ;
-  Map<String , bool> tasks={};
-  SellerTargetArchive({required this.mobileTarget ,required this.otherTarget ,required this.isHitTarget ,required this.tasks , });
+class SellerTargetArchive {
+  late String mobileTarget, otherTarget;
 
-  SellerTargetArchive.fromJson(json){
+  late bool isHitTarget;
+
+  Map<String, bool> tasks = {};
+
+  SellerTargetArchive({
+    required this.mobileTarget,
+    required this.otherTarget,
+    required this.isHitTarget,
+    required this.tasks,
+  });
+
+  SellerTargetArchive.fromJson(json) {
     mobileTarget = json['mobileTarget'];
     otherTarget = json['otherTarget'];
     isHitTarget = json['isHitTarget'];
-    tasks= json['tasks'];
+    tasks = json['tasks'];
   }
 
   Map<String, dynamic> toJson() {

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
-import '../../../model/account/account_model.dart';
+import '../../../data/model/account/account_model.dart';
 import '../../invoices/widget/custom_Text_field.dart';
 
 class AddAccount extends StatefulWidget {
@@ -255,13 +255,13 @@ class _AddAccountState extends State<AddAccount> {
                                     await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,
                                         accParentId.text, accIsRoot);
                                     if (accountModel.accId == null) {
-                                      checkPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewAccount).then((value) {
+                                      hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewAccount).then((value) {
                                         if (value) {
                                           accountController.addNewAccount(accountModel, withLogger: true);
                                         }
                                       });
                                     } else {
-                                      checkPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewAccount).then((value) {
+                                      hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewAccount).then((value) {
                                         if (value) {
                                           accountController.updateAccount(accountModel, withLogger: true);
                                         }

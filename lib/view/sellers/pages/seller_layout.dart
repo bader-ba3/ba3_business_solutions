@@ -23,7 +23,7 @@ class SellerLayout extends StatelessWidget {
               Get.to(() => const AddSellerPage());
             }),
             item("معاينة البائعون", () {
-              checkPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewSeller).then((value) {
+              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewSeller).then((value) {
                 if (value) Get.to(() => const AllSellersPage());
               });
             }),

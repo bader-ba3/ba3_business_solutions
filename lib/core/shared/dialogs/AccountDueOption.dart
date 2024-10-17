@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
-import 'package:ba3_business_solutions/model/account/account_model.dart';
+import 'package:ba3_business_solutions/data/model/account/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

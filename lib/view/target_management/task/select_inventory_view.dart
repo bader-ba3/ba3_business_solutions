@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tree_pro/flutter_tree.dart';
 import 'package:get/get.dart';
 
-import '../../../model/inventory/inventory_model.dart';
+import '../../../data/model/inventory/inventory_model.dart';
 
 class SelectTaskInventory extends StatefulWidget {
   final String userId;

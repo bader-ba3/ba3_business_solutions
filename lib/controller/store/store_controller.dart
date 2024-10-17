@@ -5,8 +5,8 @@ import 'package:ba3_business_solutions/controller/product/product_controller.dar
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
-import 'package:ba3_business_solutions/model/global/global_model.dart';
-import 'package:ba3_business_solutions/model/store/store_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/store/store_model.dart';
 import 'package:ba3_business_solutions/view/stores/widgets/store_data_grid_source_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-import '../../model/store/store_record_model.dart';
+import '../../data/model/store/store_record_model.dart';
 
 class StoreController extends GetxController {
   final CollectionReference _storeCollectionRef = FirebaseFirestore.instance.collection(AppConstants.storeCollection);

@@ -7,10 +7,10 @@ import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/utils/hive.dart';
-import 'package:ba3_business_solutions/model/invoice/invoice_discount_record_model.dart';
-import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
-import 'package:ba3_business_solutions/model/patterens/pattern_model.dart';
-import 'package:ba3_business_solutions/model/product/product_imei.dart';
+import 'package:ba3_business_solutions/data/model/invoice/invoice_discount_record_model.dart';
+import 'package:ba3_business_solutions/data/model/invoice/invoice_record_model.dart';
+import 'package:ba3_business_solutions/data/model/patterens/pattern_model.dart';
+import 'package:ba3_business_solutions/data/model/product/product_imei.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/all_invoice_data_sorce.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/custom_Text_field.dart';
@@ -22,8 +22,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../core/helper/functions/functions.dart';
 import '../../core/shared/dialogs/CustomerDialog.dart';
-import '../../model/account/account_customer.dart';
-import '../../model/global/global_model.dart';
+import '../../data/model/account/account_customer.dart';
+import '../../data/model/global/global_model.dart';
 import '../account/account_controller.dart';
 import 'screen_controller.dart';
 
@@ -101,7 +101,8 @@ class InvoiceController extends GetxController {
     PatternModel patternModel = patternController.patternModel[initModel.patternId]!;
     if (patternModel.patType != AppConstants.invoiceTypeBuy) {
       if (getIfAccountHaveCustomers(secondaryAccountController.text)) {
-        customer = await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
+        customer =
+            await accountCustomerDialog(customers: getAccountCustomers(secondaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
         customer = await accountCustomerDialog(text: invCustomerAccountController.text);
@@ -110,7 +111,8 @@ class InvoiceController extends GetxController {
       }
     } else {
       if (getIfAccountHaveCustomers(primaryAccountController.text)) {
-        customer = await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
+        customer =
+            await accountCustomerDialog(customers: getAccountCustomers(primaryAccountController.text), text: invCustomerAccountController.text);
         invCustomerAccountController.text = customer.customerAccountName!;
       } else {
         customer = await accountCustomerDialog(text: invCustomerAccountController.text);
@@ -343,8 +345,8 @@ class InvoiceController extends GetxController {
     noteController.clear();
     billIDController.clear();
     mobileNumberController.clear();
-    if (getMyUserSellerId() != null) {
-      sellerController.text = getSellerNameFromId(getMyUserSellerId()) ?? '';
+    if (getCurrentUserSellerId() != null) {
+      sellerController.text = getSellerNameById(getCurrentUserSellerId()) ?? '';
     }
     dateController = DateTime.now().toString().split(".")[0];
     invDueDateController = DateTime.now().toString().split(".")[0];
@@ -353,7 +355,8 @@ class InvoiceController extends GetxController {
   ScreenController screenViewModel = Get.find<ScreenController>();
 
   initCodeList(patternId) {
-    nextPrevList = Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
+    nextPrevList =
+        Map.fromEntries(invoiceModel.values.where((element) => element.patternId == patternId).map((e) => MapEntry(e.invCode!, e.invId!)).toList());
   }
 
   String getNextCodeInv() {
@@ -363,12 +366,11 @@ class InvoiceController extends GetxController {
     } else {
       code = int.parse(nextPrevList.keys.where((e) => !e.contains("F-")).last);
 
-      for(var max in nextPrevList.keys){
-        if(code<=(int.tryParse(max)??0)){
-          code=(int.tryParse(max)??0)+1;
+      for (var max in nextPrevList.keys) {
+        if (code <= (int.tryParse(max) ?? 0)) {
+          code = (int.tryParse(max) ?? 0) + 1;
         }
       }
-
     }
 
     return code.toString();
@@ -397,7 +399,7 @@ class InvoiceController extends GetxController {
     if (patternModel.patType != AppConstants.invoiceTypeChange && patternModel.patType != AppConstants.invoiceTypeAdd) {
       secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
-      sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
+      sellerController.text = getSellerNameById(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
@@ -459,7 +461,7 @@ class InvoiceController extends GetxController {
     if (patternModel.patType != AppConstants.invoiceTypeChange && patternModel.patType != AppConstants.invoiceTypeAdd) {
       secondaryAccountController.text = getAccountNameFromId(initModel.invSecondaryAccount!);
       primaryAccountController.text = getAccountNameFromId(initModel.invPrimaryAccount!);
-      sellerController.text = getSellerNameFromId(initModel.invSeller) ?? '';
+      sellerController.text = getSellerNameById(initModel.invSeller) ?? '';
     } else {
       primaryAccountController.clear();
       secondaryAccountController.clear();
@@ -485,7 +487,10 @@ class InvoiceController extends GetxController {
 
   bool checkAllRecord() {
     for (var element in records) {
-      return (element.invRecProduct == "" || element.invRecProduct == null || (element.invRecQuantity == 0 && element.invRecGift == 0) || element.invRecQuantity == null);
+      return (element.invRecProduct == "" ||
+          element.invRecProduct == null ||
+          (element.invRecQuantity == 0 && element.invRecGift == 0) ||
+          element.invRecQuantity == null);
     }
     return false;
   }
@@ -498,7 +503,10 @@ class InvoiceController extends GetxController {
     storePickList = [];
 
     storeViewController.storeMap.forEach((key, value) {
-      storePickList.addIf(value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) || value.stName!.toLowerCase().contains(storeController.text.toLowerCase()), value.stName!);
+      storePickList.addIf(
+          value.stCode!.toLowerCase().contains(storeController.text.toLowerCase()) ||
+              value.stName!.toLowerCase().contains(storeController.text.toLowerCase()),
+          value.stName!);
     });
     if (storePickList.length > 1) {
       await Get.defaultDialog(

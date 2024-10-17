@@ -177,30 +177,18 @@ abstract class AppConstants {
   static const roleViewHome = "roleViewHome";
 
   ////////////--------------------------------------------------
-  static const invoiceChoosePriceMethodeCustomerPrice =
-      "invoiceChoosePriceMethodeCustomerPrice";
-  static const invoiceChoosePriceMethodeDefault =
-      "invoiceChoosePriceMethodeCustomerPrice";
-  static const invoiceChoosePriceMethodeLastPrice =
-      "invoiceChoosePriceMethodeLastPrice";
-  static const invoiceChoosePriceMethodeAveragePrice =
-      "invoiceChoosePriceMethodeAveragePrice";
-  static const invoiceChoosePriceMethodeHigher =
-      "invoiceChoosePriceMethodeHigher";
-  static const invoiceChoosePriceMethodeLower =
-      "invoiceChoosePriceMethodeLower";
-  static const invoiceChoosePriceMethodeMinPrice =
-      "invoiceChoosePriceMethodeMinPrice";
-  static const invoiceChoosePriceMethodeAverageBuyPrice =
-      "invoiceChoosePriceMethodeAverageBuyPrice";
-  static const invoiceChoosePriceMethodeWholePrice =
-      "invoiceChoosePriceMethodeWholePrice";
-  static const invoiceChoosePriceMethodeRetailPrice =
-      "invoiceChoosePriceMethodeRetailPrice";
-  static const invoiceChoosePriceMethodeCostPrice =
-      "invoiceChoosePriceMethodeCostPrice";
-  static const invoiceChoosePriceMethodeCustom =
-      "invoiceChoosePriceMethodeCustom";
+  static const invoiceChoosePriceMethodeCustomerPrice = "invoiceChoosePriceMethodeCustomerPrice";
+  static const invoiceChoosePriceMethodeDefault = "invoiceChoosePriceMethodeCustomerPrice";
+  static const invoiceChoosePriceMethodeLastPrice = "invoiceChoosePriceMethodeLastPrice";
+  static const invoiceChoosePriceMethodeAveragePrice = "invoiceChoosePriceMethodeAveragePrice";
+  static const invoiceChoosePriceMethodeHigher = "invoiceChoosePriceMethodeHigher";
+  static const invoiceChoosePriceMethodeLower = "invoiceChoosePriceMethodeLower";
+  static const invoiceChoosePriceMethodeMinPrice = "invoiceChoosePriceMethodeMinPrice";
+  static const invoiceChoosePriceMethodeAverageBuyPrice = "invoiceChoosePriceMethodeAverageBuyPrice";
+  static const invoiceChoosePriceMethodeWholePrice = "invoiceChoosePriceMethodeWholePrice";
+  static const invoiceChoosePriceMethodeRetailPrice = "invoiceChoosePriceMethodeRetailPrice";
+  static const invoiceChoosePriceMethodeCostPrice = "invoiceChoosePriceMethodeCostPrice";
+  static const invoiceChoosePriceMethodeCustom = "invoiceChoosePriceMethodeCustom";
 
   ////////////--------------------------------------------------
   static const rowAccountAggregateName = "rowAccountAggregateName";
@@ -245,10 +233,8 @@ abstract class AppConstants {
   /////////////---------------------------------------------------
   static const mainVATCategory = "SR-التصنيف الأساسي";
   static const withoutVAT = "EX-معفى";
-  static String vatAccountId =
-      getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة");
-  static String returnVatAccountId =
-      getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة");
+  static String vatAccountId = getAccountIdFromText("ضريبة القيمة المضافة رأس الخيمة");
+  static String returnVatAccountId = getAccountIdFromText("استرداد ضريبة القيمة المضافة رأس الخيمة");
 
   /////////////---------------------------------------------------
   static const firstTimeEnter = "FirstTimeEnter";
@@ -256,7 +242,6 @@ abstract class AppConstants {
   static const firstTimeOut = "secondTimeEnter";
   static const secondTimeOut = "secondTimeEnter";
   static const breakTime = "secondTimeEnter";
-
 
   static const allRolePage = [
     AppConstants.roleViewBond,
@@ -280,13 +265,23 @@ abstract class AppConstants {
     AppConstants.roleViewCard,
     AppConstants.roleViewHome
   ];
-  static const accountTypeList = [
-    AppConstants.accountTypeDefault,
-    AppConstants.accountTypeFinalAccount,
-    AppConstants.accountTypeAggregateAccount
-  ];
+  static const accountTypeList = [AppConstants.accountTypeDefault, AppConstants.accountTypeFinalAccount, AppConstants.accountTypeAggregateAccount];
 
   static const userName = "ali";
 
-  static const prodViewTypeSearch="prodViewTypeSearch";
+  static const prodViewTypeSearch = "prodViewTypeSearch"; // REMOTE API ERROR CONSTANTS
+  static const String success = 'success';
+  static const String badRequestError = 'bad_request_error';
+  static const String noContent = 'no_content';
+  static const String forbiddenError = 'forbidden_error';
+  static const String unauthorizedError = 'unauthorized_error';
+  static const String notFoundError = 'not_found_error';
+  static const String conflictError = 'conflict_error';
+  static const String internalServerError = 'internal_server_error';
+  static const String unknownError = 'unknown_error';
+  static const String timeoutError = 'timeout_error';
+  static const String defaultError = 'default_error';
+  static const String cancelError = 'cancel_error';
+  static const String cacheError = 'cache_error';
+  static const String noInternetError = 'no_internet_error';
 }

@@ -5,12 +5,12 @@ import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dar
 import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/main.dart';
-import 'package:ba3_business_solutions/model/bond/bond_record_model.dart';
-import 'package:ba3_business_solutions/model/bond/entry_bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/bond_record_model.dart';
+import 'package:ba3_business_solutions/data/model/bond/entry_bond_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../model/global/global_model.dart';
+import '../../../data/model/global/global_model.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
 import '../widgets/option_text_widget.dart';
 

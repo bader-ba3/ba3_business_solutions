@@ -1,11 +1,11 @@
-import 'package:ba3_business_solutions/model/global/global_model.dart';
+import 'package:ba3_business_solutions/data/model/global/global_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controller/account/account_controller.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../model/account/account_model.dart';
+import '../../../data/model/account/account_model.dart';
 
 class EntryBondRecordDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];

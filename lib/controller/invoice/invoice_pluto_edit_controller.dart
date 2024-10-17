@@ -1,5 +1,5 @@
 import 'package:ba3_business_solutions/controller/product/product_controller.dart';
-import 'package:ba3_business_solutions/model/invoice/invoice_record_model.dart';
+import 'package:ba3_business_solutions/data/model/invoice/invoice_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:math_expressions/math_expressions.dart';
@@ -7,7 +7,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/helper/functions/functions.dart';
-import '../../model/product/product_model.dart';
+import '../../data/model/product/product_model.dart';
 
 class InvoicePlutoController extends GetxController {
   InvoicePlutoController() {
