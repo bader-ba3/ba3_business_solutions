@@ -85,7 +85,7 @@ class ProductController extends GetxController {
           (previousValue, element) => element + previousValue,
         );
 
-    quantity = allSales - allBuy;
+    quantity =  allBuy-allSales;
     return quantity;
   }
 
@@ -103,7 +103,7 @@ class ProductController extends GetxController {
               globalModel.invId,
               globalModel.invType,
               globalModel.invRecords![i].invRecProduct!,
-              (globalModel.invRecords![i].invRecQuantity ?? 1).toString(),
+              (globalModel.invRecords![i].invRecQuantity ?? 0).toString(),
               globalModel.invRecords![i].invRecId,
               globalModel.invRecords![i].invRecTotal.toString(),
               globalModel.invRecords![i].invRecSubTotal.toString(),
@@ -119,7 +119,7 @@ class ProductController extends GetxController {
             globalModel.invId,
             globalModel.invType,
             globalModel.invRecords![i].invRecProduct!,
-            (globalModel.invRecords![i].invRecQuantity ?? 1).toString(),
+            (globalModel.invRecords![i].invRecQuantity ?? 0).toString(),
             globalModel.invRecords![i].invRecId,
             globalModel.invRecords![i].invRecTotal.toString(),
             globalModel.invRecords![i].invRecSubTotal.toString(),
