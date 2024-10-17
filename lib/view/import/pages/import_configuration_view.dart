@@ -19,6 +19,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
   Map<String, RecordType> typeMap = {
     "حسابات": RecordType.accCustomer,
     "مواد": RecordType.product,
+    "مواد F": RecordType.fProduct,
     "شيكات": RecordType.cheque,
     "حسابات بدون زبائن": RecordType.account,
   };
@@ -86,7 +87,7 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                   items: typeMap.keys.map((e) => DropdownMenuItem(value: typeMap[e], child: Text(e.toString()))).toList(),
                   onChanged: (_) {
                     type = _;
-                    if (_ == RecordType.product) {
+                    if (_ == RecordType.product||_ == RecordType.fProduct) {
                       config = configProduct;
                     } else if (_ == RecordType.account) {
                       config = configAccountWitOut;
@@ -152,6 +153,9 @@ class _ImportConfigurationViewState extends State<ImportConfigurationView> {
                   await controller.addCheque(widget.productList, setting);
                 } else if (type == RecordType.accCustomer) {
                   // await addAccountWithCustomer();
+                }
+                else if (type == RecordType.fProduct) {
+                  await controller.addProductFree(widget.productList, setting);
                 }
                 // Get.offAll(() => HomeView());
               },
