@@ -876,7 +876,7 @@ class ImportController extends GetxController {
 
       List<List<String>> dataList = file.map((e) => e.split(separator)).toList();
       row.forEach((element) {
-        indexOfDate = row.indexOf("التاريخ");
+        indexOfDate = row.indexOf("التاريخ");//
         indexOfPayType = row.indexOf("طريقة الدفع");
         // indexOfInvType = row.indexOf("نوع الفاتورة");
         // indexOfPrimery = row.indexOf("اسم الزبون"); // BAD
@@ -1438,7 +1438,7 @@ class ImportController extends GetxController {
                     ),
                   ));
             }
-            return;
+            // return;
           }
           print(invMap.values.length);
           invMap.removeWhere(

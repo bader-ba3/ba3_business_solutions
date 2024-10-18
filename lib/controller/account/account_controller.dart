@@ -635,7 +635,20 @@ class AccountController extends GetxController {
     allCost.clear();
     List<AccountModel> rootList = accountList.values.toList().where((element) => element.accIsParent ?? false).toList();
     for (var element in rootList) {
-      allCost.add(addToModel(element));
+/*  for(var e in element.accChild){
+    if(accountList[e]==null){
+      print(e);
+      print(element.toJson());
+
+      List<String> acc=element.accChild.map((s) => s.toString(),).toList();
+      acc.removeWhere((element) => element==e);
+      print(acc);
+      // HiveDataBase.accountModelBox.put(element.accId, element..accChild=acc)
+      // ;
+    }
+  }*/
+      // allCost.add(addToModel(element));
+
     }
   }
 
