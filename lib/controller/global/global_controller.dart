@@ -483,14 +483,14 @@ class GlobalController extends GetxController {
     // });
 
     ///this for add to firebase
-    await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
+    // await FirebaseFirestore.instance.collection(AppConstants.globalCollection).doc(globalModel.bondId).set(globalModel.toFullJson());
     await Future.delayed(const Duration(milliseconds: 100));
 
     ///?? globalModel.entryBondId
-    await HiveDataBase.globalModelBox.put(globalModel.bondId, globalModel);
+    await HiveDataBase.globalModelBox.put(globalModel.entryBondId, globalModel);
 
     Get.find<ImportController>().addedBond++;
-    print("end ${globalModel.bondId}");
+    print("end ${globalModel.entryBondId}");
     print("end ${globalModel.entryBondRecord!.map(
       (e) => e.toJson(),
     )}");

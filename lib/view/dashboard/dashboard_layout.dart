@@ -46,6 +46,7 @@ class DashboardLayout extends StatelessWidget {
                             onPressed: () {
                               accountController.setBalance(HiveDataBase.mainAccountModelBox.values.toList());
                               accountController.update();
+                              // HiveDataBase.globalModelBox.deleteFromDisk();
                             },
                             icon: const Icon(Icons.refresh)),
                         IconButton(
