@@ -13,25 +13,32 @@ import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../core/helper/enums/enums.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../data/model/user/card_model.dart';
+import '../../data/repositories/user/user_repo.dart';
 import 'cards_controller.dart';
 
-enum UserManagementStatus {
-  first,
-  login,
-  block,
-  auth,
-}
-
 class UserManagementController extends GetxController {
+  final UserManagementRepository _userRepository;
+
+  UserManagementController(this._userRepository) {
+    getAllRoles();
+    initAllUser();
+  }
+
   TextEditingController nameController = TextEditingController();
   TextEditingController pinController = TextEditingController();
 
-  UserManagementController() {
-    getAllRole();
-    initAllUser();
-  }
+  Map<String, RoleModel> allRoles = {};
+  Map<String, UserModel> allUserList = {};
+
+  UserManagementStatus? userStatus;
+
+  String? userPin;
+  String? cardNumber;
+  UserModel? myUserModel;
+  UserModel? initAddUserModel;
 
   initUser([String? userId]) {
     if (userId == null) {
@@ -45,25 +52,18 @@ class UserManagementController extends GetxController {
     }
   }
 
-  Map<String, RoleModel> allRole = {};
-
-  UserManagementStatus? userStatus;
-  Map<String, UserModel> allUserList = {};
-  String? userPin;
-  String? cardNumber;
-  UserModel? myUserModel;
-  UserModel? initAddUserModel;
-
-  void getAllRole() {
-    FirebaseFirestore.instance.collection(AppConstants.roleCollection).get().then((event) {
-      allRole.clear();
-      for (var element in event.docs) {
-        allRole[element.id] = RoleModel.fromJson(element.data());
-        WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
-              (value) => update(),
-            );
-      }
-    });
+  // Fetch roles using the repository
+  Future<void> getAllRoles() async {
+    final result = await _userRepository.getAllRoles();
+    result.fold(
+      (failure) => Get.snackbar("Error", failure.message),
+      (fetchedRoles) {
+        allRoles = fetchedRoles;
+      },
+    );
+    WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then(
+          (value) => update(),
+        );
   }
 
   void checkUserStatus() async {
@@ -143,64 +143,63 @@ class UserManagementController extends GetxController {
     });
   }
 
-  void addUser() {
+  void addUser() async {
     initAddUserModel?.userId ??= generateId(RecordType.user);
     initAddUserModel?.userStatus ??= AppConstants.userStatusOnline;
-    FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(initAddUserModel?.userId).set(initAddUserModel!.toJson());
+    final result = await _userRepository.saveUser(initAddUserModel!);
+    result.fold(
+      (failure) => Get.snackbar("Error", failure.message),
+      (success) => Get.snackbar("Success", "User saved successfully!"),
+    );
   }
 
   RoleModel? roleModel;
 
-  void addRole() {
+  void addRole() async {
     roleModel?.roleId ??= generateId(RecordType.role);
-    FirebaseFirestore.instance.collection(AppConstants.roleCollection).doc(roleModel?.roleId).set(roleModel!.toJson(), SetOptions(merge: true));
+    final result = await _userRepository.saveRole(roleModel!);
+    result.fold(
+      (failure) => Get.snackbar("Error", failure.message),
+      (success) => Get.snackbar("Success", "Role saved successfully!"),
+    );
     update();
   }
 
-  void startTimeReport({required String userId, DateTime? customDate}) {
-    customDate ??= DateTime.now();
-    // UserTimeRecord model = UserTimeRecord(date: date, time: time.toString(), timestamp: startTime,totalTime:0);
-    FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(userId).set({
-      "userDateList": FieldValue.arrayUnion(
-        [customDate],
-      ),
-    }, SetOptions(merge: true));
-    FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(userId).set({
-      "userStatus": AppConstants.userStatusAway,
-    }, SetOptions(merge: true));
+  void startTimeReport({required String userId, DateTime? customDate}) async {
+    final result = await _userRepository.startTimeReport(userId, customDate: customDate);
+    result.fold(
+      (failure) => Get.snackbar("Error", failure.message),
+      (success) => Get.snackbar("Success", "Time report start successfully!"),
+    );
   }
 
-  void sendTimeReport({required String userId, int? customTime}) {
-    DateTime model = allUserList[userId]!.userDateList!.last;
-    customTime ??= DateTime.now().difference(model).inSeconds;
-    // Get.snackbar("title", DateTime.now().difference(model).inSeconds.toString());
-    FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(userId).update({
-      "userTimeList": [...?allUserList[userId]!.userTimeList, customTime],
-    });
-    FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(userId).set({
-      "userStatus": AppConstants.userStatusOnline,
-    }, SetOptions(merge: true));
+  void sendTimeReport({required String userId, int? customTime}) async {
+    final result = await _userRepository.sendTimeReport(userId, customTime: customTime);
+    result.fold(
+      (failure) => Get.snackbar("Error", failure.message),
+      (success) => Get.snackbar("Success", "Time report sent successfully!"),
+    );
   }
 
-  void logInTime() {
-    try {
-      FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(myUserModel!.userId).update({
-        "logInDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]),
-        "userStatus": AppConstants.userStatusOnline,
-      });
-    } on Exception catch (e) {
-      Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  $e \n");
+  // Log login time
+  Future<void> logInTime() async {
+    if (myUserModel != null) {
+      final result = await _userRepository.logLoginTime(myUserModel!.userId);
+      result.fold(
+        (failure) => Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  ${failure.message} \n"),
+        (success) => Get.snackbar("Success", "Login time logged successfully!"),
+      );
     }
   }
 
-  void logOutTime() {
-    try {
-      FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(myUserModel!.userId).update({
-        "logOutDateList": FieldValue.arrayUnion([Timestamp.now().toDate()]),
-        "userStatus": AppConstants.userStatusOnline,
-      });
-    } on Exception catch (e) {
-      Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  $e \n");
+  // Log logout time
+  Future<void> logOutTime() async {
+    if (myUserModel != null) {
+      final result = await _userRepository.logLogoutTime(myUserModel!.userId);
+      result.fold(
+        (failure) => Get.snackbar("Error", "جرب طفي التطبيق ورجاع شغلو او تأكد من اتصال النت  ${failure.message} \n"),
+        (success) => Get.snackbar("Success", "Logout time logged successfully!"),
+      );
     }
   }
 }
@@ -242,7 +241,7 @@ UserModel getUserModelById(id) {
 
 bool checkPermission(role, page) {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[page]?.contains(role) ?? false) {
     return true;
   } else {
@@ -252,7 +251,7 @@ bool checkPermission(role, page) {
 
 bool checkMainPermission(role) {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[role]?.isNotEmpty ?? false) {
     return true;
   } else {
@@ -262,7 +261,7 @@ bool checkMainPermission(role) {
 
 Future<bool> hasPermissionForOperation(role, page) async {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRole[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   String error = "";
   // _ndefWrite();
   if (userRole?[page]?.contains(role) ?? false) {
@@ -292,7 +291,7 @@ Future<bool> hasPermissionForOperation(role, page) async {
               CardsController cardViewController = Get.find<CardsController>();
               if (cardViewController.allCards.containsKey(cardId)) {
                 CardModel cardModel = cardViewController.allCards[cardId]!;
-                Map<String, List<String>>? newUserRole = userManagementViewController.allRole[getUserModelById(cardModel.userId).userRole]?.roles;
+                Map<String, List<String>>? newUserRole = userManagementViewController.allRoles[getUserModelById(cardModel.userId).userRole]?.roles;
                 if (newUserRole?[page]?.contains(role) ?? false) {
                   Get.back(result: true);
                   NfcManager.instance.stopSession();
@@ -323,7 +322,7 @@ Future<bool> hasPermissionForOperation(role, page) async {
                         UserModel? user =
                             userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin == _);
                         if (user != null) {
-                          Map<String, List<String>>? newUserRole = userManagementViewController.allRole[user.userRole]?.roles;
+                          Map<String, List<String>>? newUserRole = userManagementViewController.allRoles[user.userRole]?.roles;
                           if (newUserRole?[page]?.contains(role) ?? false) {
                             Get.back(result: true);
                             NfcManager.instance.stopSession();

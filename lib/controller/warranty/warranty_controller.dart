@@ -16,7 +16,6 @@ class WarrantyController extends GetxController {
   WarrantyController() {
     for (var element in HiveDataBase.warrantyModelBox.values) {
       warrantyMap[element.invId!] = element;
-      // print(element.toJson());
     }
   }
 
@@ -41,7 +40,7 @@ class WarrantyController extends GetxController {
 
   WarrantyModel initModel = WarrantyModel();
 
-  void getInvByInvCode(String text) {
+  void getInvByCode(String text) {
     List<WarrantyModel> inv = warrantyMap.values.where((element) => element.invCode == text).toList();
 
     if (inv.isNotEmpty) {
@@ -141,10 +140,6 @@ class WarrantyController extends GetxController {
   }
 
   updateInvoice({required bool isAdd, required bool done}) async {
-    /*   if (warrantyMap.values.where((element) => element.invCode == invCodeController.text).firstOrNull != null || invCodeController.text == '') {
-      Get.snackbar("خطأ", "رقم الفاتورة موجود من قبل ");
-      return;
-    }*/
     if (isAdd) {
       initModel.invId = generateId(RecordType.warrantyInv);
     }
@@ -186,12 +181,6 @@ class WarrantyController extends GetxController {
         .collection(AppConstants.warrantyCollection)
         .doc(initModel.invId)
         .set(initModel.toJson(), SetOptions(merge: true));
-/*    if (globalModel.invMobileNumber != null && globalModel.invMobileNumber != '') {
-      await FirebaseFirestore.instance.collection(Const.ba3Invoice).doc(globalModel.invMobileNumber).set({
-        "listUrl": FieldValue.arrayUnion(['https://ba3-business-solutions.firebaseapp.com/?id=${globalModel.invId}&year=${Const.dataName}'])
-      });
-    }*/
-
     await HiveDataBase.warrantyModelBox.put(initModel.invId, initModel);
     print("end add to Hive and firebase");
   }

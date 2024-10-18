@@ -30,42 +30,31 @@ class RoleManagementView extends StatelessWidget {
                     const SizedBox(width: 10),
                   ],
                 ),
-                body:
-                    GetBuilder<UserManagementController>(builder: (controller) {
+                body: GetBuilder<UserManagementController>(builder: (controller) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
                       width: double.infinity,
                       child: Wrap(
                         children: List.generate(
-                          controller.allRole.values.length,
+                          controller.allRoles.values.length,
                           (index) => Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() => AddRoleView(
-                                    oldKey: controller.allRole.keys
-                                        .toList()[index]));
+                                Get.to(() => AddRoleView(oldKey: controller.allRoles.keys.toList()[index]));
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                                 height: 140,
                                 width: 140,
                                 child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      controller.allRole.values
-                                              .toList()[index]
-                                              .roleName ??
-                                          "",
-                                      style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold),
+                                      controller.allRoles.values.toList()[index].roleName ?? "",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),

@@ -55,101 +55,119 @@ class StoreController extends GetxController {
     Map<String, StoreRecProductModel> allRecTotal2 = {};
 
     if (globalModel.invType != AppConstants.invoiceTypeChange) {
-      bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
-      int correctQuantity = isPay ? 1 : -1;
-      Map<String, int> allRecTotalProduct = {};
-
-      for (int i = 0; i < globalModel.invRecords!.length; i++) {
-        if (globalModel.invRecords![i].invRecId != null) {
-          if (allRecTotalProduct[globalModel.invRecords![i].invRecProduct] == null) {
-            allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] = ((globalModel.invRecords![i].invRecQuantity ?? 1));
-          } else {
-            allRecTotalProduct[globalModel.invRecords![i].invRecProduct!] =
-                ((globalModel.invRecords![i].invRecQuantity ?? 1)) + allRecTotalProduct[globalModel.invRecords![i].invRecProduct!]!;
-          }
-        }
-      }
-
-      allRecTotalProduct.forEach((key, value) {
-        var recCredit = value;
-        if (getProductModelFromId(key) != null) {
-          // bool isStoreProduct = getProductModelFromId(key)!.prodType == Const.productTypeStore;
-          // InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
-          allRecTotal[key] = (StoreRecProductModel(
-            storeRecProductId: key,
-            storeRecProductPrice: "0",
-            storeRecProductQuantity: (correctQuantity * recCredit).toString(),
-            storeRecProductTotal: "0",
-          ));
-        }
-      });
-
-      StoreRecordModel model =
-          StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
-      if (storeMap[model.storeRecId]?.stRecords == null) {
-        storeMap[model.storeRecId]?.stRecords = [model];
-      } else {
-        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
-        storeMap[model.storeRecId]?.stRecords.add(model);
-      }
+      _handleInvoiceType(globalModel, allRecTotal);
     } else {
-      for (int i = 0; i < globalModel.invRecords!.length; i++) {
-        if (globalModel.invRecords![i].invRecId != null && getProductModelFromId(globalModel.invRecords![i].invRecProduct) != null) {
-          bool isStoreProduct = getProductModelFromId(globalModel.invRecords![i].invRecProduct)!.prodType == AppConstants.productTypeStore;
-          if (isStoreProduct) {
-            allRecTotal[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
-              storeRecProductId: globalModel.invRecords![i].invRecProduct,
-              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
-              storeRecProductQuantity: (-1 * globalModel.invRecords![i].invRecQuantity!).toString(),
-              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
-            );
-            allRecTotal2[globalModel.invRecords![i].invRecProduct!] = StoreRecProductModel(
-              storeRecProductId: globalModel.invRecords![i].invRecProduct,
-              storeRecProductPrice: globalModel.invRecords![i].invRecSubTotal.toString(),
-              storeRecProductQuantity: (1 * globalModel.invRecords![i].invRecQuantity!).toString(),
-              storeRecProductTotal: globalModel.invRecords![i].invRecTotal.toString(),
-            );
-          }
-        }
-      }
-
-      StoreRecordModel model =
-          StoreRecordModel(storeRecId: globalModel.invStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal);
-      StoreRecordModel model2 =
-          StoreRecordModel(storeRecId: globalModel.invSecStorehouse, storeRecInvId: globalModel.invId, storeRecProduct: allRecTotal2);
-
-      if (storeMap[model.storeRecId]?.stRecords == null) {
-        storeMap[model.storeRecId]?.stRecords = [model];
-      } else {
-        storeMap[model.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
-        storeMap[model.storeRecId]?.stRecords.add(model);
-      }
-      // if(globalModel.invSecStorehouse==null){
-      // print(globalModel.toJson());
-      //   HiveDataBase.globalModelBox.delete(globalModel.bondId);
-      // }
-      print("-----${model2.storeRecId}-------");
-      print("-----${globalModel.invId}-------");
-      print("-----${globalModel.entryBondId}-------");
-      print("-----${globalModel.entryBondCode}-------");
-      print("-----${globalModel.entryBondCode}-------");
-      print("-----${globalModel.bondCode}-------");
-      print("-----${globalModel.invFullCode}-------");
-      print("-----${globalModel.invCode}-------");
-      print("-----${globalModel.invSecStorehouse}-------");
-      print("-----${globalModel.invStorehouse}-------");
-      //todo:عدلتا لانو كان عم يطلع null
-      model2.storeRecId ??= globalModel.invStorehouse;
-      if (storeMap[model2.storeRecId.toString()]?.stRecords == null) {
-        storeMap[model2.storeRecId]?.stRecords = [model2];
-      } else {
-        storeMap[model2.storeRecId]?.stRecords.removeWhere((element) => element.storeRecInvId == globalModel.invId);
-        storeMap[model2.storeRecId]?.stRecords.add(model2);
-      }
+      _handleInvoiceTypeChange(globalModel, allRecTotal, allRecTotal2);
     }
+
     if (openedStore != null) {
       initStorePage(openedStore);
     }
+  }
+
+  void _handleInvoiceType(GlobalModel globalModel, Map<String, StoreRecProductModel> allRecTotal) {
+    bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
+    int correctQuantity = isPay ? 1 : -1;
+    Map<String, int> allRecTotalProduct = {};
+
+    for (var record in globalModel.invRecords!) {
+      if (record.invRecId != null) {
+        allRecTotalProduct.update(
+          record.invRecProduct!,
+          (existingQuantity) => existingQuantity + (record.invRecQuantity ?? 1),
+          ifAbsent: () => (record.invRecQuantity ?? 1),
+        );
+      }
+    }
+
+    allRecTotalProduct.forEach((key, value) {
+      var recCredit = value;
+      var productModel = getProductModelFromId(key);
+      if (productModel != null) {
+        allRecTotal[key] = StoreRecProductModel(
+          storeRecProductId: key,
+          storeRecProductPrice: "0",
+          storeRecProductQuantity: (correctQuantity * recCredit).toString(),
+          storeRecProductTotal: "0",
+        );
+      }
+    });
+
+    _updateStoreMap(
+      storeRecId: globalModel.invStorehouse,
+      invId: globalModel.invId,
+      allRecTotal: allRecTotal,
+    );
+  }
+
+  void _handleInvoiceTypeChange(
+      GlobalModel globalModel, Map<String, StoreRecProductModel> allRecTotal, Map<String, StoreRecProductModel> allRecTotal2) {
+    for (var record in globalModel.invRecords!) {
+      if (record.invRecId != null && getProductModelFromId(record.invRecProduct) != null) {
+        bool isStoreProduct = getProductModelFromId(record.invRecProduct)!.prodType == AppConstants.productTypeStore;
+        if (isStoreProduct) {
+          allRecTotal[record.invRecProduct!] = StoreRecProductModel(
+            storeRecProductId: record.invRecProduct,
+            storeRecProductPrice: record.invRecSubTotal.toString(),
+            storeRecProductQuantity: (-1 * record.invRecQuantity!).toString(),
+            storeRecProductTotal: record.invRecTotal.toString(),
+          );
+          allRecTotal2[record.invRecProduct!] = StoreRecProductModel(
+            storeRecProductId: record.invRecProduct,
+            storeRecProductPrice: record.invRecSubTotal.toString(),
+            storeRecProductQuantity: (1 * record.invRecQuantity!).toString(),
+            storeRecProductTotal: record.invRecTotal.toString(),
+          );
+        }
+      }
+    }
+
+    _updateStoreMap(
+      storeRecId: globalModel.invStorehouse,
+      invId: globalModel.invId,
+      allRecTotal: allRecTotal,
+    );
+
+    var secondaryStorehouse = globalModel.invSecStorehouse ?? globalModel.invStorehouse;
+    _updateStoreMap(
+      storeRecId: secondaryStorehouse,
+      invId: globalModel.invId,
+      allRecTotal: allRecTotal2,
+    );
+
+    _logModelDetails(globalModel, secondaryStorehouse);
+  }
+
+  void _updateStoreMap({
+    required String? storeRecId,
+    required String? invId,
+    required Map<String, StoreRecProductModel>? allRecTotal,
+  }) {
+    StoreRecordModel model = StoreRecordModel(
+      storeRecId: storeRecId,
+      storeRecInvId: invId,
+      storeRecProduct: allRecTotal,
+    );
+
+    var storeRecords = storeMap[storeRecId]?.stRecords;
+    if (storeRecords == null) {
+      storeMap[storeRecId]?.stRecords = [model];
+    } else {
+      storeRecords.removeWhere((element) => element.storeRecInvId == invId);
+      storeRecords.add(model);
+    }
+  }
+
+  void _logModelDetails(GlobalModel globalModel, String? secondaryStorehouse) {
+    print("-----$secondaryStorehouse-------");
+    print("-----${globalModel.invId}-------");
+    print("-----${globalModel.entryBondId}-------");
+    print("-----${globalModel.entryBondCode}-------");
+    print("-----${globalModel.bondCode}-------");
+    print("-----${globalModel.invFullCode}-------");
+    print("-----${globalModel.invCode}-------");
+    print("-----${globalModel.invSecStorehouse}-------");
+    print("-----${globalModel.invStorehouse}-------");
   }
 
   void deleteGlobalStore(GlobalModel globalModel) {
@@ -242,17 +260,6 @@ class StoreController extends GetxController {
     update();
   }
 
-  // getNewCode() {
-  //   int maxCode = 1;
-  //   if (storeMap.isNotEmpty) {
-  //     for (var element in storeMap.values) {
-  //       int.parse(element.stCode!) > maxCode ? maxCode = int.parse(element.stCode!) : maxCode = maxCode;
-  //     }
-  //   }
-
-  //   editStoreModel?.stCode = (maxCode + 1).toString();
-  // }
-
   deleteStore(id) {
     StoreModel editStoreModel = storeMap[id]!;
     _storeCollectionRef.doc(editStoreModel.stId).delete();
@@ -261,34 +268,6 @@ class StoreController extends GetxController {
     changesViewModel.addRemoveChangeToChanges(editStoreModel.toFullJson(), AppConstants.storeCollection);
     update();
   }
-
-  // void saveInvInStore(List<InvoiceRecordModel> record, String? invId, String? invType, String? storeId) {
-  //   Map<String, StoreRecProductModel> allRecTotal = {};
-  //   bool isPay = invType == Const.invoiceTypeBuy;
-  //   int correctQuantity = isPay ? 1 : -1;
-  //   for (int i = 0; i < record.length; i++) {
-  //     if (record[i].invRecId != null) {
-  //       bool isStoreProduct= getProductModelFromId(record[i].invRecProduct)!.prodType==Const.productTypeStore;
-  //       if(isStoreProduct) {
-  //         allRecTotal[record[i].invRecProduct!] = StoreRecProductModel(
-  //           storeRecProductId: record[i].invRecProduct,
-  //           storeRecProductPrice: record[i].invRecSubTotal.toString(),
-  //           storeRecProductQuantity: (correctQuantity * record[i].invRecQuantity!).toString(),
-  //           storeRecProductTotal: record[i].invRecTotal.toString(),
-  //         );
-  //       }
-  //     }
-  //   }
-  //   FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).set(StoreRecordModel(
-  //       storeRecId:storeId,
-  //       storeRecInvId:invId,
-  //       storeRecProduct:allRecTotal
-  //   ).toJson());
-  // }
-
-  // void deleteRecord({required String storeId, String? invId}) {
-  //     FirebaseFirestore.instance.collection(Const.storeCollection).doc(storeId).collection(Const.recordCollection).doc(invId).delete();
-  // }
 
   Future<void> exportStore(String? oldKey) async {
     List<List> data = [

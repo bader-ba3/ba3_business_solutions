@@ -10,6 +10,7 @@ import 'package:pinput/pinput.dart';
 
 import '../../../controller/user/cards_controller.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/helper/enums/enums.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -20,15 +21,13 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool? isNfcAvailable;
-  UserManagementController userViewController =
-      Get.find<UserManagementController>();
+  UserManagementController userViewController = Get.find<UserManagementController>();
 
   @override
   void initState() {
     super.initState();
     Future.sync(() async {
-      isNfcAvailable = (Platform.isAndroid || Platform.isIOS) &&
-          await NfcManager.instance.isAvailable();
+      isNfcAvailable = (Platform.isAndroid || Platform.isIOS) && await NfcManager.instance.isAvailable();
       setState(() {});
       if (isNfcAvailable!) {
         NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
@@ -68,10 +67,7 @@ class _LoginViewState extends State<LoginView> {
             const Center(
                 child: Text(
               "Ba3 Business Solutions",
-              style: TextStyle(
-                  fontSize: 70,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic),
+              style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
             )),
             // SizedBox(
             //   height: 200,
@@ -94,8 +90,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(
                   height: 75,
-                  child: GetBuilder<UserManagementController>(
-                      builder: (controller) {
+                  child: GetBuilder<UserManagementController>(builder: (controller) {
                     return controller.userStatus != UserManagementStatus.login
                         ? isNfcAvailable ?? false
                             ? const Text("يرجى تقريب بطاقة الدخول")
@@ -109,16 +104,10 @@ class _LoginViewState extends State<LoginView> {
                                 defaultPinTheme: PinTheme(
                                   width: 56,
                                   height: 56,
-                                  textStyle: const TextStyle(
-                                      fontSize: 20,
-                                      color: Color.fromRGBO(30, 60, 87, 1),
-                                      fontWeight: FontWeight.w600),
+                                  textStyle: const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
                                   decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromRGBO(200, 238, 253, 1),
-                                    border: Border.all(
-                                        color: const Color.fromRGBO(
-                                            140, 140, 140, 1)),
+                                    color: const Color.fromRGBO(200, 238, 253, 1),
+                                    border: Border.all(color: const Color.fromRGBO(140, 140, 140, 1)),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ))
@@ -131,8 +120,7 @@ class _LoginViewState extends State<LoginView> {
                                     color: Colors.black.withOpacity(0.7),
                                   )),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15.0),
+                                padding: const EdgeInsets.symmetric(vertical: 15.0),
                                 child: SizedBox(
                                     width: 80,
                                     height: 30,
@@ -150,8 +138,7 @@ class _LoginViewState extends State<LoginView> {
                       GlobalController globalModel = Get.find<GlobalController>();
                       return Obx(
                         () {
-                          return Text(
-                              "${globalModel.count} / ${globalModel.allCountOfInvoice}");
+                          return Text("${globalModel.count} / ${globalModel.allCountOfInvoice}");
                         },
                       );
                     }

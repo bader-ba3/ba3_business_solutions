@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../data/model/global/global_model.dart';
-import '../../data/repositories/seller/seller_repository.dart';
+import '../../data/repositories/seller/seller_repo.dart';
 import '../user/user_management_controller.dart';
 
 class SellersController extends GetxController {

@@ -45,7 +45,7 @@ class WarrantyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         isNumeric: true,
                         controller: warrantyController.invCodeController,
                         onSubmitted: (text) {
-                          warrantyController.getInvByInvCode(
+                          warrantyController.getInvByCode(
                             text,
                           );
                         },

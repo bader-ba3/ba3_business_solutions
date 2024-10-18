@@ -220,7 +220,7 @@ class GlobalController extends GetxController {
     // GlobalModel correctedModel = correctInvRecord(globalModel);
 
     UserManagementController myUser = Get.find<UserManagementController>();
-    if ((myUser.allRole[getMyUserRole()]?.roles[AppConstants.roleViewInvoice]?.contains(AppConstants.roleUserAdmin)) ?? false) {
+    if ((myUser.allRoles[getMyUserRole()]?.roles[AppConstants.roleViewInvoice]?.contains(AppConstants.roleUserAdmin)) ?? false) {
       globalModel.invIsPending = false;
     } else {
       globalModel.invIsPending = true;
@@ -283,7 +283,6 @@ class GlobalController extends GetxController {
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.invoicesCollection);
 
     update();
-
   }
 
   Future<void> updateGlobalBond(GlobalModel globalModel) async {
@@ -294,7 +293,6 @@ class GlobalController extends GetxController {
     ChangesController changesViewModel = Get.find<ChangesController>();
     await addBondToFirebase(globalModel);
     changesViewModel.addChangeToChanges(globalModel.toFullJson(), AppConstants.bondsCollection);
-
 
     update();
   }

@@ -12,7 +12,7 @@ import '../../core/utils/hive.dart';
 import '../../data/model/invoice/invoice_record_model.dart';
 import '../../data/model/seller/seller_model.dart';
 import '../../data/model/seller/task_model.dart';
-import '../../data/repositories/seller/target_repository.dart';
+import '../../data/repositories/seller/target_repo.dart';
 import '../product/product_controller.dart';
 
 class TargetController extends GetxController {

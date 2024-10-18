@@ -27,9 +27,9 @@ class _AddRoleViewState extends State<AddRoleView> {
     if (widget.oldKey == null) {
       userManagementController.roleModel = RoleModel(roles: {});
     } else {
-      userManagementController.roleModel = RoleModel.fromJson(userManagementController.allRole[widget.oldKey]!.toJson());
+      userManagementController.roleModel = RoleModel.fromJson(userManagementController.allRoles[widget.oldKey]!.toJson());
       allMap = userManagementController.roleModel?.roles ?? {};
-      nameController.text = userManagementController.allRole[widget.oldKey]?.roleName ?? "";
+      nameController.text = userManagementController.allRoles[widget.oldKey]?.roleName ?? "";
     }
     super.initState();
   }

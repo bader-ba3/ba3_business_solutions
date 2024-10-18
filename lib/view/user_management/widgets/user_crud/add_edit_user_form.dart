@@ -76,7 +76,7 @@ class AddEditUserForm extends StatelessWidget {
                     icon: const SizedBox(),
                     value: userManagementViewController.initAddUserModel?.userRole,
                     items:
-                        userManagementViewController.allRole.values.map((e) => DropdownMenuItem(value: e.roleId, child: Text(e.roleName!))).toList(),
+                        userManagementViewController.allRoles.values.map((e) => DropdownMenuItem(value: e.roleId, child: Text(e.roleName!))).toList(),
                     onChanged: (_) {
                       userManagementViewController.initAddUserModel?.userRole = _;
                       userManagementViewController.update();

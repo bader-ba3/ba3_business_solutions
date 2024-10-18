@@ -5,6 +5,8 @@ import 'package:ba3_business_solutions/controller/print/print_controller.dart';
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
 import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
+import 'package:ba3_business_solutions/data/datasources/user/user_management_service.dart';
+import 'package:ba3_business_solutions/data/repositories/user/user_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ import 'package:get/get.dart';
 import '../../core/bindings/bindings.dart';
 import '../../core/helper/init_app/init_app.dart';
 import '../../data/datasources/seller/seller_firestore_service.dart';
-import '../../data/repositories/seller/seller_repository.dart';
+import '../../data/repositories/seller/seller_repo.dart';
 import '../../view/user_management/pages/account_management_view.dart';
 import '../account/account_controller.dart';
 import '../cheque/cheque_controller.dart';
@@ -43,7 +45,7 @@ class DataBaseController extends GetxController {
   Future<void> setDataBase(String databaseName, context) async {
     init(oldData: databaseName);
     await Get.deleteAll(force: true);
-    Get.put(UserManagementController(), permanent: true);
+    Get.put(UserManagementController(UserManagementRepository(UserManagementService())), permanent: true);
     Get.put(AccountController(), permanent: true);
     Get.put(StoreController(), permanent: true);
     Get.put(ProductController(), permanent: true);
