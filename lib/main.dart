@@ -13,8 +13,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-const Color backGroundColor = Color(0xffE6E6E6);
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -31,4 +29,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//TargetController

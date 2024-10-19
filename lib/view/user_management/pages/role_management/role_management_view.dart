@@ -1,10 +1,10 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/user_management/pages/role_management/add_role.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/shared/widgets/custom_window_title_bar.dart';
+import 'add_role.dart';
 
 class RoleManagementView extends StatelessWidget {
   const RoleManagementView({super.key});

@@ -22,7 +22,9 @@ class AddPatternPage extends StatelessWidget {
           Expanded(
             child: Scaffold(
               appBar: AppBar(
-                title: Text(patternController.editPatternModel!.patId != null ? patternController.editPatternModel!.patName! : "إنشاء نمط"),
+                title: Text(patternController.editPatternModel!.patId != null
+                    ? patternController.editPatternModel!.patName!
+                    : "إنشاء نمط"),
               ),
               body: GetBuilder<PatternController>(
                 builder: (patternController) {

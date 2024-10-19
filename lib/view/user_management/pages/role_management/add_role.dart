@@ -27,7 +27,8 @@ class _AddRoleViewState extends State<AddRoleView> {
     if (widget.oldKey == null) {
       userManagementController.roleModel = RoleModel(roles: {});
     } else {
-      userManagementController.roleModel = RoleModel.fromJson(userManagementController.allRoles[widget.oldKey]!.toJson());
+      userManagementController.roleModel =
+          RoleModel.fromJson(userManagementController.allRoles[widget.oldKey]!.toJson());
       allMap = userManagementController.roleModel?.roles ?? {};
       nameController.text = userManagementController.allRoles[widget.oldKey]?.roleName ?? "";
     }
@@ -121,7 +122,8 @@ class _AddRoleViewState extends State<AddRoleView> {
               checkColor: Colors.white,
               overlayColor: const WidgetStatePropertyAll(Colors.white),
               side: const BorderSide(color: Colors.black),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: const BorderSide(color: Colors.white)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5), side: const BorderSide(color: Colors.white)),
               value: (allMap[keys]?.contains(text) ?? false),
               onChanged: (_) {
                 if (_!) {

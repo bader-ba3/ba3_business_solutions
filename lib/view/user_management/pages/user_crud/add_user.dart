@@ -68,7 +68,8 @@ class AddUserView extends StatelessWidget {
                               Get.snackbar("خطأ", "يرجى اختيار الصلاحيات");
                             } else {
                               controller.addUser();
-                              Get.snackbar("تمت العملية بنجاح", controller.initAddUserModel?.userId == null ? "تم اضافة الحساب" : "تم تعديل الحساب");
+                              Get.snackbar("تمت العملية بنجاح",
+                                  controller.initAddUserModel?.userId == null ? "تم اضافة الحساب" : "تم تعديل الحساب");
                             }
                           },
                           iconData: controller.initAddUserModel?.userId == null ? Icons.add : Icons.edit,

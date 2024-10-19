@@ -5,7 +5,6 @@ import 'package:ba3_business_solutions/controller/warranty/warranty_controller.d
 import 'package:ba3_business_solutions/core/router/app_routes.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:ba3_business_solutions/view/invoices/widget/opened_screen_widget.dart';
-import 'package:ba3_business_solutions/view/user_management/pages/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ import '../../../core/helper/enums/enums.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
 import '../../../data/model/patterens/pattern_model.dart';
 import '../../Warranty/pages/all_warranty_invoices.dart';
+import '../../user_management/pages/login_view.dart';
 import 'all_pending_invoices.dart';
 
 class InvoiceLayout extends StatelessWidget {

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ba3_business_solutions/controller/global/changes_controller.dart';
@@ -68,69 +69,88 @@ class UserManagementController extends GetxController {
 
   void checkUserStatus() async {
     if (userPin != null) {
-      FirebaseFirestore.instance.collection(AppConstants.usersCollection).where('userPin', isEqualTo: userPin).get().then((value) async {
-        if (userPin == null) {
-          userStatus = UserManagementStatus.first;
-          Get.offAll(() => const LoginView());
-        } else if (value.docs.isNotEmpty) {
-          if (userStatus != UserManagementStatus.login) {
-            myUserModel = UserModel.fromJson(value.docs.first.data());
-            userStatus = UserManagementStatus.login;
-            Get.put(GlobalController(), permanent: true);
-            Get.put(ChangesController(), permanent: true);
-            update();
-          }
-        } else if (value.docs.isEmpty) {
-          if (Get.currentRoute != "/LoginView") {
-            userStatus = UserManagementStatus.first;
-            Get.offAll(() => const LoginView());
-          } else {
-            Get.snackbar("error", "not matched");
-          }
-          userPin = null;
-          cardNumber = null;
-        } else {
-          userStatus = null;
-        }
-        update();
-      });
+      log('userPin != null');
+      await _checkUserByPin();
     } else if (cardNumber != null) {
-      FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).get().then((value) {
-        if (cardNumber == null) {
-          userStatus = UserManagementStatus.first;
-          Get.offAll(() => const LoginView());
-        } else if (value.docs.first.data()["isDisabled"]) {
-          Get.snackbar("خطأ", "تم إلغاء تفعيل البطاقة");
-          userStatus = UserManagementStatus.first;
-          Get.offAll(() => const LoginView());
-        } else if (value.docs.isNotEmpty) {
-          FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(value.docs.first.data()["userId"]).get().then((value0) {
-            myUserModel = UserModel.fromJson(value0.data()!);
-            userStatus = UserManagementStatus.login;
-            Get.put(GlobalController(), permanent: true);
-            Get.put(ChangesController(), permanent: true);
-            update();
-          });
-        } else if (value.docs.isEmpty) {
-          if (Get.currentRoute != "/LoginView") {
-            userStatus = UserManagementStatus.first;
-            Get.offAll(() => const LoginView());
-          } else {
-            Get.snackbar("error", "not matched");
-          }
-          userPin = null;
-          cardNumber = null;
-        } else {
-          userStatus = null;
-        }
-        update();
-      });
+      log('cardNumber != null');
+      await _checkUserByCard();
     } else {
-      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+      log('_navigateToLogin');
+      _navigateToLogin(true);
+    }
+  }
+
+  Future<void> _checkUserByPin() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection(AppConstants.usersCollection)
+        .where('userPin', isEqualTo: userPin)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      if (userStatus != UserManagementStatus.login) {
+        myUserModel = UserModel.fromJson(querySnapshot.docs.first.data());
+        userStatus = UserManagementStatus.login;
+        _initializeControllers();
+      }
+    } else {
+      await _handleNoMatch();
+    }
+  }
+
+  Future<void> _checkUserByCard() async {
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection("Cards").where('cardId', isEqualTo: cardNumber).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final cardData = querySnapshot.docs.first.data();
+      if (cardData["isDisabled"]) {
+        Get.snackbar("خطأ", "تم إلغاء تفعيل البطاقة");
+        _navigateToLogin();
+      } else {
+        await _fetchUserByCard(cardData["userId"]);
+      }
+    } else {
+      await _handleNoMatch();
+    }
+  }
+
+  Future<void> _fetchUserByCard(String userId) async {
+    final userSnapshot = await FirebaseFirestore.instance.collection(AppConstants.usersCollection).doc(userId).get();
+
+    if (userSnapshot.exists) {
+      myUserModel = UserModel.fromJson(userSnapshot.data()!);
+      userStatus = UserManagementStatus.login;
+      _initializeControllers();
+    }
+  }
+
+  void _navigateToLogin([bool waitUntilFirstFrameRasterized = false]) {
+    if (waitUntilFirstFrameRasterized) {
+      WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((_) {
         userStatus = UserManagementStatus.first;
         Get.offAll(() => const LoginView());
       });
+    } else {
+      userStatus = UserManagementStatus.first;
+      Get.offAll(() => const LoginView());
     }
+  }
+
+  Future<void> _handleNoMatch() async {
+    userStatus = null; // Setting userStatus to null in case of no match
+    if (Get.currentRoute != "/LoginView") {
+      _navigateToLogin();
+    } else {
+      Get.snackbar("error", "not matched");
+    }
+    userPin = null;
+    cardNumber = null;
+  }
+
+  void _initializeControllers() {
+    Get.put(GlobalController(), permanent: true);
+    Get.put(ChangesController(), permanent: true);
+    update();
   }
 
   void initAllUser() {
@@ -241,7 +261,8 @@ UserModel getUserModelById(id) {
 
 bool checkPermission(role, page) {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole =
+      userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[page]?.contains(role) ?? false) {
     return true;
   } else {
@@ -251,7 +272,8 @@ bool checkPermission(role, page) {
 
 bool checkMainPermission(role) {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole =
+      userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   if (userRole?[role]?.isNotEmpty ?? false) {
     return true;
   } else {
@@ -261,7 +283,8 @@ bool checkMainPermission(role) {
 
 Future<bool> hasPermissionForOperation(role, page) async {
   UserManagementController userManagementViewController = Get.find<UserManagementController>();
-  Map<String, List<String>>? userRole = userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
+  Map<String, List<String>>? userRole =
+      userManagementViewController.allRoles[userManagementViewController.myUserModel?.userRole]?.roles;
   String error = "";
   // _ndefWrite();
   if (userRole?[page]?.contains(role) ?? false) {
@@ -291,7 +314,8 @@ Future<bool> hasPermissionForOperation(role, page) async {
               CardsController cardViewController = Get.find<CardsController>();
               if (cardViewController.allCards.containsKey(cardId)) {
                 CardModel cardModel = cardViewController.allCards[cardId]!;
-                Map<String, List<String>>? newUserRole = userManagementViewController.allRoles[getUserModelById(cardModel.userId).userRole]?.roles;
+                Map<String, List<String>>? newUserRole =
+                    userManagementViewController.allRoles[getUserModelById(cardModel.userId).userRole]?.roles;
                 if (newUserRole?[page]?.contains(role) ?? false) {
                   Get.back(result: true);
                   NfcManager.instance.stopSession();
@@ -315,14 +339,17 @@ Future<bool> hasPermissionForOperation(role, page) async {
                       defaultPinTheme: PinTheme(
                           width: 50,
                           height: 50,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8), color: Colors.blue.shade400.withOpacity(0.5))),
                       length: 6,
                       obscureText: true,
                       onCompleted: (_) {
-                        UserModel? user =
-                            userManagementViewController.allUserList.values.toList().firstWhereOrNull((element) => element.userPin == _);
+                        UserModel? user = userManagementViewController.allUserList.values
+                            .toList()
+                            .firstWhereOrNull((element) => element.userPin == _);
                         if (user != null) {
-                          Map<String, List<String>>? newUserRole = userManagementViewController.allRoles[user.userRole]?.roles;
+                          Map<String, List<String>>? newUserRole =
+                              userManagementViewController.allRoles[user.userRole]?.roles;
                           if (newUserRole?[page]?.contains(role) ?? false) {
                             Get.back(result: true);
                             NfcManager.instance.stopSession();

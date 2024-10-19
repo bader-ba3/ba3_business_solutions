@@ -1,4 +1,5 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
+import 'package:ba3_business_solutions/core/shared/widgets/app_menu_item.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/role_management/role_management_view.dart';
 import 'package:ba3_business_solutions/view/user_management/pages/user_crud/all_user.dart';
 import 'package:flutter/material.dart';
@@ -52,12 +53,16 @@ class _UserManagementLayoutState extends State<UserManagementLayout> {
                     )
                   : Column(
                       children: [
-                        item("إدارة المستخدمين", () {
-                          Get.to(() => const AllUserView());
-                        }),
-                        item("إدارة الصلاحيات", () {
-                          Get.to(() => const RoleManagementView());
-                        }),
+                        AppMenuItem(
+                            text: "إدارة المستخدمين",
+                            onTap: () {
+                              Get.to(() => const AllUserView());
+                            }),
+                        AppMenuItem(
+                            text: "إدارة الصلاحيات",
+                            onTap: () {
+                              Get.to(() => const RoleManagementView());
+                            }),
                       ],
                     ),
             ),
@@ -66,23 +71,4 @@ class _UserManagementLayoutState extends State<UserManagementLayout> {
       ],
     );
   }
-}
-
-Widget item(text, onTap) {
-  return Padding(
-    padding: const EdgeInsets.all(15.0),
-    child: InkWell(
-      onTap: onTap,
-      child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-          padding: const EdgeInsets.all(30.0),
-          child: Center(
-              child: Text(
-            text,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textDirection: TextDirection.rtl,
-          ))),
-    ),
-  );
 }

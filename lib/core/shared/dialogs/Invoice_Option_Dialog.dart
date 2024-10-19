@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/invoice/search_controller.dart';
-import '../../../main.dart';
 import '../../../view/invoices/pages/all_invoices.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
 import '../../helper/functions/functions.dart';
 import '../../services/Get_Date_From_String.dart';
+import '../../styling/app_colors.dart';
 import '../widgets/option_text_widget.dart';
 import 'Search_Product_Text_Dialog.dart';
 
@@ -19,7 +19,7 @@ class InvoiceOptionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: backGroundColor,
+      backgroundColor: AppColors.backGroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
@@ -36,7 +36,8 @@ class InvoiceOptionDialog extends StatelessWidget {
                   title: "المادة :  ",
                   controller: controller.productForSearchController,
                   onSubmitted: (text) async {
-                    controller.productForSearchController.text = await searchProductTextDialog(controller.productForSearchController.text) ?? "";
+                    controller.productForSearchController.text =
+                        await searchProductTextDialog(controller.productForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -61,8 +62,8 @@ class InvoiceOptionDialog extends StatelessWidget {
                   iconData: Icons.check,
                   onPressed: () {
                     Get.to(() => AllInvoice(
-                        listDate: getDatesBetween(
-                            DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text)),
+                        listDate: getDatesBetween(DateTime.parse(controller.startDateForSearchController.text),
+                            DateTime.parse(controller.endDateForSearchController.text)),
                         productName: getProductIdFromName(controller.productForSearchController.text)));
                   },
                 ),

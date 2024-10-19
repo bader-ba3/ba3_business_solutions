@@ -23,7 +23,6 @@ import '../../data/model/product/product_tree.dart';
 import '../../view/products/widget/product_record_data_source.dart';
 
 class ProductController extends GetxController {
-  // RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
   RxMap<String, ProductModel> productDataMap = <String, ProductModel>{}.obs;
   RxMap<String, List<ProductRecordModel>> productRecordMap = <String, List<ProductRecordModel>>{}.obs;
 
@@ -85,16 +84,11 @@ class ProductController extends GetxController {
           (previousValue, element) => element + previousValue,
         );
 
-    quantity =  allBuy-allSales;
+    quantity = allBuy - allSales;
     return quantity;
   }
 
   initGlobalProduct(GlobalModel globalModel) async {
-    // Future<void> saveInvInProduct(List<InvoiceRecordModel> record, invId, type,date) async {
-    // Map<String, List> allRecTotal = {};
-
-    // bool isPay = globalModel.invType == AppConstants.invoiceTypeBuy || globalModel.invType == AppConstants.invoiceTypeAdd;
-    // int correctQuantity = isPay ? 1 : -1;
     for (int i = 0; i < globalModel.invRecords!.length; i++) {
       if (globalModel.invRecords![i].invRecId != null) {
         if (productRecordMap[globalModel.invRecords![i].invRecProduct] == null) {
@@ -113,7 +107,6 @@ class ProductController extends GetxController {
               globalModel.invType,
             )
           ];
-          // allRecTotal[globalModel.invRecords![i].invRecProduct!] = [(correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1))];
         } else {
           productRecordMap[globalModel.invRecords![i].invRecProduct!]!.add(ProductRecordModel(
             globalModel.invId,
@@ -128,50 +121,9 @@ class ProductController extends GetxController {
             globalModel.invStorehouse,
             globalModel.invType,
           ));
-          // allRecTotal[globalModel.invRecords![i].invRecProduct]!.add((correctQuantity * (globalModel.invRecords![i].invRecQuantity ?? 1)));
         }
       }
     }
-
-/*    allRecTotal.forEach((key, value) {
-      var recCredit = value.reduce((value, element) => value + element);
-
-      bool isStoreProduct = productDataMap[key]?.prodType == AppConstants.productTypeStore;
-      InvoiceRecordModel element = globalModel.invRecords!.firstWhere((element) => element.invRecProduct == key);
-      // FirebaseFirestore.instance.collection(Const.productsCollection).doc(key).collection(Const.recordCollection).doc(globalModel.invId).set(); //prodRecSubVat
-      if (productRecordMap[key] == null) {
-        productRecordMap[key] = [
-          ProductRecordModel(
-            globalModel.invId,
-            globalModel.invType,
-            key,
-            (isStoreProduct ? recCredit : "0").toString(),
-            element.invRecId,
-            element.invRecTotal.toString(),
-            element.invRecSubTotal.toString(),
-            globalModel.invDate,
-            element.invRecVat.toString(),
-            globalModel.invStorehouse,
-            globalModel.invType,
-          )
-        ];
-      } else {
-        productRecordMap[key]?.removeWhere((element) => element.invId == globalModel.invId);
-        productRecordMap[key]?.add(ProductRecordModel(
-          globalModel.invId,
-          globalModel.invType,
-          key,
-          (isStoreProduct ? recCredit : "0").toString(),
-          element.invRecId,
-          element.invRecTotal.toString(),
-          element.invRecSubTotal.toString(),
-          globalModel.invDate,
-          element.invRecVat.toString(),
-          globalModel.invStorehouse,
-          globalModel.invType,
-        ));
-      }
-    });*/
   }
 
   double getAvreageBuy(ProductModel productModel) {
@@ -182,7 +134,9 @@ class ProductController extends GetxController {
       GlobalModel globalModel = invoiceViewModel.invoiceModel[element.invId!]!;
       count = (int.parse(element.prodRecQuantity ?? "0")) + count;
       if (globalModel.invType == AppConstants.invoiceTypeBuy) {
-        avg = ((double.parse(element.prodRecSubTotal ?? "0") * int.parse(element.prodRecQuantity ?? "0")) + ((count - int.parse(element.prodRecQuantity ?? "0")) * avg)) / count;
+        avg = ((double.parse(element.prodRecSubTotal ?? "0") * int.parse(element.prodRecQuantity ?? "0")) +
+                ((count - int.parse(element.prodRecQuantity ?? "0")) * avg)) /
+            count;
       }
     }
     return avg;
@@ -192,12 +146,10 @@ class ProductController extends GetxController {
     globalModel.invRecords?.forEach((element) {
       productDataMap[element.invRecProduct]?.prodRecord?.removeWhere((element) => element.invId == globalModel.invId);
     });
-    // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
     update();
     initModel();
     initPage();
     go(lastIndex);
-    //});
   }
 
   List<ProductModel> searchOfProductByText(query, bool withGroup) {
@@ -225,49 +177,16 @@ class ProductController extends GetxController {
         )
         .toList()
         .where((item) {
-          bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) && item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
-          // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
+          bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) &&
+              item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
           bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
           bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());
-          //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
           return (prodName || prodCode || prodBarcode) && item.prodIsGroup == withGroup;
         })
         .toList();
 
     return productsForSearch.toList();
   }
-
-/*  List<ProductModel> searchOfProductGroupByText(query) {
-
-    List<ProductModel> productsForSearch = [];
-     query = replaceArabicNumbersWithEnglish(query);
-    String query2 = '';
-    String query3 = '';
-    if (query.contains(" ")) {
-      query3 = query.split(" ")[0];
-      query2 = query.split(" ")[1];
-    } else {
-      query3 = query;
-      query2 = query;
-    }
-
-    productsForSearch = productDataMap.values.where((element) => element.prodChild?.isNotEmpty??false,).where((element) {
-      if( HiveDataBase.getIsNunFree()) {
-        return  !(element.prodName?.startsWith("F")??true);
-      } else {
-        return true;
-      }
-    },).toList().where((item) {
-      bool prodName = item.prodName.toString().toLowerCase().contains(query3.toLowerCase()) && item.prodName.toString().toLowerCase().contains(query2.toLowerCase());
-      // bool prodCode = item.prodCode.toString().toLowerCase().contains(query.toLowerCase());
-      bool prodCode = item.prodFullCode.toString().toLowerCase().contains(query.toLowerCase());
-      bool prodBarcode = item.prodBarcode.toString().toLowerCase().contains(query.toLowerCase());
-      //bool prodId = item.prodId.toString().toLowerCase().contains(query.toLowerCase());
-      return (prodName || prodCode || prodBarcode) && !item.prodIsGroup!;
-    }).toList();
-
-    return productsForSearch.toList();
-  }*/
 
   void getAllProduct() async {
     if (HiveDataBase.productModelBox.values.isEmpty) {
@@ -278,19 +197,17 @@ class ProductController extends GetxController {
           HiveDataBase.productModelBox.put(element.id, ProductModel.fromJson(element.data()));
           productDataMap[element.id] = ProductModel.fromJson(element.data());
         }
-        // WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
+
         update();
         initModel();
         initPage();
         go(lastIndex);
-        // });
       });
     } else {
       for (var element in HiveDataBase.productModelBox.values.toList()) {
         productDataMap[element.prodId!] = element;
       }
       if (HiveDataBase.isFree.get("isFree")!) {
-        // productDataMap.values.where((element) => !element.prodIsGroup!&&(HiveDataBase.isFree.get("isFree")! ? element.prodIsLocal!: true)).toList();
         productDataMap = Map.fromEntries(productDataMap.entries
                 .where(
                   (element) => element.value.prodIsLocal ?? false,
@@ -298,137 +215,13 @@ class ProductController extends GetxController {
                 .toList())
             .obs;
       }
-      //  WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-      // correct();
       update();
       initModel();
       initPage();
       go(lastIndex);
-      // for (var i =0;i< productDataMap.values.toList().length;i++){
-      //   ProductModel product =  productDataMap.values.toList()[i];
-      //   if(product.prodIsLocal == null){
-      //     product.prodIsLocal = true;
-      //      HiveDataBase.productModelBox.put(product.prodId, product);
-      //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
-      //   }
-      // }
-      //  for (var i =0;i< productDataMap.values.toList().length;i++){
-      //   ProductModel product =  productDataMap.values.toList()[i];
-      //   if(product.prodCode == "L0505163"){
-      //     product.prodCode = "1";
-      //     product.prodFullCode = "L0501";
-      //     HiveDataBase.productModelBox.put(product.prodId, product);
-      //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
-      //   }
-      // }
-      // });
-      // for (var i =0;i< productDataMap.values.toList().length;i++){
-      //   ProductModel product =  productDataMap.values.toList()[i];
-      //   if(product.prodCustomerPrice!.contains("٫") ||
-      //       product.prodRetailPrice!.contains("٫")||
-      //       product.prodMinPrice!.contains("٫")||
-      //       product.prodCostPrice!.contains("٫")||
-      //       product.prodWholePrice!.contains("٫")) {
-      //     product.prodCustomerPrice = (product.prodCustomerPrice)!.split("٫")[0];
-      //     product.prodRetailPrice = (product.prodRetailPrice)!.split("٫")[0];
-      //     product.prodMinPrice = (product.prodMinPrice)!.split("٫")[0];
-      //     product.prodCostPrice = (product.prodCostPrice)!.split("٫")[0];
-      //     product.prodWholePrice = (product.prodWholePrice)!.split("٫")[0];
-      //      updateProduct(product);
-      //   }
-      // }
     }
-    //  for(MapEntry<String, ProductModel> entry in productDataMap.entries.toList()){
-    //     if(entry.value.prodName! == "USED ACER"){
-    //       productDataMap[entry.key]!.prodCode = "70";
-    //       productDataMap[entry.key]!.prodFullCode = "L070";
-    //       HiveDataBase.productModelBox.put(entry.key, productDataMap[entry.key]!);
-    //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(entry.key).set(productDataMap[entry.key]!.toJson());
-    //     }
-    //      if(entry.value.prodName! == "RENPHO"){
-    //       productDataMap[entry.key]!.prodCode = "71";
-    //       productDataMap[entry.key]!.prodFullCode = "L071";
-    // HiveDataBase.productModelBox.put(entry.key, productDataMap[entry.key]!);
-    // FirebaseFirestore.instance.collection(Const.productsCollection).doc(entry.key).set(productDataMap[entry.key]!.toJson());
-    //     }
-    //   }
   }
 
-// Future<void> correct () async {
-//   int i =0 ;
-//   for (var index = 0 ;index < productDataMap.length; index ++ ) {
-//         ProductModel element = productDataMap.values.toList()[index];
-//         // if(element.prodFullCode == "F003540"){
-//         //   print(element.toJson());
-//         //   print(productDataMap[element.prodParentId]!.toJson());
-//         // //  if(element.prodName!.contains("SKINARMA IPHONE 15 PRO KIRA")){
-//         // //     element.prodIsGroup = false;
-//         // productDataMap[element.prodParentId]!.prodChild!.add(element.prodId);
-//         //     HiveDataBase.productModelBox.put(element.prodParentId,  productDataMap[element.prodParentId]!);
-//         // //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-//         // //  }
-//         // }
-//         // if(
-//         //   (double.tryParse(element.prodMinPrice??"0")==null||
-//         //   double.tryParse(element.prodCostPrice??"0")==null||
-//         //   double.tryParse(element.prodWholePrice??"0")==null||
-//         //   double.tryParse(element.prodRetailPrice??"0")==null||
-//         //   double.tryParse(element.prodCustomerPrice??"0")==null
-//         //   )&&(element.prodMinPrice!="" &&element.prodCostPrice!="" &&element.prodWholePrice!="" &&element.prodRetailPrice!="" &&element.prodCustomerPrice!="")){
-//         //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
-//         //     element.prodMinPrice = double.parse( element.prodMinPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-//         //     element.prodCostPrice = double.parse( element.prodCostPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-//         //     element.prodWholePrice = double.parse( element.prodWholePrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-//         //     element.prodRetailPrice = double.parse( element.prodRetailPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-//         //     element.prodCustomerPrice = double.parse( element.prodCustomerPrice!.replaceAll(",", "").replaceAll("\"", "")).toString();
-//         //   print(element.prodName.toString()+"| "+element.prodMinPrice.toString()+" "+element.prodCostPrice.toString()+" "+element.prodWholePrice.toString()+" "+element.prodRetailPrice.toString()+" "+element.prodCustomerPrice.toString());
-//         //   HiveDataBase.productModelBox.put(element.prodId,  element);
-//         //   await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-//         // }
-//           //      if(!element.prodName!.contains("مستعمل")&&!element.prodIsLocal!&&!element.prodName!.contains("F-")){
-//           //       print(i.toString() );
-//           //       i++;
-//           //       print(element.prodName);
-//           //      element.prodName="F-"+element.prodName!;
-//           //  HiveDataBase.productModelBox.put(element.prodId , element);
-//
-//           // await FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update(element.toJson());
-//           //   }
-//       //   if(!(element.prodParentId?.contains("prod")??true)){
-//       //       //  print(element.prodName);
-//       //       //  print(element.toJson());
-//       //       if(!element.prodIsParent!){
-//       //         element.prodParentId = 'L'+element.prodParentId!;
-//       //         element.prodFullCode = 'L'+element.prodFullCode!;
-//       //          print(element.prodName);
-//       //        print(element.toJson());
-//       //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(getProductIdFromFullName(element.prodParentId)).update({
-//       //     'prodChild': FieldValue.arrayUnion([element.prodId]),
-//       //   });
-//       //  productDataMap[getProductIdFromFullName(element.prodParentId!)]!.prodChild?.add(element.prodId);
-//       //   HiveDataBase.productModelBox.put(getProductIdFromFullName(element.prodParentId!),  productDataMap[getProductIdFromFullName(element.prodParentId!)]!);
-//       //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).update({
-//       //     "prodParentId":getProductIdFromFullName(element.prodParentId)
-//       //   });
-//       //   productDataMap[element.prodId]!.prodParentId = getProductIdFromFullName(element.prodParentId);
-//       //   HiveDataBase.productModelBox.put(element.prodId,  productDataMap[element.prodId]!);
-//       // }
-//       //   }
-//
-//        // i++;
-//       // print(i.toString() + " OF "+productDataMap.values.toList().length.toString() );
-//
-//     }
-//     // for (var i =0;i< productDataMap.values.toList().length;i++){
-//     //     ProductModel product =  productDataMap.values.toList()[i];
-//     //     if(product.prodFullCode == "L0505163"){
-//     //       product.prodCode = "1";
-//     //       product.prodFullCode = "L0501";
-//     //       HiveDataBase.productModelBox.put(product.prodId, product);
-//     //       FirebaseFirestore.instance.collection(Const.productsCollection).doc(product.prodId).set(product.toJson());
-//     //     }
-//     //   }
-// }
   String getNextProductCode({String? perantId}) {
     int code = 0;
     if (productDataMap.isEmpty) {
@@ -457,14 +250,6 @@ class ProductController extends GetxController {
       String code = productDataMap[accID]!.prodCode!.padLeft(padNumber, "0");
       return code;
     } else {
-      // if(productDataMap[accID] == null){
-      //   print(accID);
-      //    print("object");
-      // }
-      // if(productDataMap[productDataMap[accID]!.prodParentId!] == null){
-      //   print(productDataMap[accID]!.toJson()!);
-      //   print("object");
-      // }
       int? pad = productDataMap[productDataMap[accID]!.prodParentId!]!.prodGroupPad;
       String code = productDataMap[accID]!.prodCode!.padLeft(pad ?? padNumber, "0");
       var perCode = getFullCodeOfProduct(productDataMap[accID]!.prodParentId!);
@@ -477,7 +262,8 @@ class ProductController extends GetxController {
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;
     } else {
-      fullCode = productDataMap[editProductModel.prodParentId]!.prodFullCode! + editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad ?? padNumber, "0");
+      fullCode = productDataMap[editProductModel.prodParentId]!.prodFullCode! +
+          editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad ?? padNumber, "0");
     }
     ProductModel? productModel = productDataMap.values.toList().firstWhereOrNull((element) => element.prodFullCode == fullCode);
     if (productModel != null) {
@@ -497,9 +283,11 @@ class ProductController extends GetxController {
       });
       if (productDataMap[editProductModel.prodParentId]?.prodChild == null) {
         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
-        HiveDataBase.productModelBox.put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild = [editProductModel.prodId]);
+        HiveDataBase.productModelBox
+            .put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild = [editProductModel.prodId]);
       } else {
-        HiveDataBase.productModelBox.put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
+        HiveDataBase.productModelBox
+            .put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
         productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
       }
       changesViewModel.addChangeToChanges(productDataMap[editProductModel.prodParentId]!.toFullJson(), AppConstants.productsCollection);
@@ -535,7 +323,8 @@ class ProductController extends GetxController {
     if (editProductModel.prodParentId == null) {
       fullCode = editProductModel.prodCode!;
     } else {
-      fullCode = productDataMap[editProductModel.prodParentId]!.prodFullCode! + editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad ?? padNumber, "0");
+      fullCode = productDataMap[editProductModel.prodParentId]!.prodFullCode! +
+          editProductModel.prodCode!.padLeft(productDataMap[editProductModel.prodParentId]!.prodGroupPad ?? padNumber, "0");
     }
     ProductModel? productModel = productDataMap.values.toList().firstWhereOrNull((element) => element.prodFullCode == fullCode);
     if (productModel != null && editProductModel.prodId != productModel.prodId) {
@@ -556,10 +345,12 @@ class ProductController extends GetxController {
 
       if (productDataMap[editProductModel.prodParentId]?.prodChild == null) {
         productDataMap[editProductModel.prodParentId]?.prodChild = [editProductModel.prodId];
-        await HiveDataBase.productModelBox.put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild = [editProductModel.prodId]);
+        await HiveDataBase.productModelBox
+            .put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild = [editProductModel.prodId]);
       } else {
         productDataMap[editProductModel.prodParentId]?.prodChild?.add(editProductModel.prodId);
-        await HiveDataBase.productModelBox.put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
+        await HiveDataBase.productModelBox
+            .put(editProductModel.prodParentId, getProductModelFromId(editProductModel.prodParentId)!..prodChild!.add(editProductModel.prodId));
       }
       changesViewModel.addChangeToChanges(productDataMap[editProductModel.prodParentId]!.toFullJson(), AppConstants.productsCollection);
       editProductModel.prodIsParent = false;
@@ -620,8 +411,6 @@ class ProductController extends GetxController {
     return productDataMap.values.toList().firstWhere((element) => element.prodName == name).prodId!;
   }
 
-  //--=-=-==-==--=-=-=-==-==-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=--=-
-
   String? editItem;
   TextEditingController? editCon;
 
@@ -640,24 +429,9 @@ class ProductController extends GetxController {
   }
 
   ProductTree addToModel(ProductModel element) {
-    // var a = (element.prodChild?.where((e) => productDataMap[e] == null).toList());
-    // if(a!.isNotEmpty!){
-    //   print(a);
-    //   print( element.prodIsLocal);
-    //   print( element.prodName);
-    //   print( element.prodChild);
-    //   //  element.prodChild?.map((e) => ).toList();
-    // //   FirebaseFirestore.instance.collection(Const.productsCollection).doc(a.first).delete();
-    // //   HiveDataBase.productModelBox.delete(a.first);
-    // //   productDataMap[element.prodId]!.prodChild!.remove(a.first);
-    // //     FirebaseFirestore.instance.collection(Const.productsCollection).doc(element.prodId).set(productDataMap[element.prodId]!.toJson());
-    // //   HiveDataBase.productModelBox.put (element.prodId, productDataMap[element.prodId]!);
-    // }
     element.prodChild?.removeWhere((e) => productDataMap[e] == null);
     var list = element.prodChild?.map((e) => addToModel(productDataMap[e]!)).toList();
-    // if(list!.length>99){
-    //   padNumber=2;
-    // }
+
     productDataMap[element.prodId]?.prodFullCode = getFullCodeOfProduct(element.prodId!);
     ProductTree model = ProductTree.fromJson({"name": element.prodName}, element.prodId, list ?? []);
     return model;
@@ -745,7 +519,8 @@ class ProductController extends GetxController {
     var nameCon = TextEditingController();
     String? prodParentId;
     String? rootName;
-    List<String> rootFolder = productDataMap.values.toList().where((element) => element.prodIsParent! && element.prodIsGroup!).map((e) => e.prodId!).toList();
+    List<String> rootFolder =
+        productDataMap.values.toList().where((element) => element.prodIsParent! && element.prodIsGroup!).map((e) => e.prodId!).toList();
     Map<String, List<String>> allParent = {};
     Map<String, String> dropDownList = {};
     Get.defaultDialog(
@@ -785,7 +560,8 @@ class ProductController extends GetxController {
                       onChanged: (_) {
                         prodParentId = _;
                         dropDownList[element.toString()] = _!;
-                        Iterable<ProductModel> a = productDataMap.values.toList().where((element) => element.prodParentId == _ && element.prodIsGroup!);
+                        Iterable<ProductModel> a =
+                            productDataMap.values.toList().where((element) => element.prodParentId == _ && element.prodIsGroup!);
                         if (a.isNotEmpty) {
                           allParent[_] = a.toList().map((e) => e.prodId!).toList();
                         }
@@ -820,7 +596,13 @@ class ProductController extends GetxController {
         code = a.map((e) => int.parse(e.prodCode!)).toList().last + 1;
       }
     }
-    var prodModel = ProductModel(prodIsGroup: true, prodIsParent: prodParentId == null, prodParentId: prodParentId, prodName: name, prodCode: code.toString(), prodId: generateId(RecordType.product));
+    var prodModel = ProductModel(
+        prodIsGroup: true,
+        prodIsParent: prodParentId == null,
+        prodParentId: prodParentId,
+        prodName: name,
+        prodCode: code.toString(),
+        prodId: generateId(RecordType.product));
     if (prodParentId != null) {
       FirebaseFirestore.instance.collection(AppConstants.productsCollection).doc(prodParentId).update({
         'prodChild': FieldValue.arrayUnion([prodModel.prodId]),
@@ -835,7 +617,14 @@ class ProductController extends GetxController {
 
 String getProductIdFromFullName(name) {
   if (name != null && name != " " && name != "") {
-    return Get.find<ProductController>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodFullCode == name)?.prodId ?? "";
+    return Get.find<ProductController>()
+            .productDataMap
+            .values
+            .toList()
+            .cast<ProductModel?>()
+            .firstWhereOrNull((element) => element?.prodFullCode == name)
+            ?.prodId ??
+        "";
   } else {
     return "";
   }
@@ -843,7 +632,13 @@ String getProductIdFromFullName(name) {
 
 String? getProductIdFromName(name) {
   if (name != null && name != " " && name != "") {
-    return Get.find<ProductController>().productDataMap.values.toList().cast<ProductModel?>().firstWhereOrNull((element) => element?.prodName == name || element?.prodCode == name)?.prodId;
+    return Get.find<ProductController>()
+        .productDataMap
+        .values
+        .toList()
+        .cast<ProductModel?>()
+        .firstWhereOrNull((element) => element?.prodName == name || element?.prodCode == name)
+        ?.prodId;
   } else {
     return null;
   }
@@ -855,7 +650,11 @@ List<ProductModel>? getProductsModelFromName(name) {
         .productDataMap
         .values
         .toList()
-        .where((element) => !element.prodIsGroup! && (element.prodName!.toLowerCase().contains(name.toLowerCase()) || element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) || element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
+        .where((element) =>
+            !element.prodIsGroup! &&
+            (element.prodName!.toLowerCase().contains(name.toLowerCase()) ||
+                element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) ||
+                element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
         .toList();
   }
   return null;
@@ -867,7 +666,11 @@ ProductModel? getProductModelFromName(name) {
         .productDataMap
         .values
         .toList()
-        .where((element) => !element.prodIsGroup! && (element.prodName!.toLowerCase().contains(name.toLowerCase()) || element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) || element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
+        .where((element) =>
+            !element.prodIsGroup! &&
+            (element.prodName!.toLowerCase().contains(name.toLowerCase()) ||
+                element.prodFullCode!.toLowerCase().contains(name.toLowerCase()) ||
+                element.prodBarcode!.toLowerCase().contains(name.toLowerCase())))
         .firstOrNull;
   }
   return null;

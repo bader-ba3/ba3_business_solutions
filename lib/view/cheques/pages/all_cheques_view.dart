@@ -109,8 +109,7 @@ GridColumn GridColumnItem({required label, name}) {
           color: Colors.blue.shade700,
           child: Text(
             label.toString(),
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           )));
 }
 

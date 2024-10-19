@@ -21,7 +21,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool? isNfcAvailable;
-  UserManagementController userViewController = Get.find<UserManagementController>();
+  UserManagementController userManagementController = Get.find<UserManagementController>();
 
   @override
   void initState() {
@@ -43,8 +43,8 @@ class _LoginViewState extends State<LoginView> {
           var cardId = id.toUpperCase();
           CardsController cardViewController = Get.find<CardsController>();
           if (cardViewController.allCards.containsKey(cardId)) {
-            userViewController.cardNumber = cardId;
-            userViewController.checkUserStatus();
+            userManagementController.cardNumber = cardId;
+            userManagementController.checkUserStatus();
           } else {
             Get.snackbar("خطأ", "البطاقة غير موجودة");
           }
@@ -58,7 +58,6 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         WindowTitleBarBox(child: MoveWindow()),
-
         Expanded(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,15 +68,11 @@ class _LoginViewState extends State<LoginView> {
               "Ba3 Business Solutions",
               style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
             )),
-            // SizedBox(
-            //   height: 200,
-            // ),
             Center(
                 child: Text(
               "تسجيل الدخول الى ${AppConstants.dataName}",
               style: const TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
             )),
-
             Column(
               children: [
                 const Center(
@@ -96,15 +91,16 @@ class _LoginViewState extends State<LoginView> {
                             ? const Text("يرجى تقريب بطاقة الدخول")
                             : Pinput(
                                 length: 6,
-                                onCompleted: (_) {
-                                  print(_);
-                                  controller.userPin = _;
+                                onCompleted: (pinCode) {
+                                  print(pinCode);
+                                  controller.userPin = pinCode;
                                   controller.checkUserStatus();
                                 },
                                 defaultPinTheme: PinTheme(
                                   width: 56,
                                   height: 56,
-                                  textStyle: const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+                                  textStyle: const TextStyle(
+                                      fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
                                   decoration: BoxDecoration(
                                     color: const Color.fromRGBO(200, 238, 253, 1),
                                     border: Border.all(color: const Color.fromRGBO(140, 140, 140, 1)),
@@ -149,13 +145,6 @@ class _LoginViewState extends State<LoginView> {
             ),
           ],
         ))
-        // SizedBox(
-        //   height: 20,
-        // ),
-
-        // SizedBox(
-        //   height: 300,
-        // ),
       ]),
     );
   }

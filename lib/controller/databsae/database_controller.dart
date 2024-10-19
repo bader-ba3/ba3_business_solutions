@@ -16,7 +16,7 @@ import '../../core/bindings/bindings.dart';
 import '../../core/helper/init_app/init_app.dart';
 import '../../data/datasources/seller/seller_firestore_service.dart';
 import '../../data/repositories/seller/seller_repo.dart';
-import '../../view/user_management/pages/account_management_view.dart';
+import '../../view/user_management/pages/splash_page.dart';
 import '../account/account_controller.dart';
 import '../cheque/cheque_controller.dart';
 import '../invoice/invoice_controller.dart';
@@ -62,7 +62,7 @@ class DataBaseController extends GetxController {
     Get.put(CardsController(), permanent: true);
     Get.put(PrintController(), permanent: true);
     Get.offAll(
-      () => const UserManagement(),
+      () => const SplashPage(),
       binding: GetBinding(),
     );
   }

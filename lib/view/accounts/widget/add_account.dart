@@ -198,12 +198,16 @@ class _AddAccountState extends State<AddAccount> {
                                                       children: [
                                                         Text(
                                                           "${index + 1}_ ",
-                                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.blue.shade700),
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 24,
+                                                              color: Colors.blue.shade700),
                                                           overflow: TextOverflow.ellipsis,
                                                         ),
                                                         Text(
                                                           result[index],
-                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                                          style: const TextStyle(
+                                                              fontWeight: FontWeight.bold, fontSize: 20),
                                                           overflow: TextOverflow.ellipsis,
                                                         ),
                                                       ],
@@ -252,16 +256,20 @@ class _AddAccountState extends State<AddAccount> {
                               return AppButton(
                                 onPressed: () async {
                                   if (checkInput()) {
-                                    await updateData(nameController, accountType!, notesController, idController, accVat!, codeController,
-                                        accParentId.text, accIsRoot);
+                                    await updateData(nameController, accountType!, notesController, idController,
+                                        accVat!, codeController, accParentId.text, accIsRoot);
                                     if (accountModel.accId == null) {
-                                      hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewAccount).then((value) {
+                                      hasPermissionForOperation(
+                                              AppConstants.roleUserWrite, AppConstants.roleViewAccount)
+                                          .then((value) {
                                         if (value) {
                                           accountController.addNewAccount(accountModel, withLogger: true);
                                         }
                                       });
                                     } else {
-                                      hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewAccount).then((value) {
+                                      hasPermissionForOperation(
+                                              AppConstants.roleUserUpdate, AppConstants.roleViewAccount)
+                                          .then((value) {
                                         if (value) {
                                           accountController.updateAccount(accountModel, withLogger: true);
                                         }
@@ -317,8 +325,15 @@ class _AddAccountState extends State<AddAccount> {
     );
   }
 
-  updateData(TextEditingController nameController, String typeController, TextEditingController notesController, TextEditingController idController,
-      String accVat, TextEditingController codeController, String? accParentId, bool isRoot) {
+  updateData(
+      TextEditingController nameController,
+      String typeController,
+      TextEditingController notesController,
+      TextEditingController idController,
+      String accVat,
+      TextEditingController codeController,
+      String? accParentId,
+      bool isRoot) {
     accountModel.accCode = codeController.text;
     accountModel.accName = nameController.text;
     accountModel.accComment = notesController.text;

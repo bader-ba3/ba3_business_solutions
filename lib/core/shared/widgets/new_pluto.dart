@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-import '../Widgets/custom_window_title_bar.dart';
 import '../../../controller/pluto/pluto_controller.dart';
+import '../Widgets/custom_window_title_bar.dart';
 
 class CustomPlutoGridWithAppBar extends StatelessWidget {
   const CustomPlutoGridWithAppBar(
@@ -57,19 +57,11 @@ class CustomPlutoGridWithAppBar extends StatelessWidget {
                     style: PlutoGridStyleConfig(
                       enableRowColorAnimation: true,
                       evenRowColor: Colors.blueAccent.withOpacity(0.5),
-                      columnTextStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                      columnTextStyle: const TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
                       activatedColor: Colors.white.withOpacity(0.5),
-                      cellTextStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                      gridPopupBorderRadius:
-                          const BorderRadius.all(Radius.circular(15)),
-                      gridBorderRadius:
-                          const BorderRadius.all(Radius.circular(15)),
+                      cellTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                      gridPopupBorderRadius: const BorderRadius.all(Radius.circular(15)),
+                      gridBorderRadius: const BorderRadius.all(Radius.circular(15)),
                       // gridBorderColor: Colors.transparent,
                     ),
                     localeText: const PlutoGridLocaleText.arabic(),

@@ -1,5 +1,6 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
+import 'package:ba3_business_solutions/core/styling/app_colors.dart';
 import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/accounts/pages/account_layout.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_layout.dart';
@@ -73,7 +74,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: backGroundColor,
+        backgroundColor: AppColors.backGroundColor,
         body: WindowBorder(
           color: Colors.blue,
           width: 1,
@@ -105,7 +106,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             color: Colors.white,
                             fontSize: 13.0,
                           ),
-                          colors: List.generate(rowData.length, (index) => backGroundColor),
+                          colors: List.generate(rowData.length, (index) => AppColors.backGroundColor),
                           tabs: List.generate(
                             rowData.length,
                             (index) {

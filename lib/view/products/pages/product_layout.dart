@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
-import '../../user_management/pages/user_management_layout.dart';
+import '../../../core/shared/widgets/app_menu_item.dart';
 
 class ProductLayout extends StatelessWidget {
   const ProductLayout({super.key});
@@ -22,24 +22,32 @@ class ProductLayout extends StatelessWidget {
         ),
         body: Column(
           children: [
-            item("إضافة مادة", () {
-              Get.to(() => const AddProductPage());
-            }),
-            item("معاينة المواد", () {
-              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
-                if (value) Get.to(() => const AllProductsPage());
-              });
-            }),
-            item("شجرة المواد", () {
-              hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
-                if (value) Get.to(() => ProductTreePage());
-              });
-            }),
-            item("إدارة المخزون ", () {
-              hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewProduct).then((value) {
-                if (value) Get.to(() => const ProductManagementPage());
-              });
-            }),
+            AppMenuItem(
+                text: "إضافة مادة",
+                onTap: () {
+                  Get.to(() => const AddProductPage());
+                }),
+            AppMenuItem(
+                text: "معاينة المواد",
+                onTap: () {
+                  hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
+                    if (value) Get.to(() => const AllProductsPage());
+                  });
+                }),
+            AppMenuItem(
+                text: "شجرة المواد",
+                onTap: () {
+                  hasPermissionForOperation(AppConstants.roleUserRead, AppConstants.roleViewProduct).then((value) {
+                    if (value) Get.to(() => ProductTreePage());
+                  });
+                }),
+            AppMenuItem(
+                text: "إدارة المخزون ",
+                onTap: () {
+                  hasPermissionForOperation(AppConstants.roleUserAdmin, AppConstants.roleViewProduct).then((value) {
+                    if (value) Get.to(() => const ProductManagementPage());
+                  });
+                }),
           ],
         ),
       ),

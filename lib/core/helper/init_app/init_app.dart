@@ -3,23 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../constants/app_constants.dart';
 import '../../../firebase_options.dart';
+import '../../constants/app_constants.dart';
 import '../../utils/hive.dart';
 
 Future initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-// WindowOptions windowOptions = const WindowOptions(
-  //   size: Size(800, 600),
-  //   center: true,
-  //   backgroundColor: Colors.transparent,
-  //   titleBarStyle: TitleBarStyle.hidden,
-  // );
-  // windowManager.waitUntilReadyToShow(windowOptions, () async {
-  //   await windowManager.show();
-  //   await windowManager.focus();
-  // });
 
   doWhenWindowReady(() {
     final win = appWindow;
@@ -44,27 +33,19 @@ Future initializeApp() async {
     (event) {
       if (HardwareKeyboard.instance.isControlPressed &&
           HardwareKeyboard.instance.isShiftPressed &&
-          HardwareKeyboard.instance
-              .isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
+          HardwareKeyboard.instance.isPhysicalKeyPressed(PhysicalKeyboardKey.keyC)) {
         HiveDataBase.setIsFree(!HiveDataBase.getWithFree());
-
         return true;
       }
       return false;
     },
   );
-  // FirebaseFirestore.instance.collection("2024").doc("bon1720282515909594").delete();
-  //  HiveDataBase.globalModelBox.delete("bon1720282515909594");
-  // FirebaseFirestore.instance.collection("2024").count().get().then((value) => print(value.count),);
-  // HiveDataBase.globalModelBox.deleteFromDisk();
 }
 
 init({String? oldData, bool? isFree}) async {
   if (AppConstants.dataName == '') {
-    // await FirebaseFirestore.instance.collection(settingCollection).doc(dataCollection).get().then((value) {
-    //   dataName=value.data()?['defaultDataName'];
-    // });
-    AppConstants.dataName = "2024";
+    // Set current year dynamically
+    AppConstants.dataName = DateTime.now().year.toString();
   } else {
     AppConstants.dataName = oldData!;
   }

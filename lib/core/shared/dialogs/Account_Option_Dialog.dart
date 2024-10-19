@@ -1,6 +1,5 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
-import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/data/model/account/account_model.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import '../../../controller/invoice/search_controller.dart';
 import '../../../view/accounts/pages/account_details.dart';
 import '../../helper/functions/functions.dart';
 import '../../services/Get_Date_From_String.dart';
+import '../../styling/app_colors.dart';
 import '../widgets/option_text_widget.dart';
 
 class AccountOptionDialog extends StatelessWidget {
@@ -20,7 +20,7 @@ class AccountOptionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: backGroundColor,
+      backgroundColor: AppColors.backGroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
@@ -37,7 +37,8 @@ class AccountOptionDialog extends StatelessWidget {
                   title: "اسم الحساب :  ",
                   controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
+                    controller.accountForSearchController.text =
+                        await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),
@@ -64,7 +65,8 @@ class AccountOptionDialog extends StatelessWidget {
                     AccountModel? model = getAccountModelFromName(controller.accountForSearchController.text);
                     if (model != null) {
                       List<String> listDate = getDatesBetween(
-                          DateTime.parse(controller.startDateForSearchController.text), DateTime.parse(controller.endDateForSearchController.text));
+                          DateTime.parse(controller.startDateForSearchController.text),
+                          DateTime.parse(controller.endDateForSearchController.text));
 
                       Get.to(() => AccountDetails(
                             modelKey: model.accChild

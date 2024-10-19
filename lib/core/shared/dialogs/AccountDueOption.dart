@@ -1,11 +1,11 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
 import 'package:ba3_business_solutions/core/shared/dialogs/SearchAccuntTextDialog.dart';
+import 'package:ba3_business_solutions/core/styling/app_colors.dart';
 import 'package:ba3_business_solutions/data/model/account/account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/invoice/search_controller.dart';
-import '../../../main.dart';
 import '../../../view/accounts/pages/all_due_account.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
 import '../widgets/option_text_widget.dart';
@@ -18,7 +18,7 @@ class AccountDueOptionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: backGroundColor,
+      backgroundColor: AppColors.backGroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
@@ -35,7 +35,8 @@ class AccountDueOptionDialog extends StatelessWidget {
                   title: "اسم الحساب :  ",
                   controller: controller.accountForSearchController,
                   onSubmitted: (text) async {
-                    controller.accountForSearchController.text = await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
+                    controller.accountForSearchController.text =
+                        await searchAccountTextDialog(controller.accountForSearchController.text) ?? "";
                     controller.update();
                   },
                 ),

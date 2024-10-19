@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/shared/widgets/option_text_widget.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
-import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/helper/functions/functions.dart';
 import '../../../core/shared/dialogs/Search_Product_Group_Text_Dialog.dart';
 import '../../../core/shared/widgets/custom_window_title_bar.dart';
+import '../../../core/styling/app_colors.dart';
 import '../../../data/model/inventory/inventory_model.dart';
 import '../../../data/model/product/product_model.dart';
 import '../widgets/custom_pluto_grid.dart';
@@ -28,7 +28,8 @@ class AddNewInventoryView extends StatefulWidget {
 
 class _AddNewInventoryViewState extends State<AddNewInventoryView> {
   List<Map<String, dynamic>> treeListData = [];
-  TextEditingController dateInventoryController = TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
+  TextEditingController dateInventoryController =
+      TextEditingController(text: "جرد بتاريخ ${DateTime.now().toString().split(" ")[0]}");
   TextEditingController productGroupNameController = TextEditingController();
   List<ProductModel> allData = [];
 
@@ -64,7 +65,7 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                         }
                         sellers = List.generate(groupProduct.length, (index) => null);
                         Get.defaultDialog(
-                            backgroundColor: backGroundColor,
+                            backgroundColor: AppColors.backGroundColor,
                             title: "اختر الموظف لكل مهمة",
                             middleText: "",
                             content: GetBuilder<InventoryController>(builder: (inventoryController) {
@@ -76,7 +77,8 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                       return Container(
                                         padding: const EdgeInsets.all(15),
                                         margin: const EdgeInsets.all(15),
-                                        decoration: BoxDecoration(color: Colors.blue.shade200, borderRadius: BorderRadius.circular(15)),
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue.shade200, borderRadius: BorderRadius.circular(15)),
                                         alignment: Alignment.center,
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +88,8 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                               width: 300,
                                               child: Text(
                                                 getProductNameFromId(groupProduct[index]).toString(),
-                                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                                style:
+                                                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
@@ -102,7 +105,8 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                                   Expanded(
                                                     child: Container(
                                                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white, borderRadius: BorderRadius.circular(15)),
                                                       child: DropdownButton<String>(
                                                         icon: const SizedBox(),
                                                         underline: const SizedBox(),
@@ -111,7 +115,9 @@ class _AddNewInventoryViewState extends State<AddNewInventoryView> {
                                                             .toList()
                                                             .map((e) => DropdownMenuItem(
                                                                 value: sellerViewController.allSellers[e]?.sellerId,
-                                                                child: Text(sellerViewController.allSellers[e]?.sellerName ?? "error")))
+                                                                child: Text(
+                                                                    sellerViewController.allSellers[e]?.sellerName ??
+                                                                        "error")))
                                                             .toList(),
                                                         onChanged: (_) {
                                                           if (_ != null) {

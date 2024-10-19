@@ -89,7 +89,11 @@ class ProductTreePage extends StatelessWidget {
     );
   }
 
-  myTreeTile({context, required ValueKey<ProductTree> key, required VoidCallback onTap, required TreeEntry<ProductTree> entry}) {
+  myTreeTile(
+      {context,
+      required ValueKey<ProductTree> key,
+      required VoidCallback onTap,
+      required TreeEntry<ProductTree> entry}) {
     return TreeIndentation(
       key: key,
       entry: entry,

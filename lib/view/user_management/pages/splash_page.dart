@@ -1,16 +1,16 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
+import 'package:get/get.dart';
 
-class UserManagement extends StatefulWidget {
-  const UserManagement({super.key});
+class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
 
   @override
-  State<UserManagement> createState() => _UserManagementState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
-class _UserManagementState extends State<UserManagement> {
+class _SplashPageState extends State<SplashPage> {
   var _alertShowing = false;
 
   @override
@@ -47,8 +47,7 @@ class _UserManagementState extends State<UserManagement> {
 
   @override
   Widget build(BuildContext context) {
-    UserManagementController userManagementViewController =
-        Get.find<UserManagementController>();
+    UserManagementController userManagementViewController = Get.find<UserManagementController>();
     userManagementViewController.checkUserStatus();
     return const Scaffold(
         body: Center(

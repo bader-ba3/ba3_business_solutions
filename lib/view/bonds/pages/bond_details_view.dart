@@ -147,7 +147,8 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         child: CustomTextFieldWithIcon(
                                           controller: controller.debitOrCreditController,
                                           onSubmitted: (text) async {
-                                            controller.debitOrCreditController.text = await searchAccountTextDialog(text) ?? "";
+                                            controller.debitOrCreditController.text =
+                                                await searchAccountTextDialog(text) ?? "";
                                             // invoiceController.getAccountComplete();
                                             // invoiceController.changeSecAccount();
                                           },
@@ -165,37 +166,42 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                             shortCut: customPlutoShortcut(GetAccountEnterPlutoGridAction(controller, "bondRecAccount")),
                             onRowSecondaryTap: (event) {
                               if (event.cell.column.field == "bondRecId") {
-                                Get.defaultDialog(title: "تأكيد الحذف", content: const Text("هل انت متأكد من حذف هذا العنصر"), actions: [
-                                  AppButton(
-                                      title: "نعم",
-                                      onPressed: () {
-                                        controller.clearRowIndex(event.rowIdx);
-                                      },
-                                      iconData: Icons.check),
-                                  AppButton(
-                                    title: "لا",
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    iconData: Icons.clear,
-                                    color: Colors.red,
-                                  ),
-                                ]);
+                                Get.defaultDialog(
+                                    title: "تأكيد الحذف",
+                                    content: const Text("هل انت متأكد من حذف هذا العنصر"),
+                                    actions: [
+                                      AppButton(
+                                          title: "نعم",
+                                          onPressed: () {
+                                            controller.clearRowIndex(event.rowIdx);
+                                          },
+                                          iconData: Icons.check),
+                                      AppButton(
+                                        title: "لا",
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        iconData: Icons.clear,
+                                        color: Colors.red,
+                                      ),
+                                    ]);
                               }
                             },
                             onChanged: (event) {
                               if (event.column.field == "bondRecDebitAmount") {
-                                controller.updateCellValue(
-                                    "bondRecDebitAmount", extractNumbersAndCalculate(event.row.cells["bondRecDebitAmount"]?.value));
-                                if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
+                                controller.updateCellValue("bondRecDebitAmount",
+                                    extractNumbersAndCalculate(event.row.cells["bondRecDebitAmount"]?.value));
+                                if (widget.bondType != AppConstants.bondTypeDebit &&
+                                    widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecCreditAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecCreditAmount", "");
                                   }
                                 }
                               } else if (event.column.field == "bondRecCreditAmount") {
-                                controller.updateCellValue(
-                                    "bondRecCreditAmount", extractNumbersAndCalculate(event.row.cells["bondRecCreditAmount"]?.value));
-                                if (widget.bondType != AppConstants.bondTypeDebit && widget.bondType != AppConstants.bondTypeCredit) {
+                                controller.updateCellValue("bondRecCreditAmount",
+                                    extractNumbersAndCalculate(event.row.cells["bondRecCreditAmount"]?.value));
+                                if (widget.bondType != AppConstants.bondTypeDebit &&
+                                    widget.bondType != AppConstants.bondTypeCredit) {
                                   if ((double.tryParse(event.row.cells["bondRecDebitAmount"]?.value) ?? 0) > 0) {
                                     controller.updateCellValue("bondRecDebitAmount", "");
                                   }
@@ -317,9 +323,10 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 onPressed: () {
                                   bool isDebitBond = widget.bondType == AppConstants.bondTypeDebit;
                                   bool isCreditBond = widget.bondType == AppConstants.bondTypeCredit;
-                                  bool isBalancedBond =
-                                      plutoBondController.checkIfBalancedBond(isDebit: isDebitBond ? true : (isCreditBond ? false : null));
-                                  bool hasValidAccount = getAccountIdFromText(controller.debitOrCreditController.text) != "";
+                                  bool isBalancedBond = plutoBondController.checkIfBalancedBond(
+                                      isDebit: isDebitBond ? true : (isCreditBond ? false : null));
+                                  bool hasValidAccount =
+                                      getAccountIdFromText(controller.debitOrCreditController.text) != "";
                                   bool isDateValid = DateTime.tryParse(bondController.dateController.text) != null;
                                   bool isDebitOrCreditWithAccount = (isDebitOrCredit) && hasValidAccount;
 
@@ -335,7 +342,8 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                   if ((isDebitOrCreditWithAccount && isValidBondForSave) ||
                                       (!isDebitOrCredit && isBalancedBond && isValidBondForSave)) {
                                     if (bondController.isNew) {
-                                      hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserWrite, AppConstants.roleViewBond)
+                                          .then((value) async {
                                         if (value) {
                                           await globalController.addGlobalBond(GlobalModel(
                                               bondCode: controller.codeController.text,
@@ -364,7 +372,8 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                         }
                                       });
                                     } else {
-                                      hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserUpdate, AppConstants.roleViewBond)
+                                          .then((value) async {
                                         if (value) {
                                           bondController.isNew = false;
                                           controller.isEdit = false;
@@ -394,13 +403,15 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                               bondDescription: bondController.noteController.text,
                                               bondType: widget.bondType,
                                               bondTotal: "0");
-                                          sendEmailWithPdfAttachment(newGlobal, true, update: true, invoiceOld: controller.tempBondModel);
+                                          sendEmailWithPdfAttachment(newGlobal, true,
+                                              update: true, invoiceOld: controller.tempBondModel);
                                           await globalController.updateGlobalBond(newGlobal);
                                         }
                                       });
                                     }
                                   } else {
-                                    Get.snackbar("خطأ", "يرجى مراجعة السند", icon: const Icon(Icons.error_outline_outlined));
+                                    Get.snackbar("خطأ", "يرجى مراجعة السند",
+                                        icon: const Icon(Icons.error_outline_outlined));
                                   }
                                 },
                                 iconData: bondController.isNew ? Icons.add : Icons.edit),
@@ -416,7 +427,8 @@ class _BondDetailsViewState extends State<BondDetailsView> {
                                 onPressed: () async {
                                   confirmDeleteWidget().then((value) {
                                     if (value) {
-                                      hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond).then((value) async {
+                                      hasPermissionForOperation(AppConstants.roleUserDelete, AppConstants.roleViewBond)
+                                          .then((value) async {
                                         if (value) {
                                           globalController.deleteGlobal(bondController.tempBondModel);
                                           Get.back();

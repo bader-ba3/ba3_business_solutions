@@ -65,8 +65,8 @@ dependencies:
   translator: ^1.0.0
   print_bluetooth_thermal:
   esc_pos_utils_plus:
-  flutter_window_close:
-  flutter_platform_alert:
+  flutter_window_close: ^1.2.0
+  flutter_platform_alert: ^0.6.1
   pluto_grid: ^8.0.0
   dio: ^5.5.0+1
   path:

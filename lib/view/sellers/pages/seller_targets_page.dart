@@ -72,16 +72,22 @@ class SellerTargetPage extends StatelessWidget {
                     if (targetController.sellerData.mobileTotal != targetController.sellerData.mobileTotal ||
                         targetController.sellerData.otherTotal != targetController.sellerData.otherTotal) {
                       if (targetController.sellerData.otherTotal - targetController.sellerData.otherTotal.toInt() > 0) {
-                        targetController.othersKey.currentState!.addValue(targetController.sellerData.otherTotal.toInt());
+                        targetController.othersKey.currentState!
+                            .addValue(targetController.sellerData.otherTotal.toInt());
                       } else {
-                        targetController.othersKey.currentState!.removeValue(targetController.sellerData.otherTotal.toInt());
+                        targetController.othersKey.currentState!
+                            .removeValue(targetController.sellerData.otherTotal.toInt());
                       }
-                      if (targetController.sellerData.mobileTotal - targetController.sellerData.mobileTotal.toInt() > 0) {
-                        targetController.mobileKey.currentState!.addValue(targetController.sellerData.mobileTotal.toInt());
+                      if (targetController.sellerData.mobileTotal - targetController.sellerData.mobileTotal.toInt() >
+                          0) {
+                        targetController.mobileKey.currentState!
+                            .addValue(targetController.sellerData.mobileTotal.toInt());
                       } else {
-                        targetController.mobileKey.currentState!.removeValue(targetController.sellerData.mobileTotal.toInt());
+                        targetController.mobileKey.currentState!
+                            .removeValue(targetController.sellerData.mobileTotal.toInt());
                       }
-                      targetController.mobileKey.currentState!.addValue(targetController.sellerData.mobileTotal.toInt());
+                      targetController.mobileKey.currentState!
+                          .addValue(targetController.sellerData.mobileTotal.toInt());
                     }
                     return GetBuilder<TargetController>(builder: (controller) {
                       List<TaskModel> allUserTask = controller.allTarget.values
@@ -149,7 +155,8 @@ class SellerTargetPage extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       targetController.sellerModel?.sellerTime!.firstTimeEnter ?? '',
-                                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
                                     ),
                                   ),
                                 ],
@@ -170,7 +177,8 @@ class SellerTargetPage extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       targetController.sellerModel?.sellerTime!.firstTimeOut ?? '',
-                                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
                                     ),
                                   ),
                                 ],
@@ -193,7 +201,8 @@ class SellerTargetPage extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         targetController.sellerModel?.sellerTime!.firstTimeOut ?? '',
-                                        style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.blue, fontSize: 24),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700, color: Colors.blue, fontSize: 24),
                                       ),
                                     ),
                                   ],
@@ -214,7 +223,8 @@ class SellerTargetPage extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         targetController.sellerModel?.sellerTime!.secondTimeEnter ?? '',
-                                        style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.blue, fontSize: 24),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700, color: Colors.blue, fontSize: 24),
                                       ),
                                     ),
                                   ],
@@ -235,7 +245,8 @@ class SellerTargetPage extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         targetController.sellerModel?.sellerTime!.secondTimeEnter ?? '',
-                                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
                                       ),
                                     ),
                                   ],
@@ -256,7 +267,8 @@ class SellerTargetPage extends StatelessWidget {
                                     Expanded(
                                       child: Text(
                                         targetController.sellerModel?.sellerTime!.secondTimeOut ?? '',
-                                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700, fontSize: 24, color: Colors.blue),
                                       ),
                                     ),
                                   ],

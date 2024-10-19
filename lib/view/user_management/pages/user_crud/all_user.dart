@@ -1,38 +1,13 @@
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
-import 'package:ba3_business_solutions/view/user_management/pages/user_crud/add_user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../controller/user/user_management_controller.dart';
 import '../../../../core/shared/widgets/custom_window_title_bar.dart';
+import 'add_user.dart';
 
-class AllUserView extends StatefulWidget {
+class AllUserView extends StatelessWidget {
   const AllUserView({super.key});
-
-  @override
-  State<AllUserView> createState() => _AllUserViewState();
-}
-
-class _AllUserViewState extends State<AllUserView> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((value) {
-  //     checkPermissionForOperation(Const.roleUserAdmin,Const.roleViewUserManagement).then((value) {
-  //       print(value);
-  //       if (value) userManagementViewController.initAllUser();
-  //     });
-  //   });
-  //
-  //   // userManagementViewController.initAllUser();
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  //   userManagementViewController.allUserList.clear();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -71,31 +46,21 @@ class _AllUserViewState extends State<AllUserView> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
-                                Get.find<UserManagementController>().initUser(
-                                    controller.allUserList.values
-                                        .toList()[index]
-                                        .userId);
+                                Get.find<UserManagementController>()
+                                    .initUser(controller.allUserList.values.toList()[index].userId);
                                 Get.to(() => const AddUserView());
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                                 height: 140,
                                 width: 140,
                                 child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      controller.allUserList.values
-                                              .toList()[index]
-                                              .userName ??
-                                          "",
-                                      style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold),
+                                      controller.allUserList.values.toList()[index].userName ?? "",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),

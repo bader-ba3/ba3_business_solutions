@@ -1,6 +1,10 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
+class AppColors {
+  static const Color backGroundColor = Color(0xffE6E6E6);
+}
+
 final buttonColors = WindowButtonColors(
     iconNormal: const Color(0xFF805306),
     mouseOver: const Color(0xFFF6A00C),

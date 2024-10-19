@@ -4,7 +4,6 @@ import 'package:ba3_business_solutions/controller/global/global_controller.dart'
 import 'package:ba3_business_solutions/controller/invoice/invoice_controller.dart';
 import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
-import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/data/model/bond/bond_record_model.dart';
 import 'package:ba3_business_solutions/data/model/bond/entry_bond_record_model.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:get/get.dart';
 
 import '../../../data/model/global/global_model.dart';
 import '../../../view/invoices/pages/new_invoice_view.dart';
+import '../../styling/app_colors.dart';
 import '../widgets/option_text_widget.dart';
 
 class BondDebitDialog extends StatelessWidget {
@@ -24,7 +24,7 @@ class BondDebitDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: backGroundColor,
+      backgroundColor: AppColors.backGroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Directionality(
@@ -63,7 +63,10 @@ class BondDebitDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
                       border: Border.all(
-                        color: Color(patternController.patternModel[controller.invoiceForSearch!.patternId]?.patColor! ?? 00000).withOpacity(0.5),
+                        color: Color(
+                                patternController.patternModel[controller.invoiceForSearch!.patternId]?.patColor! ??
+                                    00000)
+                            .withOpacity(0.5),
                         width: 1.0,
                       ),
                     ),
@@ -86,7 +89,8 @@ class BondDebitDialog extends StatelessWidget {
                             ),
                             SizedBox(
                               child: Text(
-                                patternController.patternModel[controller.invoiceForSearch!.patternId!]!.patFullName ?? "error",
+                                patternController.patternModel[controller.invoiceForSearch!.patternId!]!.patFullName ??
+                                    "error",
                                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 textDirection: TextDirection.rtl,
                               ),
@@ -191,14 +195,15 @@ class BondDebitDialog extends StatelessWidget {
                   title: "موافق",
                   iconData: Icons.check,
                   onPressed: () async {
-                    if (controller.invoiceForSearch != null && double.tryParse(controller.totalPaidFromPartner.text) != null) {
+                    if (controller.invoiceForSearch != null &&
+                        double.tryParse(controller.totalPaidFromPartner.text) != null) {
                       String des =
                           "سند دفع مولد من عملية تسديد فاتورة رقم${controller.invoiceForSearch!.invPartnerCode} - ${patternController.patternModel[controller.invoiceForSearch!.patternId]!.patFullName}:${controller.invoiceForSearch!.invCode!}";
                       List<BondRecordModel> bondRecord = [];
                       List<EntryBondRecordModel> entryBondRecord = [];
 
-                      bondRecord
-                          .add(BondRecordModel("00", 0, double.parse(controller.totalPaidFromPartner.text), getAccountIdFromText("المصرف"), des));
+                      bondRecord.add(BondRecordModel("00", 0, double.parse(controller.totalPaidFromPartner.text),
+                          getAccountIdFromText("المصرف"), des));
                       bondRecord.add(BondRecordModel(
                           "01",
                           0,
@@ -208,7 +213,8 @@ class BondDebitDialog extends StatelessWidget {
                       bondRecord.add(BondRecordModel(
                           "02",
                           double.parse(controller.totalPaidFromPartner.text) +
-                              (controller.invoiceForSearch!.invTotal! - double.parse(controller.totalPaidFromPartner.text)),
+                              (controller.invoiceForSearch!.invTotal! -
+                                  double.parse(controller.totalPaidFromPartner.text)),
                           0,
                           patternController.patternModel[controller.invoiceForSearch!.patternId]!.patSecondary!,
                           des));

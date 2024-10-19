@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/shared/widgets/target_pointer_widget.dart';
-import '../../core/utils/generate_id.dart';
 import '../../core/utils/hive.dart';
 import '../../data/model/invoice/invoice_record_model.dart';
 import '../../data/model/seller/seller_model.dart';

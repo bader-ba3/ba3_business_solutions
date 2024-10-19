@@ -1,6 +1,6 @@
 import 'package:ba3_business_solutions/controller/account/account_controller.dart';
-import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:ba3_business_solutions/view/accounts/widget/add_account.dart';
+import 'package:ba3_business_solutions/view/accounts/widget/customer_pluto_edit_view.dart';
 import 'package:ba3_business_solutions/view/invoices/pages/new_invoice_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
@@ -95,7 +95,11 @@ class AccountTreeView extends StatelessWidget {
     );
   }
 
-  myTreeTile({context, required ValueKey<AccountTree> key, required VoidCallback onTap, required TreeEntry<AccountTree> entry}) {
+  myTreeTile(
+      {context,
+      required ValueKey<AccountTree> key,
+      required VoidCallback onTap,
+      required TreeEntry<AccountTree> entry}) {
     return TreeIndentation(
       key: key,
       entry: entry,
@@ -148,7 +152,8 @@ class AccountTreeView extends StatelessWidget {
     );
   }
 
-  void showContextMenu(BuildContext parentContext, Offset tapPosition, AccountController controller, TreeEntry<AccountTree> entry) {
+  void showContextMenu(
+      BuildContext parentContext, Offset tapPosition, AccountController controller, TreeEntry<AccountTree> entry) {
     showMenu(
       context: parentContext,
       position: RelativeRect.fromLTRB(
