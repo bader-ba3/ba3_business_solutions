@@ -15,7 +15,6 @@ import '../../../core/helper/enums/enums.dart';
 import '../../../core/shared/dialogs/Invoice_Option_Dialog.dart';
 import '../../../data/model/patterens/pattern_model.dart';
 import '../../Warranty/pages/all_warranty_invoices.dart';
-import '../../user_management/pages/login_view.dart';
 import 'all_pending_invoices.dart';
 
 class InvoiceLayout extends StatelessWidget {
@@ -44,7 +43,7 @@ class InvoiceLayout extends StatelessWidget {
             IconButton(
                 onPressed: () {
                   Get.find<UserManagementController>().userStatus = UserManagementStatus.first;
-                  Get.offAll(const LoginView());
+                  Get.offAllNamed(AppRoutes.loginScreen);
                 },
                 icon: const Icon(Icons.logout, color: Colors.red))
           ],

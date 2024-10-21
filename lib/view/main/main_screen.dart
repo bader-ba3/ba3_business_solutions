@@ -1,7 +1,6 @@
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/core/styling/app_colors.dart';
-import 'package:ba3_business_solutions/main.dart';
 import 'package:ba3_business_solutions/view/accounts/pages/account_layout.dart';
 import 'package:ba3_business_solutions/view/bonds/pages/bond_layout.dart';
 import 'package:ba3_business_solutions/view/cheques/pages/cheque_layout.dart';

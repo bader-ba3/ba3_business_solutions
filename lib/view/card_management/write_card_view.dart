@@ -1,4 +1,4 @@
-import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
+import 'package:ba3_business_solutions/controller/user/nfc_cards_controller.dart';
 import 'package:ba3_business_solutions/controller/user/user_management_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class WriteCardView extends StatefulWidget {
 
 class _WriteCardViewState extends State<WriteCardView> {
   UserManagementController userViewController = Get.find<UserManagementController>();
-  CardsController cardViewController = Get.find<CardsController>();
+  NfcCardsController cardViewController = Get.find<NfcCardsController>();
 
   // TextEditingController cardController = TextEditingController();
   String? userId;
@@ -101,10 +101,8 @@ class _WriteCardViewState extends State<WriteCardView> {
                     onPressed: () {
                       isDisabled ??= false;
                       if (userId != null && cardId != null) {
-                        FirebaseFirestore.instance
-                            .collection("Cards")
-                            .doc(cardId)
-                            .set({"userId": userId, "cardId": cardId, "isDisabled": isDisabled}, SetOptions(merge: true));
+                        FirebaseFirestore.instance.collection("Cards").doc(cardId).set(
+                            {"userId": userId, "cardId": cardId, "isDisabled": isDisabled}, SetOptions(merge: true));
                         //   NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
                         //     Get.back();
                         //   var ndef = Ndef.from(tag);

@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:ba3_business_solutions/controller/global/changes_controller.dart';
 import 'package:ba3_business_solutions/controller/global/global_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
+import 'package:ba3_business_solutions/core/router/app_routes.dart';
 import 'package:ba3_business_solutions/core/utils/generate_id.dart';
 import 'package:ba3_business_solutions/data/model/user/role_model.dart';
 import 'package:ba3_business_solutions/data/model/user/user_model.dart';
-import 'package:ba3_business_solutions/view/user_management/pages/login_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +18,7 @@ import '../../core/helper/enums/enums.dart';
 import '../../core/helper/functions/functions.dart';
 import '../../data/model/user/card_model.dart';
 import '../../data/repositories/user/user_repo.dart';
-import 'cards_controller.dart';
+import 'nfc_cards_controller.dart';
 
 class UserManagementController extends GetxController {
   final UserManagementRepository _userRepository;
@@ -128,17 +128,17 @@ class UserManagementController extends GetxController {
     if (waitUntilFirstFrameRasterized) {
       WidgetsFlutterBinding.ensureInitialized().waitUntilFirstFrameRasterized.then((_) {
         userStatus = UserManagementStatus.first;
-        Get.offAll(() => const LoginView());
+        Get.offAllNamed(AppRoutes.loginScreen);
       });
     } else {
       userStatus = UserManagementStatus.first;
-      Get.offAll(() => const LoginView());
+      Get.offAllNamed(AppRoutes.loginScreen);
     }
   }
 
   Future<void> _handleNoMatch() async {
     userStatus = null; // Setting userStatus to null in case of no match
-    if (Get.currentRoute != "/LoginView") {
+    if (Get.currentRoute != AppRoutes.loginScreen) {
       _navigateToLogin();
     } else {
       Get.snackbar("error", "not matched");
@@ -311,7 +311,7 @@ Future<bool> hasPermissionForOperation(role, page) async {
                 }
               }
               var cardId = id.toUpperCase();
-              CardsController cardViewController = Get.find<CardsController>();
+              NfcCardsController cardViewController = Get.find<NfcCardsController>();
               if (cardViewController.allCards.containsKey(cardId)) {
                 CardModel cardModel = cardViewController.allCards[cardId]!;
                 Map<String, List<String>>? newUserRole =

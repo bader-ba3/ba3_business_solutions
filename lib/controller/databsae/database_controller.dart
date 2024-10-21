@@ -3,7 +3,6 @@ import 'package:ba3_business_solutions/controller/databsae/import_controller.dar
 import 'package:ba3_business_solutions/controller/pattern/pattern_controller.dart';
 import 'package:ba3_business_solutions/controller/print/print_controller.dart';
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
-import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
 import 'package:ba3_business_solutions/core/constants/app_constants.dart';
 import 'package:ba3_business_solutions/data/datasources/user/user_management_service.dart';
 import 'package:ba3_business_solutions/data/repositories/user/user_repo.dart';
@@ -16,7 +15,7 @@ import '../../core/bindings/bindings.dart';
 import '../../core/helper/init_app/init_app.dart';
 import '../../data/datasources/seller/seller_firestore_service.dart';
 import '../../data/repositories/seller/seller_repo.dart';
-import '../../view/user_management/pages/splash_page.dart';
+import '../../view/login/pages/splash_screen.dart';
 import '../account/account_controller.dart';
 import '../cheque/cheque_controller.dart';
 import '../invoice/invoice_controller.dart';
@@ -32,7 +31,11 @@ class DataBaseController extends GetxController {
   }
 
   getAllDataBase() {
-    FirebaseFirestore.instance.collection(AppConstants.settingCollection).doc(AppConstants.dataCollection).snapshots().listen((value) {
+    FirebaseFirestore.instance
+        .collection(AppConstants.settingCollection)
+        .doc(AppConstants.dataCollection)
+        .snapshots()
+        .listen((value) {
       // databaseList.clear();
       databaseList = (value.data()?['dataList'] as List).map((e) => e.toString()).toList();
 
@@ -59,10 +62,9 @@ class DataBaseController extends GetxController {
     // Get.put(MLService(),permanent: true);
     Get.put(DataBaseController(), permanent: true);
     Get.put(ImportController(), permanent: true);
-    Get.put(CardsController(), permanent: true);
     Get.put(PrintController(), permanent: true);
     Get.offAll(
-      () => const SplashPage(),
+      () => const SplashScreen(),
       binding: GetBinding(),
     );
   }

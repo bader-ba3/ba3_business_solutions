@@ -11,7 +11,7 @@ import 'package:ba3_business_solutions/controller/product/product_controller.dar
 import 'package:ba3_business_solutions/controller/seller/sellers_controller.dart';
 import 'package:ba3_business_solutions/controller/seller/target_controller.dart';
 import 'package:ba3_business_solutions/controller/store/store_controller.dart';
-import 'package:ba3_business_solutions/controller/user/cards_controller.dart';
+import 'package:ba3_business_solutions/controller/user/nfc_cards_controller.dart';
 import 'package:get/get.dart';
 
 import '../../controller/account/account_customer_controller.dart';
@@ -36,10 +36,10 @@ class GetBinding extends Bindings {
     final sellersRepo = SellersRepository(SellersFireStoreService());
     final userManagementRepo = UserManagementRepository(UserManagementService());
 
-    Get.put(ScreenController());
+    Get.lazyPut(() => ScreenController(), fenix: true);
     // Get.put(GlobalViewModel());
     Get.put(SearchViewController());
-    Get.put(EntryBondController());
+    Get.lazyPut(() => EntryBondController(), fenix: true);
     Get.put(ImportController());
     Get.put(ProductController());
     Get.put(UserManagementController(userManagementRepo));
@@ -55,7 +55,6 @@ class GetBinding extends Bindings {
 
     // Get.put(IsolateViewModel());
     Get.put(DataBaseController());
-    Get.put(CardsController());
     Get.put(PrintController());
     Get.put(PlutoController());
 
@@ -63,5 +62,6 @@ class GetBinding extends Bindings {
     Get.lazyPut(() => WarrantyController(), fenix: true);
     Get.lazyPut(() => ChangesController(), fenix: true);
     Get.lazyPut(() => TargetController(targetRepo), fenix: true);
+    Get.lazyPut(() => NfcCardsController(), fenix: true);
   }
 }
